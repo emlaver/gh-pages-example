@@ -16,4 +16,7 @@ publishDir = 'docs'
   name = 'Search'
   pageRef = '/search.html'
   weight = 20
+[[module.mounts]]
+   source = 'static'
+   target = 'assets'
 

@@ -1,14 +1,25 @@
 <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="{{ .Title }}">
-  <h3 class="boxtitle"><a href="{{ .Permalink }}" class="u-url">{{ .Title }}</a></h3>
-  {{ if .Params.image }}
-  <img src="{{ .Params.image }}.thumb.jpg" />
+  {{ $link := .Permalink }}
+  <h3 class="boxtitle"><a href="{{ $link }}" class="u-url">{{ .Title }}</a></h3>
+
+  {{ $image := resources.Get ( printf "%s" .Params.image ) }}
+  {{ with $image }}
+  <a href="{{ $link }}" class="u-url">
+    <img src="{{ ( $image.Resize " 400x" ).RelPermalink }}" />
+  </a>
   {{ end }}
+
   {{ if .Description }}
-  <p class="boxdescr"><a href="{{ .Permalink }}" class="u-url">{{ .Description }}</a></p>
+  <p class="boxdescr"><a href="{{ $link }}" class="u-url">{{ .Description }}</a></p>
   {{ end }}
+
   {{ if .Date }}
   <p>{{ .Date | time.Format ":date_medium" }} | {{ .Params.author }}</p>
   {{ end }}
+
   <p>{{ partial "tags.html" . }}</p>
-  <p></p><bx-btn href="{{ .Permalink }}"> Read </bx-btn></p>
+
+  <p>
+    <bx-btn href="{{ $link }}"> Read</bx-btn>
+  </p>
 </div>
