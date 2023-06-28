@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Domain on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/domain/</link>
-    <description>Recent content in Domain on Cloudant blog</description>
+    <title>Domain on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/domain/</link>
+    <description>Recent content in Domain on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 07 Dec 2017 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/domain/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 07 Dec 2017 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/domain/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Using your own domain</title>
-      <link>https://blog.cloudant.com/2017/12/07/Using-your-own-domain-name.html</link>
+      <link>https://emlaver.github.io/2017/12/07/Using-your-own-domain-name.html</link>
       <pubDate>Thu, 07 Dec 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2017/12/07/Using-your-own-domain-name.html</guid>
+      <guid>https://emlaver.github.io/2017/12/07/Using-your-own-domain-name.html</guid>
       <description>Until recently, Cloudant allowed you to bring your own domain name through its &amp;ldquo;virtual hosts&amp;rdquo; functionality. This feature is now being removed for security reasons.
 If you still want to be able to access the Cloudant API through your own domain name, you can do it by creating a serverless proxy that is hosted on IBM Cloud Functions, IBM&amp;rsquo;s serverless platform.
 A number of serverless &amp;ldquo;actions&amp;rdquo; are deployed—one per API call you need to proxy.</description>

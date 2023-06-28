@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Continuous Integration on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/continuous-integration/</link>
-    <description>Recent content in Continuous Integration on Cloudant blog</description>
+    <title>Continuous Integration on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/continuous-integration/</link>
+    <description>Recent content in Continuous Integration on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Nov 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/continuous-integration/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Nov 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/continuous-integration/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Improve and then improve some more</title>
-      <link>https://blog.cloudant.com/2019/11/01/Improve-and-then-improve-some-more.html</link>
+      <link>https://emlaver.github.io/2019/11/01/Improve-and-then-improve-some-more.html</link>
       <pubDate>Fri, 01 Nov 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/11/01/Improve-and-then-improve-some-more.html</guid>
+      <guid>https://emlaver.github.io/2019/11/01/Improve-and-then-improve-some-more.html</guid>
       <description>Modern software development requires a constant feedback loop in which software component correctness and whole-stack integration success can be efficiently validated. This feedback loop is realized through automation and continuous integration (CI). Well-implemented CI is imperative &amp;ndash; it increases transparency amongst developers for all aspects of the software development lifecycle (SLDC) by yielding the ability to rapidly build, test, and iterate on issues that might arise. Rapid iteration is the keystone of an agile workflow and is critical to business success, especially when you&amp;rsquo;re a startup that gets acquired by a company like IBM.</description>
     </item>
     

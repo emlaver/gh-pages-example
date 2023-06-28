@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Query on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/query/</link>
-    <description>Recent content in Query on Cloudant blog</description>
+    <title>Query on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/query/</link>
+    <description>Recent content in Query on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 08 Nov 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/query/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 08 Nov 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/query/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Case-sensitivity in queries</title>
-      <link>https://blog.cloudant.com/2019/11/08/Case-sensitivity-in-queries.html</link>
+      <link>https://emlaver.github.io/2019/11/08/Case-sensitivity-in-queries.html</link>
       <pubDate>Fri, 08 Nov 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/11/08/Case-sensitivity-in-queries.html</guid>
+      <guid>https://emlaver.github.io/2019/11/08/Case-sensitivity-in-queries.html</guid>
       <description>By default, some Cloudant operations are case sensitive - the query parameter must match the value in the document exactly for it to be included in search results - but if you need a case insensitive query then there are number of solutions.
 Photo by Amador Loureiro on Unsplash
 Let&amp;rsquo;s see how each of the Cloudant query mechanisms handle case sensitivity with a database of cars whose documents look like this which we need to query by the &amp;ldquo;model&amp;rdquo; attribute:</description>
@@ -20,59 +20,59 @@ Let&amp;rsquo;s see how each of the Cloudant query mechanisms handle case sensit
     
     <item>
       <title>Design Docs For Life</title>
-      <link>https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html</link>
+      <link>https://emlaver.github.io/2019/08/16/Design-Docs-For-Life.html</link>
       <pubDate>Fri, 16 Aug 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html</guid>
+      <guid>https://emlaver.github.io/2019/08/16/Design-Docs-For-Life.html</guid>
       <description>A Design Document is a special Cloudant document whose _id field begins with _design/ e.g. _design/search. It stores meta data about a secondary index or indexes: the name of the index, which fields are to be indexed etc. Design documents are created in one of two ways:
 You create and update them manually as you would for any normal Cloudant document. This method is required for MapReduce views, Cloudant Search and Geospatial indexes.</description>
     </item>
     
     <item>
       <title>Replicating from a Query</title>
-      <link>https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html</link>
+      <link>https://emlaver.github.io/2019/06/21/Replicating-from-a-Query.html</link>
       <pubDate>Fri, 21 Jun 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html</guid>
+      <guid>https://emlaver.github.io/2019/06/21/Replicating-from-a-Query.html</guid>
       <description>Cloudant and CouchDB&amp;rsquo;s replication protocol allows documents to be copied from a source database to a target database with the minimum of fuss. This unlocks a wealth of use-cases:
 Multiple copies of a database across geographies to allow for disaster recovery, or to be used in a high-availability configuration. Data being replicated from a cloud-based primary to an on-premise backup. Mobile devices taking a copy of data, taking if offline and modifying it before replicating it back to the original source database.</description>
     </item>
     
     <item>
       <title>Paging with Bookmarks</title>
-      <link>https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html</link>
+      <link>https://emlaver.github.io/2019/05/31/Paging-with-Cloudant-Bookmarks.html</link>
       <pubDate>Fri, 31 May 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html</guid>
+      <guid>https://emlaver.github.io/2019/05/31/Paging-with-Cloudant-Bookmarks.html</guid>
       <description>Imagine you are creating a web application showing a set of search results, whether they be books, actors or products in your store. As the user scrolls to the bottom of the search results, another page of matches is appended to the bottom. This is known as an &amp;ldquo;infinite scroll&amp;rdquo; design pattern and allows the user to endlessly scroll through a large data set with ease, while only fetching a smaller batches of data from the database each time.</description>
     </item>
     
     <item>
       <title>Optimal Cloudant Indexing</title>
-      <link>https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html</link>
+      <link>https://emlaver.github.io/2019/05/10/Optimal-Cloudant-Indexing.html</link>
       <pubDate>Fri, 10 May 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html</guid>
+      <guid>https://emlaver.github.io/2019/05/10/Optimal-Cloudant-Indexing.html</guid>
       <description>Traditionally, this is taught at Cloudant data modelling class:
 Design JSON representations of the objects that exist in your application - products, users, orders etc. If necessary, create multiple document &amp;ldquo;types&amp;rdquo; in the same database - use a field in the document to differentiate one from the other e.g. &amp;quot;type&amp;quot;: &amp;quot;product&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;user&amp;quot; etc Build indexes on the fields which you are going to query against e.g. if I am going to search products by category in product name order, I&amp;rsquo;m going to need an index on category &amp;amp; name.</description>
     </item>
     
     <item>
       <title>Partitioned Databases - Data Design</title>
-      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html</link>
+      <link>https://emlaver.github.io/2019/03/05/Partition-Databases-Data-Design.html</link>
       <pubDate>Tue, 05 Mar 2019 07:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html</guid>
+      <guid>https://emlaver.github.io/2019/03/05/Partition-Databases-Data-Design.html</guid>
       <description>This is the second part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Three and Part Four may also be of interest.
 Modelling data with a JSON document store is very different from modelling data in a relational database system. Generations of computer scientists have been taught how to normalize data into tables, that is organising data into their own collections so that information is not repeated and relationships between collections are modelled with foreign keys.</description>
     </item>
     
     <item>
       <title>Cloudant Fundamentals 8/10</title>
-      <link>https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</link>
+      <link>https://emlaver.github.io/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</link>
       <pubDate>Mon, 25 Jun 2018 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</guid>
+      <guid>https://emlaver.github.io/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</guid>
       <description>In the previous part of this series we discovered the _find endpoint which allows us to formulate queries in JSON and ask Cloudant to answer them.
 In this post, we&amp;rsquo;ll look to doing the same thing but using Node.js code. Again we&amp;rsquo;ll lean on the cloudant-quickstart library.
 Making queries Using the query we made last time, we can pass the selector directly to the query function of cloudant-quickstart object to get an array of matching documents back.</description>
@@ -80,10 +80,10 @@ Making queries Using the query we made last time, we can pass the selector direc
     
     <item>
       <title>Cloudant Fundamentals 7/10</title>
-      <link>https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html</link>
+      <link>https://emlaver.github.io/2018/06/18/Cloudant-Fundamentals-Querying.html</link>
       <pubDate>Mon, 18 Jun 2018 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html</guid>
+      <guid>https://emlaver.github.io/2018/06/18/Cloudant-Fundamentals-Querying.html</guid>
       <description>In previous posts we&amp;rsquo;ve looked add adding and retrieving documents from a Cloudant database by their key fields - the _id field. There&amp;rsquo;s a good chance that you want your database to be able to do more than that which is where querying comes in.
 Making a query A Cloudant Query allows questions to be asked of your Cloudant data, questions such as:
 get me all the documents where the dob field is less than 1970-01-01 get me all the documents where the dob field is less than 1970-01-01 and the actor field is Marlon Brando get the first fifty films staring Matthew Broderick in date order get the next 50 films matching the previous query Queries are expressed as JSON documents such as:</description>
@@ -91,10 +91,10 @@ get me all the documents where the dob field is less than 1970-01-01 get me all 
     
     <item>
       <title>Querying Cloudant with SQL</title>
-      <link>https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html</link>
+      <link>https://emlaver.github.io/2017/07/18/Querying-Cloudant-with-SQL.html</link>
       <pubDate>Tue, 18 Jul 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html</guid>
+      <guid>https://emlaver.github.io/2017/07/18/Querying-Cloudant-with-SQL.html</guid>
       <description>Cloudant and its Apache CouchDB stable-mate are &amp;ldquo;NoSQL&amp;rdquo; databases—that is, they are schemaless JSON document stores. Unlike a traditional relational database, you don&amp;rsquo;t need to define your schema before writing data to the database. Just post your JSON to the database and change your mind as often as you like!
 One of the appealing things about relational databases is the query language. Structured Query Language or SQL was developed by IBM in the 1970s and was widely adopted across a host of databases ever since.</description>
     </item>

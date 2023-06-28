@@ -1,126 +1,126 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Replication on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/replication/</link>
-    <description>Recent content in Replication on Cloudant blog</description>
+    <title>Replication on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/replication/</link>
+    <description>Recent content in Replication on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/replication/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/replication/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Taxi Service</title>
-      <link>https://blog.cloudant.com/2023/03/09/Taxi-service-using-Cloudant.html</link>
+      <link>https://emlaver.github.io/2023/03/09/Taxi-service-using-Cloudant.html</link>
       <pubDate>Thu, 09 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2023/03/09/Taxi-service-using-Cloudant.html</guid>
+      <guid>https://emlaver.github.io/2023/03/09/Taxi-service-using-Cloudant.html</guid>
       <description>We&amp;rsquo;ve all used taxi or ride-sharing services where the customer uses a mobile app to define the start and end point of their journey, then a driver chooses the job and makes their way to the start point. Such applications are complex distributed, real-time systems with data originating from:
 The customer (start &amp;amp; end points, current location, ride preferences). The driver (current position, photographs). The taxi company (billing etc). Elsewhere (traffic conditions, mapping, route planning) These actors are expecting that data can be shared between them from disconnected databases over potentially flaky mobile connections.</description>
     </item>
     
     <item>
       <title>Replication Efficiency Improvements</title>
-      <link>https://blog.cloudant.com/2023/02/08/Replication-efficiency-improvements.html</link>
+      <link>https://emlaver.github.io/2023/02/08/Replication-efficiency-improvements.html</link>
       <pubDate>Wed, 08 Feb 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2023/02/08/Replication-efficiency-improvements.html</guid>
+      <guid>https://emlaver.github.io/2023/02/08/Replication-efficiency-improvements.html</guid>
       <description>Cloudant&amp;rsquo;s replication is a rock-solid protocol that allows a database&amp;rsquo;s changes to be easily synced to a different database. This feature is used widely to create multi-region Cloudant topologies, allowing dependent applications to survive a regional Cloud outage.
 Cloudant has recently published a number of improvements that make replication even better than before - in our internal benchmarks we have seen replications speeds of 3x the previous version. Some of these features have been switched off by default, but may become the default behaviour in future releases.</description>
     </item>
     
     <item>
       <title>Removing Tombstones</title>
-      <link>https://blog.cloudant.com/2021/05/21/Removing-Tombstones.html</link>
+      <link>https://emlaver.github.io/2021/05/21/Removing-Tombstones.html</link>
       <pubDate>Fri, 21 May 2021 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2021/05/21/Removing-Tombstones.html</guid>
+      <guid>https://emlaver.github.io/2021/05/21/Removing-Tombstones.html</guid>
       <description>Cloudant and its sister database Apache CouchDB store document data in revision trees. When a document is deleted, a special deletion (&amp;quot;deleted&amp;quot;: true) revision is added to the head of the tree. This allows the intention that the document is to be deleted to be replicated around, whether that be to other nodes in the cluster or to other Cloudant or CouchDB services in other geographies. Without this mechanism, it would be possible for a deleted document to be unintentionally resurrected via replication from an external replica.</description>
     </item>
     
     <item>
       <title>Repairing a database with conflicts</title>
-      <link>https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html</link>
+      <link>https://emlaver.github.io/2020/11/26/Repairing-a-Database-With-Conflicts.html</link>
       <pubDate>Thu, 26 Nov 2020 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html</guid>
+      <guid>https://emlaver.github.io/2020/11/26/Repairing-a-Database-With-Conflicts.html</guid>
       <description>Cloudant conflicts occur when disconnected replicas of a database are updated in different ways at the same time. The replicas could be:
 Copies of a database hosted in different regions that are replicating continuously to each other, while both accepting writes. A mobile application going offline and replicating its updates to the cloud later, only to find that some of its changes clash with the cloud-based copy. Copies of the same database shard in a single-region cluster.</description>
     </item>
     
     <item>
       <title>Migrating a Cloudant Account</title>
-      <link>https://blog.cloudant.com/2020/11/25/Migrating-a-Cloudant-Account.html</link>
+      <link>https://emlaver.github.io/2020/11/25/Migrating-a-Cloudant-Account.html</link>
       <pubDate>Wed, 25 Nov 2020 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2020/11/25/Migrating-a-Cloudant-Account.html</guid>
+      <guid>https://emlaver.github.io/2020/11/25/Migrating-a-Cloudant-Account.html</guid>
       <description>There are several reasons why you&amp;rsquo;d want to copy data from one Cloudant account to another:
 To copy data to a different region as you want to setup a cross-region database service (e.g. Dallas and Frankfurt). To move from self-hosted CouchDB service to a hosted Cloudant account. To migrate from a Cloudant dedicated service to a cloud-based, multi-tenant Cloudant service. To move from a Cloudant Standard account to Cloudant on Transaction Engine account.</description>
     </item>
     
     <item>
       <title>Fast Data Transfer</title>
-      <link>https://blog.cloudant.com/2020/01/17/Fast-Data-Transfer.html</link>
+      <link>https://emlaver.github.io/2020/01/17/Fast-Data-Transfer.html</link>
       <pubDate>Fri, 17 Jan 2020 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2020/01/17/Fast-Data-Transfer.html</guid>
+      <guid>https://emlaver.github.io/2020/01/17/Fast-Data-Transfer.html</guid>
       <description>Cloudant replication is the database&amp;rsquo;s method of of choice for transferring data from a source to a target database. It&amp;rsquo;s main use-cases are:
 Mobile apps - keeping mobile application data synched with a server-side copy where the data can be modified at both sides. Cross-region sync - a database can exist in two geographies and traffic can be load balanced between them, routed so that a customer is directed to their nearest copy or can be used for disaster recovery fail-over.</description>
     </item>
     
     <item>
       <title>Filtered Replication</title>
-      <link>https://blog.cloudant.com/2019/12/13/Filtered-Replication.html</link>
+      <link>https://emlaver.github.io/2019/12/13/Filtered-Replication.html</link>
       <pubDate>Fri, 13 Dec 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/12/13/Filtered-Replication.html</guid>
+      <guid>https://emlaver.github.io/2019/12/13/Filtered-Replication.html</guid>
       <description>Cloudant&amp;rsquo;s replication protocol allows data to flow from one Cloudant database to another, on the same Cloudant service or to an entirely separate service on the other side of the world. The replication protocol is also understood by Apache CouchDB and PouchDB allowing hybrid and mobile apps to be created with Cloudant acting as the cloud-based source of truth. The changes feed itself is also used to stream data to external services such as couchwarehouse.</description>
     </item>
     
     <item>
       <title>Replicating from a Query</title>
-      <link>https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html</link>
+      <link>https://emlaver.github.io/2019/06/21/Replicating-from-a-Query.html</link>
       <pubDate>Fri, 21 Jun 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html</guid>
+      <guid>https://emlaver.github.io/2019/06/21/Replicating-from-a-Query.html</guid>
       <description>Cloudant and CouchDB&amp;rsquo;s replication protocol allows documents to be copied from a source database to a target database with the minimum of fuss. This unlocks a wealth of use-cases:
 Multiple copies of a database across geographies to allow for disaster recovery, or to be used in a high-availability configuration. Data being replicated from a cloud-based primary to an on-premise backup. Mobile devices taking a copy of data, taking if offline and modifying it before replicating it back to the original source database.</description>
     </item>
     
     <item>
       <title>couchreplicate</title>
-      <link>https://blog.cloudant.com/2018/02/22/Cloudant-Replication-with-couchreplicate.html</link>
+      <link>https://emlaver.github.io/2018/02/22/Cloudant-Replication-with-couchreplicate.html</link>
       <pubDate>Thu, 22 Feb 2018 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2018/02/22/Cloudant-Replication-with-couchreplicate.html</guid>
+      <guid>https://emlaver.github.io/2018/02/22/Cloudant-Replication-with-couchreplicate.html</guid>
       <description>One of Apache CouchDB™&amp;rsquo;s killer features is replication. JSON data is easily replicated between data centers, from a mobile device to the cloud, or vice versa. The CouchDB replication protocol is shared by Apache CouchDB itself, the IBM Cloudant database-as-a-service, Cloudant Sync libraries for iOS and Android and the PouchDB in-browser database.
 Setting up a single replication is as easy as filling in a form in the Replication tab of your Cloudant or CouchDB dashboard:</description>
     </item>
     
     <item>
       <title>Replication topologies</title>
-      <link>https://blog.cloudant.com/2017/11/07/Cloudant-replication-topologies.html</link>
+      <link>https://emlaver.github.io/2017/11/07/Cloudant-replication-topologies.html</link>
       <pubDate>Tue, 07 Nov 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2017/11/07/Cloudant-replication-topologies.html</guid>
+      <guid>https://emlaver.github.io/2017/11/07/Cloudant-replication-topologies.html</guid>
       <description>Cloudant&amp;rsquo;s (and CouchDB&amp;rsquo;s) replication feature allows you to keep databases in sync across countries and continents. However, sometimes it&amp;rsquo;s not obvious how to use this basic pair-wise feature in order to create more complicated replication topologies, like three or more geographical replicas, and then how to do disaster recovery between them. Let&amp;rsquo;s discuss these in turn.
 Throughout the following, it&amp;rsquo;s important to remember that replication is an asynchronous, best-effort process in which a change is propagated to peers sometime after the client receives the response to its write request.</description>
     </item>
     
     <item>
       <title>Custom Replication</title>
-      <link>https://blog.cloudant.com/2017/08/22/Custom-Cloudant-replication.html</link>
+      <link>https://emlaver.github.io/2017/08/22/Custom-Cloudant-replication.html</link>
       <pubDate>Tue, 22 Aug 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2017/08/22/Custom-Cloudant-replication.html</guid>
+      <guid>https://emlaver.github.io/2017/08/22/Custom-Cloudant-replication.html</guid>
       <description>Cloudant has first-class replication built in. A database can be replicated to another local database or to a remote Cloudant instance—or to any other database that speaks the same replication protocol, such as Apache CouchDB™ or PouchDB. A replication process can be one-shot or continuous, and replication streams can be &amp;ldquo;filtered&amp;rdquo;, i.e. the documents that are replicated can be a subset of the total.
 Not all applications need replication. It is essential when there are multiple, disconnected copies of the data where the data can be modified on either side.</description>
     </item>
     
     <item>
       <title>Piecemeal, Bulk or Batch</title>
-      <link>https://blog.cloudant.com/2017/07/25/Piecemeal-Bulk-or-Batch.html</link>
+      <link>https://emlaver.github.io/2017/07/25/Piecemeal-Bulk-or-Batch.html</link>
       <pubDate>Tue, 25 Jul 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2017/07/25/Piecemeal-Bulk-or-Batch.html</guid>
+      <guid>https://emlaver.github.io/2017/07/25/Piecemeal-Bulk-or-Batch.html</guid>
       <description>There are many different deployment models for CouchDB-style databases, but thankfully CRUD operations work the same across all of them. Apache CouchDB™ is a database, specifically a JSON document store, with an HTTP API. IBM Cloudant is Apache CouchDB with a few extra bells and whistles run as-a-service in pay-as-you go, dedicated and local configurations.
 In this article, I&amp;rsquo;m going to explain your options for writing data using the CouchDB API, the different calls, and the tradeoffs therein.</description>
     </item>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Failover on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/failover/</link>
-    <description>Recent content in Failover on Cloudant blog</description>
+    <title>Failover on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/failover/</link>
+    <description>Recent content in Failover on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Jul 2020 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/failover/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Jul 2020 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/failover/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Automatic Cross-region Failover</title>
-      <link>https://blog.cloudant.com/2020/07/01/Automatic-failover-between-Cloudant-regions.html</link>
+      <link>https://emlaver.github.io/2020/07/01/Automatic-failover-between-Cloudant-regions.html</link>
       <pubDate>Wed, 01 Jul 2020 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2020/07/01/Automatic-failover-between-Cloudant-regions.html</guid>
+      <guid>https://emlaver.github.io/2020/07/01/Automatic-failover-between-Cloudant-regions.html</guid>
       <description>IBM Cloudant NoSQL database offers high availability through in-region automatic data redundancy by storing data in triplicate across three servers within a single region. In a true sense, achieving high availability and eliminating single point failure couldn’t be accomplished using a single region Cloudant setup. So, to address this, we have to consider doing two things:
 Configure cross-region redundancy by setting up Cloudant accounts in two or more regions, create databases in each region, and set up bidirectional continuous replications between the corresponding databases in each account.</description>
     </item>

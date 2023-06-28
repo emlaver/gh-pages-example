@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Design Docs on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/design-docs/</link>
-    <description>Recent content in Design Docs on Cloudant blog</description>
+    <title>Design Docs on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/design-docs/</link>
+    <description>Recent content in Design Docs on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Aug 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/design-docs/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Aug 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/design-docs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Design Docs For Life</title>
-      <link>https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html</link>
+      <link>https://emlaver.github.io/2019/08/16/Design-Docs-For-Life.html</link>
       <pubDate>Fri, 16 Aug 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html</guid>
+      <guid>https://emlaver.github.io/2019/08/16/Design-Docs-For-Life.html</guid>
       <description>A Design Document is a special Cloudant document whose _id field begins with _design/ e.g. _design/search. It stores meta data about a secondary index or indexes: the name of the index, which fields are to be indexed etc. Design documents are created in one of two ways:
 You create and update them manually as you would for any normal Cloudant document. This method is required for MapReduce views, Cloudant Search and Geospatial indexes.</description>
     </item>

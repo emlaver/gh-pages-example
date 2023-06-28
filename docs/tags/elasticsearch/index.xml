@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ElasticSearch on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/elasticsearch/</link>
-    <description>Recent content in ElasticSearch on Cloudant blog</description>
+    <title>ElasticSearch on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/elasticsearch/</link>
+    <description>Recent content in ElasticSearch on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Nov 2017 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 30 Nov 2017 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Elasticsearch hybrid</title>
-      <link>https://blog.cloudant.com/2017/11/30/Making-a-Cloudant-ElasticSearch-hybird.html</link>
+      <link>https://emlaver.github.io/2017/11/30/Making-a-Cloudant-ElasticSearch-hybird.html</link>
       <pubDate>Thu, 30 Nov 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2017/11/30/Making-a-Cloudant-ElasticSearch-hybird.html</guid>
+      <guid>https://emlaver.github.io/2017/11/30/Making-a-Cloudant-ElasticSearch-hybird.html</guid>
       <description>On the face of it, IBM Cloudant and Elasticsearch seem to be very similar products. They both:
 Store JSON documents without you needing to define a schema up-front. Have an HTTP API. &amp;ldquo;Shard&amp;rdquo; each collection into pieces and store multiple copies across a distributed cluster. Can be used to perform &amp;ldquo;free text&amp;rdquo; search, i.e., query which documents best match a supplied string. Cloudant is a resilient database that guarantees that data is stored on disk on multiple nodes when you write your data.</description>
     </item>

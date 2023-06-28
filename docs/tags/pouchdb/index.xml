@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>PouchDB on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/pouchdb/</link>
-    <description>Recent content in PouchDB on Cloudant blog</description>
+    <title>PouchDB on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/pouchdb/</link>
+    <description>Recent content in PouchDB on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/pouchdb/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/pouchdb/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Taxi Service</title>
-      <link>https://blog.cloudant.com/2023/03/09/Taxi-service-using-Cloudant.html</link>
+      <link>https://emlaver.github.io/2023/03/09/Taxi-service-using-Cloudant.html</link>
       <pubDate>Thu, 09 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2023/03/09/Taxi-service-using-Cloudant.html</guid>
+      <guid>https://emlaver.github.io/2023/03/09/Taxi-service-using-Cloudant.html</guid>
       <description>We&amp;rsquo;ve all used taxi or ride-sharing services where the customer uses a mobile app to define the start and end point of their journey, then a driver chooses the job and makes their way to the start point. Such applications are complex distributed, real-time systems with data originating from:
 The customer (start &amp;amp; end points, current location, ride preferences). The driver (current position, photographs). The taxi company (billing etc). Elsewhere (traffic conditions, mapping, route planning) These actors are expecting that data can be shared between them from disconnected databases over potentially flaky mobile connections.</description>
     </item>
     
     <item>
       <title>PouchDB</title>
-      <link>https://blog.cloudant.com/2017/05/04/PouchDB-swiss-army-knife.html</link>
+      <link>https://emlaver.github.io/2017/05/04/PouchDB-swiss-army-knife.html</link>
       <pubDate>Thu, 04 May 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2017/05/04/PouchDB-swiss-army-knife.html</guid>
+      <guid>https://emlaver.github.io/2017/05/04/PouchDB-swiss-army-knife.html</guid>
       <description>PouchDB is a database. It&amp;rsquo;s a JSON document store to be precise, allowing you to create, read, update, delete and query your documents with a simple JavaScript API. It&amp;rsquo;s most commonly used in a browser, to keep data on the client side. Storing data within the browser allows your web applications to keep working, even when the network connection is flaky or non-existant - this is called an offline first approach.</description>
     </item>
     
     <item>
       <title>Chrome Extensions</title>
-      <link>https://blog.cloudant.com/2016/05/11/Chrome-Extensions-with-PouchDB.html</link>
+      <link>https://emlaver.github.io/2016/05/11/Chrome-Extensions-with-PouchDB.html</link>
       <pubDate>Wed, 11 May 2016 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2016/05/11/Chrome-Extensions-with-PouchDB.html</guid>
+      <guid>https://emlaver.github.io/2016/05/11/Chrome-Extensions-with-PouchDB.html</guid>
       <description>Google Chrome extensions are small web applications that are downloaded and installed in the user&amp;rsquo;s Chrome browser. They have a minimal user interface, usually a small icon to the right of the URL bar and a pop-down panel, but have additional rights over and above normal websites:
 they can be bundled and submitted to the Chrome Web store as a distribution mechanism they have limited access to the host computer to save files, access networking tools and communicate with connected devices they have access to the browser&amp;rsquo;s inner workings and can alter the rendering of web pages Chrome extensions are really just web applications built from HTML, CSS and JavaScript, and we can use the framework of our choice to build them.</description>
     </item>

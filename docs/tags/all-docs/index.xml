@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>All docs on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/all-docs/</link>
-    <description>Recent content in All docs on Cloudant blog</description>
+    <title>All docs on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/all-docs/</link>
+    <description>Recent content in All docs on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Oct 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/all-docs/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 25 Oct 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/all-docs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Paginating _all_docs</title>
-      <link>https://blog.cloudant.com/2019/10/25/Paginating-all_docs-and-views.html</link>
+      <link>https://emlaver.github.io/2019/10/25/Paginating-all_docs-and-views.html</link>
       <pubDate>Fri, 25 Oct 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/10/25/Paginating-all_docs-and-views.html</guid>
+      <guid>https://emlaver.github.io/2019/10/25/Paginating-all_docs-and-views.html</guid>
       <description>If you are using the GET /&amp;lt;db&amp;gt;/_all_docs endpoint to fetch documents in bulk, then you may have come across the limit and skip parameters which allow you to define how many documents you would like, and the offset into the range you want to start from. Using this skip/limit pattern to iterate through a result set works, but it gets progressively slower the larger the value of skip.
 Photo by Anastasia Zhenina on Unsplash</description>
     </item>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Analysis on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/analysis/</link>
-    <description>Recent content in Analysis on Cloudant blog</description>
+    <title>Analysis on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/analysis/</link>
+    <description>Recent content in Analysis on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Sep 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/analysis/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Sep 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/analysis/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Logging with LogDNA</title>
-      <link>https://blog.cloudant.com/2019/09/13/Cloudant-Logging-with-LogDNA.html</link>
+      <link>https://emlaver.github.io/2019/09/13/Cloudant-Logging-with-LogDNA.html</link>
       <pubDate>Mon, 16 Sep 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/09/13/Cloudant-Logging-with-LogDNA.html</guid>
+      <guid>https://emlaver.github.io/2019/09/13/Cloudant-Logging-with-LogDNA.html</guid>
       <description>Cloudant is now rolling out customer-facing logging for its Cloudant services. In this post we&amp;rsquo;ll explore how to set it up and how it can help you keep tabs on your Cloudant service.
 Note: The IBM Cloud Log Analysis service is available in the following IBM Cloud regions: https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-log-analysis-integration.
 Photo by Pär Pärsson on Unsplash

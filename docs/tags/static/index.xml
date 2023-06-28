@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Static on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/static/</link>
-    <description>Recent content in Static on Cloudant blog</description>
+    <title>Static on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/static/</link>
+    <description>Recent content in Static on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 20 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/static/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/static/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CouchApps No Longer Work</title>
-      <link>https://blog.cloudant.com/2021/10/20/CouchApps-no-longer-work.html</link>
+      <link>https://emlaver.github.io/2021/10/20/CouchApps-no-longer-work.html</link>
       <pubDate>Wed, 20 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2021/10/20/CouchApps-no-longer-work.html</guid>
+      <guid>https://emlaver.github.io/2021/10/20/CouchApps-no-longer-work.html</guid>
       <description>Cloudant mainly stores JSON documents in collections called databases, but Cloudant also has the ability to store attachments in Cloudant documents. An attachment is a binary blob of data with a file name and mime type. It could be a PDF, a JPG or a Word document.
 Some users employed attachments to store HTML, CSS, JavaScript files and other assets in the database so that it could be used as a webserver - applications following this pattern were known as CouchApps.</description>
     </item>
     
     <item>
       <title>Searching Jekyll Sites</title>
-      <link>https://blog.cloudant.com/2018/08/10/Adding-Search-to-a-Static-Jekyll-site.html</link>
+      <link>https://emlaver.github.io/2018/08/10/Adding-Search-to-a-Static-Jekyll-site.html</link>
       <pubDate>Fri, 10 Aug 2018 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2018/08/10/Adding-Search-to-a-Static-Jekyll-site.html</guid>
+      <guid>https://emlaver.github.io/2018/08/10/Adding-Search-to-a-Static-Jekyll-site.html</guid>
       <description>I&amp;rsquo;m a big fan of Jekyll for building static websites. If you&amp;rsquo;re not familiar with Jekyll, it takes a collection of configuration, templates and source files (I write my posts in Markdown) and transforms them into static HTML files that can be delivered to the world by any web server. Jekyll is built into GitHub Pages so that you can host the source files for your website or blog in a Git repository and have the resultant static web site served out by GitHub Pages without having to manage any server infrastructure yourself.</description>
     </item>
     

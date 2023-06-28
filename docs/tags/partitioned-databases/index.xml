@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Partitioned Databases on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/partitioned-databases/</link>
-    <description>Recent content in Partitioned Databases on Cloudant blog</description>
+    <title>Partitioned Databases on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/partitioned-databases/</link>
+    <description>Recent content in Partitioned Databases on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 May 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/partitioned-databases/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 24 May 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/partitioned-databases/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Partitioned Databases and Node.js</title>
-      <link>https://blog.cloudant.com/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</link>
+      <link>https://emlaver.github.io/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</link>
       <pubDate>Fri, 24 May 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</guid>
+      <guid>https://emlaver.github.io/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</guid>
       <description>The Cloudant database has four supported client libraries: Node.js, Java, Goand Python. In this post, we&amp;rsquo;ll see examples on how the Node.js library can be used with the new Partition Databases feature.
 Here&amp;rsquo;s a table of all the functions we&amp;rsquo;ll be using:
 Operation Raw API Call Node.js function call Create database PUT /db?partitioned=true client.putDatabase Add document POST /db client.postDocument Get document GET /db/&amp;lt;id&amp;gt; client.getDocument Get info GET /db/&amp;lt;partition_key&amp;gt; client.getPartitionInformation Get all docs POST /db/&amp;lt;partition_key&amp;gt;/_all_docs client.</description>
@@ -20,30 +20,30 @@ Operation Raw API Call Node.js function call Create database PUT /db?partitioned
     
     <item>
       <title>Time-series Data Storage</title>
-      <link>https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html</link>
+      <link>https://emlaver.github.io/2019/04/08/Time-series-data-storage.html</link>
       <pubDate>Mon, 08 Apr 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html</guid>
+      <guid>https://emlaver.github.io/2019/04/08/Time-series-data-storage.html</guid>
       <description>Time-series data is simply the recording of data points in time order such as:
 Internet of Things (IoT) installations where sensors report readings periodically. Monitoring user-interface interactions from a website to get a sense of which part of the page your users are interested in. Storing the logs from a distributed computer system for diagnostics. Recording the sales of products from a store. In this post we&amp;rsquo;ll examine options for storing time-series data in Cloudant.</description>
     </item>
     
     <item>
       <title>Building a CRM System</title>
-      <link>https://blog.cloudant.com/2019/03/29/Building-a-CRM-System.html</link>
+      <link>https://emlaver.github.io/2019/03/29/Building-a-CRM-System.html</link>
       <pubDate>Fri, 29 Mar 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/03/29/Building-a-CRM-System.html</guid>
+      <guid>https://emlaver.github.io/2019/03/29/Building-a-CRM-System.html</guid>
       <description>A Customer Relationship Management (CRM) system is simply a means of recording your business&amp;rsquo;s relations with your customers. It may consist of:
 a searchable database of your customers, with the customer name, description and contact details. a time-ordered list of notes detailing the interactions you have had with the customer. a list of contact details of the people you have relationships with at that company. It may also store other &amp;ldquo;per customer&amp;rdquo; objects e.</description>
     </item>
     
     <item>
       <title>Partitioned Databases - Sizing</title>
-      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html</link>
+      <link>https://emlaver.github.io/2019/03/05/Partition-Databases-Sizing.html</link>
       <pubDate>Tue, 05 Mar 2019 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html</guid>
+      <guid>https://emlaver.github.io/2019/03/05/Partition-Databases-Sizing.html</guid>
       <description>This is the fourth part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and Part Three may also be of interest.
 Choosing a partition key for a partitioned Cloudant databases is about selecting an attribute that has:
 Many values - lots of small partitions are better than a few large ones. No hot spots - avoid designing a system that makes one partition handle a high proportion of the workload.</description>
@@ -51,10 +51,10 @@ Many values - lots of small partitions are better than a few large ones. No hot 
     
     <item>
       <title>Partitioned Databases - Data Migration</title>
-      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html</link>
+      <link>https://emlaver.github.io/2019/03/05/Partition-Databases-Data-Migration.html</link>
       <pubDate>Tue, 05 Mar 2019 08:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html</guid>
+      <guid>https://emlaver.github.io/2019/03/05/Partition-Databases-Data-Migration.html</guid>
       <description>This is the third part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and Part Four may also be of interest.
 Cloudant&amp;rsquo;s new Partitioned Databases feature allows a Cloudant database to be organised into partitions (blocks of data guaranteed to reside on the same database shard) by specifying a two part _id field consisting of the parition and document id e.g.
 { &amp;#34;_id&amp;#34;: &amp;#34;US:52412&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;Boston&amp;#34;, &amp;#34;state&amp;#34;: &amp;#34;Massachusetts&amp;#34;, &amp;#34;country&amp;#34;: &amp;#34;US&amp;#34; .</description>
@@ -62,20 +62,20 @@ Cloudant&amp;rsquo;s new Partitioned Databases feature allows a Cloudant databas
     
     <item>
       <title>Partitioned Databases - Data Design</title>
-      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html</link>
+      <link>https://emlaver.github.io/2019/03/05/Partition-Databases-Data-Design.html</link>
       <pubDate>Tue, 05 Mar 2019 07:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html</guid>
+      <guid>https://emlaver.github.io/2019/03/05/Partition-Databases-Data-Design.html</guid>
       <description>This is the second part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Three and Part Four may also be of interest.
 Modelling data with a JSON document store is very different from modelling data in a relational database system. Generations of computer scientists have been taught how to normalize data into tables, that is organising data into their own collections so that information is not repeated and relationships between collections are modelled with foreign keys.</description>
     </item>
     
     <item>
       <title>Partitioned Databases - Introduction</title>
-      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html</link>
+      <link>https://emlaver.github.io/2019/03/05/Partition-Databases-Introduction.html</link>
       <pubDate>Tue, 05 Mar 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html</guid>
+      <guid>https://emlaver.github.io/2019/03/05/Partition-Databases-Introduction.html</guid>
       <description>This is the first part of a series of posts on Partitioned Databases in Cloudant. Part Two, Part Three and Part 4 may also be of interest.
 Cloudant has a new feature called Partitioned Databases which makes querying faster to execute while being cheaper per query request. In this article, we&amp;rsquo;ll find out what Partitioned Databases are, how to set them up and how they work. Other posts provide a deep dive into data modelling and data migration.</description>
     </item>

@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Backup on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/backup/</link>
-    <description>Recent content in Backup on Cloudant blog</description>
+    <title>Backup on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/backup/</link>
+    <description>Recent content in Backup on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Oct 2020 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/backup/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 09 Oct 2020 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/backup/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Automated Daily Backups</title>
-      <link>https://blog.cloudant.com/2020/10/09/Automated-Daily-Backups.html</link>
+      <link>https://emlaver.github.io/2020/10/09/Automated-Daily-Backups.html</link>
       <pubDate>Fri, 09 Oct 2020 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2020/10/09/Automated-Daily-Backups.html</guid>
+      <guid>https://emlaver.github.io/2020/10/09/Automated-Daily-Backups.html</guid>
       <description>Cloudant is already reslient in that it stores data in triplicate across a region&amp;rsquo;s three availability zones but that&amp;rsquo;s not the same thing as having a backup:
 what if you delete or modify a bunch of documents and wish to restore them later? (Note that you can access the previous revision of a document for a short time, but it will be eventually compacted so this behaviour isn&amp;rsquo;t to be relied upon).</description>
     </item>
     
     <item>
       <title>Selective restoration from backup</title>
-      <link>https://blog.cloudant.com/2020/07/01/Selective-restoratio-from-backup.html</link>
+      <link>https://emlaver.github.io/2020/07/01/Selective-restoratio-from-backup.html</link>
       <pubDate>Wed, 01 Jul 2020 06:01:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2020/07/01/Selective-restoratio-from-backup.html</guid>
+      <guid>https://emlaver.github.io/2020/07/01/Selective-restoratio-from-backup.html</guid>
       <description>As part of the disaster recovery process, the Cloudant NoSQL database offers the database backup and restore through the command-line utilities such as couchbackup &amp;amp; couchrestore respectively.
 couchbackup - Dumps the JSON data from a database to a backup text file. couchrestore - Restores data from a backup text file to a database. The couchrestore utility has one limitation: it can restore the full database but can’t selectively restore specific records.</description>
     </item>
     
     <item>
       <title>Scheduled Cloudant Backups</title>
-      <link>https://blog.cloudant.com/2019/05/16/Scheduled-Cloudant-Backups.html</link>
+      <link>https://emlaver.github.io/2019/05/16/Scheduled-Cloudant-Backups.html</link>
       <pubDate>Wed, 15 May 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2019/05/16/Scheduled-Cloudant-Backups.html</guid>
+      <guid>https://emlaver.github.io/2019/05/16/Scheduled-Cloudant-Backups.html</guid>
       <description>The Couchbackup project provides a simple command-line tool to backup a Cloudant database to a file. From there it can uploaded to IBM Cloud Object Storage for archival.
 # backup a single database to a file couchbackup --db mydatabase &amp;gt; mydatabase.txt # copy the file to Object Storage aws --endpoint-url=$ENDPOINT \ s3 cp mydatabase.txt s3://mycloudantbackups/ As well a command-line tool, couchbackup can also be used as a Node.js library so that you can script your own workflows to suit your application.</description>
     </item>
     
     <item>
       <title>couchbackup</title>
-      <link>https://blog.cloudant.com/2016/03/22/Simple-CouchDB-Cloudant-backup.html</link>
+      <link>https://emlaver.github.io/2016/03/22/Simple-CouchDB-Cloudant-backup.html</link>
       <pubDate>Tue, 22 Mar 2016 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2016/03/22/Simple-CouchDB-Cloudant-backup.html</guid>
+      <guid>https://emlaver.github.io/2016/03/22/Simple-CouchDB-Cloudant-backup.html</guid>
       <description>How do you back up an Apache CouchDB™ or Cloudant database? One solution is to use CouchDB&amp;rsquo;s built-in replication API. Let&amp;rsquo;s say we have a Cloudant database called mydata that we need to back up.
 In CouchDB 1.x, backing up an entire database was as simple as locating the database&amp;rsquo;s .couch file and copying it somewhere else. With its 2.x release, CouchDB and the Cloudant database shard the data, splitting a single database into pieces and distributing the data across multiple servers.</description>
     </item>

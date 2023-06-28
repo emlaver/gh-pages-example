@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>cloudant-node-sdk on Cloudant blog</title>
-    <link>https://blog.cloudant.com/tags/cloudant-node-sdk/</link>
-    <description>Recent content in cloudant-node-sdk on Cloudant blog</description>
+    <title>cloudant-node-sdk on My New Hugo Site</title>
+    <link>https://emlaver.github.io/tags/cloudant-node-sdk/</link>
+    <description>Recent content in cloudant-node-sdk on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 Jun 2021 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/cloudant-node-sdk/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 30 Jun 2021 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/cloudant-node-sdk/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Cloudant SDK Transition</title>
-      <link>https://blog.cloudant.com/2021/06/30/Cloudant-SDK-Transition.html</link>
+      <link>https://emlaver.github.io/2021/06/30/Cloudant-SDK-Transition.html</link>
       <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
       
-      <guid>https://blog.cloudant.com/2021/06/30/Cloudant-SDK-Transition.html</guid>
+      <guid>https://emlaver.github.io/2021/06/30/Cloudant-SDK-Transition.html</guid>
       <description>The IBM Cloudant team is introducing new Cloudant API SDKs and announcing end-of-life (EOL) for some existing libraries. The new SDKs offer more consistency in the Cloudant SDK portfolio and unification with the common IBM Cloud SDK experience. We leveraged this to produce improved API documentation spanning the Cloudant HTTP and SDK APIs. This makes it easier to find not only the desired API, but also code examples for your chosen ecosystem.</description>
     </item>
     
