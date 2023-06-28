@@ -1,4 +1,4 @@
-baseURL = 'https://emlaver.github.io/gh-pages-example/'
+baseURL = 'https://emlaver.github.io/gh-pages-example'
 languageCode = 'en-us'
 title = 'My New Hugo Site'
 theme = 'carbon-hugo-theme'

@@ -23,7 +23,7 @@ const main = async () => {
         title: y.title,
         description: y.description,
         content: bits[2],
-        url: y.url,
+        url: "/gh-pages-example" + y.url,
         tags: y.tags.join(' '),
         id: (i++).toString()
       }
