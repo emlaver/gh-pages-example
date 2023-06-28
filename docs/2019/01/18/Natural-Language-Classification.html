@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -145,15 +145,15 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>We will need to either capture this new &ldquo;summary&rdquo; data from the user when they add to the review, or we could infer whether the review is positive or negative by using Artificial Intelligence. By training a Natural Language Processing (NLP) model with some reference reviews, it should be able to classify reviews it hasn&rsquo;t seen.</p>
 <p>Not having any experience of NLP, it&rsquo;s best to reach for a cloud service such as the <a href="https://www.ibm.com/watson/services/natural-language-classifier/">Watson Natural Language Classifier (NLC) service</a>.</p>
-<p><img src="/img/patrick-tomasso-71909-unsplash.jpg" alt="banner"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/patrick-tomasso-71909-unsplash.jpg" alt="banner"></p>
 <blockquote>
 <p>Image by <a href="https://unsplash.com/photos/Oaqk7qqNh_c">Patrick Tomasso on Unsplash</a></p>
 </blockquote>
 <h2 id="sign-up"><a href="#sign-up">Sign up</a></h2>
 <p>Simply add a new NLC service in your <a href="https://www.ibm.com/cloud/">IBM Cloud</a> dashboard by searching for &ldquo;natural language&rdquo;:</p>
-<p><img src="/img/nlc1.png" alt="signup"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/nlc1.png" alt="signup"></p>
 <p>Choose a service name and pick the geography in which the service will run:</p>
-<p><img src="/img/nlc2.png" alt="signup"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/nlc2.png" alt="signup"></p>
 <p>Make a note of the <code>URL</code> and the <code>API Key</code> that is delivered with your provisioned service - we&rsquo;ll need them later.</p>
 <p>Next up, we need to train our model.</p>
 <h2 id="training-data"><a href="#training-data">Training data</a></h2>
@@ -165,7 +165,7 @@ Total waste of time. Returned for a refund,negative
 </code></pre><p>Luckily we have a body of existing review text we can extract from our Cloudant database. I used the <a href="https://www.npmjs.com/package/couchimport">couchimport</a> command-line tool that allows us to export Cloudant data as a CSV file:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>couchexport --db reviews --delimiter <span style="color:#e6db74">&#34;,&#34;</span> &gt; reviews.csv
 </span></span></code></pre></div><p>We can then load this data into a spreadsheet, trim off the columns so that we only have the review text and a column for positive/negative.</p>
-<p><img src="/img/nlc3.png" alt="signup"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/nlc3.png" alt="signup"></p>
 <p>The NLC best-practice is to have fewer than sixty words of text in your training data - it would be good to remove lenghty expositions on product features from the review and leave in the parts where the user expresses an opinion on the product or service.</p>
 <p>Then comes the laborious process of populating the second column. This is a one-off process to build the data set that will train Watson to be able to classify future reviews automatically. Once complete, export the two column spreadsheet as a CSV file and we&rsquo;re ready to do the training. The NLC documentation recommends having 5-10 records of each classification in the training set.</p>
 <h2 id="training"><a href="#training">Training</a></h2>

@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -131,9 +131,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>When it comes to storing data, the <a href="https://developer.chrome.com/extensions/storage">chrome.storage</a> API allows your extension to store data, which can be synced between other instances of the extension with the same Google account, such as between your desktop and laptop browsers. If you don&rsquo;t want to use the Google APIs, then you can use your own storage tools such as <a href="https://pouchdb.com/">PouchDB</a>, an in-browser JSON document store that can sync with remote PouchDB, <a href="http://couchdb.apache.org/">CouchDB</a> or <a href="https://cloudant.com/">Cloudant</a> databases.</p>
 <p>This post shows two sample Chrome extensions</p>
 <p><strong>linkshare - a very simple bookmarking tool</strong></p>
-<p><img src="/img/chrome1.png" alt="linkshare screenshot"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/chrome1.png" alt="linkshare screenshot"></p>
 <p><strong>volt - a password database</strong></p>
-<p><img src="/img/chrome2.png" alt="volt screenshot"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/chrome2.png" alt="volt screenshot"></p>
 <p>Both apps store their data <em>locally first</em> using PouchDB and allow the user to optionally sync the data with a remote server.</p>
 <h2 id="installing"><a href="#installing">Installing</a></h2>
 <p>The samples presented here have not been submitted to the Chrome Web Store, but you can install them from source as long as you enable developer mode. If you subsequently modify the source code on your machine, the changes will be reflected in Chrome the next time you open the extension.</p>
@@ -190,7 +190,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></code></pre></div><p>For debugging, the JavaScript console can be accessed by right-clicking the extension icon and choosing &ldquo;Inspect popup&rdquo;.</p>
 <h2 id="a-simple-bookmarking-app"><a href="#a-simple-bookmarking-app">A simple bookmarking app</a></h2>
 <p>Chrome extensions have access to the current tab that is being viewed, so it&rsquo;s simple to create a bookmarking tool that keeps a list of URLs that you want to save permanently, read later or share. By storing such data in PouchDB, we can then optionally sync the data with an Apache CouchDB or IBM Cloudant databases to ensure that there is more than one copy of the data. Furthermore, other users sharing that database can also access the data, allowing the sharing of links with your partner, work colleagues or other ad-hoc groups of people who also have the extension installed.</p>
-<p><img src="/img/chrome.png" alt="schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/chrome.png" alt="schematic"></p>
 <p>The JSON schema we will be using is this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;123&#34;</span>,

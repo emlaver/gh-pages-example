@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -128,7 +128,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Configure cross-region redundancy by setting up Cloudant accounts in two or more regions, create databases in each region, and set up bidirectional continuous replications between the corresponding databases in each account.</li>
 <li>Configure automatic fail-over between IBM Cloudant regions using Cloud Internet Service (CIS) Edge function in IBM Cloud and will discuss more on this.</li>
 </ol>
-<p><img src="/img/nasa-Q1p7bh3SHj8-unsplash.jpg" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/nasa-Q1p7bh3SHj8-unsplash.jpg" alt=""></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/Q1p7bh3SHj8">NASA on Unsplash</a></p>
 </blockquote>
@@ -140,7 +140,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 </blockquote>
 <h2 id="target-architecture-with-auto-failover-mechanism"><a href="#target-architecture-with-auto-failover-mechanism">Target architecture with auto-failover mechanism:</a></h2>
-<p><img src="/img/failover.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/failover.png" alt=""></p>
 <h2 id="how-does-this-setup-work"><a href="#how-does-this-setup-work">How does this setup work?</a></h2>
 <p>First, we have to configure two CIS load balancers (LB) which points to primary and secondary Cloudant regions respectively. In addition to this, we have to explicitly set the database hostname as the &ldquo;Host Header Override&rdquo; value inside the &ldquo;Page Rules&rdquo; option in the CIS dashboard. Without this, Cloudant won’t honour the request as it would expect the host header value as &ldquo;Cloudant database hostname&rdquo;, whereas it will have the value as &ldquo;CIS load balancer hostname&rdquo;. Adding &ldquo;Host Header Override&rdquo; solves one issue but creates another. As the value inside it is hardcoded, it couldn’t be dynamically changed, so, effectively the load balancer starts behaving like a reverse proxy and can’t load balance between the primary or secondary Cloudant cluster. To get around this problem, we could use the CIS Edge function which could intercept any incoming request for a specific LB URL, before it reaches the actual LB and we could inject custom routing logic in there.</p>
 <p>As shown in the above diagram, the CIS Edge function intercepts the primary CIS LB URL and checks if the primary site/region is up or not by pinging a database document inside it. If the primary site is up, CIS Edge function forwards the call to the primary Cloudant site. If the primary site is nonresponsive and the ping fails, then the request would be redirected to the secondary site/region automatically. As this check would be done on every incoming request to the CIS LB URL, it would add network latency, which could be minimized by adding a monitoring logic which would only check if the site/region is up or not in a specific time interval. For this example, we would use 15 seconds time interval, which means the CIS Edge function will check every 15 seconds if the site is up or not and accordingly forward the request to either primary or secondary Cloudant site.</p>

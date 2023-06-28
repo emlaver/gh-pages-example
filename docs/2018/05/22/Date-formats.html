@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -184,9 +184,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>This is more verbose than the previous two solutions but has the advantage that the data is ready for querying and indexing without any pre-processing. This is particularly important when using <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#query">Cloudant Query</a> - MapReduce views are commonly used to pre-process data before it is <em>emitted</em> into the index but there is no such facility when using Cloudant Query. For Cloudant Query, the data <em>has</em> to be in the document and in the correct format.</p>
 <p>Create an index with the <code>/db/_index</code> endpoint or through the dashboard:</p>
-<p><img src="/img/date1.png" alt="date ui"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/date1.png" alt="date ui"></p>
 <p>and query the index using the <code>/db/_find</code> endpoint or again, using the dashboard:</p>
-<p><img src="/img/date2.png" alt="date ui"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/date2.png" alt="date ui"></p>
 <p>If the data were stored in ISO-8601 format, it would not be possible to index or query a single component (e.g. the year) on its own using Cloudant Query.</p>
 <h2 id="date--time-gotchas"><a href="#date--time-gotchas">Date &amp; time gotchas</a></h2>
 <ul>

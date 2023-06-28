@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -136,9 +136,9 @@ user_name=Steve
 command=/lunch
 text=pepperoni pizza and fanta
 </code></pre><p>All you need to do is create an API service, build an application, handle the post, and then store the data in your database.</p>
-<p><img src="/img/sl_1.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_1.png" alt=""></p>
 <p>But there is a simpler way. Because IBM Cloudant is a cloud-based, NoSQL database that has an HTTP API, you can cut out the middle layer and post data directly into Cloudant:</p>
-<p><img src="/img/sl_2.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_2.png" alt=""></p>
 <p>This blog post shows you how to create a new Slash Command from scratch and how to get the data stored in Cloudant.</p>
 <p>Create the command in Slack</p>
 <ul>
@@ -148,17 +148,17 @@ text=pepperoni pizza and fanta
 Tip: You can also get here via this URL: <a href="https://YOURACCOUNTNAME.slack.com//services/new/slash-commands">https://YOURACCOUNTNAME.slack.com//services/new/slash-commands</a></li>
 </ul>
 <p>The following form appears:</p>
-<p><img src="/img/sl_3.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_3.png" alt=""></p>
 <ul>
 <li>Enter the command you want to create, like /lunch</li>
 <li>Click Add Slash Command Integration.</li>
 </ul>
 <p>Slack sets up this service, and shows you the token that will be transmitted in every post originating from this Slack command. Make a note of this token, as we’ll need it later when we set up Cloudant.</p>
-<p><img src="/img/sl_4.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_4.png" alt=""></p>
 <p>We will come back to this page shortly, after we’ve set up Cloudant.</p>
 <h2 id="set-up-cloudant"><a href="#set-up-cloudant">Set up Cloudant</a></h2>
 <p>Sign up for a Cloudant account and log into your Cloudant Dashboard. In the Dashboard, create a new database called &lsquo;slack&rsquo;:</p>
-<p><img src="/img/sl_5.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_5.png" alt=""></p>
 <p>As Slack doesn’t integrate directly with the CouchDB/Cloudant API, we need to direct the posted data to an Update Handler Function. This is a mechanism in CouchDB/Cloudant that allows custom HTTP requests to be handled by a JavaScript before being written to the database. In our case we want to only accept requests that contain the correct Slack security token, so our code looks like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>, <span style="color:#a6e22e">req</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e">// only accept valid requests containing the token
@@ -192,19 +192,19 @@ Tip: You can also get here via this URL: <a href="https://YOURACCOUNTNAME.slack.
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;slashcommand&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;function (doc, req) { n  if (req.form.token == &#39;YOUR_REV_TOKEN&#39;) {  n    var d = req.form;  n    delete d.token; n    d.timestamp = new Date().getTime(); n    d._id = req.uuid;n    return [d, JSON.stringify({ok: true})]; n  } else {n    return [null, JSON.stringify({ok: false})];n  }n}&#34;</span>
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><img src="/img/sl_6.png" alt=""></p>
+</span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/sl_6.png" alt=""></p>
 <p>The last thing to do on the Cloudant side is create a Cloudant API key that has write access to the slack database. In your Cloudant Slash database, click Permissions, then click Generate API Key. Turn on the Writer checkbox for the newly generated key. Make a note of the API Key and password for the final step.</p>
-<p><img src="/img/sl_7.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_7.png" alt=""></p>
 <h2 id="finish-off-the-slack-integration"><a href="#finish-off-the-slack-integration">Finish off the Slack integration</a></h2>
 <p>Back in the Slack Integration Settings page, enter the URL of the Cloudant update handler, substituting the placeholder text in capitals with the details from Cloudant:</p>
 <pre tabindex="0"><code>https://APIKEY:PASSWORD@SUBDOMAIN.cloudant.com/slack/_design/slack/_update/slashcommand
-</code></pre><p><img src="/img/sl_8.png" alt=""></p>
+</code></pre><p><img src="https://emlaver.github.io/gh-pages-example/img/sl_8.png" alt=""></p>
 <p>Then click Save Integration.</p>
 <h2 id="test"><a href="#test">Test!</a></h2>
 <p>Now in any Slack channel, you should be able to issue a /lunch command:</p>
-<p><img src="/img/sl_9.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_9.png" alt=""></p>
 <p>And see the reply that was returned by the Cloudant Update Handler function:</p>
-<p><img src="/img/sl_91.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sl_91.png" alt=""></p>
 <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 <p>With a simple Update Handler function, you can configure slack to store data in Cloudant whenever a user issues a custom slash command. What will you do with the data? Create a lunch-ordering system, time-keeper, bug-tracker, or anything else you can dream up. It’s up to you!</p>
 

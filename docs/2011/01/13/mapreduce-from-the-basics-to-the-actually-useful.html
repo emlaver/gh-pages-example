@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -146,17 +146,17 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Repeat from scratch by <a href="http://github.com/mlmiller/examples/tree/master/aviation">getting the code</a> from Github.</li>
 </ol>
 <p>(1) is simpler and <em>doesn’t require any special software installed on your machine</em>. All you need is to have a free account on <a href="http://cloudant.com">Cloudant</a>. (2) is a bit more effort but should work with any CouchDB server. If you go with (1), the best way to check the progress is to <a href="http://cloudant.com">login to your account</a>, click on your user dashboard (top right) and then click on the newly created ‘planes’ database. If you examine the Stats tab and refresh periodically, you will see the db size increasing, as well as some MapReduce ‘views’ running as the data imports:</p>
-<p><img src="/img/planes-indexing.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/planes-indexing.png" alt=""></p>
 <p>That bar that registers 31.7% is telling you that MapReduce is being used to index your documents in real time without you having to write any code at all. The ‘2839 of 8952’ on the right represents the fraction of freshly added/updated documents that is processed in this current pass, and if you click on ‘show details’ you can see the results of the MapReduce processes on each of the cluster nodes that contain any chunk of your data. That&rsquo;s just how easy it is to get your code running, in parallel, in realtime!</p>
 <h3 id="data-import"><a href="#data-import">Data Import</a></h3>
 <p>I’ve chosen to import the FAA crash data using my favorite tools: Python and Benoit’s wonderful <a href="http://couchdbkit.org/">Couchdbkit</a> library. If you use the Python <a href="https://code.google.com/p/boto/">Boto</a> module for AWS, you will feel right at home. In <a href="https://github.com/mlmiller/examples/blob/master/aviation/upload.py">upload.py</a>, I use the very handy <code>DictReader</code> class from Python’s <code>csv</code> module to parse the <code>AviationData.txt.gz</code>. <code>DictReader</code> slurps a line of a CSV (or similarly structured text file) with column headings and gives you back a dictionary. It’s a one-liner to serialize that Python dictionary and push it into Cloudant. If you want to try this yourself the <code>README</code> file has instructions on installing the Couchdbkit module and executing the <code>upload.py</code> script, but it just boils down to:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>python upload.py AviationData.txt.gz <span style="color:#e6db74">&#39;http://&lt;username&gt;:&lt;password&gt;@&lt;username&gt;.cloudant.com&#39;</span> planes
 </span></span></code></pre></div><p>My inported data lives at <a href="http://mlmiller.cloudant.com/planes">http://mlmiller.cloudant.com/planes</a>. One thing to note: you can see that I don’t take any steps to discover the type of the data on import. Instead, we just throw it all into Cloudant and we can sort it out later using MapReduce (<em>flexible</em>). Once the data is fully imported, I can login into <a href="https://cloudant.com/">cloudant.com</a> and view the ‘planes’ database in the dashboard:</p>
-<p><img src="/img/planes-stats.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/planes-stats.png" alt=""></p>
 <p>I’ve also gone into the Permissions tab and granted read access to the data:</p>
-<p><img src="/img/planes-permissions.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/planes-permissions.png" alt=""></p>
 <p>Each document contains quite a bit of data, too much to fit onto a single screen shot, in fact:</p>
-<p><img src="/img/planes-documents.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/planes-documents.png" alt=""></p>
 <p>But the important thing to note is that we have data for nearly 70,000 domestic accidents, spanning the range 1988–2010. If you want to look at a single document from your command line, you can via:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://&lt;usr&gt;:&lt;pwd&gt;@&lt;usr&gt;.cloudant.com/planes/_all_docs?limit=1&amp;include_docs=true&#39;</span>
 </span></span></code></pre></div><p>and if you want it pretty printed, my favorite is:</p>
@@ -221,7 +221,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>loader <span style="color:#f92672">=</span> FileSystemDocsLoader(<span style="color:#e6db74">&#39;_design/&#39;</span>)
 </span></span><span style="display:flex;"><span>loader<span style="color:#f92672">.</span>sync(db, verbose<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
 </span></span></code></pre></div><p>Those two lines unpack the contents of the <code>_design</code> directory and build a design document. That directory looks like:</p>
-<p><img src="/img/folders.png" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/folders.png" alt=""></p>
 <p>This gives me a design document with the name <code>example</code>; that contains two views, one called <code>date</code> and one called <code>make</code>. You can see the entire design document from the command line via:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET http://mlmiller.cloudant.com/planes/_design/example
 </span></span></code></pre></div><p>or you can just browse the ‘_design’ code in the file <a href="https://github.com/mlmiller/examples/blob/master/aviation/_design/example/views/make/map.js"><code>_design/example/views/make/map.js</code></a>. The code looks like this:</p>

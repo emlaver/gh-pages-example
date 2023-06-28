@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -174,7 +174,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>This document contains everything we need to get a snapshot of the progress of this journey. Although it contains references to other data structures—route id, employee id, vehicle registration—Cloudant is not a relational database. So it is ok to take copies of related data in our object to allow us to get a useful view of the data without de-referencing everything.</li>
 </ul>
 <p>We can use this data to show the progress of a particular journey on our company website, to perform analytics (e.g., statistics of how many journeys were late on arrival) and to power public displays at each end.</p>
-<p><img src="/img/board.jpg" alt="board"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/board.jpg" alt="board"></p>
 <blockquote>
 <p>Image courtesy of <a href="http://bit.ly/2uZAwrk">Flickr user Carlbob.com</a></p>
 </blockquote>
@@ -186,12 +186,12 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>A local data store so we can cache the data locally. If the remote database becomes disconnected, we can still render the most recent information.</li>
 </ul>
 <p>We can use PouchDB or CouchDB within the display. Both are small enough to be incorporated into an embedded system, but we want to keep data volumes to a minimum. A single display only needs to know about journeys that list <em>it</em> as the starting or destination point. It would be overkill to replicate the <em>entire</em> database to each display.</p>
-<p><img src="/img/busstation2.png" alt="all screens get all data"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/busstation2.png" alt="all screens get all data"></p>
 <p>We could use <a href="https://console.bluemix.net/docs/services/Cloudant/api/advanced_replication.html#filtered-replication">Filtered Replication</a>. This approach involves sending a JavaScript function to Cloudant—a function that decides which documents are replicated and which are not. It would be simple to create a filter by bus station (i.e., a function which passed any document whose start <em>or</em> destination matches the display&rsquo;s station). But there are drawbacks to this approach.</p>
-<p><img src="/img/busstation3.png" alt="filtered replication"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/busstation3.png" alt="filtered replication"></p>
 <p>Because our database contains all documents back to the beginning of time, a first-time replication will begin at zero and have to spool through every document in turn. It would work eventually but is increasingly inefficient as the data size grows.</p>
 <p>Another solution is to have a <em>copy</em> of each station&rsquo;s data in its own database:</p>
-<p><img src="/img/busstation4.png" alt="bus station schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/busstation4.png" alt="bus station schematic"></p>
 <p>This &ldquo;one database per station&rdquo; approach has some advantages:</p>
 <ul>
 <li>The station display can replicate the data easily from its paired database without filtering and with a reduced data size.</li>
@@ -200,7 +200,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <h3 id="building-a-custom-cloudant-replication"><a href="#building-a-custom-cloudant-replication">Building a custom Cloudant replication</a></h3>
 <p>My solution doesn&rsquo;t use Cloudant replication to feed the per-station databases. Instead, it uses the OpenWhisk serverless platform. An OpenWhisk Node.js function is called with each change on the main database. The code identifies which per-station databases need to be fed (the start and destination stations and any calling points along the way), prunes the document structure, and makes the writes to the relevant &ldquo;per station&rdquo; databases.</p>
-<p><img src="/img/busstation1.png" alt="bus station schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/busstation1.png" alt="bus station schematic"></p>
 <p>Here&rsquo;s the <a href="https://github.com/ibm-watson-data-lab/custom-replication">sample code</a>. It includes the <a href="https://github.com/ibm-watson-data-lab/custom-replication/blob/master/onchange.js">OpenWhisk action</a> that is called with every change and a <a href="https://github.com/ibm-watson-data-lab/custom-replication/blob/master/deploy.sh">deployment script</a> that deploys it to OpenWhisk and creates the Cloudant changes feed trigger.</p>
 <h2 id="building-your-own"><a href="#building-your-own">Building your own</a></h2>
 <p>Fork <a href="https://github.com/ibm-watson-data-lab/custom-replication">the code</a> and build your own logic to decide how data is routed from your primary database to the secondary database(s).</p>

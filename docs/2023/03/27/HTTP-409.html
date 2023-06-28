@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -126,7 +126,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>tl;dr - a <code>409 - Document update conflict</code> response doesn&rsquo;t mean that Cloudant created a conflict, in fact it avoided creating a conflict.</p>
 </blockquote>
 <p>In this blog post we&rsquo;ll explore what a 409 response means and how to prevent 409s happening in your application.</p>
-<p><img src="/img/jan-huber-4OhFZSAT3sw-unsplash.jpg" alt="tree"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/jan-huber-4OhFZSAT3sw-unsplash.jpg" alt="tree"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/4OhFZSAT3sw">Jan Huber on Unsplash</a></p>
 </blockquote>
@@ -200,7 +200,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <h2 id="conflicts"><a href="#conflicts">Conflicts</a></h2>
 <p>A conflict is a branch in the revision tree. In other words, instead of a document&rsquo;s revision proceeding linearly with revision 1, 2, 3, 4, there are circumstances where there are multiple revisions of same document revision number.</p>
 <p>In the diagram below, on the left we can see an unconflicted revision tree where each new revision supercedes the last. On the right, there is a branch in the revision tree after the second document revision.</p>
-<p><img src="/img/409-1.png" alt="document revision trees"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/409-1.png" alt="document revision trees"></p>
 <p>In the previous section we said that Cloudant will not accept a change to a document where the document revision has already been superceded, so how do conficts occur? There are two possible ways:</p>
 <ol>
 <li>Replication: Cloudant allows data to be replicated to other Cloudant databases, or to Apache CouchDB databases or to mobile applications running PouchDB. When there are multiple copies of data that are connected asynchronously (or perhaps only connected occasionally), it is possible that a document can be modified in two different ways and when the two conficted changes are replicated, both revisions are retained. This is intentional and allows application developers to be assured that conflicting data is not discarded - it can subsequently be repaired by deleting an unwanted revision, merging the conflicted revisions or implementing the <em>conflict revision</em> strategy that best suits the application.</li>

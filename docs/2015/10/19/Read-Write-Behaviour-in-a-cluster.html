@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -125,7 +125,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>When using CouchDB in a cluster, databases are sharded and replicated. This means that a single database is split into, say, 24 shards and each shard is stored on more than one node (replica). A shard contains a specific portion of the documents in the database. A <a href="https://en.wikipedia.org/wiki/Consistent_hashing">consistent hashing</a> technique is used to allocate documents to shards. There are almost always three replicas; this provides a good balance of reliability vs. storage overhead.</p>
 <p>Read and write behaviour differs in the clustered database because data is stored on more than one database node (server). I&rsquo;m going to try to explain what the behaviour is and why it is how it is.</p>
 <p>To simplify the explanation, I&rsquo;m going to assume a database with a single shard, though still with three replicas. This just makes the diagrams simpler, it doesn&rsquo;t change behaviour. In this case we have a three node cluster, so the database has a replica on every database node in the cluster.</p>
-<p><img src="/img/rw1.jpg" alt="rw 1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/rw1.jpg" alt="rw 1"></p>
 <h2 id="behaviour-in-a-healthy-cluster"><a href="#behaviour-in-a-healthy-cluster">Behaviour in a healthy cluster</a></h2>
 <p>To start with, in a healthy cluster, a read or write proceeds like this:</p>
 <ol>
@@ -137,7 +137,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>The coordinator processes the responses from the nodes it contacted. This can be a varying amount of work. For reads and writes, it just has to compare the responses to see if they are the same before returning a result to the client. For a view request, it might have to perform a final reduce step on the results returned from the nodes.</li>
 <li>Finally, the coordinator passes the response back to the load balancer which passes the response back to the client.</li>
 </ol>
-<p><img src="/img/rw2.jpg" alt="rw 2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/rw2.jpg" alt="rw 2"></p>
 <p>In this article, we&rsquo;re interested in what happens when R responses are not received in step (5). CouchDB indicates this via a response&rsquo;s HTTP status code for some requests. For other requests, it&rsquo;s not currently possible to tell whether <code>R</code> responses were received.</p>
 <h2 id="behaviour-in-a-partitioned-cluster"><a href="#behaviour-in-a-partitioned-cluster">Behaviour in a partitioned cluster</a></h2>
 <p>The behaviour of the cluster is similar whether it&rsquo;s partitioned or a node has been taken offline. A partitioned cluster just makes life easier for me because I can illustrate more scenarios with a single diagram.</p>
@@ -150,7 +150,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>We assume the nodes know that the partition has occurred. Details on the converse state are below.</li>
 <li>We further assume that the nodes on each side of the partition operate correctly. In particular, that they&rsquo;re able to promptly reply to the coordinators requests. The reason for this will become clear later.</li>
 </ul>
-<p><img src="/img/rw3.jpg" alt="rw 3"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/rw3.jpg" alt="rw 3"></p>
 <p>From the above description of the read and write path, it should be clear that in this scenario some reads and writes will be allocated to coordinator nodes in Partition A and some to the node in Partition B.</p>
 <h2 id="reads-and-writes-to-partition-a"><a href="#reads-and-writes-to-partition-a">Reads and writes to Partition A</a></h2>
 <p>As noted above, the default value for <code>R</code> is 2 for reads and writes to the database. For searches, view reads and Cloudant query requests <code>R</code> is implicitly 1. It should be clear that all reads and writes to Partition A will be able to receive at least <code>R</code> responses in all cases. In this case, the responses to the client will be as follows:</p>

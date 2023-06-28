@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -125,7 +125,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p><strong>tl;dr:</strong> Writing indexing functions (<code>map</code>/<code>reduce</code> in views, <code>index</code> for search indexes and so on) which can return different values for the same input document will cause the indexes on shard replicas to differ, meaning they could return different values for the same query even when data doesn&rsquo;t change. It&rsquo;s the developer&rsquo;s responsibility to write their indexing functions such that they always emit the same values for indexing for the same JSON input.</p>
 <h2 id="single-node-querying"><a href="#single-node-querying">Single node querying</a></h2>
 <p>First, a quick recap on how indexing and querying works on a non-clustered CouchDB instance. A single CouchDB node looks a bit like this internally:</p>
-<p><img src="/img/cluster1.jpg" alt="cluster 1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/cluster1.jpg" alt="cluster 1"></p>
 <p>Writing works as follows:</p>
 <ol>
 <li>Request handler receives a write request. It forwards the request to the Storage engine.</li>
@@ -142,13 +142,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>For the purposes of this discussion, it&rsquo;s fine to assume all the various index types CouchDB 2.0 and Cloudant support work the same way. In addition, we&rsquo;ll put to one side the background index updating Cloudant does, and the various querying options which can change whether the index is updated in response to a query. These are irrelevant to the main points to be aware of when using CouchDB in a cluster or Cloudant.</p>
 <h2 id="clustered-querying"><a href="#clustered-querying">Clustered querying</a></h2>
 <p>Recall that in a cluster databases are divided into shards. Each shard is then stored three times across the cluster.</p>
-<p><img src="/img/cluster2.jpg" alt="cluster 2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/cluster2.jpg" alt="cluster 2"></p>
 <p>When considering indexing, it&rsquo;s worth considering the cluster at two levels of abstraction. The first is the cluster layer: the code which makes the machines in the cluster appear as a single CouchDB instance. The second is thinking about indexing from the point of view of each node, more specifically:</p>
 <ul>
 <li>Each node N1, N2 and N3 is a standalone CouchDB instance.</li>
 <li>From the point of view of the lower-level code which implements indexing on N1, N2 and N3, each database shard replica is actually an independent CouchDB database sitting on that node&rsquo;s disk. (It&rsquo;s the clustering layer that handles knitting these databases into the larger, single, externally visible database).</li>
 </ul>
-<p><img src="/img/cluster3.jpg" alt="cluster 3"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/cluster3.jpg" alt="cluster 3"></p>
 <p>In a cluster, writing happens as follows (with the caveats from the this post):</p>
 <ol>
 <li>Write request arrives at the Clustered request handler.</li>

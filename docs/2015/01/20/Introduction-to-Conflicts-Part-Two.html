@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -130,7 +130,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p>In this blog we will discuss how we can detect conflicts and how we should go about resolving them.</p>
 <p>Conflicts are most often a natural side-effect of having a distributed database architecture. Conflicts retain the history of a document, keeping versions of a document that has been modified in different ways on two independent systems (e.g on a mobile app &amp; on the server). It is the application&rsquo;s responsibility to detect the conflicts and resolve them.</p>
-<p><img src="/img/cloudvisual-208962-unsplash.jpg" alt="fox"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/cloudvisual-208962-unsplash.jpg" alt="fox"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/DCtwjzQ9uVE">CloudVisual on Unsplash</a></p>
 </blockquote>
@@ -190,10 +190,10 @@ reduce:
 <li>delete the conflicting revisions</li>
 <li>optionally, post a new version of the document (e.g. a document that you consider to be the winner)</li>
 </ul>
-<p><img src="/img/Conflicts-Part-Two-Resolving-doc-conflicts-1.png" alt="one"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/Conflicts-Part-Two-Resolving-doc-conflicts-1.png" alt="one"></p>
 <p>In the above example, if we decided that &ldquo;3-uvwx&rdquo; should be the winning revision, all we would have to do is delete revision &ldquo;3-qrst&rdquo; which would leave the document without conflicts, restoring revision &ldquo;3-uvwx&rdquo; to the head of the revision list (as it is the only remaining &ldquo;revision 3&rdquo;):</p>
 <pre tabindex="0"><code>DELETE &#34;/test/abc?rev=3-qrst&#34;
-</code></pre><p><img src="/img/Conflicts-Part-Two-Resolving-doc-conflicts-2.png" alt="two"></p>
+</code></pre><p><img src="https://emlaver.github.io/gh-pages-example/img/Conflicts-Part-Two-Resolving-doc-conflicts-2.png" alt="two"></p>
 <h2 id="resolving-conflicts-in-bulk"><a href="#resolving-conflicts-in-bulk">Resolving Conflicts In Bulk</a></h2>
 <p>In more complicated examples, where there are lots of conflicts to fix, it is more efficient to delete the unwanted revisions in bulk:</p>
 <pre tabindex="0"><code>POST /test/_bulk_docs

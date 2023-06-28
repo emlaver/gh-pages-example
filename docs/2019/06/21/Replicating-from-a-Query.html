@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -130,7 +130,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Mobile devices taking a copy of data, taking if offline and modifying it before replicating it back to the original source database.</li>
 </ul>
 <p>The first two use-cases usually require <em>the whole source database</em> to be replicated, but the third use-case is different and is an example of what I call <em>the roving engineer problem</em>.</p>
-<p><img src="/img/cosmin-gurau-1618906-unsplash.jpg" alt="van"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/cosmin-gurau-1618906-unsplash.jpg" alt="van"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/i30E515-f-k">Cosmin Gurau on Unsplash</a></p>
 </blockquote>
@@ -151,7 +151,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">engineer</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;501&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>We want to replicate each engineer&rsquo;s appointment documents to their mobile device so that they can take them with them (sometimes into remote areas without cellular coverage). During the installation, the engineers will add more fields to the document to record the serial number of the device they installed, the time they arrived &amp; left etc. Mobile apps built with <a href="https://pouchdb.com/">PouchDB</a> allow Cloudant documents to reside inside a web browser (or embedded in a browser inside a <a href="https://cordova.apache.org/">Apache Cordova</a> container). PouchDB speaks the same replication protocol as Cloudant, so moving data about is a breeze.</p>
-<p><img src="/img/roving1.png" alt="roving1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/roving1.png" alt="roving1"></p>
 <p>At the end of the day, or at any time when the engineer&rsquo;s mobile is connected, they can sync back the data to the Cloudant service.</p>
 <p>Let&rsquo;s look at the ways this design pattern can be achieved.</p>
 <h2 id="option-1-filtered-replication"><a href="#option-1-filtered-replication">Option 1: Filtered replication</a></h2>
@@ -171,7 +171,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>This would work, but it&rsquo;s slow. The first replication would ask Cloudant to trawl through every document in the database to find the handful of documents that pass the filter function&rsquo;s test. Subsequent replication&rsquo;s could be faster, because they wouldn&rsquo;t have to start from the beginning of the source database&rsquo;s changes feed, but the process would still have to sift through every engineer&rsquo;s documents in search of those pertaining to one engineer.</p>
 <h2 id="option-2-one-database-per-user"><a href="#option-2-one-database-per-user">Option 2: One database per user</a></h2>
 <p>The <em>one database per user</em> pattern is common in CouchDB/Cloudant circles because it allows a clean replication target/source that only contains one user&rsquo;s documents.</p>
-<p><img src="/img/roving2.png" alt="roving2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/roving2.png" alt="roving2"></p>
 <p>This is much better than filtering the replication from one large database but does have some drawbacks:</p>
 <ul>
 <li>The server-side databases gets bigger and bigger with each day. In this use-case only the new or recent documents are of interest to the mobile client, but replication is going to bring <em>all</em> the documents down to the mobile database.</li>
@@ -184,7 +184,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Fetch the document bodies <em>including the replication history</em> matching the document ids from step 1.</li>
 <li>Write the documents to the mobile-side database, retaining the replication history</li>
 </ol>
-<p><img src="/img/roving3.png" alt="roving2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/roving3.png" alt="roving2"></p>
 <p>Here&rsquo;s how this achieved with client-side JavaScript:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span> 
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">// clean out the client-side database

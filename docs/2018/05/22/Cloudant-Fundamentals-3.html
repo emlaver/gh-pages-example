@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -121,7 +121,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 </div>
   
-  <p>In <a href="/2018/04/27/Cloudant-Fundamentals-1.html">part one</a> of this series we looked at Cloudant JSON, and in <a href="/2018/05/14/Cloudant-Fundamentals-2.html">part two</a> we saw how an <code>_id</code> is made. In this part we&rsquo;ll focus on the humble <code>_rev</code> token.</p>
+  <p>In <a href="https://emlaver.github.io/gh-pages-example/2018/04/27/Cloudant-Fundamentals-1.html">part one</a> of this series we looked at Cloudant JSON, and in <a href="https://emlaver.github.io/gh-pages-example/2018/05/14/Cloudant-Fundamentals-2.html">part two</a> we saw how an <code>_id</code> is made. In this part we&rsquo;ll focus on the humble <code>_rev</code> token.</p>
 <p>When you first create a document, you don&rsquo;t need to worry about the <code>_rev</code> token — it is generated for you and returned to you in the receipt.</p>
 <p>If we <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#create">create a new document</a> with a body of <code>{&quot;a&quot;:1,&quot;b&quot;:2}</code>, we get a reply from the database of:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
@@ -137,7 +137,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">2</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Fields starting with the underscore character <code>_</code> are reserved for Cloudant-specifc purposes. You can&rsquo;t add your own custom <code>_name</code> field, for example.</p>
-<p><img src="/img/sergei-akulich-trees.jpg" alt="Pine trees in a forest, with sun shining through the canopy"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sergei-akulich-trees.jpg" alt="Pine trees in a forest, with sun shining through the canopy"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/HyEtBCPlgmY?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Sergei Akulich</a> on <a href="https://unsplash.com/search/photos/versions?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></p>
 </blockquote>
@@ -155,7 +155,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Third revision 3-e95ca5ca4dc5407fd09b8e0e0acf25fd</li>
 </ol>
 <p>Cloudant actually stores revisions in a tree data structure, the simplest form being an ever-growing list of revisions:</p>
-<p><img src="/img/revtree.png" alt="revision tree"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/revtree.png" alt="revision tree"></p>
 <p>Things can get much more complicated than this when we talk about <a href="https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-one/">conflicts</a> but that is for another time.</p>
 <p>As to why data is stored like this, it&rsquo;s because Cloudant was built to work as a distributed database with the data stored across many nodes in a cluster. Distributed systems are complicated, and the revision tree allows the database to handle conflicting writes without losing data, rather like Git would not lose data in a conflicting merge. The revision tree is also essential when replicating data from one location to another. Two databases in any state could be replicated in either direction without loss of data, thanks to the revision tree.</p>
 <h2 id="can-i-use-the-revsion-tree-as-a-version-control-system-for-my-documents"><a href="#can-i-use-the-revsion-tree-as-a-version-control-system-for-my-documents">Can I use the revsion tree as a version control system for my documents?</a></h2>

@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -130,7 +130,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>a list of contact details of the people  you have relationships with at that company.</li>
 </ul>
 <p>It may also store other &ldquo;per customer&rdquo; objects e.g. sales made, appointments set or  anything else that you need to keep track of your relationship with the customer. CRM systems tend to be multi-user to allow several people in your organisation to manage the relationship with your customers.</p>
-<p><img src="/img/crm0.jpg" alt="crm1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/crm0.jpg" alt="crm1"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/mfEeaOfacTQ">Erol Ahmed on Unsplash</a></p>
 </blockquote>
@@ -141,7 +141,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>a NoSQL database to store the data as JSON documents.</li>
 </ul>
 <p>Specifically, we&rsquo;re going to employ <a href="https://console.bluemix.net/openwhisk/">IBM Cloud Functions</a> with its API Gateway integration and <a href="https://www.ibm.com/uk-en/cloud/cloudant">IBM Cloudant</a> as the data store.</p>
-<p><img src="/img/crm1.png" alt="crm1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/crm1.png" alt="crm1"></p>
 <p>Assuming we&rsquo;ve set up an <a href="https://www.ibm.com/cloud/">IBM Cloud</a> account and provisioned a <a href="https://www.ibm.com/cloud/cloudant">Cloudant service</a> within it, the next thing we need to do is to create a Cloudant database with the <code>partitioned=true</code> flag (our Cloudant service&rsquo;s URL, containing the service credentials, is hidden in an environment variable <code>COUCH_URL</code>) using the command-line tool <code>curl</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X PUT <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/crm?partitioned=true&#34;</span>
 </span></span></code></pre></div><p>The database is called <code>crm</code> and is created with a simple <code>PUT</code> HTTP call.</p>
@@ -206,7 +206,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <h2 id="thinking-about-sort-order"><a href="#thinking-about-sort-order">Thinking about sort order</a></h2>
 <p>When looking at a customer in our CRM system we want a chronological list of events - we&rsquo;d like all documents from the partition in &ldquo;newest first order&rdquo;. Although we can sort data at query time, it&rsquo;s sometimes helpful to make the <code>_id</code> field sort in the order you need in most cases. I use the <a href="https://www.npmjs.com/package/kuuid">kuuid</a> module to generate 32-character document keys that are unique and sort by time. The <code>kuuid.idr()</code> function makes ids that sort in <em>reverse</em> or &ldquo;newest first&rdquo; order.</p>
 <p>We can see from the Cloudant dashboard the sort order in action. The documents sort into &ldquo;newest first&rdquo; order without any effort, with the exception of the core <code>type:company</code> document which is fixed to the top of the sorted list by virtue of its <code>&lt;partition key&gt;:0</code> _id.</p>
-<p><img src="/img/crm2.png" alt="sort order"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/crm2.png" alt="sort order"></p>
 <p>When a new note/contact/link object is added it will slip into <em>second place</em> in this list, behind the <code>type: company</code> document. This is exactly what we want to be able to render a company page in our CRM system - we can get the company meta data from the <code>&lt;partition key&gt;:0</code> document and the next most recent objects, all in one API call.</p>
 <h2 id="indexing"><a href="#indexing">Indexing</a></h2>
 <p>As well as fetching data from a partition in newest first order, this application needs two indexes to service other access patterns:</p>
@@ -305,7 +305,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">obj</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>A <a href="https://vuejs.org/">Vue.js</a>-based front-end allows the user to search for business and add notes/links/contacts by completing and submitting forms:</p>
-<p><img src="/img/crm3.png" alt="screenshot"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/crm3.png" alt="screenshot"></p>
 <p>The web app will win no prizes for user interface design but is works functionally!</p>
 <p>To do:</p>
 <ul>

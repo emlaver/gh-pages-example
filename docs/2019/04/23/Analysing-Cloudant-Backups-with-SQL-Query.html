@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -125,7 +125,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   
   <p>In <a href="https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html">this post</a> we discussed storing time-series data in time-boxed Cloudant databases to allow recent data to be stored in Cloudant and older data to be archived and deleted from Cloudant. In this post we&rsquo;ll examine how to query data that has been archived and backed up to Object Storage using the IBM SQL Query service.</p>
 <p>Object storage is much cheaper per gigabyte than a database, is endlessly extensible and makes a great choice for storing backups and archived data.</p>
-<p><img src="/img/federico-bottos-57474-unsplash.jpg" alt="mountains"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/federico-bottos-57474-unsplash.jpg" alt="mountains"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/Vtii5AjWNIQ">Federico Bottos on Unsplash</a></p>
 </blockquote>
@@ -136,7 +136,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>An <a href="https://www.ibm.com/uk-en/cloud/object-storage">IBM Cloud Object Storage</a> service provisioned within your IBM Cloud account. Create a <em>bucket</em> within this service making a note of the region and bucket name you have chosen.</li>
 <li>An <a href="https://www.ibm.com/uk-en/cloud/sql-query">IBM Cloud SQL Query</a> service provisioned within your IBM Cloud account.</li>
 </ol>
-<p><img src="/img/sqlquery1.png" alt="schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sqlquery1.png" alt="schematic"></p>
 <h2 id="getting-the-cloudant-data-onto-object-storage"><a href="#getting-the-cloudant-data-onto-object-storage">Getting the Cloudant data onto Object Storage</a></h2>
 <p>We&rsquo;ll be using the official <a href="https://www.npmjs.com/package/@cloudant/couchbackup">couchbackup</a> tool to extract data from Cloudant. It is a Node.js application and is therefore installed using the <code>npm</code> command-line utility:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm install -g @cloudant/couchbackup
@@ -171,7 +171,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><code>STORED AS JSON</code> - defines the file format of the stored data.</li>
 </ul>
 <p>The output data is previewed in a table in the web page which is helpful for exploring the data; looking at the data&rsquo;s column headings and data types.</p>
-<p><img src="/img/sqlquery2.png" alt="sql query"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sqlquery2.png" alt="sql query"></p>
 <h2 id="converting-to-parquet"><a href="#converting-to-parquet">Converting to Parquet</a></h2>
 <p>Before we do any serious data exploration, it&rsquo;s useful to do one last data conversion: to convert the JSON data into &ldquo;Parquet&rdquo; format. Parquet is a compressed, column-oriented format that comes from the Hadoop project. Data in this format is ideal for ad-hoc querying as it has a smaller data size and faster query performance.</p>
 <p>Converting data to Parquet is a one-off operation that can be performed by executing a single Cloud SQL Query statement:</p>
@@ -182,7 +182,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">INTO</span> cos:<span style="color:#f92672">//</span>eu<span style="color:#f92672">-</span>gb<span style="color:#f92672">/</span>mydbparquet<span style="color:#f92672">/</span> STORED <span style="color:#66d9ef">AS</span> PARQUET
 </span></span></code></pre></div><p>In this case, I&rsquo;m keeping my raw JSON data and the derived Parquet files in different Cloud Object storage buckets for neatness.</p>
 <p>The result of this operation isn&rsquo;t a table of data in the UI, it simply writes its results to the destination bucket. Exploring the bucket in the Cloud Object Storage UI reveals the resultant objects:</p>
-<p><img src="/img/sqlquery3.png" alt="sql query"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sqlquery3.png" alt="sql query"></p>
 <p>Notice that my 3.2MB of data is now only occupying 782KB of space as a Parquet file.</p>
 <p>We can now direct queries towards the Parquet version of our data:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- get top 10 populated countries below the equator
@@ -192,7 +192,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> <span style="color:#ae81ff">1</span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">DESC</span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>
-</span></span></code></pre></div><p><img src="/img/sqlquery4.png" alt="sql query"></p>
+</span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/sqlquery4.png" alt="sql query"></p>
 <h2 id="doing-more-with-cloud-sql-query"><a href="#doing-more-with-cloud-sql-query">Doing more with Cloud SQL Query</a></h2>
 <p>Once you&rsquo;ve got the hang of exporting Cloudant data to Object storage, converting it to Parquet and analyzing it with Cloud SQL Query, the whole operation can be scripted to run automatically. Your timeboxed Cloudant data can be archived periodically and added to your <em>data lake</em> for analysis.</p>
 <p>Cloud SQL Query can do much more than outlined in this article: check out its <a href="https://cloud.ibm.com/docs/services/sql-query?topic=sql-query-sql-reference#sql-reference">SQL Reference</a>, <a href="https://cloud.ibm.com/docs/services/sql-query?topic=sql-query-geo-functions#geo-functions">Geospatial toolkit</a> and <a href="https://cloud.ibm.com/docs/services/sql-query?topic=sql-query-timeseries-functions#timeseries-functions">Timeseries</a> functions.</p>

@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -127,7 +127,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>In this article, I&rsquo;m going to explain your options for writing data using the CouchDB API, the different calls, and the tradeoffs therein. First, however, it will help to understand the basics of CouchDB as a distributed system, and what the database means when it says your writes are written.</p>
 <h2 id="couchdb-clusters-101"><a href="#couchdb-clusters-101">CouchDB clusters 101</a></h2>
 <p>A CouchDB cluster is a distributed system that exposes a single API—you treat your CouchDB cluster as a single data store, but behind the scenes your database is divided into <em>shards</em> and multiple copies of your documents are stored on separate machines.</p>
-<p><img src="/img/couchdb_cluster_1.png" alt="diagram"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/couchdb_cluster_1.png" alt="diagram"></p>
 <p>The larger the number of nodes in the cluster, the greater the volume of data and the number of concurrent requests it can handle.</p>
 <p>When you write data to a CouchDB cluster (or a Cloudant service), by default, two or more copies of your document are persisted <strong>on disk</strong> (for example, on 2 or more machines in a 3-node cluster). Other database systems may give you the thumbs-up to your write requests <em>before</em> the data is written to disk as a speed optimisation—behaviour that risks data loss in the event of a node failure.</p>
 <p>Now that you know the basics of what&rsquo;s happening behind the scenes, I&rsquo;ll cover the API calls that allow you to write data to CouchDB and the options you have that trade-off storage guarantees and performance.</p>
@@ -147,7 +147,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd00044b&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-76558a77771fb4c1f81d4d91144dc83f&#34;</span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>Here, I POST a JSON document to my database, and the reply indicates the auto-generated <code>id</code> of the document that was created. The &ldquo;201&rdquo; response code indicates success and guarantees that the document was stored on a <a href="https://en.wikipedia.org/wiki/Quorum_(distributed_computing)">quorum of servers</a> in the cluster (at least 2 of 3, in this case).</p>
-<p><img src="/img/couchdb_cluster_2.png" alt="diagram"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/couchdb_cluster_2.png" alt="diagram"></p>
 <p>This process is important for mission-critial data. It means that if the servers were abruptly powered off, your data would be safe on disk on mulitple machines.</p>
 <h2 id="bulk-writes"><a href="#bulk-writes">Bulk writes</a></h2>
 <p>If you have lots of data to write to the database, then a single bulk API request is more efficent than making several individual API calls. More efficicent in terms of fewer HTTP round trips, and more efficient for the database cluster too:</p>
@@ -163,7 +163,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">02</span> Jun <span style="color:#ae81ff">2017</span> 06:44:45 GMT
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd001d39&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-263fbfee100b3417c513b14f4dacd776&#34;</span><span style="color:#f92672">}</span>,<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd00202b&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-591fadc21c08df0ba8efa5c5912c1cfb&#34;</span><span style="color:#f92672">}]</span>
-</span></span></code></pre></div><p><img src="/img/couchdb_cluster_3.png" alt="diagram"></p>
+</span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/couchdb_cluster_3.png" alt="diagram"></p>
 <p>In this case I supply an object containing an array of documents and, in reply, I receive an array of objects. The body can contain inserts, updates, and deletes:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;docs&#34;</span><span style="color:#f92672">:</span> [
@@ -172,7 +172,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>    { <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd00202b&#34;</span>, <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-591fadc21c08df0ba8efa5c5912c1cfb&#34;</span>, <span style="color:#e6db74">&#34;_deleted&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>} 
 </span></span><span style="display:flex;"><span>  ]
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><img src="/img/couchdb_cluster_4.png" alt="diagram"></p>
+</span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/couchdb_cluster_4.png" alt="diagram"></p>
 <p>Is there a limit to how many documents should be posted in a single bulk request? There isn&rsquo;t a limit <em>per se</em>, but 500 small documents is a reasonable rule of thumb.</p>
 <blockquote>
 <p>Note: The pay-as-you-go Cloudant plans limit the size of POST requests to 1MB.</p>

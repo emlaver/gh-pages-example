@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -126,9 +126,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>If you were building an IT system to collect large-scale public petitions, you would have no idea how popular each was to be or how much computing power you&rsquo;d need to make the site performant. The &ldquo;serverless&rdquo; paradigm is compelling in this use-case, as you only pay for the traffic you generate.</p>
 <h2 id="lets-build-a-large-scale-petition-system"><a href="#lets-build-a-large-scale-petition-system">Let&rsquo;s build a large-scale petition system</a></h2>
 <p>Modelling our system on the UK model, our petition system will have a public-facing website with a simple form detailing the issue being &ldquo;signed&rdquo;. The user supplies their name, location, email addresss, confirms that they are a resident of the country in question, and submits the form. Our app saves the data in a Cloudant database and sends a verification email to the signatory.</p>
-<p><img src="/img/workflow1.png" alt="workflow1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/workflow1.png" alt="workflow1"></p>
 <p>When the email arrives, the user clicks on the link to confirm and sign the petition</p>
-<p><img src="/img/workflow2.png" alt="workflow2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/workflow2.png" alt="workflow2"></p>
 <p>At some future date, we can count the confirmed records in the database to see if the petition has reached the 100,000 records needed to trigger a debate in parliament.</p>
 <p>We want our <em>whole infrastructure</em> to be &ldquo;serverless&rdquo; i.e. we won&rsquo;t stand up our own servers to run the website - the hosting, form handling, email sending, and database will be run by others with minimal or ideally no fixed costs.</p>
 <h2 id="serverless-hosting"><a href="#serverless-hosting">Serverless hosting</a></h2>
@@ -146,7 +146,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><code>POST /petition/submit</code> - to verify a form submission, save the data to Cloudant, and dispatch the email.</li>
 <li><code>POST /petition/confirm</code> - to confirm that the user has clicked on a link from the email. Another GitHub pages page renders on the browser, which makes an API call to OpenWhisk. The database record updates to mark the signature as &ldquo;confirmed&rdquo;.</li>
 </ul>
-<p><img src="/img/workflow3.png" alt="workflow3"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/workflow3.png" alt="workflow3"></p>
 <p>The <code>POST /petition/submit</code> is actually three separate OpenWhisk actions chained in a sequence, whereas <code>POST /petition/confirm</code> is configured as a single OpenWhisk action.</p>
 <p>OpenWhisk uses IBM&rsquo;s <a href="https://console.ng.bluemix.net/docs/services/apiconnect/index.html">API Connect</a> to map actions and action sequences to public-facing API calls.</p>
 <h2 id="sign-up-for-the-services"><a href="#sign-up-for-the-services">Sign up for the services</a></h2>

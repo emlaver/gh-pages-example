@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -128,20 +128,20 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <h2 id="more-complicated-topologies"><a href="#more-complicated-topologies">More complicated topologies</a></h2>
 <p>Firstly it&rsquo;s important to understand that Cloudant&rsquo;s replication creates synchronised copies of databases between peers once a two-way replication is set up. Each replication flows changes only in one direction, which means that a two-way replication involves setting up two separate replications, one in each direction. Visualising this as a directed graph works well. Each node in the graph is a Cloudant database and the arrows are directed edges showing which way changes are flowing.</p>
 <p>Using this style, a basic two-peer setup between databases A and B looks like this:</p>
-<p><img src="/img/top1.png" alt="topology 1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/top1.png" alt="topology 1"></p>
 <p>There are two arrows because to have synchronised peers a replication needs to be set up in each direction. After a very short time &ndash; milliseconds to seconds &ndash; peer A will know about any changes to B, and, similarly, B will know about any changes to A.</p>
 <p>These peers can then further replicate with other peers to support more complicated scenarios than a single pair of peers. The key point is that, by setting up replications, one is setting up a graph that changes traverse to get from one peer to another. In order for a change to get from peer A to peer Z, at least one directed link must exist between A and Z. This is the foundation piece to creating more complicated topologies because either A or B can now replicate the changes elsewhere.</p>
 <p>So A can propagate the changes from B to another database, C. In this scenario, A is the primary database and the others could be considered replicas.</p>
-<p><img src="/img/top2.png" alt="topology 2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/top2.png" alt="topology 2"></p>
 <p>This obviously introduces a single point of failure. The replication process is smart enough that you can add a replication from B to C to this set, which means that A is no longer a single point of failure. In graph terms, it&rsquo;s safe to set up a cyclic graph.</p>
-<p><img src="/img/top3.png" alt="topology 3"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/top3.png" alt="topology 3"></p>
 <p>As more database replicas are added to the set, however, having a fully connected mesh starts to add undue load to each database, and it&rsquo;s not necessary as each peer is able to act as a &ldquo;stepping stone&rdquo; to push changes through the network.</p>
 <p>Here, a change at peer B is replicated to E via A then C:</p>
-<p><img src="/img/top4.png" alt="topology 4"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/top4.png" alt="topology 4"></p>
 <p>In the diagram I only have one stepping stone in each path for simplicity of diagramming, but one could add redundant steps to ensure at least two paths through the network for any given change.</p>
 <h2 id="using-one-way-replications-for-synchronisation-between-peers"><a href="#using-one-way-replications-for-synchronisation-between-peers">Using One-Way Replications for Synchronisation between Peers</a></h2>
 <p>Finally, it&rsquo;s worth revisiting the point that all we require for synchronisation is that there is a directed path for a change to follow from one peer to another. This means that two-way replications between peers are not strictly required. Instead, one alternative is to set up a circle topology:</p>
-<p><img src="/img/top5.png" alt="topology 5"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/top5.png" alt="topology 5"></p>
 <p>Here, there is still a path for changes to follow between any pair of nodes. Again, setting up redundant links to provide two paths may be useful. Using one-way replications in this way further allows you to decrease the load upon each peer database while still maintaining acceptable replication latency.</p>
 <h2 id="failing-over-between-databases"><a href="#failing-over-between-databases">Failing over between databases</a></h2>
 <p>After setting up the synchronised peers in whatever topology works for your needs, you&rsquo;re ready to set up failover between the database replicas.</p>

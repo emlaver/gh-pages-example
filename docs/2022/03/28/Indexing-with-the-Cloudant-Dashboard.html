@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -124,7 +124,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </div>
   
   <p>The Cloudant dashboard gives new and experienced Cloudant users the opportunity to add, edit and delete documents while refining the indexing and querying options that best suit their application&rsquo;s use-cases.</p>
-<p><img src="/img/zach-wiley-FFAq3r9u0-Y-unsplash.jpg" alt="dashboard"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/zach-wiley-FFAq3r9u0-Y-unsplash.jpg" alt="dashboard"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/FFAq3r9u0-Y">Zach Wiley on Unsplash</a></p>
 </blockquote>
@@ -167,10 +167,10 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><code>{ &quot;year&quot;: { &quot;$gt&quot;: 2000 } }</code> - the year must be greater than 2000. <code>$gt</code> means &ldquo;greater than&rdquo;.</li>
 </ul>
 <p>We can try the query by choosing &ldquo;Query&rdquo; when viewing our <code>books</code> database in the Cloudant Dashboard and pasting in the query JSON and hitting &ldquo;Run Query&rdquo;:</p>
-<p><img src="/img/indexingdashboard1.png" alt="running the query"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard1.png" alt="running the query"></p>
 <p>Cloudant matches the documents that meet your criteria and it <em>seems</em> to do it quickly, but there&rsquo;s a catch: Cloudant isn&rsquo;t using an index to service this query, meaning that the database is having to scan every document in the database to get your answer. This is fine for very small data sets, but if you&rsquo;re running a production application where the data set is expanding all the time, you definitely <em>don&rsquo;t</em> want to rely on unindexed queries.</p>
 <p>To create an index we can tell Cloudant to create an index on the <code>publisher</code> and <code>year</code> fields we are using in our query. Choose Design Documents &ndash;&gt; Query Indexes from the <code>books</code> database&rsquo;s page in the Cloudant dashboard</p>
-<p><img src="/img/indexingdashboard2.png" alt="indexing the query"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard2.png" alt="indexing the query"></p>
 <p>and enter the following index definition:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;index&#34;</span><span style="color:#f92672">:</span> {
@@ -198,7 +198,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <pre tabindex="0"><code>publisher:Penguin AND (year:1972 OR year:1973) AND title:Crash
 </code></pre><p>Unlike Cloudant Query, you <em>must</em> specify the fields to index <em>before</em> performing a query. Cloudant Search indexes are defined by supplying Cloudant with a JavaScript function which is called once for every document in the database - if the function calls <code>index</code> then data is added to the index.</p>
 <p>Choose Design Documents -&gt; New Search Index from the <code>books</code> database&rsquo;s page in the Cloudant Dashboard:</p>
-<p><img src="/img/indexingdashboard3.png" alt="search indexing"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard3.png" alt="search indexing"></p>
 <ul>
 <li>Enter a design document name.</li>
 <li>Enter an index name.</li>
@@ -211,7 +211,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;title&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">title</span>);
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;year&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">year</span>);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><img src="/img/indexingdashboard4.png" alt="search index"></p>
+</span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard4.png" alt="search index"></p>
 <p>You may then build complex queries involving one, some or all of the indexed fields combined with AND and OR operators.</p>
 <blockquote>
 <p>Cloudant Search is best if you have many search use-cases involving different combinations of fields.</p>
@@ -223,7 +223,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <h2 id="aggregating-data---mapreduce"><a href="#aggregating-data---mapreduce">Aggregating data - MapReduce</a></h2>
 <p>Neither Cloudant Query nor Cloudant Search can <em>aggregate</em> search results, i.e. you can&rsquo;t ask &ldquo;how many books were published in 1973?&rdquo;. Cloudant&rsquo;s MapReduce feature allows secondary indexes to be created that can be used for selection or aggregation. MapReduce indexes are, like Cloudant Search, created by supplying a JavaScript function - any call to an <code>emit</code> function adds a row to the index. Visit Design Documents &ndash;&gt; New View to get started:</p>
-<p><img src="/img/indexingdashboard5.png" alt="MapReduce view"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard5.png" alt="MapReduce view"></p>
 <ul>
 <li>Choose a design document name.</li>
 <li>Choose a view name.</li>
@@ -233,10 +233,10 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">year</span>, <span style="color:#66d9ef">null</span>);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><img src="/img/indexingdashboard6.png" alt="MapReduce view"></p>
+</span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard6.png" alt="MapReduce view"></p>
 <p>The subsequent MapReduce view will allow documents to be found by year (as that is the key of the index), but if we switch on the <em>reducer</em> from the &ldquo;Options&rdquo; pull-down menu the index will aggregate the results, grouping by key (year):</p>
-<p><img src="/img/indexingdashboard7.png" alt="MapReduce view"></p>
-<p><img src="/img/indexingdashboard8.png" alt="MapReduce view"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard7.png" alt="MapReduce view"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/indexingdashboard8.png" alt="MapReduce view"></p>
 <blockquote>
 <p>MapReduce views are perfect for generating ordered views of your data, containing key/value pairs you define. They can be used for selecting individual keys, range queries or aggregation grouping by the key.</p>
 </blockquote>

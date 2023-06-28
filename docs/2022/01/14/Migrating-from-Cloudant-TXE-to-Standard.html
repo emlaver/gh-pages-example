@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -125,7 +125,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   
   <p>In this blog post we&rsquo;ll show how data stored in a Cloudant on Transaction Engine (TXE) instance can be easily migrated to Cloudant Standard. There are few differences betweeen the two offerrings, so we&rsquo;ll explore ways to avoid any pitfalls along the way.</p>
 <p>There isn&rsquo;t a way of converting an existing account from TXE to Standard, so the first step is to provision a new Cloudant Standard account.</p>
-<p><img src="/img/julia-craice-faCwTallTC0-unsplash.jpg" alt="migration"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/julia-craice-faCwTallTC0-unsplash.jpg" alt="migration"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/faCwTallTC0">Julia Craice on Unsplash</a></p>
 </blockquote>
@@ -146,7 +146,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>We will also need a <code>_replicator</code> database in the Cloudant Standard instance which will handle the replication jobs. Follow the same steps to create a new, empty <code>_replicator</code> database.</p>
 <h2 id="replicating-the-data"><a href="#replicating-the-data">Replicating the data</a></h2>
 <p>Cloudant&rsquo;s replication capabilities can be used to copy the data from the source (Cloudant TXE) to the target (Standard) and it is recommend to use the Standard account to mediate the replication - i.e. we will be sending our replication document to the Standard account and it will &ldquo;pull&rdquo; the data from TXE.</p>
-<p><img src="/img/migratingtxe1.png" alt="replication plan"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/migratingtxe1.png" alt="replication plan"></p>
 <p>You&rsquo;ll need a replication document for each of the TXE databases that are to be copied over. Generate the JSON ahead of time and then add a document for each database to the Cloudant Standard account&rsquo;s <code>_replicator</code> database:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;txe_to_standard_orders&#34;</span>,

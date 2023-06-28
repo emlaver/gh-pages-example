@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -134,7 +134,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>This is a perfectly valid approach: different document types <em>can</em> co-exist in the same database in Cloudant and we can define a handful of easily identifiable indexes per document type to service the access patterns our application needs.</p>
 <p>The downside is that we may have many indexes, let&rsquo;s say three indexes per document type or nine in total - one for each use-case. The more indexes your database has, the more computation, IO and disk space will be consumed creating and updating them.</p>
 <p>To make an index apply to only one of our document types in a scenario where many document types co-exist in the same database, we will have to setup a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#creating-a-partial-index">partial_filter_selector</a> in the index definition - Cloudant churns through each document in the collection for each index definition and applies the <em>partial filter selector</em> to see if it qualifies to be recorded in each index. It works, but it&rsquo;s an extra level of complication and to build an index on <em>products</em>, Cloudant would also have to churn through (and ignore) all of the <em>users</em> and <em>orders</em> in the same database.</p>
-<p><img src="/img/edgar-chaparro-1421246-unsplash.jpg" alt=""></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/edgar-chaparro-1421246-unsplash.jpg" alt=""></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/AAHxr7ZvCLs?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Edgar Chaparro on Unsplash</a></p>
 </blockquote>

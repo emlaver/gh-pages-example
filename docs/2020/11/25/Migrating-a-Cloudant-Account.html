@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -131,14 +131,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>To move from a Cloudant Standard account to Cloudant on Transaction Engine account.</li>
 </ol>
 <p>In this post we&rsquo;ll look at how to undertake such a move and some considerations you may want to take into account while you do so. We&rsquo;ll assume that we are migrating from one Cloudant account to new empty Cloudant account in a different region.</p>
-<p><img src="/img/lesly-derksen-kPvFE0ZOTz8-unsplash.jpg" alt="migration"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/lesly-derksen-kPvFE0ZOTz8-unsplash.jpg" alt="migration"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/kPvFE0ZOTz8">Lesly Derksen on Unsplash</a></p>
 </blockquote>
 <h2 id="replication-primer"><a href="#replication-primer">Replication primer</a></h2>
 <h3 id="what-is-replication"><a href="#what-is-replication">What is replication?</a></h3>
 <p>Cloudant replication is a one-way data copy from a <em>source</em> database to a <em>target</em> database.</p>
-<p><img src="/img/migration1.png" alt="mig1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/migration1.png" alt="mig1"></p>
 <p>The source and target can be on different Cloudant accounts which can exist in different regions across the world. The <em>mediator</em> of the replication job can be the source account, the target account or even a third Cloudant account. Best practice is to have the quietest Cloudant account be the mediator of the replication job - in this case the <em>target</em> account, as it is a new empty service should be configured to &ldquo;pull&rdquo; the data from the source database.</p>
 <h3 id="one-off-vs-continuous"><a href="#one-off-vs-continuous">One off vs continuous</a></h3>
 <p>Replication jobs can be a one-off operation (the default) or run <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api#continuous-replication">continuously</a>, spooling each change from source to target until the job is cancelled.</p>
@@ -146,7 +146,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Replication jobs can run at different speeds depending on the values <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-advanced-replication#performance-related-options">performance-related options</a> supplied during replication setup. You may wish to throttle the speed at which replication proceeds so as not to put too much load on a production service - it&rsquo;s important that your source account isn&rsquo;t swamped by reads leaving no capacity for other workloads or similarly, that the target account isn&rsquo;t swamped by writes. <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-ibm-cloud-public#consumption-of-read-and-write-operations-by-replication">This document</a> provides approximate documents/sec rates for different combinations of the performance parameters in practice.</p>
 <h3 id="many-databases"><a href="#many-databases">Many databases</a></h3>
 <p>A replication job only copies one database&rsquo;s data from source to target. If you need to migrate multiple databases, you&rsquo;ll need a replication job per database. For many databases, it&rsquo;s usually not advisable to have lots of replications running at once. The <a href="https://www.npmjs.com/package/couchreplicate">couchreplicate</a> tool allows many databases to be copied, with a configurable maximum number of replications running at any one time.</p>
-<p><img src="/img/migration4.png" alt="mig1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/migration4.png" alt="mig1"></p>
 <h3 id="indexing"><a href="#indexing">Indexing</a></h3>
 <p>Replication only copies documents, not secondary index data. As index definitions arrive at the target (in <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-design-documents">Design Documents</a>), the process of indexing will begin and the indexes will build asynchronously. Make sure indexes have finished building before directing production traffic to the target service.</p>
 <p>Further reading:</p>
@@ -183,7 +183,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Careful use of replication can allow an application to move from one geography to another without downtime. <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api&amp;origin_team=T4NN71GAU#continuous-replication">Continuous replication</a> is set up to copy data from the source to the target forever.</p>
 <p>This allows application traffic to be directed to the source, the target or to both. When you&rsquo;re happy that the target is performing correctly, the replication can be deleted and the source service deleted.</p>
 <p>If you want to hedge your bets and allow for the possibility of switching back to the source then two replications can be setup to transfer data from source&ndash;&gt;target and target&ndash;&gt;source. If the switchover to the new target service doesn&rsquo;t work out, the source database will still be there and also be updated with any changes that were written to the target side.</p>
-<p><img src="/img/migration2.png" alt="mig1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/migration2.png" alt="mig1"></p>
 <h2 id="advanced-filtering"><a href="#advanced-filtering">Advanced filtering</a></h2>
 <p>If your application relies on Cloudant deletions, and you also want to purge unwanted historical deletions during replication, how do you purge only the historical replications and keep any deletions that occur during the migration process as your application continues to delete documents? In short, this is the procedure to follow:</p>
 <ol>

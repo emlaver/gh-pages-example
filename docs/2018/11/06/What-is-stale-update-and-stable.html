@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -144,8 +144,8 @@ may occur.</p>
 expect. However, when clustering was added to CouchDB, a second meaning was
 added to <code>stale=ok</code>: also use the same set of shard replicas to retrieve the
 results.</p>
-<p>Recall that <a href="/2015/10/19/Read-Write-Behaviour-in-a-cluster.html">Cloudant and CouchDB 2.x stores three copies of each shard</a> and
-<a href="/2016/01/31/Understanding-Cloudant-Indexing.html">by default will use the shard replica that starts returning results fastest for
+<p>Recall that <a href="https://emlaver.github.io/gh-pages-example/2015/10/19/Read-Write-Behaviour-in-a-cluster.html">Cloudant and CouchDB 2.x stores three copies of each shard</a> and
+<a href="https://emlaver.github.io/gh-pages-example/2016/01/31/Understanding-Cloudant-Indexing.html">by default will use the shard replica that starts returning results fastest for
 a query request</a>. This latter fact helps even out load across the cluster.
 Heavily loaded nodes will likely return slower and so won&rsquo;t be picked to respond
 to a given query. When using <code>stale=ok</code>, the database will instead always use
@@ -182,7 +182,7 @@ update after the query is completed.</li>
 <li><code>stable=true/false</code>: controls the use of the certain shard replicas.</li>
 </ol>
 <p>The main use of <code>stable=true</code> is that queries are more likely to appear to &ldquo;go
-forward in time&rdquo; because each <a href="/2016/01/31/Understanding-Cloudant-Indexing.html">shard replica may update its indexes in different
+forward in time&rdquo; because each <a href="https://emlaver.github.io/gh-pages-example/2016/01/31/Understanding-Cloudant-Indexing.html">shard replica may update its indexes in different
 orders</a>. However, this isn&rsquo;t guaranteed, so the availability and performance
 trade offs are likely not worth it.</p>
 <p>The end result is that virtually all applications using <code>stale=ok</code> should move

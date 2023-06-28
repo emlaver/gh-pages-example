@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -131,7 +131,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Recording the sales of products from a store.</li>
 </ul>
 <p>In this post we&rsquo;ll examine options for storing time-series data in Cloudant.</p>
-<p><img src="/img/sonja-langford-357-unsplash.jpg" alt="clock"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/sonja-langford-357-unsplash.jpg" alt="clock"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/eIkbSc3SDtI">Sonja Langford on Unsplash</a></p>
 </blockquote>
@@ -162,11 +162,11 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Always write new data into <em>this month&rsquo;s</em> database.</li>
 <li>Ahead of time, create a new empty database ready for next month&rsquo;s data. Don&rsquo;t forget to create any <a href="https://console.bluemix.net/docs/services/Cloudant/api/design_documents.html#design-documents">Design Documents</a> needed to service queries in the new database.</li>
 </ol>
-<p><img src="/img/timeseries1.png" alt="ts1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/timeseries1.png" alt="ts1"></p>
 <p>This month&rsquo;s data can be queried from the <em>current</em> database. Historical data can be queried by directing requests to the older databases that cover the time-range you are interested in.</p>
-<p><img src="/img/timeseries2.png" alt="ts2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/timeseries2.png" alt="ts2"></p>
 <p>To remove unwanted data, simply delete older monthly databases that are no longer needed. Deleting a whole database recovers all the data occupied by the database (JSON documents and associated indexes) cleanly and quickly.</p>
-<p><img src="/img/timeseries3.png" alt="ts3"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/timeseries3.png" alt="ts3"></p>
 <p>This <em>write only</em> approach combined with the deletion of older data by removing databases plays to Cloudant strengths.</p>
 <h2 id="storing-timedate-in-a-time-series-database"><a href="#storing-timedate-in-a-time-series-database">Storing time/date in a time-series database</a></h2>
 <p>The choice of time and date format in your JSON document is important because JSON has no native date/time data type. This is explained in more detail <a href="https://blog.cloudant.com/2018/05/24/Date-formats.html">here</a> but the gist is:</p>
@@ -179,9 +179,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <h2 id="time-sortable-ids"><a href="#time-sortable-ids">Time-sortable ids</a></h2>
 <p>If we&rsquo;re using 32 characters to store a &ldquo;random&rdquo; <code>_id</code> field, then it would be handy if it sorted in chronological order in a time-series database. This technique is outlined <a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">here</a>.</p>
 <p>In brief, the front of the <code>_id</code> is a time-sortable string and rest is random data. The <code>_id</code> field then sorts in approximate date/time order (to a precision of one second).</p>
-<p><img src="/img/kuuid.png" alt="An example time-sortable _id value"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/kuuid.png" alt="An example time-sortable _id value"></p>
 <h2 id="using-timeboxed-databases-that-are-also-partitioned"><a href="#using-timeboxed-databases-that-are-also-partitioned">Using timeboxed databases that are also partitioned</a></h2>
-<p>Depending on your use-case, it may also be useful to make your timeboxed databases <em>partitioned</em> too, that is generated with the <code>?partitioned=true</code> flag to enable Cloudant&rsquo;s new <a href="/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases</a> feature.</p>
+<p>Depending on your use-case, it may also be useful to make your timeboxed databases <em>partitioned</em> too, that is generated with the <code>?partitioned=true</code> flag to enable Cloudant&rsquo;s new <a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases</a> feature.</p>
 <p>The choice of <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#what-makes-a-good-partition-key-">partition key</a> is beyond the scope of this post, but in a IoT application a <em>device id</em> may be a good choice, as long as there are many devices generating data at a similar rate.</p>
 <p>Here&rsquo;s an example document that uses the full gamut of Cloudant time-series tricks: monthly databases, time-ordered ids and partitioned databases:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{

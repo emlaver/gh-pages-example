@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -124,7 +124,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </div>
   
   <p>Building a Cloudant-based application with Node.js means that your app will making many HTTP requests to your Cloudant service. It&rsquo;s important to understand how such HTTP traffic is coordinated in Node and to be able to measure the anatomy of each request so that you can measure latencies and eliminate unwanted delays.</p>
-<p><img src="/img/john-barkiple-l090uFWoPaI-unsplash.jpg" alt="connections"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/john-barkiple-l090uFWoPaI-unsplash.jpg" alt="connections"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/l090uFWoPaI">John Barkiple on Unsplash</a></p>
 </blockquote>
@@ -142,7 +142,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <h2 id="http-connection-pooling"><a href="#http-connection-pooling">HTTP Connection Pooling</a></h2>
 <p>An HTTP socket can only host one HTTP request at anyone one time, but a Node.js app can utilise several sockets at once - known as a connection pool. By default, the Cloudant Node.js library is configured to use a pool of six sockets - this means that six HTTP connections can be in flight at any one time.</p>
 <p>When you issue a Cloudant API call in your Node,js app, it queues inside the app until a socket becomes free in the pool.</p>
-<p><img src="/img/httprequest1.png" alt="http request 1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/httprequest1.png" alt="http request 1"></p>
 <p>If you have more requests in flight than you have sockets in the pool, then some requests will be delayed in your app waiting for a socket to become available. The key to discovering if you are adding latency to your requests by not having enough free sockets is to record detailed metrics.</p>
 <h2 id="recording-http-metrics"><a href="#recording-http-metrics">Recording HTTP metrics</a></h2>
 <p>When we instantiate the <code>@cloudant/cloudant</code> Node.js library we can switch on detailed timings by supplying <code>{time: true}</code> to the <code>requestDefaults</code> object:</p>

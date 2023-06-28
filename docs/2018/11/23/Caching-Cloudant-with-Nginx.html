@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -124,21 +124,21 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </div>
   
   <p>Cloudant and its open-source sibling Apache CouchDB were were born on the web. Their HTTP/HTTPS API is not a bolt-on afterthought - it is <em>the</em> way of interacting with the database built in from the ground up. Let&rsquo;s take the use-case of Cloudant being used as a back-end database in a traditional client/server web app:</p>
-<p><img src="/img/nginx_schematic_1.png" alt="schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/nginx_schematic_1.png" alt="schematic"></p>
 <p>Web users interact with a web page, sending HTTP requests to one of a number of application servers. The application, needing data to render the page will make an HTTP request to Cloudant to get fetch the data and then respond back in kind to the client.</p>
 <p>If the same request is being made to Cloudant over and over again in a short time frame, then Cloudant simply answers each request.  Under production loads and to avoid overworking the database, developers may choose to cache data <em>in their app</em> rather than make a round-trip to the database. This is suitable for:</p>
 <ul>
 <li>data that doesn&rsquo;t change very often e.g. a database of US zip codes</li>
 <li>slices of data that are accessed frequently but where it doesn&rsquo;t matter when the user sees a slightly stale version of the query. This is very application-dependent but let&rsquo;s imagine your e-commerce site is to have a list of three special offers on the front page. As the front page is accessed frequently, it makes little sense to query the database for every page render.</li>
 </ul>
-<p><img src="/img/denise-johnson-426653-unsplash.jpg" alt="cache"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/denise-johnson-426653-unsplash.jpg" alt="cache"></p>
 <blockquote>
 <p><a href="https://unsplash.com/photos/CQpN2IdkSdA">Photo by Denise Johnson on Unsplash</a></p>
 </blockquote>
 <p>There are many ways to implement a cache. In this article I&rsquo;ll show how a Nginx proxy can be created to cache HTTP requests to take some of the load off your Cloudant service and to get data to your app quickly.</p>
 <h2 id="what-is-nginx"><a href="#what-is-nginx">What is Nginx?</a></h2>
 <p><a href="https://www.nginx.com/">Nginx</a> is an open-source web server. At its simplest it can serve out a tree of static files over HTTP. It can also be configured as a &ldquo;reverse proxy&rdquo;, that is it can sit between a client and server and transparently route traffic between them, caching some of the content to allow a future repeat request to be serviced from the local cached data.</p>
-<p><img src="/img/nginx_schematic_2.png" alt="reverse proxy schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/nginx_schematic_2.png" alt="reverse proxy schematic"></p>
 <p>In our application we&rsquo;ll be configuring Nginx as a reverse proxy and placing it between our application servers and Cloudant. Instead of our application connecting directly to Cloudant, it will instead connect to Nginx which will either return some cached content or make the Cloudant request and return that.</p>
 <p>Nginx can be installed in two places:</p>
 <ul>
@@ -289,7 +289,7 @@ http {
 <p>Caching can help take the load from your expensive primary data store by bring cheaper and faster resources to bear instead. Oh and cached data is returned faster.</p>
 </blockquote>
 <p>The <code>nginx</code> configuration caches all <code>GET</code> &amp; <code>HEAD</code> requests by default. I added <code>POST</code> to the <code>proxy_cache_methods</code> configuration to catch <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html">Cloudant Query</a> API calls which use the <code>POST /db/_find</code> method. This may have unintended consequences if you route writes through this proxy e.g. <code>POST /db/_bulk_docs</code> or <code>POST /db</code>. I would recommend only sending <em>read</em> requests through the proxy and any API calls that modify data should be sent directly to Cloudant.</p>
-<p><img src="/img/nginx_schematic_3.png" alt="reverse proxy schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/nginx_schematic_3.png" alt="reverse proxy schematic"></p>
 
 </div>
 </div>

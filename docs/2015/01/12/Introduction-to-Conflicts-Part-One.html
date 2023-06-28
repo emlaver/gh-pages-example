@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -123,7 +123,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   
   <p>This is the first of a three-part blog series on how to deal with conflicts in the IBM Cloudant JSON document store. This blog assumes you have a working knowledge of Cloudant&rsquo;s database, and its API.</p>
 <p>In part one, we introduce the concept of a document conflict, describe what it looks like, and explain what happens if conflicts are left unresolved. Later in this series, we show how to tidy up conflicts, and discuss how they can be avoided.</p>
-<p><img src="/img/frida-bredesen-317281-unsplash.jpg" alt="conflict"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/frida-bredesen-317281-unsplash.jpg" alt="conflict"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/76dgUcMupv4">Frida Bredesen on Unsplash</a></p>
 </blockquote>
@@ -131,12 +131,12 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Cloudant allows data to be stored as JSON documents in a highly-resilient cluster of connected nodes. Cloudant&rsquo;s HTTP interface can be accessed natively through a web browser, through an interactive dashboard, or through programming languages for most platforms. Cloudant is a distributed system, with Replication at it&rsquo;s heart. It enables mobile developers to replicate their data to portable devices, and allows data to be replicated across the globe. The effect is similar to a content delivery network (CDN) for your data.</p>
 <p>The <a href="https://en.wikipedia.org/wiki/CAP_theorem">Consistency, Availability and Partition tolerance (CAP)</a> theorem states that a distributed system can have only two of the three characteristics. In Cloudant, Consistency is sacrificed in favour of availability and partition tolerance. Specifically, Cloudant is an eventually consistent database, which means that no locking occurs when data is written. This characteristic enables the system to offer best-of-class uptime and scalability.</p>
 <p>In order to keep the service available at all times, Cloudant must allow the same document id to be altered on different nodes in the database. To reconcile the data, Cloudant maintains a revision history for every document in the database. This is a timeline of changes to the document; not the document body itself, only a history of the revision tokens:</p>
-<p><img src="/img/Conflicts-Part-One-1.png" alt="one"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/Conflicts-Part-One-1.png" alt="one"></p>
 <p>In this example, document &ldquo;abc&rdquo; has had three revisions. The revision token is made up of a sequential number and a hash of the document content. For convenience, a shortened version of the hash appears in the diagram.</p>
 <p>One of the consequences of eventual consistency is that documents might enter a conflicted state if the <strong>same version of a document is modified in different ways on two disconnected nodes</strong>. An exception is where the change made on the two nodes is the same change, to the same revision of the document. In this case, no conflict is generated, because the hash remains the same.</p>
-<p><img src="/img/Conflicts-Part-One-Introduction-to-Cloudant-and-documnet-conflicts-21.png" alt="two"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/Conflicts-Part-One-Introduction-to-Cloudant-and-documnet-conflicts-21.png" alt="two"></p>
 <p>In the above example there are two Cloudant databases (A and B) that are not connected. They both have the same document, with identical revision histories for revisions 1 and 2. At revision 3, the databases diverged. If we replicate database A to B, or alternatively replicate database B to A (in Cloudant, bi-directional replication is simply two separate replication processes in opposite directions), then the document enters a conflicted state:</p>
-<p><img src="/img/Conflicts-Part-One-3.png" alt="three"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/Conflicts-Part-One-3.png" alt="three"></p>
 <h2 id="how-can-conflicts-arise-in-your-application"><a href="#how-can-conflicts-arise-in-your-application">How Can Conflicts Arise in Your Application?</a></h2>
 <p>The three scenarios below are essentially descriptions of the same thing, but with different application architectures:</p>
 <h3 id="mobile-apps"><a href="#mobile-apps">Mobile apps</a></h3>

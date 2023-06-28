@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -122,16 +122,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </div>
   
   <p><a href="https://www.npmjs.com/package/cloudant-envoy">Cloudant Envoy</a> is software that sits between mobile users and a Cloudant database. It allows the apps to follow the CouchDB &ldquo;one-database-per-user&rdquo; model on mobile devices, while storing the data in a single server-side database. Without Envoy, each mobile user would have their own server-side database, which makes querying data across users very tricky.</p>
-<p><img src="/img/envoy-serverless1.png" alt="envoy2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/envoy-serverless1.png" alt="envoy2"></p>
 <p>Envoy&rsquo;s trick is to act as a proxy, seamlessly modifying the HTTP API calls heading for the Cloudant service:</p>
-<p><img src="/img/envoy-serverless2.png" alt="envoy3"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/envoy-serverless2.png" alt="envoy3"></p>
 <p>By handling the subset of the Cloudant API that is required for replication, Envoy becomes indistinguishable from the Cloudant database it is paired with. It invisibly adds data to documents as they are saved and strips it out when data is retrieved. This hidden metadata marks up the ownership of each document so that each mobile user only has access to their own data.</p>
 <p>Envoy can be baked into your own app to allow your web application to sync from an in-browser data store, or it can be run as a stand-alone proxy. In either flavour, it can also handle user authentication as described in <a href="https://medium.com/ibm-watson-data-lab/authentication-for-cloudant-envoy-apps-part-one-e6dba285b0d1">this tutorial which shows how to install Facebook authentication</a>.</p>
 <p>Running Envoy all the time is fine, but it means you need to pay for a virtual machine (or two, or three) to be running 24x7 whether users are syncing their data or not. It would be ideal if we could run Envoy in a &ldquo;serverless&rdquo; configuration, i.e., to only consume computing resources if there were traffic. It turns out that you can!</p>
 <h2 id="introducing-envoy-serverless"><a href="#introducing-envoy-serverless">Introducing Envoy serverless</a></h2>
 <p>Envoy Serverless is a new way of deploying Cloudant Envoy. Instead of standing up fixed, 24/7 machines, the code is deployed to <a href="https://developer.ibm.com/openwhisk/">Apache OpenWhisk™</a>, which is branded as <a href="https://console.bluemix.net/openwhisk/">Cloud Functions on IBM&rsquo;s Bluemix platform</a>. Incoming API calls are handled by OpenWhisk as they arrive, scaling up to meet with the demand and costing nothing when the traffic falls off to zero. For low-traffic applications, the hosting costs could be zero because of IBM Cloud Function&rsquo;s generous <a href="https://console.ng.bluemix.net/openwhisk/learn/pricing">free tier</a>.</p>
 <p>OpenWhisk is an example of a &ldquo;serverless&rdquo; platform. Instead of worrying about servers, operating systems, queues, containers, networking, and infrastructure uptime, you simply deploy the <em>functions</em> you wish to run. By pairing these functions as HTTP API calls, you can stand up a RESTful API service without managing any infrastructure yourself.</p>
-<p><img src="/img/envoy-serverless-schematic.png" alt="schematic"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/envoy-serverless-schematic.png" alt="schematic"></p>
 <p>Each API call is a separate OpenWhisk <em>action</em>, in its own JavaScript file, and is usually tasked with handling a single API call. Sometimes the same action handles variants of the same API call, such as the GET and POST versions of the same call, or handles a range of paths (e.g., GET <code>/db/*</code>).</p>
 <p>Each action is independent of the others, is stateless (apart from the data that is stored in the Cloudant database), and can be deployed and updated separately.</p>
 <p>The API Gateway handles authentication and routes the HTTP calls through to the corresponding action.</p>
@@ -148,9 +148,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></code></pre></div><p>The script will output the URL of your service. It will look something like this:</p>
 <pre tabindex="0"><code>https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/YOURSERVICEID/api/envoydb
 </code></pre><p>In the OpenWhisk dashboard under the <a href="https://console.ng.bluemix.net/openwhisk/apimanagement">API Management tab</a> you should see your deployed API calls:</p>
-<p><img src="/img/envoy-deployed.png" alt="envoy auth"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/envoy-deployed.png" alt="envoy auth"></p>
 <p>Below this you will need to secure your API by ticking the &ldquo;Require consuming applications to authenticate via API Key&rdquo; box and clicking &ldquo;Save&rdquo;:</p>
-<p><img src="/img/envoy-auth.png'" alt="envoy auth"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/envoy-auth.png'" alt="envoy auth"></p>
 <p>You should now only be able to access your API with a valid API Key (which can be created in the &ldquo;Sharing&rdquo; tab):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl <span style="color:#e6db74">&#39;https://service.us.apiconnect.ibmcloud.com/gws/apigateway/api/YOURSERVICEID/api/envoydb/_all_docs&#39;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;status&#34;</span>:401,<span style="color:#e6db74">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;Error: Unauthorized&#34;</span><span style="color:#f92672">}</span>

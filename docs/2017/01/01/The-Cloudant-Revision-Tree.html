@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -153,7 +153,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>The special thing about this request is that the response lists the rev IDs in order &ndash; which defines the history of the document. From this call, we can construct a tree for the document with a single branch and two nodes. We use the _revisions field, and construct the tree backwards using the start and ids array:</p>
-<p><img src="/img/tree1.png" alt="tree 1"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/tree1.png" alt="tree 1"></p>
 <p>The tree has two nodes. Cloudant labels each node with its rev ID. Cloudant also labels one node winner; we&rsquo;ll come to that in a moment.</p>
 <p><em>Note: Cloudant calls these tree nodes revisions but I&rsquo;m going to stick with node to emphasise the tree semantics.</em></p>
 <p>Now we&rsquo;ve seen the tree, let&rsquo;s see how we can think about the three calls if we consider them in terms of trees rather updates to a JSON document.</p>
@@ -201,7 +201,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>The tree now has four nodes, as shown by the _revisions array. As we didn&rsquo;t specify a rev in the request, Cloudant has again returned the node content and history for the winner node, as we&rsquo;d expect. As with any direct request to retrieve a document, we could have supplied a rev parameter to receive information about a different node.</p>
-<p><img src="/img/tree2.png" alt="tree 2"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/tree2.png" alt="tree 2"></p>
 <h2 id="branching-in-the-document-tree"><a href="#branching-in-the-document-tree">Branching in the document tree</a></h2>
 <p>To show how the tree can branch, we need to make this document a conflicted document. A conflicted document is a document where there are two or more active branches. An active branch is one that ends in a node that is not deleted. This often happens during replication, where a document with a common history may have been updated in different ways in the databases being replicated.</p>
 <p>If you&rsquo;ve been using Cloudant for a while, you&rsquo;ll be familiar with Cloudant&rsquo;s behaviour when you send the &ldquo;wrong&rdquo; rev ID with an update: the 409 Conflict response. With our new tree knowledge, we can see that what Cloudant is doing is either (a) rejecting a request that tries to add a node to a parent which already has a child, or (b) trying to use a parent node that doesn&rsquo;t exist. It does this so the tree remains a single stem, which makes sense for a database. This can be seen if we try to add a second child to our 1- revision:</p>
@@ -281,7 +281,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
 </span></span></code></pre></div><p>Which represents the following tree:</p>
-<p><img src="/img/tree3.png" alt="tree 3"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/tree3.png" alt="tree 3"></p>
 <h2 id="resolving-the-conflicted-state"><a href="#resolving-the-conflicted-state">Resolving the conflicted state</a></h2>
 <p>A document is conflicted so long as it has two or more branches which don&rsquo;t end in a deletion node. A conflicted document is clearly in a bad state for a database: some data is effectively hidden. So before we finish, let&rsquo;s <em>resolve</em> the conflict. In tree terms, resolving means updating the document&rsquo;s tree so that there is only one active branch.</p>
 <p>As we have two active branches, we need to update one branch with a deletion node, called a tombstone, to make that branch inactive. We do this by making a <code>DELETE</code> request to the document&rsquo;s resource. This request specifies the parent rev ID (<code>rev</code>) as the node at the tip of the branch we wish to mark as a dead end.</p>
@@ -356,7 +356,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
 </span></span></code></pre></div><p>The response still shows both branches. This is expected, as the branches still exist! However, we can see that the branch ending in <code>5-</code> is deleted and so the <code>3-</code> branch is the only active branch. Which therefore gives us this final tree:</p>
-<p><img src="/img/tree4.png" alt="tree 4"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/tree4.png" alt="tree 4"></p>
 <h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
 <p>Hopefully, this has shown how the Cloudant API for documents is really a tree manipulation API. There convenience wrappers and behaviours for common operations which make the API more database-like, most of which make use of the tree node labelled winner.</p>
 <p>It&rsquo;s useful to think this way, as it explains what effect requests are having on stored data which helps with understanding how to make Cloudant work effectively. It also helps to understand replication as the replication process is just using calls like the ones above to retrieve and duplicate document tree nodes from one database to another.</p>

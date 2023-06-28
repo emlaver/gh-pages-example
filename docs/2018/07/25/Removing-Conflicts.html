@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -128,7 +128,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>a single, multi-node database that receives mulitple writes to the same document at the same time. Although the database will try to prevent conflicts happening in this circumstance by returning an <code>HTTP 409</code> response, conflicts may still arise in some circumstancces.</li>
 </ul>
 <p>Conflicts are not an error condition - they are symptom of the database ensuring that you don&rsquo;t lose data when the same document is modified in different ways by different actors. Sometimes conflicts occur by accident - perhaps some automated process updating the database more frequently than normal. Ideally your code should adopt a design pattern that reduces or eliminates the chance of conflicts occurring, but if conflicts arise your code will need to have an algorithm to fix them.</p>
-<p><img src="/img/paul-bergmeir-97704-unsplash.jpg" alt="conflict"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/paul-bergmeir-97704-unsplash.jpg" alt="conflict"></p>
 <p>Conflicted documents can be a headache for the performance of the database, even if you make the effort to resolve conflicts as you find them. In some cases, documents can have hundreds or thousands of conflicted revisions. As the database has to keep the bodies of the conflicted documents and revision histories for conflicted branches, conflicted documents eat up storage and make the revision tree costly to navigate when updating or deleting revisions.</p>
 <h2 id="detecting-conflicts"><a href="#detecting-conflicts">Detecting conflicts</a></h2>
 <p>You can see if a document is conflicted by fetching the document with <code>?conflicts=true</code> appended to the URL:</p>

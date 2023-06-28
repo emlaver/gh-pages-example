@@ -9,7 +9,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
   
 
-  <link rel="icon" href="/favicon.png">
+  <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
 
   
 
@@ -91,16 +91,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
      
 <bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
 <bx-header aria-label=" My New Hugo Site" role="banner">
-  <bx-header-name href="/" prefix=""> My New Hugo Site</bx-header-name>
+  <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
     
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/">Home</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/">Home</bx-header-nav-item>
           
         
           
-            <bx-header-nav-item active="" href="/gh-pages-example/search.html">Search</bx-header-nav-item>
+            <bx-header-nav-item active="" href="https://emlaver.github.io/gh-pages-example/search.html">Search</bx-header-nav-item>
           
         
     
@@ -127,13 +127,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p><strong>Prerequisite</strong> : Set up an active-passive configuration that uses two IBM Cloudant accounts, one in each region. Active-passive configuration is preferred as in the case of active-active configuration we have to additionally create a strategy for managing conflicts to avoid problems with multiple copies of data. For more information about setting this up, see <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-configuring-ibm-cloudant-for-cross-region-disaster-recovery">Configuring IBM Cloudant for cross-region disaster recovery</a></p>
 </blockquote>
-<p><img src="/img/ira-huz-sMFWkx07fXI-unsplash.jpg" alt="crossroads"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/ira-huz-sMFWkx07fXI-unsplash.jpg" alt="crossroads"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/sMFWkx07fXI">Ira Huz on Unsplash</a></p>
 </blockquote>
 <p>In this article, we will use HAProxy or High Availability Proxy to direct traffic to one of two Cloudant instances(active-passive configuration) with auto failover to the backup Cloudant instance.</p>
 <h3 id="target-architecture-with-haproxy-as-a-reverse-proxy"><a href="#target-architecture-with-haproxy-as-a-reverse-proxy">Target architecture with HAProxy as a reverse proxy</a></h3>
-<p><img src="/img/haproxy1.png" alt="image"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/haproxy1.png" alt="image"></p>
 <h3 id="key-considerations-for-the-setup"><a href="#key-considerations-for-the-setup">Key Considerations for the setup</a></h3>
 <ol>
 <li>HA Proxy should route traffic to the primary Cloudant instance as long as it is up.</li>
@@ -206,7 +206,7 @@ backend db_cluster
 	mode http
     	use_backend db_cluster
 </code></pre><h3 id="haproxy-dashboard"><a href="#haproxy-dashboard">HAProxy dashboard</a></h3>
-<p><img src="/img/haproxy2.png" alt="image"></p>
+<p><img src="https://emlaver.github.io/gh-pages-example/img/haproxy2.png" alt="image"></p>
 <blockquote>
 <p><strong>Note:</strong> Here the server with green color is the primary server and the server with blue color is the backup server. All the requests are served by the primary server unless it is down.</p>
 </blockquote>
