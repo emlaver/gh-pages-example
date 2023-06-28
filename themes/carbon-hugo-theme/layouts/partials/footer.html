@@ -1,0 +1,10 @@
+</div>
+</div>
+</main>
+{{ if .Params.relcanonical }}
+Syndicated from: <a href="{{ .Params.relcanonical }}" target="_new">{{ .Params.relcanonical }}</a>
+{{ end }}
+
+{{ partial "side-nav.html" . }}
+</body>
+</html>

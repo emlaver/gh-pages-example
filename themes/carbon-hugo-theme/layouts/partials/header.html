@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+  <head>
+    <title>{{ .Title }}</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="{{ .Site.Params.header | default "#354F52" }}">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <!--<script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/accordion.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/breadcrumb.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/code-snippet.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/data-table.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/skeleton-placeholder.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/skeleton-text.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/slider.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/structured-list.min.js"></script>
+  -->
+
+  <link rel="icon" href="/favicon.png">
+
+  {{ partial "css" . }} {{ partial "js" . }} {{ hugo.Generator }}
+
+  {{ if eq .Params.type "blog" }}
+    <!-- Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="{{ .Title }}">
+    <meta property="og:url" content="{{ .Permalink }}" />
+    <meta property="og:description" content="{{ .Description }}" />
+    <meta property="article:published_time" content="{{ .Date }}" />
+    <meta property="og:site_name" content="{{ .Site.Title }}" />
+    <meta property="og:image" content="{{ .Params.image }}" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="{{ .Site.Title }}" />
+    <meta name="twitter:title" content="{{ .Title }}" />
+    <meta name="twitter:description" content="{{ .Description}}" />
+    <meta name="twitter:creator" content="{{ .Site.Title }}" />
+
+    <!-- Google -->
+    <meta itemprop="name" content="{{ .Title }}">
+    <meta itemprop="description" content="{{ .Description }}">
+    <meta itemprop="image" content="{{ .Params.image}}">
+  {{ end }}
+
+
+
+
+  <!-- styling --> 
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  {{ range .AlternativeOutputFormats -}}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+  {{ end -}}
+</head>
+<body class="{{ .Site.Params.build }}">
+    {{ partial "body-open" . }}
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label="{{ .Site.Params.org }} {{ .Site.Title }}" role="banner">
+  <bx-header-name href="/" prefix="{{ .Site.Params.org }}"> {{ .Site.Title }}</bx-header-name>
+  <bx-header-nav menu-bar-label="{{ .Site.Params.org }} {{ .Site.Title }}" role="navigation">
+    {{ if .Site.Menus.header }}
+        {{ range sort .Site.Menus.header }}
+          {{ if .HasChildren }}
+          <bx-header-menu menu-label="{{ .Name }}" trigger-content="{{ .Name }}" role="listitem">
+            {{ range .Children }}
+              <bx-header-menu-item href="{{ .URL }}" tabindex="-1" role="listitem">{{ .Name }}</bx-header-menu-item>
+              {{ end }}
+            </bx-header-menu>
+          {{ else }}
+            <bx-header-nav-item active="" href="{{ .URL }}">{{ .Name }}</bx-header-nav-item>
+          {{ end }}
+        {{ end }}
+    {{ end }}
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
