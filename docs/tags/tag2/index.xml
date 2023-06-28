@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tag2 on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/tag2/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/tag2/</link>
     <description>Recent content in Tag2 on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Feb 2023 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/tag2/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 02 Feb 2023 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/tag2/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Another blog post</title>
-      <link>https://emlaver.github.io/an/other/custom-url.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/an/other/custom-url.html</link>
       <pubDate>Thu, 02 Feb 2023 09:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/an/other/custom-url.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/an/other/custom-url.html</guid>
       <description>In quam voluptatem et laudantium enim sed expedita asperiores ut fugit nulla ad animi suscipit et voluptatem velit! Sit quasi velit aut magnam explicabo ut omnis earum non iure suscipit.
 Est excepturi laborum ut esse nemo et debitis tempora. Et consequatur cupiditate cum odit voluptate quo unde pariatur et nihil eius quo nobis sint et sunt laudantium qui eligendi inventore.
 Italic bold
@@ -23,10 +23,10 @@ Sub heading 2 An unordered list:</description>
     
     <item>
       <title>Just testing</title>
-      <link>https://emlaver.github.io/some/custom-url.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/some/custom-url.html</link>
       <pubDate>Wed, 01 Feb 2023 09:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/some/custom-url.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/some/custom-url.html</guid>
       <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 Italic bold</description>

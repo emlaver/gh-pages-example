@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Open Source on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/open-source/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/open-source/</link>
     <description>Recent content in Open Source on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Jul 2020 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/open-source/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 30 Jul 2020 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/open-source/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Compliance automation via Auditree</title>
-      <link>https://emlaver.github.io/2020/07/30/compliance-automation-auditree.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2020/07/30/compliance-automation-auditree.html</link>
       <pubDate>Thu, 30 Jul 2020 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2020/07/30/compliance-automation-auditree.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2020/07/30/compliance-automation-auditree.html</guid>
       <description>Over the past few years Cloudant has been engaging in more and more compliance related work. This is a good thing; it gives customers confidence in the systems holding their data, and it gives us a way to critically evaluate &amp;amp; improve our product &amp;amp; processes.
 A compliance accreditation is made up of controls. In some cases lots of controls, all of which need to be consistently &amp;amp; continually executed, with evidence of successful (or otherwise) execution collected for audit.</description>
     </item>

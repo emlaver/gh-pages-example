@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>views on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/views/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/views/</link>
     <description>Recent content in views on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 12 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/views/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 12 Nov 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/views/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Projection</title>
-      <link>https://emlaver.github.io/2021/11/12/Projection.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2021/11/12/Projection.html</link>
       <pubDate>Fri, 12 Nov 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2021/11/12/Projection.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2021/11/12/Projection.html</guid>
       <description>Cloudant&amp;rsquo;s MapReduce indexes give you complete control over what data from your primary JSON objects are stored in your secondary indexes. JavaScript functions are used to programmatically decide which document attributes are selected for inclusion as either the key or the value of the views - the JavaScript functions can even be used to process the data before it&amp;rsquo;s saved in the index.
 Photo by Jeremy Yap on Unsplash
 In this blog post we&amp;rsquo;ll look at a technique called projection which produces the fastest, most efficient data selection indexes.</description>
@@ -20,19 +20,19 @@ In this blog post we&amp;rsquo;ll look at a technique called projection which pr
     
     <item>
       <title>Fuzzy search using Double Metaphone</title>
-      <link>https://emlaver.github.io/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html</link>
       <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html</guid>
       <description>Introduction In an earlier article I explained how to do a fuzzy search for documents that contain words that sound like some other given word. The technique I described there uses a view that implements the Soundex algorithm. The aim of the Soundex algorithm is to encode words alike that sound alike so that they can be matched despite minor differences in spelling. Soundex was invented before the invention of the electronic computer and is fairly simple.</description>
     </item>
     
     <item>
       <title>Fuzzy search using soundex</title>
-      <link>https://emlaver.github.io/2018/12/12/soundex-view.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2018/12/12/soundex-view.html</link>
       <pubDate>Wed, 12 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2018/12/12/soundex-view.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2018/12/12/soundex-view.html</guid>
       <description>If you want to find documents in your database that contain a word that sounds like some other word even though it does not have the same spelling (a homophone), you can use the soundex algorithm.
 Soundex is an algorithm for indexing names by how they are pronounced in English.
 Its purpose is to encode words that sound alike with the same representation so that they can be matched despite minor differences in spelling.</description>

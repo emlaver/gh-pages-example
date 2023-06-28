@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Node.js on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/node.js/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/node.js/</link>
     <description>Recent content in Node.js on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 May 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/node.js/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 24 May 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/node.js/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Partitioned Databases and Node.js</title>
-      <link>https://emlaver.github.io/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</link>
       <pubDate>Fri, 24 May 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</guid>
       <description>The Cloudant database has four supported client libraries: Node.js, Java, Goand Python. In this post, we&amp;rsquo;ll see examples on how the Node.js library can be used with the new Partition Databases feature.
 Here&amp;rsquo;s a table of all the functions we&amp;rsquo;ll be using:
 Operation Raw API Call Node.js function call Create database PUT /db?partitioned=true client.putDatabase Add document POST /db client.postDocument Get document GET /db/&amp;lt;id&amp;gt; client.getDocument Get info GET /db/&amp;lt;partition_key&amp;gt; client.getPartitionInformation Get all docs POST /db/&amp;lt;partition_key&amp;gt;/_all_docs client.</description>
@@ -20,10 +20,10 @@ Operation Raw API Call Node.js function call Create database PUT /db?partitioned
     
     <item>
       <title>Cloudant Fundamentals 6/10</title>
-      <link>https://emlaver.github.io/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</link>
       <pubDate>Tue, 12 Jun 2018 08:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</guid>
       <description>In the previous two posts we saw how how the command-line tool curl is all that is required to do basic read and write operations with Cloudant, and how two API calls can be used for bulk commands.
 In this post we&amp;rsquo;ll look at equivalent tasks using programmatic means.
 You don&amp;rsquo;t need a special library to work with Cloudant - just something capbable of making HTTP requests. The libraries do help, however, with authentication and parameter encoding.</description>
@@ -31,20 +31,20 @@ You don&amp;rsquo;t need a special library to work with Cloudant - just somethin
     
     <item>
       <title>Choosing a Cloudant library</title>
-      <link>https://emlaver.github.io/2017/07/12/Choosing-a-Cloudant-library.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2017/07/12/Choosing-a-Cloudant-library.html</link>
       <pubDate>Wed, 12 Jul 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2017/07/12/Choosing-a-Cloudant-library.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2017/07/12/Choosing-a-Cloudant-library.html</guid>
       <description>The beauty of Apache CouchDB and Cloudant is that you don&amp;rsquo;t need to a library to be able to start using it. Some databases require a &amp;ldquo;driver&amp;rdquo; module to be installed to handle communication between your application and your database, but when your database speaks HTTP then you only need curl, a web browser, or anything that can make web requests. For example:
 your Raspberry Pi could write IoT data to a remote database by making PUT requests from curl your web page could fetch data directly from the database by making in-page HTTP calls your PHP code could read and write from its data store without any third-party add-on code Sometimes developers need a little help.</description>
     </item>
     
     <item>
       <title>cloudant-quickstart</title>
-      <link>https://emlaver.github.io/2017/01/20/Cloudant-Quickstart.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2017/01/20/Cloudant-Quickstart.html</link>
       <pubDate>Fri, 20 Jan 2017 09:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2017/01/20/Cloudant-Quickstart.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2017/01/20/Cloudant-Quickstart.html</guid>
       <description>I frequently talk with developers who are using Cloudant or Apache CouchDB for the first time and I&amp;rsquo;ve found that things they find most difficult to come to terms with are:
 Design Documents - a feature unique to this database family. They are special documents holding index definitions a other data manipulation magic. Once mastered, they can be used to great effect but to a first-timer they are baffling. Multi-version Concurrency Control - MVCC is the mechanism whereby documents are stored in a tree of revisions, allowing databases to be synced with other copies without data loss.</description>
     </item>

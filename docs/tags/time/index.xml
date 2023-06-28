@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Time on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/time/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/time/</link>
     <description>Recent content in Time on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 24 Aug 2018 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/time/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 24 Aug 2018 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/time/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Time-sortable _ids</title>
-      <link>https://emlaver.github.io/2018/08/24/Time-sortable-document-ids.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2018/08/24/Time-sortable-document-ids.html</link>
       <pubDate>Fri, 24 Aug 2018 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2018/08/24/Time-sortable-document-ids.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2018/08/24/Time-sortable-document-ids.html</guid>
       <description>A Cloudant database document&amp;rsquo;s _id field has to be unique. When you create a document and leave the _id field blank, the database will create one for you:
 curl -X POST \ -d&amp;#39;{&amp;#34;x&amp;#34;:1}&amp;#39; \ -H &amp;#39;Content-type: application/json&amp;#39; &amp;#34;https://USERNAME:PASSWORD@HOST.cloudant.com/mydb&amp;#34; {&amp;#34;ok&amp;#34;:true,&amp;#34;id&amp;#34;:&amp;#34;97728a06c27d1e11378cd43635c98c1e&amp;#34;,&amp;#34;rev&amp;#34;:&amp;#34;1-0785e9eb543380151003dc452c3a001a&amp;#34;} Cloudant&amp;rsquo;s generated _id fields are 32 characters long and made entirely of numerals and lowercase letters. They are unique, or at least have a negligible probability of clashing, by virtue of being a long pseudo-random string of characters.</description>
     </item>

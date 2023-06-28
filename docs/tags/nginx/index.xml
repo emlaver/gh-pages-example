@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Nginx on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/nginx/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/nginx/</link>
     <description>Recent content in Nginx on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 23 Nov 2018 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Nov 2018 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Caching with Nginx</title>
-      <link>https://emlaver.github.io/2018/11/23/Caching-Cloudant-with-Nginx.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2018/11/23/Caching-Cloudant-with-Nginx.html</link>
       <pubDate>Fri, 23 Nov 2018 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2018/11/23/Caching-Cloudant-with-Nginx.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2018/11/23/Caching-Cloudant-with-Nginx.html</guid>
       <description>Cloudant and its open-source sibling Apache CouchDB were were born on the web. Their HTTP/HTTPS API is not a bolt-on afterthought - it is the way of interacting with the database built in from the ground up. Let&amp;rsquo;s take the use-case of Cloudant being used as a back-end database in a traditional client/server web app:
 Web users interact with a web page, sending HTTP requests to one of a number of application servers.</description>
     </item>

@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>HA on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/ha/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/ha/</link>
     <description>Recent content in HA on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 27 Oct 2020 06:01:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/ha/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 27 Oct 2020 06:01:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/ha/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>HAProxy as a reverse proxy</title>
-      <link>https://emlaver.github.io/2020/10/27/HAProxy-as-a-reverse-proxy.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2020/10/27/HAProxy-as-a-reverse-proxy.html</link>
       <pubDate>Tue, 27 Oct 2020 06:01:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2020/10/27/HAProxy-as-a-reverse-proxy.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2020/10/27/HAProxy-as-a-reverse-proxy.html</guid>
       <description>The IBM Cloudant helps you build a flexible disaster recovery capability into your applications through a cross-region disaster recovery setup using either active-passive or active-active configuration. For either configuration, IBM Cloudant doesn&amp;rsquo;t provide a facility to manage explicitly any failover or reroute requests between Cloudant regions and has to be implemented within the application logic itself, or by using a load balancer/proxy. To enable auto-failover, we can put an HTTP proxy server in front of IBM Cloudant and then configure our application to talk to the proxy server rather than the IBM Cloudant instance directly.</description>
     </item>
     
     <item>
       <title>Automatic Cross-region Failover</title>
-      <link>https://emlaver.github.io/2020/07/01/Automatic-failover-between-Cloudant-regions.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2020/07/01/Automatic-failover-between-Cloudant-regions.html</link>
       <pubDate>Wed, 01 Jul 2020 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2020/07/01/Automatic-failover-between-Cloudant-regions.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2020/07/01/Automatic-failover-between-Cloudant-regions.html</guid>
       <description>IBM Cloudant NoSQL database offers high availability through in-region automatic data redundancy by storing data in triplicate across three servers within a single region. In a true sense, achieving high availability and eliminating single point failure couldn’t be accomplished using a single region Cloudant setup. So, to address this, we have to consider doing two things:
 Configure cross-region redundancy by setting up Cloudant accounts in two or more regions, create databases in each region, and set up bidirectional continuous replications between the corresponding databases in each account.</description>
     </item>

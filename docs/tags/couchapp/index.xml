@@ -2,27 +2,27 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>CouchApp on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/couchapp/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/couchapp/</link>
     <description>Recent content in CouchApp on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/couchapp/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 16 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/couchapp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CouchApp function deprecation</title>
-      <link>https://emlaver.github.io/2022/08/16/Show-list-rewrite-udpate-functions-deprecated.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2022/08/16/Show-list-rewrite-udpate-functions-deprecated.html</link>
       <pubDate>Tue, 16 Aug 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2022/08/16/Show-list-rewrite-udpate-functions-deprecated.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2022/08/16/Show-list-rewrite-udpate-functions-deprecated.html</guid>
       <description>IBM Cloudant, the Database-as-a-Service based on the Apache CouchDB project, is giving notice that the following features are deprecated:
 show functions - used to modify the format of the response when requesting a single document from the database. Show functions are accessed via URLs of the form: /&amp;lt;db&amp;gt;/_design/&amp;lt;design-doc&amp;gt;/_show/&amp;lt;show-name&amp;gt;/&amp;lt;docid&amp;gt;. See CouchDB docs on Show Functions. list functions - similar to show functions, but applied to the output of MapReduce views. List functions are accessed via URLs of the form /&amp;lt;db&amp;gt;/_design/&amp;lt;design-doc&amp;gt;/_list/&amp;lt;list-name&amp;gt;/&amp;lt;view-name&amp;gt;.</description>
     </item>
     
     <item>
       <title>CouchApps No Longer Work</title>
-      <link>https://emlaver.github.io/2021/10/20/CouchApps-no-longer-work.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2021/10/20/CouchApps-no-longer-work.html</link>
       <pubDate>Wed, 20 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2021/10/20/CouchApps-no-longer-work.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2021/10/20/CouchApps-no-longer-work.html</guid>
       <description>Cloudant mainly stores JSON documents in collections called databases, but Cloudant also has the ability to store attachments in Cloudant documents. An attachment is a binary blob of data with a file name and mime type. It could be a PDF, a JPG or a Word document.
 Some users employed attachments to store HTML, CSS, JavaScript files and other assets in the database so that it could be used as a webserver - applications following this pattern were known as CouchApps.</description>
     </item>

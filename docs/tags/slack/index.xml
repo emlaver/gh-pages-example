@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Slack on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/slack/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/slack/</link>
     <description>Recent content in Slack on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 13 Aug 2015 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/slack/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 13 Aug 2015 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/slack/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Slack to Cloudant</title>
-      <link>https://emlaver.github.io/2015/08/13/Slack-to-Cloudant.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2015/08/13/Slack-to-Cloudant.html</link>
       <pubDate>Thu, 13 Aug 2015 09:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2015/08/13/Slack-to-Cloudant.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2015/08/13/Slack-to-Cloudant.html</guid>
       <description>Slack’s Integration API and Cloudant’s HTTP API make it simple to store data directly into a Cloudant database without breaking a sweat. This tutorial shows how to create a custom slash command in Slack and how to post it directly to Cloudant.
 Slack is a messaging and team-working application that is used widely to allow disparate teams of people to chat, share files, and interact on desktop, tablet, and mobile platforms.</description>
     </item>

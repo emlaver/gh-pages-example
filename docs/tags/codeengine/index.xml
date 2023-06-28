@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>CodeEngine on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/codeengine/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/codeengine/</link>
     <description>Recent content in CodeEngine on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 16 Aug 2021 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/codeengine/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Aug 2021 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/codeengine/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Code Engine &amp; Cloudant</title>
-      <link>https://emlaver.github.io/2021/08/16/Code-Engine-and-Cloudant.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2021/08/16/Code-Engine-and-Cloudant.html</link>
       <pubDate>Mon, 16 Aug 2021 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2021/08/16/Code-Engine-and-Cloudant.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2021/08/16/Code-Engine-and-Cloudant.html</guid>
       <description>One of the great advantages of cloud infrastructure is that it offers the option of trying things out at zero or near-zero cost.
 You can spin up services, create applications and try them out. If they don’t work or don’t get traction, you simply deprovision the infrastructure and try something else. The barrier to innovation is thus significantly lowered.
 In this post, we’ll take you through a basic scenario that combines two such IBM services to build a serverless polling application:</description>

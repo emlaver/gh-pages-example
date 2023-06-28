@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Emoji on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/emoji/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/emoji/</link>
     <description>Recent content in Emoji on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 30 May 2018 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/emoji/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 30 May 2018 09:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/emoji/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Emoji in Cloudant</title>
-      <link>https://emlaver.github.io/2018/05/30/Emoji-in-Cloudant-documents.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2018/05/30/Emoji-in-Cloudant-documents.html</link>
       <pubDate>Wed, 30 May 2018 09:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2018/05/30/Emoji-in-Cloudant-documents.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2018/05/30/Emoji-in-Cloudant-documents.html</guid>
       <description>Cloudant and Apache CouchDB databases store their data as JSON documents so there&amp;rsquo;s only a handful of data types to choose from: strings, booleans, numbers, objects and arrays.
 Here&amp;rsquo;s a document representing a person in a JSON:
 { &amp;#34;name&amp;#34;: &amp;#34;Glynn&amp;#34;, &amp;#34;startDate&amp;#34;: &amp;#34;2018-05-11T15:29:31.354Z&amp;#34;, &amp;#34;verified&amp;#34;: true, &amp;#34;mood&amp;#34;: &amp;#34;tired&amp;#34;, &amp;#34;nationality&amp;#34;: &amp;#34;British&amp;#34;, &amp;#34;favouriteFood&amp;#34;: &amp;#34;Eggs&amp;#34;, &amp;#34;musicalInstruments&amp;#34;: [&amp;#34;Guitar&amp;#34;,&amp;#34;Piano&amp;#34;,&amp;#34;Voice&amp;#34;], &amp;#34;phobia&amp;#34;: &amp;#34;Spiders&amp;#34;, &amp;#34;profile&amp;#34;: &amp;#34;Does computers at IBM.&amp;#34; } Long gone are the days when we were limited to the ASCII character set in our code.</description>

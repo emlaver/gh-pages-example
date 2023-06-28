@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Time-series on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/time-series/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/time-series/</link>
     <description>Recent content in Time-series on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 08 Apr 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/time-series/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 08 Apr 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/time-series/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Time-series Data Storage</title>
-      <link>https://emlaver.github.io/2019/04/08/Time-series-data-storage.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2019/04/08/Time-series-data-storage.html</link>
       <pubDate>Mon, 08 Apr 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2019/04/08/Time-series-data-storage.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2019/04/08/Time-series-data-storage.html</guid>
       <description>Time-series data is simply the recording of data points in time order such as:
 Internet of Things (IoT) installations where sensors report readings periodically. Monitoring user-interface interactions from a website to get a sense of which part of the page your users are interested in. Storing the logs from a distributed computer system for diagnostics. Recording the sales of products from a store. In this post we&amp;rsquo;ll examine options for storing time-series data in Cloudant.</description>
     </item>

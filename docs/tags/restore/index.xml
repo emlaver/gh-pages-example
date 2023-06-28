@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Restore on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/restore/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/restore/</link>
     <description>Recent content in Restore on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Jul 2020 06:01:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/restore/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 Jul 2020 06:01:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/restore/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Selective restoration from backup</title>
-      <link>https://emlaver.github.io/2020/07/01/Selective-restoratio-from-backup.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2020/07/01/Selective-restoratio-from-backup.html</link>
       <pubDate>Wed, 01 Jul 2020 06:01:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2020/07/01/Selective-restoratio-from-backup.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2020/07/01/Selective-restoratio-from-backup.html</guid>
       <description>As part of the disaster recovery process, the Cloudant NoSQL database offers the database backup and restore through the command-line utilities such as couchbackup &amp;amp; couchrestore respectively.
 couchbackup - Dumps the JSON data from a database to a backup text file. couchrestore - Restores data from a backup text file to a database. The couchrestore utility has one limitation: it can restore the full database but can’t selectively restore specific records.</description>
     </item>

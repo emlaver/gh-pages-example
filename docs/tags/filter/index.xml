@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Filter on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/filter/</link>
+    <link>https://emlaver.github.io/gh-pages-example/tags/filter/</link>
     <description>Recent content in Filter on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Dec 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/tags/filter/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Dec 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://emlaver.github.io/gh-pages-example/tags/filter/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Filtered Replication</title>
-      <link>https://emlaver.github.io/2019/12/13/Filtered-Replication.html</link>
+      <link>https://emlaver.github.io/gh-pages-example/2019/12/13/Filtered-Replication.html</link>
       <pubDate>Fri, 13 Dec 2019 06:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/2019/12/13/Filtered-Replication.html</guid>
+      <guid>https://emlaver.github.io/gh-pages-example/2019/12/13/Filtered-Replication.html</guid>
       <description>Cloudant&amp;rsquo;s replication protocol allows data to flow from one Cloudant database to another, on the same Cloudant service or to an entirely separate service on the other side of the world. The replication protocol is also understood by Apache CouchDB and PouchDB allowing hybrid and mobile apps to be created with Cloudant acting as the cloud-based source of truth. The changes feed itself is also used to stream data to external services such as couchwarehouse.</description>
     </item>
     
