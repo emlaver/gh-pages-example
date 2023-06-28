@@ -3,6 +3,7 @@ languageCode = 'en-us'
 title = 'My New Hugo Site'
 theme = 'carbon-hugo-theme'
 publishDir = 'docs'
+canonifyURLs = true
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
