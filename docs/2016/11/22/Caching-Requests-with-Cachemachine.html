@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Caching HTTP requests</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Caching HTTP requests">
+    <meta property="og:url" content="https://blog.cloudant.com/2016/11/22/Caching-Requests-with-Cachemachine.html" />
+    <meta property="og:description" content="With cachemachine and redis" />
+    <meta property="article:published_time" content="2016-11-22 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/markus-spiske-254336-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Caching HTTP requests" />
+    <meta name="twitter:description" content="With cachemachine and redis" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Caching HTTP requests">
+    <meta itemprop="description" content="With cachemachine and redis">
+    <meta itemprop="image" content="/img/markus-spiske-254336-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Caching HTTP requests</a></h1>
+  
+  <div class="postmeta">Nov 22, 2016 | Glynn Bird | 
+
+<span class="tag">Cache</span>
+
+<span class="tag">Redis</span>
+
+</div>
+  
+  <p>A cache is a copy of data stored in place where it can be retrieved quickly with the original and most up-to-date copy being a separate, slower repository. Examples of caching include:</p>
+<ul>
+<li>microprocessors contain on-board data caches to save having to fetch the data from memory.</li>
+<li>spinning disks contain a cache of a data in memory to save having to fetch data on disk.</li>
+<li>web browsers cache a page&rsquo;s assets on the client machine to save having to fetch data from the network.</li>
+</ul>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Latency numbers every programmer should know <a href="https://t.co/H0Bp2nYivt">pic.twitter.com/H0Bp2nYivt</a></p>&mdash; Mario Fusco (@mariofusco) <a href="https://twitter.com/mariofusco/status/785948217217282048">October 11, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>Your own systems can achieve huge performance benefits if you build in a caching layer, choosing to cache data that is accessed frequently&ndash;data that still has value when stale&ndash;and deciding how long to cache each item. A cache provides speed benefits for your application, and takes load away from your primary data source, freeing up resources for other work.</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Table of system latencies makes for great reading <a href="https://t.co/346giJZQnh">pic.twitter.com/346giJZQnh</a></p>&mdash; Azeem Azhar (@azeem) <a href="https://twitter.com/azeem/status/669678968359034880">November 26, 2015</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<h2 id="caching-fast-changing-data"><a href="#caching-fast-changing-data">Caching fast changing data</a></h2>
+<p>Imagine I am storing web metrics data in an <a href="https://cloudant.com/">IBM Cloudant</a> database where each JSON document represents an interaction with my web page:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2016-09-01 10:24:13&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;click&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;path&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/Born-Run-Bruce-Springsteen/dp/1471157792/&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userAgent&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;host&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;www.bookseller.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;yJBsMCs4qEyF89jvGD1cI1V81YdNw6&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I can use a MapReduce function in Cloudant with the <code>_count</code> reducer to create an aggregated view of my data, counting the number of &lsquo;click&rsquo; documents by day:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;click&#39;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#39; &#39;</span>)[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">d</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I can then create a Node.js dashboard to query the view and present the results:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">myurl</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://myusername:mypassword@myhost.cloudant.com&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant&#39;</span>)({ <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">myurl</span> });
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudant</span>.<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#e6db74">&#39;metrics&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">view</span>(<span style="color:#e6db74">&#39;clicks&#39;</span>, <span style="color:#e6db74">&#39;byday&#39;</span>, {<span style="color:#a6e22e">group</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>}, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">data</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// present the data on the dashboard.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>});
+</span></span></code></pre></div><p>The call to the Cloudant view will retrieve data of this form:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{ <span style="color:#e6db74">&#34;rows&#34;</span><span style="color:#f92672">:</span>[
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2016-09-01&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">10985882</span>},
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2016-09-02&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">11884271</span>},
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2016-09-03&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">12004155</span>},
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2016-09-04&#34;</span>, <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">11094426</span>}
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Cloudant is more than happy to answer queries like this, as its distributed design shares the computational load around its cluster. But every time your dashboard web page loads, you ask Cloudant to recalculate the totals and to rebuild the view to incorporate the newly arrived documents. As the rate of change of data is not insignificant (circa 11m documents a day, or 127 per second), then Cloudant has its work cut out for it!</p>
+<p>You can employ caching in this use-case to take some load from Cloudant by storing the daily totals in cache when they are first requested. The time-to-live (TTL) of the cache is a choice: is it ok for the users to see data that is 1 hour old? 10 minutes old? The longer the TTL, the less load Cloudant sees, but the more out-of-date the dashboard is.</p>
+<p>Using an in-memory cache in front of Cloudant would give the dashboard a faster load time and let Cloudant get on with the core task of storing and indexing the incoming data.</p>
+<h2 id="redis"><a href="#redis">Redis</a></h2>
+<p><a href="http://redis.io/">Redis</a> makes an ideal cache because it stores its data in RAM for fast storage and retrieval. Redis at its simplest, stores key/value pairs and can additionally expire the keys at a pre-defined TTL. To store a key (mykey) with an associated value (xyz) that expires in an hour, you can use Redis&rsquo;s <code>SETEX</code> command:</p>
+<pre tabindex="0"><code>  SETEX mykey 3600 &#34;xyz&#34;
+</code></pre><p>Retrieve the value at any time within the next hour with</p>
+<pre tabindex="0"><code>  GET mykey
+</code></pre><h2 id="caching-cloudant-data-with-cachemachine"><a href="#caching-cloudant-data-with-cachemachine">Caching Cloudant data with cachemachine</a></h2>
+<p>To cache HTTP requests to Cloudant, we can use the <a href="https://www.npmjs.com/package/cachemachine">cachemachine</a> utility as a drop-in replacement for the <a href="https://www.npmjs.com/package/request">request</a> library with a twist&ndash;it caches the paths you specify in a Redis cache. The first time you ask for the data, Cloudant responds and the result is cached. All other requests for the same URL (within the TTL) are answered by calls to Redis!</p>
+<p>In this case, we want to cache requests that access views for only one hour (paths beginning with the database name followed by <code>/_design/</code>):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">paths</span> <span style="color:#f92672">=</span> [ { <span style="color:#a6e22e">path</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;^/mydb/_design/.*&#39;</span>, <span style="color:#a6e22e">ttl</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">60</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span> }];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cachemachine</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cachemachine&#39;</span>)({<span style="color:#a6e22e">redis</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">paths</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">paths</span>});
+</span></span></code></pre></div><p>We can then tell the <a href="https://www.npmjs.com/package/cloudant">Cloudant Node.js library</a> to use this as a plugin:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant&#39;</span>)({ <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">myurl</span>, <span style="color:#a6e22e">plugin</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">cachemachine</span> });
+</span></span></code></pre></div><p>Now requests we make to our view are cached automatically:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">view</span>(<span style="color:#e6db74">&#39;clicks&#39;</span>, <span style="color:#e6db74">&#39;byday&#39;</span>, {<span style="color:#a6e22e">group</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>}, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// data is returned and cached transparently
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">data</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>Cloudant handles the first request for the data, but subsequent requests for the same data come from Redis, until the cache key expires.</p>
+<h2 id="building-a-caching-proxy-server-with-express-and-cachemachine"><a href="#building-a-caching-proxy-server-with-express-and-cachemachine">Building a caching proxy server with Express and cachemachine</a></h2>
+<p>You can also create your own proxy server in front of Cloudant, caching the requests you want to intercept and passing all other requests untouched.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">express</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;express&#39;</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">express</span>(),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">cachemachine</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cachemachine&#39;</span>)(),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">couchURL</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">COUCH_URL</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;http://localhost:5984&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// intercept all requests for GET requests for views
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;/:db/_design/:design/_view/:view&#39;</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">r</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">couchURL</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">path</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">qs</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">query</span>
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// handle them with cachemachine
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">cachemachine</span>(<span style="color:#a6e22e">r</span>, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">response</span>, <span style="color:#a6e22e">body</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">send</span>(<span style="color:#a6e22e">body</span>);
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Catch all other paths and proxy them to CouchDB
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">use</span>(<span style="color:#e6db74">&#39;/&#39;</span>, <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;express-http-proxy&#39;</span>)(<span style="color:#a6e22e">couchURL</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">listen</span>(<span style="color:#ae81ff">3000</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Example app listening on port 3000!&#39;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>This code doesn&rsquo;t use cachemachine&rsquo;s path matching, it simply catches the paths it needs to intercept and routes them through cachemachine, leaving all other traffic to be transparently proxied.</p>
+<h2 id="using-cachemachine-with-redis-on-compose"><a href="#using-cachemachine-with-redis-on-compose">Using cachemachine with Redis on Compose</a></h2>
+<p>Deploying a highly-available Redis cluster is easy with <a href="https://www.compose.com/redis">Redis on Compose</a>. It deploys in minutes in a choice of data centers. Using <code>cachemachine</code> with Compose&rsquo;s Redis is just as simple:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">opts</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">redis</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">hostname</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;myhostname.dblayer.com&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">port</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">10000</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">password</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mypassword&#39;</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">request</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cachemachine&#39;</span>)(<span style="color:#a6e22e">opts</span>);
+</span></span></code></pre></div><p>substituting the values of <code>hostname</code>, <code>port</code> and <code>password</code> for those found in your Compose dashboard.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<p>Caching provides quicker access to frequently-requested data, trading-off speed of delivery for freshness of the data. You tell your app how stale you can afford to let the data get by configuring the TTL of cache key. Caching lets your application respond quickly, while not overburdening underlying data storage services. Use the <a href="https://www.npmjs.com/package/cachemachine">cachemachine</a> to transparently cache any HTTP service with Redis as the cache store, and plug it directly into the <a href="https://www.npmjs.com/package/cloudant">Cloudant Node.js library</a>.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://developer.ibm.com/clouddataservices/2016/11/22/10602/" target="_new">https://developer.ibm.com/clouddataservices/2016/11/22/10602/</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>HAProxy as a reverse proxy</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="HAProxy as a reverse proxy">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/10/27/HAProxy-as-a-reverse-proxy.html" />
+    <meta property="og:description" content="Using two Cloudant instances in active-passive mode." />
+    <meta property="article:published_time" content="2020-10-27 06:01:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/ira-huz-sMFWkx07fXI-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="HAProxy as a reverse proxy" />
+    <meta name="twitter:description" content="Using two Cloudant instances in active-passive mode." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="HAProxy as a reverse proxy">
+    <meta itemprop="description" content="Using two Cloudant instances in active-passive mode.">
+    <meta itemprop="image" content="/img/ira-huz-sMFWkx07fXI-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">HAProxy as a reverse proxy</a></h1>
+  
+  <div class="postmeta">Oct 27, 2020 | Debatosh Tripathy | 
+
+<span class="tag">Proxy</span>
+
+<span class="tag">HA</span>
+
+</div>
+  
+  <p>The IBM Cloudant helps you build a flexible disaster recovery capability into your applications through a cross-region disaster recovery setup using either active-passive or active-active configuration. For either configuration, IBM Cloudant doesn&rsquo;t provide a facility to manage explicitly any failover or reroute requests between Cloudant regions and has to be implemented within the application logic itself, or by using a load balancer/proxy. To enable auto-failover, we can put an HTTP proxy server in front of IBM Cloudant and then configure our application to talk to the proxy server rather than the IBM Cloudant instance directly. This would be easy, efficient, and save time compared to doing it through application logic.</p>
+<blockquote>
+<p><strong>Prerequisite</strong> : Set up an active-passive configuration that uses two IBM Cloudant accounts, one in each region. Active-passive configuration is preferred as in the case of active-active configuration we have to additionally create a strategy for managing conflicts to avoid problems with multiple copies of data. For more information about setting this up, see <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-configuring-ibm-cloudant-for-cross-region-disaster-recovery">Configuring IBM Cloudant for cross-region disaster recovery</a></p>
+</blockquote>
+<p><img src="/img/ira-huz-sMFWkx07fXI-unsplash.jpg" alt="crossroads"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/sMFWkx07fXI">Ira Huz on Unsplash</a></p>
+</blockquote>
+<p>In this article, we will use HAProxy or High Availability Proxy to direct traffic to one of two Cloudant instances(active-passive configuration) with auto failover to the backup Cloudant instance.</p>
+<h3 id="target-architecture-with-haproxy-as-a-reverse-proxy"><a href="#target-architecture-with-haproxy-as-a-reverse-proxy">Target architecture with HAProxy as a reverse proxy</a></h3>
+<p><img src="/img/haproxy1.png" alt="image"></p>
+<h3 id="key-considerations-for-the-setup"><a href="#key-considerations-for-the-setup">Key Considerations for the setup</a></h3>
+<ol>
+<li>HA Proxy should route traffic to the primary Cloudant instance as long as it is up.</li>
+<li>HA Proxy should automatically route traffic to secondary Cloudant instance if the primary instance goes down.</li>
+<li>HA Proxy should automatically route traffic back to the primary Cloudant instance as soon as it is up again.</li>
+</ol>
+<h3 id="how-to-check-if-the-cloudant-instance-is-up"><a href="#how-to-check-if-the-cloudant-instance-is-up">How to check if the Cloudant instance is up?</a></h3>
+<p>Cloudant offers a simple way to know if it is available or not through the <code>_up</code> endpoint. So all we have to do is ping this endpoint as a &lsquo;heartbeat at a regular interval of time. For example, a simple GET request(let&rsquo;s say in every 5 seconds) sent to this endpoint to see if the &ldquo;200&rdquo; response code is returned. As long 200 response code is received, traffic is routed to the primary Cloudant instance. If HAProxy receives a status code other than 200, then it would automatically route traffic to the secondary Cloudant instance.</p>
+<h3 id="lets-get-started-with-the-configuring-ha-proxy"><a href="#lets-get-started-with-the-configuring-ha-proxy">Let&rsquo;s get started with the configuring HA Proxy</a></h3>
+<p><strong>Step - 1)</strong> Install HA Proxy</p>
+<p>It is really easy to install HA Proxy and for this article, we will be using Ubuntu OS. Commands to install a specific version of HA proxy are as follows.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>add-apt-repository ppa:vbernat/haproxy-2.2
+</span></span><span style="display:flex;"><span>apt-get update
+</span></span><span style="display:flex;"><span>apt-get install haproxy / sudo apt-get install -y haproxy
+</span></span></code></pre></div><blockquote>
+<p><strong>Note:</strong> Choose the latest HA Proxy stable version.</p>
+</blockquote>
+<p>Verify the installation by checking the HAProxy server version</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>haproxy -version
+</span></span></code></pre></div><p><strong>Step - 2)</strong> Configure frontend, backend and enable statistics for HAProxy</p>
+<p>Go to the path <strong>&quot;/etc/haproxy&quot;</strong> and edit the <strong>haproxy.cfg</strong> file in any editor e.g vi or vim and add frontend, backend and enable statistics as shown in the below configuration.</p>
+<blockquote>
+<p>For simplicity, I would demonstrate it using HTTP, but it could also be configured for HTTPS.</p>
+</blockquote>
+<pre tabindex="0"><code class="language-file" data-lang="file">global
+(...)
+
+defaults
+(...)
+
+listen stats
+	bind *:9090
+  	stats enable
+  	stats uri /stats
+  	stats auth admin:admin@123
+  	stats refresh 30s
+	
+frontend db_frontend
+	bind *:80
+	mode http
+    	use_backend db_cluster
+	
+backend db_cluster
+	option httpchk GET /_up HTTP/1.1
+	http-check send hdr Authorization Basic\ xXxXxXxX(base64encoded)xxXxXxxXxx=
+	http-check expect status 200
+    	http-send-name-header Host
+	server primaryacct.cloudant.com 111.0.0.1:443 check inter 5s rise 2 fall 2 ssl verify none
+    	server secondaryacct.cloudant.com 111.0.0.2:443 check inter 5s rise 2 fall 2 ssl verify none backup
+</code></pre><p>Make relevant changes to the haproxy.cfg file and save it. Now let&rsquo;s verify and reload the HAProxy configuration by using the below commands.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>haproxy -c -f /etc/haproxy/haproxy.cfg
+</span></span><span style="display:flex;"><span>service haproxy reload
+</span></span></code></pre></div><h3 id="lets-understand-the-haproxy-configuration"><a href="#lets-understand-the-haproxy-configuration">Let&rsquo;s understand the HAProxy configuration</a></h3>
+<pre tabindex="0"><code class="language-file" data-lang="file">listen stats
+	bind *:9090
+  	stats enable
+  	stats uri /stats
+  	stats auth admin:admin@123
+  	stats refresh 30s
+</code></pre><p>The above configuration would enable the HAProxy dashboard to show various information &amp; statistics.</p>
+<ul>
+<li><em>bind</em>: Sets which address and port you&rsquo;ll use to access the dashboard.</li>
+<li><em>enable</em>: Enables the statistics.</li>
+<li><em>stats uri</em>: Set the path to access the dashboard. e.g. server_ip_address:9090/stats.</li>
+<li><em>stats auth</em>: Set the credentials to access the dashboard</li>
+<li><em>stats refresh</em>: Configures how often the dashboard will automatically refresh within your browser, which in this case is 30 seconds.</li>
+</ul>
+<pre tabindex="0"><code class="language-file" data-lang="file">frontend db_frontend
+	bind *:80
+	mode http
+    	use_backend db_cluster
+</code></pre><h3 id="haproxy-dashboard"><a href="#haproxy-dashboard">HAProxy dashboard</a></h3>
+<p><img src="/img/haproxy2.png" alt="image"></p>
+<blockquote>
+<p><strong>Note:</strong> Here the server with green color is the primary server and the server with blue color is the backup server. All the requests are served by the primary server unless it is down.</p>
+</blockquote>
+<p>A <em><strong>frontend</strong></em> is what a client connects to. As requests enter the load balancer and as responses are returned to the client, they pass through the frontend. In the above configuration, HAProxy listens on default port 80 and forward requests to the backend.</p>
+<pre tabindex="0"><code class="language-file" data-lang="file">backend db_cluster
+	option httpchk GET /_up HTTP/1.1 
+	http-check send hdr Authorization Basic\ wcm9maWxlOm5(base64encoded)AxMjM0NTY=
+	http-check expect status 200
+    	http-send-name-header Host
+	server primaryacct.cloudant.com 111.0.0.1:443 check inter 5s rise 2 fall 2 ssl verify none
+    	server secondaryacct.cloudant.com 111.0.0.2:443 check inter 5s rise 2 fall 2 ssl verify none backup
+</code></pre><p>A <em><strong>backend</strong></em> consists of a pool of servers and the requests are routed between the servers in a round-robin fashion making it a load balancer by default. To make HA Proxy behave like a reverse proxy rather than a load balancer, we have to make one server as active and the other server as passive. This could be achieved by using the keyword <strong>&ldquo;backup&rdquo;</strong> for the server. e.g. in the above configuration, secondaryacct.cloudant.com is the passive server, which will not receive any traffic unless the active server(primaryacct.cloudant.com) is down. And As soon as the active server comes back up, all the requests will fail back to it again. In this example configuration HAProxy polls the server on a fixed interval of 5 seconds which is described by the attributes <code>check inter 5s</code> and if not specified, the default value is 2 seconds. The attributes <code>rise 2 fall 2</code> signifies the number of consecutive valid health checks before considering the server as UP and DOWN. The attribute <code>ssl verify none</code> instructs HAProxy not to check the validity of a server certificate.</p>
+<p>In this example, we are configuring two different Cloudant services(one active, one passive) having different hostname. In order for HAProxy to communicate to Cloudant, we need to provide a HOST header having the value of Cloudant database hostname, without which Cloudant won&rsquo;t honour the request. This could be achieved through the attribute <strong>http-send-name-header</strong>. By using the &ldquo;Host&rdquo; header with this option(e.g. http-send-name-header Host), the existing Host header would be overwritten with the new value from the server name which in this case are primaryacct.cloudant.com &amp; secondaryacct.cloudant.com. The first three lines inside <em><strong>backend</strong></em> are responsible for making a GET call to the <code>_up</code> end point and expecting a response code <strong>&ldquo;200&rdquo;</strong> by passing credential through <strong>Authorization</strong> header.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

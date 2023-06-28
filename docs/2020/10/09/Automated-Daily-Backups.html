@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Automated Daily Backups</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Automated Daily Backups">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/10/09/Automated-Daily-Backups.html" />
+    <meta property="og:description" content="Using serverless functions to backup to Object Storage" />
+    <meta property="article:published_time" content="2020-10-09 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/ashim-d-silva-B5j_W25e1JU-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Automated Daily Backups" />
+    <meta name="twitter:description" content="Using serverless functions to backup to Object Storage" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Automated Daily Backups">
+    <meta itemprop="description" content="Using serverless functions to backup to Object Storage">
+    <meta itemprop="image" content="/img/ashim-d-silva-B5j_W25e1JU-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Automated Daily Backups</a></h1>
+  
+  <div class="postmeta">Oct 9, 2020 | Glynn Bird | 
+
+<span class="tag">Backup</span>
+
+<span class="tag">Serverless</span>
+
+</div>
+  
+  <p>Cloudant is already reslient in that it stores data in triplicate across a region&rsquo;s three availability zones but that&rsquo;s not the same thing as having a <em>backup</em>:</p>
+<ul>
+<li>what if you delete or modify a bunch of documents and wish to restore them later? (Note that you can access the previous revision of a document for a short time, but it will be eventually <em>compacted</em> so this behaviour isn&rsquo;t to be relied upon).</li>
+<li>what if you accidentally delete a whole database in error and need to restore it? (Note that <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-databases#undelete">Cloudant on Transaction Engine has an undelete function</a> that allows deleted databases to be restored within a time window)</li>
+<li>it&rsquo;s good practice to have another copy of your data elsewhere in the event of a disaster.</li>
+</ul>
+<p><img src="/img/ashim-d-silva-B5j_W25e1JU-unsplash.jpg" alt="backup"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/B5j_W25e1JU">Ashim D’Silva on Unsplash</a></p>
+</blockquote>
+<p>In this article we&rsquo;ll create a serverless backup utility which can be triggered to run periodically to backup a Cloudant database to IBM Cloud Object Storage:</p>
+<p><img src="/img/cloudant_daily_backup.png" alt="backup"></p>
+<p>To follow this tutorial you&rsquo;ll need:</p>
+<ul>
+<li>an IBM Cloud account.</li>
+<li>an IBM Cloudant service containing a database to backup.</li>
+<li>an IBM Cloud Object Storage service with a new empty bucket inside.</li>
+<li>the IBM Cloud <a href="https://cloud.ibm.com/docs/cli">command line interface</a> with the <a href="https://cloud.ibm.com/functions/learn/cli">IBM Cloud Functions CLI plugin</a>.</li>
+</ul>
+<h2 id="couchbackup"><a href="#couchbackup">Couchbackup</a></h2>
+<p>The <a href="https://www.npmjs.com/package/@cloudant/couchbackup">couchbackup</a> utility is a command-line tool that allows a Cloudant database to be turned a text file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># turn our &#34;animals&#34; database into a text file</span>
+</span></span><span style="display:flex;"><span>couchbackup --db animals &gt; animals.txt
+</span></span></code></pre></div><p>It comes with a matching utility which does the reverse: restores a text file back to a Cloudant database.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># restore our animals backup to a new database</span>
+</span></span><span style="display:flex;"><span>cat animals.txt | couchrestore --db animals2
+</span></span></code></pre></div><p>All we need to do is trigger <code>couchbackup</code> periodically to perform a backup. To do this we&rsquo;ll use IBM Cloud Functions, which allows code to run <em>serverlessly</em>, meaning you pay only for the execution time and nothing while your application stands idle.</p>
+<h2 id="creating-a-suitable-docker-image"><a href="#creating-a-suitable-docker-image">Creating a suitable Docker image</a></h2>
+<p>To create a Docker image suitable for running inside the IBM Cloud Functions platform we need a file called <code>Dockerfile</code> containing the definition of our image:</p>
+<pre tabindex="0"><code># based on the IBM Cloud Functions Node.js runtime
+FROM ibmfunctions/action-nodejs-v10
+
+# with additional npm modules for Cloudant &amp; COS
+RUN npm install ibm-cos-sdk@1.6.1
+RUN npm install @cloudant/couchbackup
+</code></pre><p>The image is based on the existing IBM Cloud Functions Node.js runtime but adds two additional Node.js modules:</p>
+<ul>
+<li><a href="https://www.npmjs.com/package/ibm-cos-sdk">ibm-cos-sdk</a> - to allow us to write data to IBM Cloud Object Storage.</li>
+<li><a href="https://www.npmjs.com/package/@cloudant/couchbackup">@cloudant/couchbackup</a> - to perform the Cloudant backup operation</li>
+</ul>
+<p>Assuming you have a <a href="https://hub.docker.com/">DockerHub</a> account (let&rsquo;s assume a username of <code>x</code>), you can build the image with the following terminal commands:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>docker build -t x/cloudant_backup .
+</span></span><span style="display:flex;"><span>docker push x/cloudant_backup:latest
+</span></span></code></pre></div><p>If you don&rsquo;t want to build the Docker image yourself, there is one already built using this definition at <a href="https://hub.docker.com/repository/docker/choirless/backup">https://hub.docker.com/repository/docker/choirless/backup</a> which we&rsquo;ll use in the rest of the tutorial.</p>
+<h2 id="making-a-backup-script"><a href="#making-a-backup-script">Making a backup script</a></h2>
+<p>The Docker image provides the operating system, the IBM Cloud Functions scaffolding and the libraries we need - all that is required is to add our own custom code to allow us to backup a Cloudant database to Object Storage programmatically. Here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">couchbackup</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@cloudant/couchbackup&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AWS</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;ibm-cos-sdk&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">stream</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;stream&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">args</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// combine bare URL with source database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">CLOUDANT_URL</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">CLOUDANT_DB</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Promise.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> Error(<span style="color:#e6db74">&#39;missing Cloudant config&#39;</span>))
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fullURL</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">CLOUDANT_URL</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">CLOUDANT_DB</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// COS config
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_ENDPOINT</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_API_KEY</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_SERVICE_INSTANCE_ID</span> <span style="color:#f92672">||</span> <span style="color:#f92672">!</span><span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_BUCKET</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Promise.<span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> Error(<span style="color:#e6db74">&#39;missing COS config&#39;</span>))
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">COSConfig</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">endpoint</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_ENDPOINT</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">apiKeyId</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_API_KEY</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ibmAuthEndpoint</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;https://iam.ng.bluemix.net/oidc/token&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">serviceInstanceId</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_SERVICE_INSTANCE_ID</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cos</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AWS</span>.<span style="color:#a6e22e">S3</span>(<span style="color:#a6e22e">COSConfig</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">streamToUpload</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">stream</span>.<span style="color:#a6e22e">PassThrough</span>({ <span style="color:#a6e22e">highWaterMark</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67108864</span> })
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">key</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">CLOUDANT_DB</span><span style="color:#e6db74">}</span><span style="color:#e6db74">_</span><span style="color:#e6db74">${</span><span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">toISOString</span>()<span style="color:#e6db74">}</span><span style="color:#e6db74">_backup.txt`</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">bucket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_BUCKET</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">uploadParams</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Bucket</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">COS_BUCKET</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Key</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">key</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Body</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">streamToUpload</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">`Backing up DB </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">fullURL</span><span style="color:#e6db74">}</span><span style="color:#e6db74"> to </span><span style="color:#e6db74">${</span><span style="color:#a6e22e">bucket</span><span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">key</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// return a Promise as this may take some time
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Promise((<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// create a COS upload operation hanging on a stream of data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">cos</span>.<span style="color:#a6e22e">upload</span>(<span style="color:#a6e22e">uploadParams</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">err</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">reject</span>(<span style="color:#66d9ef">new</span> Error(<span style="color:#e6db74">&#39;could not write to COS&#39;</span>))
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;COS upload done&#39;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">data</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// then kick off a backup writing to that stream
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">couchbackup</span>.<span style="color:#a6e22e">backup</span>(<span style="color:#a6e22e">fullURL</span>, <span style="color:#a6e22e">streamToUpload</span>, { <span style="color:#a6e22e">iamApiKey</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">CLOUDANT_IAM_KEY</span> },
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">err</span>) {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">reject</span>(<span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;couchbackup done&#39;</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Most of the above code involves the the handling of the incoming parameters which are listed here:</p>
+<ul>
+<li><code>CLOUDANT_IAM_KEY</code> e.g. &lsquo;abc123&rsquo;</li>
+<li><code>CLOUDANT_URL</code> e.g &lsquo;<a href="https://myservice.cloudantnosqldb.appdomain.cloud">https://myservice.cloudantnosqldb.appdomain.cloud</a>&rsquo;</li>
+<li><code>CLOUDANT_DB</code>: e.g. &lsquo;mydata&rsquo;</li>
+<li><code>COS_API_KEY</code> e.g. &lsquo;xyz456&rsquo;</li>
+<li><code>COS_ENDPOINT</code> e.g &lsquo;s3.private.eu-gb.cloud-object-storage.appdomain.cloud&rsquo;,</li>
+<li><code>COS_SERVICE_INSTANCE_ID</code> e.g. &lsquo;crn:v:w:x:y:z::&rsquo;</li>
+<li><code>COS_BUCKET</code> e.g. &lsquo;mybucket&rsquo;</li>
+</ul>
+<p>The values you&rsquo;ll need can be found in your Cloudant and Cloud Object Storage service credentials, apart from <code>COS_ENDPOINT</code> which can be found <a href="https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-endpoints">here</a>. Note that if the IBM Cloud Functions region and IBM Cloud Object Storage region are the same, then a &ldquo;private&rdquo; endpoint can be chosen to keep the traffic within the data centre.</p>
+<p>If our code is written to an <code>index.js</code> file, we can deploy to IBM Cloud Functions with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a new Cloud Functions package</span>
+</span></span><span style="display:flex;"><span>ibmcloud fn package create cron
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># create a function in the cron package based on the Docker image</span>
+</span></span><span style="display:flex;"><span>ibmcloud fn action update cron/backup --docker choirless/backup:latest index.js
+</span></span></code></pre></div><p>We now have an IBM Cloud Function called <code>cron/backup</code> which is based on our Docker image and adds our <code>index.js</code> script.</p>
+<h2 id="executing-a-backup"><a href="#executing-a-backup">Executing a backup</a></h2>
+<p>To avoid having to pass all of the configuration options in with each execution, we&rsquo;re going to bind <em>most</em> of the configuration (all items except the database name) to the function. Create a JSON file <code>opts.json</code> containing your configuration:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;CLOUDANT_IAM_KEY&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;abc123&#34;</span>,<span style="color:#e6db74">&#34;CLOUDANT_URL&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;https://myservice.cloudantnosqldb.appdomain.cloud&#34;</span>,<span style="color:#e6db74">&#34;COS_API_KEY&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;xyz456&#34;</span>,<span style="color:#e6db74">&#34;COS_ENDPOINT&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;s3.private.eu-gb.cloud-object-storage.appdomain.cloud&#34;</span>,<span style="color:#e6db74">&#34;COS_SERVICE_INSTANCE_ID&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;crn:v:w:x:y:z::&#34;</span>,<span style="color:#e6db74">&#34;COS_BUCKET&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;mybucket&#34;</span>}
+</span></span></code></pre></div><p>Then bind this configuration to your action:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ibmcloud fn action update cron/backup --param-file opts.json
+</span></span></code></pre></div><p>This means that when we execute the action we only need provide the one missing parameter: the name of the database to backup:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ibmcloud fn action invoke cron/backup --result --param CLOUDANT_DB mydb
+</span></span></code></pre></div><h2 id="scheduling-a-backup-to-run-periodically"><a href="#scheduling-a-backup-to-run-periodically">Scheduling a backup to run periodically</a></h2>
+<p>We can tell IBM Cloud Functions to run our action once every 24 hours for each database we need to backup:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># backup each database after midnight</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># mydb1 database</span>
+</span></span><span style="display:flex;"><span>ibmcloud fn trigger create mydb1BackupTrigger --feed /whisk.system/alarms/alarm --param cron <span style="color:#e6db74">&#34;5 0 * * *&#34;</span> --param trigger_payload <span style="color:#e6db74">&#34;{\&#34;CLOUDANT_DB\&#34;:\&#34;mydb1\&#34;}&#34;</span> 
+</span></span><span style="display:flex;"><span>ibmcloud fn rule create mydb1BackupRule mydb1BackupTrigger cron/backup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># mydb2 database</span>
+</span></span><span style="display:flex;"><span>ibmcloud fn trigger create mydb2BackupTrigger --feed /whisk.system/alarms/alarm --param cron <span style="color:#e6db74">&#34;10 0 * * *&#34;</span> --param trigger_payload <span style="color:#e6db74">&#34;{\&#34;CLOUDANT_DB\&#34;:\&#34;mydb2\&#34;}&#34;</span> 
+</span></span><span style="display:flex;"><span>ibmcloud fn rule create mydb2BackupRule mydb2BackupTrigger cron/backup
+</span></span></code></pre></div><p>Scheduling an invocation of an IBM Cloud Function is a two-part process:</p>
+<ul>
+<li>create a <em>trigger</em> which fires at a known time using <a href="https://crontab.guru/">cron format</a> to indicate which times to fire. The trigger includes the &ldquo;payload&rdquo; which will be supplied to our function during execution, containing the database name to backup.</li>
+<li>add a <em>rule</em> which associates the invocation of your function with the firing of the <em>trigger</em>.</li>
+</ul>
+<p>In the above example <code>mydb1</code> is backed up at five past midnight every day and <code>mydb2</code> five minutes later.</p>
+<h2 id="limitations"><a href="#limitations">Limitations</a></h2>
+<p>This approach is reasonable for small Cloudant databases but IBM Cloud Functions has a ten minute execution limit so very large databases would not complete in time.</p>
+<p>For very large databases, consider consuming a database&rsquo;s <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-databases#get-changes">changes feed</a>, passing in a last known <code>since</code> value to get incremental changes.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

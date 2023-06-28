@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Geo on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/geo/</link>
+    <description>Recent content in Geo on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 01 May 2020 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/geo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a Store Finder</title>
+      <link>https://blog.cloudant.com/2020/05/01/Building-A-Store-Finder.html</link>
+      <pubDate>Fri, 01 May 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/05/01/Building-A-Store-Finder.html</guid>
+      <description>In this post we&amp;rsquo;ll be creating a web-based store finder using Cloudant. A user visits your website and wants to know which of your branches is closest to their current location.
+Photo by Sherzod Max on Unsplash
+To build this need a search index that can sort search results by distance but first, we need a database of branches.
+Data preparation Let&amp;rsquo;s say we have a list of branches that looks like this:</description>
+    </item>
+    
+  </channel>
+</rss>

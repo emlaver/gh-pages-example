@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TypeScript on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/typescript/</link>
+    <description>Recent content in TypeScript on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 29 Jun 2018 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/typescript/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Modelling with TypeScript</title>
+      <link>https://blog.cloudant.com/2018/06/29/Modelling-Cloudant-Data-in-TypeScript.html</link>
+      <pubDate>Fri, 29 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/29/Modelling-Cloudant-Data-in-TypeScript.html</guid>
+      <description>TypeScript is a programming language that is a super-set of JavaScript written by Microsoft. TypeScript code compiles to various flavours of JavaScript to run in the browser, in Node.js or in concert with frameworks such as React, Angular, Vue.js etc. Programming in TypeScript brings you the luxury of:
+type checking for function parameters, return values etc default and optional values for function parameters interfaces, for defining the shape of objects being passed in and out of functions classes with constructors, inheritance &amp;amp; access modifiers enumerations iterators module import/export and lots more Ultimately your TypeScript code is transpiled into JavaScript, targetted for your destination platform, so it can&amp;rsquo;t do any more than JavaScript.</description>
+    </item>
+    
+  </channel>
+</rss>

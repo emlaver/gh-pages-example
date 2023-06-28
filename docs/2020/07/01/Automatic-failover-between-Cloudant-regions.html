@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Automatic Cross-region Failover</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Automatic Cross-region Failover">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/07/01/Automatic-failover-between-Cloudant-regions.html" />
+    <meta property="og:description" content="Using CIS Edge functions switch between Cloudant services" />
+    <meta property="article:published_time" content="2020-07-01 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/nasa-Q1p7bh3SHj8-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Automatic Cross-region Failover" />
+    <meta name="twitter:description" content="Using CIS Edge functions switch between Cloudant services" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Automatic Cross-region Failover">
+    <meta itemprop="description" content="Using CIS Edge functions switch between Cloudant services">
+    <meta itemprop="image" content="/img/nasa-Q1p7bh3SHj8-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Automatic Cross-region Failover</a></h1>
+  
+  <div class="postmeta">Jul 1, 2020 | Debatosh Tripathy | 
+
+<span class="tag">Failover</span>
+
+<span class="tag">HA</span>
+
+</div>
+  
+  <p>IBM Cloudant NoSQL database offers high availability through in-region automatic data redundancy by storing data in triplicate across three servers within a single region. In a true sense, achieving high availability and eliminating single point failure couldn’t be accomplished using a single region Cloudant setup. So, to address this, we have to consider doing two things:</p>
+<ol>
+<li>Configure cross-region redundancy by setting up Cloudant accounts in two or more regions, create databases in each region, and set up bidirectional continuous replications between the corresponding databases in each account.</li>
+<li>Configure automatic fail-over between IBM Cloudant regions using Cloud Internet Service (CIS) Edge function in IBM Cloud and will discuss more on this.</li>
+</ol>
+<p><img src="/img/nasa-Q1p7bh3SHj8-unsplash.jpg" alt=""></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/Q1p7bh3SHj8">NASA on Unsplash</a></p>
+</blockquote>
+<blockquote>
+<p><strong>Note:</strong> For this article, I assume that the cross-region redundancy (with two regions) is already setup with active-passive configuration. For more information about setting this up, see <a href="https://cloud.ibm.com/docs/Cloudant?topic=cloudant-configuring-ibm-cloudant-for-cross-region-disaster-recovery#configuring-ibm-cloudant-for-cross-region-disaster-recovery">Configuring IBM Cloudant for cross-region disaster recovery</a>. We will consider setting up active-passive configuration because of the following two regions:</p>
+<ul>
+<li>The active-active configuration could cause an availability issue if one of the sites goes down.</li>
+<li>Applications that work within an active-active configuration must have a strategy for handling conflicts to avoid problems with multiple copies of data.</li>
+</ul>
+</blockquote>
+<h2 id="target-architecture-with-auto-failover-mechanism"><a href="#target-architecture-with-auto-failover-mechanism">Target architecture with auto-failover mechanism:</a></h2>
+<p><img src="/img/failover.png" alt=""></p>
+<h2 id="how-does-this-setup-work"><a href="#how-does-this-setup-work">How does this setup work?</a></h2>
+<p>First, we have to configure two CIS load balancers (LB) which points to primary and secondary Cloudant regions respectively. In addition to this, we have to explicitly set the database hostname as the &ldquo;Host Header Override&rdquo; value inside the &ldquo;Page Rules&rdquo; option in the CIS dashboard. Without this, Cloudant won’t honour the request as it would expect the host header value as &ldquo;Cloudant database hostname&rdquo;, whereas it will have the value as &ldquo;CIS load balancer hostname&rdquo;. Adding &ldquo;Host Header Override&rdquo; solves one issue but creates another. As the value inside it is hardcoded, it couldn’t be dynamically changed, so, effectively the load balancer starts behaving like a reverse proxy and can’t load balance between the primary or secondary Cloudant cluster. To get around this problem, we could use the CIS Edge function which could intercept any incoming request for a specific LB URL, before it reaches the actual LB and we could inject custom routing logic in there.</p>
+<p>As shown in the above diagram, the CIS Edge function intercepts the primary CIS LB URL and checks if the primary site/region is up or not by pinging a database document inside it. If the primary site is up, CIS Edge function forwards the call to the primary Cloudant site. If the primary site is nonresponsive and the ping fails, then the request would be redirected to the secondary site/region automatically. As this check would be done on every incoming request to the CIS LB URL, it would add network latency, which could be minimized by adding a monitoring logic which would only check if the site/region is up or not in a specific time interval. For this example, we would use 15 seconds time interval, which means the CIS Edge function will check every 15 seconds if the site is up or not and accordingly forward the request to either primary or secondary Cloudant site.</p>
+<h2 id="steps-involved"><a href="#steps-involved">Steps Involved:</a></h2>
+<h3 id="step-1"><a href="#step-1">Step 1</a></h3>
+<p>Configure primary CIS LB with Cloudant URL for the primary site and set the database hostname as the &ldquo;Host Header Override&rdquo; value inside &ldquo;Page Rules&rdquo; option in the CIS dashboard.
+On the CIS dashboard, you&rsquo;ll see three lists that show the load balancers, origin pools, and health checks.</p>
+<ol>
+<li>First create a &ldquo;health check&rdquo;</li>
+<li>Create an origin pool and select the health check entry created in the above step.</li>
+<li>Create load balancer and select the origin pool created in the above step</li>
+<li>Create a page rule to set the Host Header Override for the LB URL
+<ul>
+<li>In the CIS dashboard navigate to Performance -&gt; Page Rules.</li>
+<li>Create a page rule for the LB URL, for example, <a href="https://primarycislb.ibm.net/">https://primarycislb.ibm.net/</a>*</li>
+<li>Select the Rule Behaviour setting Host Header Override.</li>
+<li>Set as the Cloudant database hostname, for example, primaryacct.cloudant.com.</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><strong>Note :</strong> For more information on setting up the load balancer, follow this <a href="https://cloud.ibm.com/docs/cis?topic=cis-set-up-and-configure-your-load-balancers">Link</a></p>
+</blockquote>
+<h3 id="step-2"><a href="#step-2">Step 2</a></h3>
+<p>Configure secondary CIS LB with Cloudant URL for the secondary site and set the database hostname as the &ldquo;Host Header Override&rdquo; value inside &ldquo;Page Rules&rdquo; option in the CIS dashboard.
+Follow the Steps mentioned above.</p>
+<h3 id="step-3"><a href="#step-3">Step 3</a></h3>
+<p>Create an Action under the CIS Edge function, which would check if the primary Cloudant site is up or not in a specific interval of time. e.g 15 seconds. If it is up, then the request is routed to the primary Cloudant site, if it is down than the request automatically gets forwarded to the secondary site.</p>
+<ul>
+<li>Open the &ldquo;Edge Functions&rdquo; page from the CIS instance dashboard.</li>
+<li>Click the &ldquo;Create&rdquo; icon on the &ldquo;Actions&rdquo; tab.</li>
+<li>Enter &ldquo;cloudant-db-route&rdquo; in the action name field.</li>
+<li>Paste the following source code into the action body section and click the &ldquo;Save&rdquo; button.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;fetch&#39;</span>, <span style="color:#a6e22e">event</span> =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">respondWith</span>(<span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">request</span>));
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Global variable.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">lastPingTime</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">headerInfo</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;Authorization&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Base64 encoded Cloudant credential&#39;</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">config</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">method</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;HEAD&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">headerInfo</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">handleRequest</span>(<span style="color:#a6e22e">request</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">currentPingTime</span> <span style="color:#f92672">=</span> Math.<span style="color:#a6e22e">floor</span>(Date.<span style="color:#a6e22e">now</span>() <span style="color:#f92672">/</span> <span style="color:#ae81ff">1000</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> ((<span style="color:#a6e22e">currentPingTime</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">lastPingTime</span>) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">15</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">lastPingTime</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">currentPingTime</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Ping database document in Primary cluster
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">dbPing</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#39;https://primaryacct.cloudant.com/cloudant-db-name/document-id&#39;</span>, <span style="color:#a6e22e">config</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">dbPing</span>.<span style="color:#a6e22e">status</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">200</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>; <span style="color:#75715e">/* Switch to Primary */</span>
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>; <span style="color:#75715e">/* Switch to Secondary */</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">result</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">request</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Considering secondarycislb.ibm.net as the second CIS LB URL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">url</span>.<span style="color:#a6e22e">replace</span>(<span style="color:#e6db74">&#39;primarycislb&#39;</span>,  <span style="color:#e6db74">&#39;secondarycislb&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">new_url</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">URL</span>(<span style="color:#a6e22e">url</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">modifiedRequest</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Request</span>(<span style="color:#a6e22e">new_url</span>, {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">method</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">method</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">headers</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">headers</span>
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">modifiedRequest</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><h3 id="step-4"><a href="#step-4">Step 4</a></h3>
+<p>Create a Trigger under the CIS Edge function which would intercept the primary CIS LB URL and invoke the Action we have defined in the earlier step.</p>
+<ul>
+<li>Select the &ldquo;Triggers&rdquo; panel from the Edge Functions page.</li>
+<li>Click the &ldquo;Add trigger&rdquo; icon.</li>
+<li>Set the Trigger URL to <a href="https://primarycislb.ibm.net/">https://primarycislb.ibm.net/</a>*</li>
+<li>Select the &ldquo;cloudant-db-route&rdquo; action from the drop-down menu.</li>
+<li>Click the &ldquo;Save&rdquo; button.</li>
+</ul>
+<h3 id="step-5"><a href="#step-5">Step 5</a></h3>
+<p>To check if the failover is working or not, you could temporarily delete the db document in the primary Cloudant cluster which CIS Edge function pings and will return error code other than 200. This would automatically cause the traffic route to secondary cluster within 15 seconds in this case. You could select the db monitoring interval as per the NFR defined for your project.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

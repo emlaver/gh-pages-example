@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>soundex on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/soundex/</link>
+    <description>Recent content in soundex on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 12 Dec 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/soundex/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Fuzzy search using soundex</title>
+      <link>https://blog.cloudant.com/2018/12/12/soundex-view.html</link>
+      <pubDate>Wed, 12 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/12/12/soundex-view.html</guid>
+      <description>If you want to find documents in your database that contain a word that sounds like some other word even though it does not have the same spelling (a homophone), you can use the soundex algorithm.
+Soundex is an algorithm for indexing names by how they are pronounced in English.
+Its purpose is to encode words that sound alike with the same representation so that they can be matched despite minor differences in spelling.</description>
+    </item>
+    
+  </channel>
+</rss>

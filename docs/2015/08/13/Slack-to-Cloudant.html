@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Slack to Cloudant</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Slack to Cloudant">
+    <meta property="og:url" content="https://blog.cloudant.com/2015/08/13/Slack-to-Cloudant.html" />
+    <meta property="og:description" content="With Slack slash commands" />
+    <meta property="article:published_time" content="2015-08-13 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/noora-alhammadi-579858-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Slack to Cloudant" />
+    <meta name="twitter:description" content="With Slack slash commands" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Slack to Cloudant">
+    <meta itemprop="description" content="With Slack slash commands">
+    <meta itemprop="image" content="/img/noora-alhammadi-579858-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Slack to Cloudant</a></h1>
+  
+  <div class="postmeta">Aug 13, 2015 | Glynn Bird | 
+
+<span class="tag">Slack</span>
+
+</div>
+  
+  <p>Slack’s Integration API and Cloudant’s HTTP API make it simple to store data directly into a Cloudant database without breaking a sweat. This tutorial shows how to create a custom slash command in Slack and how to post it directly to Cloudant.</p>
+<p>Slack is a messaging and team-working application that is used widely to allow disparate teams of people to chat, share files, and interact on desktop, tablet, and mobile platforms. We use Slack in IBM Cloud Data Services to coordinate our activities, to work in an open collaborative environment, and to cut down on email and meetings.</p>
+<p>One of the strengths of Slack is that it integrates with other web services, so events happening in Github or Stack Overflow can be surfaced in the appropriate Slack channels. Slack also has an API that lets you create custom integrations. The simplest of these is slash commands: when a user starts a Slack message with a forward slash followed by a command string, Slack can be configured to POST that data to an external API. Say you create the slash command /lunch. A user could type:</p>
+<pre tabindex="0"><code>/lunch pepperoni pizza and fanta
+</code></pre><p>When they do so, Slack makes an HTTP POST to any URL you specify with some data that identifies who issued the command, in which channel:</p>
+<pre tabindex="0"><code>token=kt1207qsOYtAVDrkt1207qsOYtAVDr
+team_id=T0001
+team_domain=example
+channel_id=C2147483705
+channel_name=test
+user_id=U2147483697
+user_name=Steve
+command=/lunch
+text=pepperoni pizza and fanta
+</code></pre><p>All you need to do is create an API service, build an application, handle the post, and then store the data in your database.</p>
+<p><img src="/img/sl_1.png" alt=""></p>
+<p>But there is a simpler way. Because IBM Cloudant is a cloud-based, NoSQL database that has an HTTP API, you can cut out the middle layer and post data directly into Cloudant:</p>
+<p><img src="/img/sl_2.png" alt=""></p>
+<p>This blog post shows you how to create a new Slash Command from scratch and how to get the data stored in Cloudant.</p>
+<p>Create the command in Slack</p>
+<ul>
+<li>Log into the Slack website.</li>
+<li>On the top left of the screen, click the menu and choose Configure Integrations.</li>
+<li>Scroll to the bottom of the page and click Slash Commands.
+Tip: You can also get here via this URL: <a href="https://YOURACCOUNTNAME.slack.com//services/new/slash-commands">https://YOURACCOUNTNAME.slack.com//services/new/slash-commands</a></li>
+</ul>
+<p>The following form appears:</p>
+<p><img src="/img/sl_3.png" alt=""></p>
+<ul>
+<li>Enter the command you want to create, like /lunch</li>
+<li>Click Add Slash Command Integration.</li>
+</ul>
+<p>Slack sets up this service, and shows you the token that will be transmitted in every post originating from this Slack command. Make a note of this token, as we’ll need it later when we set up Cloudant.</p>
+<p><img src="/img/sl_4.png" alt=""></p>
+<p>We will come back to this page shortly, after we’ve set up Cloudant.</p>
+<h2 id="set-up-cloudant"><a href="#set-up-cloudant">Set up Cloudant</a></h2>
+<p>Sign up for a Cloudant account and log into your Cloudant Dashboard. In the Dashboard, create a new database called &lsquo;slack&rsquo;:</p>
+<p><img src="/img/sl_5.png" alt=""></p>
+<p>As Slack doesn’t integrate directly with the CouchDB/Cloudant API, we need to direct the posted data to an Update Handler Function. This is a mechanism in CouchDB/Cloudant that allows custom HTTP requests to be handled by a JavaScript before being written to the database. In our case we want to only accept requests that contain the correct Slack security token, so our code looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>, <span style="color:#a6e22e">req</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// only accept valid requests containing the token
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">form</span>.<span style="color:#a6e22e">token</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;YOUR_REV_TOKEN&#39;</span>) {
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// create a new object with the data to save
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">form</span>;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// remove the token, so it&#39;s not saved
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">delete</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">token</span>;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// add a timestamp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// and a unique id
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">_id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">uuid</span>;
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// instruct Cloudant to save it
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> [<span style="color:#a6e22e">d</span>, <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>({<span style="color:#a6e22e">ok</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>})];
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// don&#39;t save anything
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> [<span style="color:#66d9ef">null</span>, <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>({<span style="color:#a6e22e">ok</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>})];
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Converting that function into a JSON string, we get the following code. In Cloudant, create a Design Document in your slack database, and copy this code into it, replacing YOUR_REV_TOKEN with the token you got from Slack:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_design/slack&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;updates&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;slashcommand&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;function (doc, req) { n  if (req.form.token == &#39;YOUR_REV_TOKEN&#39;) {  n    var d = req.form;  n    delete d.token; n    d.timestamp = new Date().getTime(); n    d._id = req.uuid;n    return [d, JSON.stringify({ok: true})]; n  } else {n    return [null, JSON.stringify({ok: false})];n  }n}&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="/img/sl_6.png" alt=""></p>
+<p>The last thing to do on the Cloudant side is create a Cloudant API key that has write access to the slack database. In your Cloudant Slash database, click Permissions, then click Generate API Key. Turn on the Writer checkbox for the newly generated key. Make a note of the API Key and password for the final step.</p>
+<p><img src="/img/sl_7.png" alt=""></p>
+<h2 id="finish-off-the-slack-integration"><a href="#finish-off-the-slack-integration">Finish off the Slack integration</a></h2>
+<p>Back in the Slack Integration Settings page, enter the URL of the Cloudant update handler, substituting the placeholder text in capitals with the details from Cloudant:</p>
+<pre tabindex="0"><code>https://APIKEY:PASSWORD@SUBDOMAIN.cloudant.com/slack/_design/slack/_update/slashcommand
+</code></pre><p><img src="/img/sl_8.png" alt=""></p>
+<p>Then click Save Integration.</p>
+<h2 id="test"><a href="#test">Test!</a></h2>
+<p>Now in any Slack channel, you should be able to issue a /lunch command:</p>
+<p><img src="/img/sl_9.png" alt=""></p>
+<p>And see the reply that was returned by the Cloudant Update Handler function:</p>
+<p><img src="/img/sl_91.png" alt=""></p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<p>With a simple Update Handler function, you can configure slack to store data in Cloudant whenever a user issues a custom slash command. What will you do with the data? Create a lunch-ordering system, time-keeper, bug-tracker, or anything else you can dream up. It’s up to you!</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://developer.ibm.com/clouddataservices/2015/08/13/writing-data-directly-cloudant-slack/" target="_new">https://developer.ibm.com/clouddataservices/2015/08/13/writing-data-directly-cloudant-slack/</a>
+
+
+
+</body>
+</html>
+

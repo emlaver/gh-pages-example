@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SQL on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/sql/</link>
+    <description>Recent content in SQL on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 23 Apr 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/sql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analysing Backups with SQL Query</title>
+      <link>https://blog.cloudant.com/2019/04/23/Analysing-Cloudant-Backups-with-SQL-Query.html</link>
+      <pubDate>Tue, 23 Apr 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/04/23/Analysing-Cloudant-Backups-with-SQL-Query.html</guid>
+      <description>In this post we discussed storing time-series data in time-boxed Cloudant databases to allow recent data to be stored in Cloudant and older data to be archived and deleted from Cloudant. In this post we&amp;rsquo;ll examine how to query data that has been archived and backed up to Object Storage using the IBM SQL Query service.
+Object storage is much cheaper per gigabyte than a database, is endlessly extensible and makes a great choice for storing backups and archived data.</description>
+    </item>
+    
+    <item>
+      <title>The Data Warehouse</title>
+      <link>https://blog.cloudant.com/2018/11/16/Cloudant-and-the-data-warehouse.html</link>
+      <pubDate>Fri, 16 Nov 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/11/16/Cloudant-and-the-data-warehouse.html</guid>
+      <description>Addendum: Since publication of this blog, couchwarehouse has added support for MySQL and PostgreSQL as well as SQLite. This post is still valid, but bear in mind you now have a choice of target database types.
+One of Cloudant&amp;rsquo;s best use-cases is as a rock-solid, always-on operational datastore. It is built for fault-tolerance, storing multiple copies of your data on separate servers so that a Cloudant cluster can withstand the loss of multiple nodes without loss of service.</description>
+    </item>
+    
+    <item>
+      <title>Querying Cloudant with SQL</title>
+      <link>https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html</link>
+      <pubDate>Tue, 18 Jul 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html</guid>
+      <description>Cloudant and its Apache CouchDB stable-mate are &amp;ldquo;NoSQL&amp;rdquo; databases—that is, they are schemaless JSON document stores. Unlike a traditional relational database, you don&amp;rsquo;t need to define your schema before writing data to the database. Just post your JSON to the database and change your mind as often as you like!
+One of the appealing things about relational databases is the query language. Structured Query Language or SQL was developed by IBM in the 1970s and was widely adopted across a host of databases ever since.</description>
+    </item>
+    
+  </channel>
+</rss>

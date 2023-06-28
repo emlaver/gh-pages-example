@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Stale, update and stable</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Stale, update and stable">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/11/06/What-is-stale-update-and-stable.html" />
+    <meta property="og:description" content="Triggering indexing and permitting stale queries" />
+    <meta property="article:published_time" content="2018-11-06 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/marifer-705093-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Stale, update and stable" />
+    <meta name="twitter:description" content="Triggering indexing and permitting stale queries" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Stale, update and stable">
+    <meta itemprop="description" content="Triggering indexing and permitting stale queries">
+    <meta itemprop="image" content="/img/marifer-705093-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Stale, update and stable</a></h1>
+  
+  <div class="postmeta">Nov 6, 2018 | Mike Rhodes | 
+
+<span class="tag">indexing</span>
+
+<span class="tag">querying</span>
+
+</div>
+  
+  <p><strong>tl;dr</strong> If you are using <code>stale=ok</code> in queries to Cloudant or CouchDB 2.x, you
+most likely want to be using <code>update=false</code> instead. If you are using
+<code>stale=update_after</code>, use <code>update=lazy</code> instead.</p>
+<p>This question has come up a few times, so here&rsquo;s a reference to what the
+situation is with these parameters to query requests in <a href="https://www.ibm.com/cloud/cloudant">Cloudant</a> and
+<a href="https://couchdb.apache.org/">CouchDB</a> 2.x.</p>
+<p>CouchDB originally used <code>stale=ok</code> on the query string to specify that you were
+okay with receiving out-of-date results. By default, CouchDB lazily updates
+indexes upon querying them rather than when JSON data is changed or added. If up
+to date results are not strictly required, using <code>stale=ok</code> provides a latency
+improvement for queries as the request does not have to wait for indexes to be
+updated before returning results. This is particularly useful for databases with
+a high write rate.</p>
+<p>As an aside, Cloudant automatically enqueues indexes for update when primary
+data changes, so this problem isn&rsquo;t so acute. However, in the face of high
+update rate bursts, it&rsquo;s still possible for indexing to fall behind so a delay
+may occur.</p>
+<p>When using a single node, as in CouchDB 1.x, this parameter behaved as you&rsquo;d
+expect. However, when clustering was added to CouchDB, a second meaning was
+added to <code>stale=ok</code>: also use the same set of shard replicas to retrieve the
+results.</p>
+<p>Recall that <a href="/2015/10/19/Read-Write-Behaviour-in-a-cluster.html">Cloudant and CouchDB 2.x stores three copies of each shard</a> and
+<a href="/2016/01/31/Understanding-Cloudant-Indexing.html">by default will use the shard replica that starts returning results fastest for
+a query request</a>. This latter fact helps even out load across the cluster.
+Heavily loaded nodes will likely return slower and so won&rsquo;t be picked to respond
+to a given query. When using <code>stale=ok</code>, the database will instead always use
+the same shard replicas for every request to that index. The use of the same
+replica to answer queries has two effects:</p>
+<ol>
+<li>Using <code>stale=ok</code> could drive load unevenly across the nodes in your database
+cluster because certain shard replicas would always be used for the queries
+to the index that specify <code>stale=ok</code>. This means a set of nodes could receive
+outside numbers of requests.</li>
+<li>If one of the replicas was hosted on a heavily loaded node in the cluster,
+this would slow down all queries to that index using <code>stale=ok</code>. This is
+compounded by the tendency of <code>stale=ok</code> to drive imbalanced load.</li>
+</ol>
+<p>The end result is that using <code>stale=ok</code> can, counter-intuitively, cause queries
+to become slower. Worse, they may become unavailable during cluster split-brain
+scenarios because of the forced use of a certain set of replicas. Given that
+mostly people use <code>stale=ok</code> to improve performance, this wasn&rsquo;t a great state
+to be in.</p>
+<p>As <code>stale=ok</code>&rsquo;s existing behaviour needed to be maintained for backwards
+compatibility, the fix for this problem was to introduce two new query string
+parameters were introduced which set each of the two <code>stale=ok</code> behaviours
+independently:</p>
+<ol>
+<li><code>update=true/false/lazy</code>: controls whether the index should be up to date
+before the query is executed.
+<ol>
+<li><code>true</code>: the index will be updated first.</li>
+<li><code>false</code>: the index will not be updated.</li>
+<li><code>lazy</code>: the index will not be updated before the query, but enqueued for
+update after the query is completed.</li>
+</ol>
+</li>
+<li><code>stable=true/false</code>: controls the use of the certain shard replicas.</li>
+</ol>
+<p>The main use of <code>stable=true</code> is that queries are more likely to appear to &ldquo;go
+forward in time&rdquo; because each <a href="/2016/01/31/Understanding-Cloudant-Indexing.html">shard replica may update its indexes in different
+orders</a>. However, this isn&rsquo;t guaranteed, so the availability and performance
+trade offs are likely not worth it.</p>
+<p>The end result is that virtually all applications using <code>stale=ok</code> should move
+to instead use <code>update=false</code>.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://dx13.co.uk/articles/2018/11/6/Cloudant-what-is-stale-stable-update.html" target="_new">https://dx13.co.uk/articles/2018/11/6/Cloudant-what-is-stale-stable-update.html</a>
+
+
+
+</body>
+</html>
+

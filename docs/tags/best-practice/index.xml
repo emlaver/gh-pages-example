@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Best-practice on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/best-practice/</link>
+    <description>Recent content in Best-practice on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 21 Nov 2019 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/best-practice/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Best &amp; Worst Practice</title>
+      <link>https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html</link>
+      <pubDate>Thu, 21 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html</guid>
+      <description>So you’re new to Cloudant, but you’re not new to database systems. As an offering manager and engineer for Cloudant the past four years, I’ve had the chance to see the product from all angles: the customers who use it, the engineers that run it, and the folks who support and sell it.
+In many ways, this article is inspired by Dimagi’s perspective as users. I’d like to add our perspective as providers of the database service, and summarize the best — and worst!</description>
+    </item>
+    
+  </channel>
+</rss>

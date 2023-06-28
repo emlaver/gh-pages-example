@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Understanding Read/Write</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Understanding Read/Write">
+    <meta property="og:url" content="https://blog.cloudant.com/2015/10/19/Read-Write-Behaviour-in-a-cluster.html" />
+    <meta property="og:description" content="Understanding how reads/writes work in a cluster" />
+    <meta property="article:published_time" content="2015-10-19 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/rawpixel-645300-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Understanding Read/Write" />
+    <meta name="twitter:description" content="Understanding how reads/writes work in a cluster" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Understanding Read/Write">
+    <meta itemprop="description" content="Understanding how reads/writes work in a cluster">
+    <meta itemprop="image" content="/img/rawpixel-645300-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Understanding Read/Write</a></h1>
+  
+  <div class="postmeta">Oct 19, 2015 | Mike Rhodes | 
+
+<span class="tag">Cluster</span>
+
+</div>
+  
+  <p>CouchDB 2.0 has clustering code contributed by Cloudant, which was inspired by Amazon&rsquo;s <a href="http://www.allthingsdistributed.com/2007/10/amazons_dynamo.html">Dynamo paper</a>.</p>
+<p>When using CouchDB in a cluster, databases are sharded and replicated. This means that a single database is split into, say, 24 shards and each shard is stored on more than one node (replica). A shard contains a specific portion of the documents in the database. A <a href="https://en.wikipedia.org/wiki/Consistent_hashing">consistent hashing</a> technique is used to allocate documents to shards. There are almost always three replicas; this provides a good balance of reliability vs. storage overhead.</p>
+<p>Read and write behaviour differs in the clustered database because data is stored on more than one database node (server). I&rsquo;m going to try to explain what the behaviour is and why it is how it is.</p>
+<p>To simplify the explanation, I&rsquo;m going to assume a database with a single shard, though still with three replicas. This just makes the diagrams simpler, it doesn&rsquo;t change behaviour. In this case we have a three node cluster, so the database has a replica on every database node in the cluster.</p>
+<p><img src="/img/rw1.jpg" alt="rw 1"></p>
+<h2 id="behaviour-in-a-healthy-cluster"><a href="#behaviour-in-a-healthy-cluster">Behaviour in a healthy cluster</a></h2>
+<p>To start with, in a healthy cluster, a read or write proceeds like this:</p>
+<ol>
+<li>Client request arrives at the cluster&rsquo;s load balancer.</li>
+<li>The load balancer selects a node in the database cluster to forward the request to. This can be any node. The selected node is called the coordinator for this request.</li>
+<li>Each node maintains a shard map which tells the node where to find the shard replicas for a given database, and what documents are found in each shard. The coordinator uses its shard map to work out which nodes hold the documents for the request.</li>
+<li>The coordinator makes a request to each node responsible for holding the data required by the request. This might be a read request, write request, view request etc. Note: if the coordinater holds a required shard replica, one of these requests is to itself.</li>
+<li>The coordinator waits for a given number of responses to arrive from the nodes it contacted. The number of responses it waits for differ based on the type of request. Reads and writes wait for two responses. A view read only waits for one. Let&rsquo;s call the number needed R (required responses). A few requests allow this to be customised using parameters on the request, but the defaults are almost always most appropriate.</li>
+<li>The coordinator processes the responses from the nodes it contacted. This can be a varying amount of work. For reads and writes, it just has to compare the responses to see if they are the same before returning a result to the client. For a view request, it might have to perform a final reduce step on the results returned from the nodes.</li>
+<li>Finally, the coordinator passes the response back to the load balancer which passes the response back to the client.</li>
+</ol>
+<p><img src="/img/rw2.jpg" alt="rw 2"></p>
+<p>In this article, we&rsquo;re interested in what happens when R responses are not received in step (5). CouchDB indicates this via a response&rsquo;s HTTP status code for some requests. For other requests, it&rsquo;s not currently possible to tell whether <code>R</code> responses were received.</p>
+<h2 id="behaviour-in-a-partitioned-cluster"><a href="#behaviour-in-a-partitioned-cluster">Behaviour in a partitioned cluster</a></h2>
+<p>The behaviour of the cluster is similar whether it&rsquo;s partitioned or a node has been taken offline. A partitioned cluster just makes life easier for me because I can illustrate more scenarios with a single diagram.</p>
+<p>Our scenario is:</p>
+<ul>
+<li>A cluster with three nodes which is split into two partitions, A and B.</li>
+<li>Partition A contains two nodes, and therefore two replicas of the data.</li>
+<li>Partition B contains one node, and therefore one replica of the data.</li>
+<li>For whatever reason, the load balancer from the cluster can talk to both partitions, but the nodes in each partition are isolated from each other.</li>
+<li>We assume the nodes know that the partition has occurred. Details on the converse state are below.</li>
+<li>We further assume that the nodes on each side of the partition operate correctly. In particular, that they&rsquo;re able to promptly reply to the coordinators requests. The reason for this will become clear later.</li>
+</ul>
+<p><img src="/img/rw3.jpg" alt="rw 3"></p>
+<p>From the above description of the read and write path, it should be clear that in this scenario some reads and writes will be allocated to coordinator nodes in Partition A and some to the node in Partition B.</p>
+<h2 id="reads-and-writes-to-partition-a"><a href="#reads-and-writes-to-partition-a">Reads and writes to Partition A</a></h2>
+<p>As noted above, the default value for <code>R</code> is 2 for reads and writes to the database. For searches, view reads and Cloudant query requests <code>R</code> is implicitly 1. It should be clear that all reads and writes to Partition A will be able to receive at least <code>R</code> responses in all cases. In this case, the responses to the client will be as follows:</p>
+<ul>
+<li>A read or query will return <code>200</code> HTTP code along with the data.</li>
+<li>A write will return a <code>201 Created</code> HTTP code to indicate it wrote the data to <code>R</code> (or more) replicas.</li>
+</ul>
+<h2 id="reads-and-writes-to-partition-b"><a href="#reads-and-writes-to-partition-b">Reads and writes to Partition B</a></h2>
+<p>Partition B is more interesting. It&rsquo;s clear we can still meet the implicit <code>R</code> for searches, view reads and Cloudant Query requests. However, the nodes in Partition B cannot meet the two responses required for <code>R</code> for document read and write operations. So what do we do? In essence, the available node will do its best to read and write the data. Specifically, it will read from and write to its own replica of the data. Its returned HTTP status codes and body data are:</p>
+<ul>
+<li>A read will still return <code>200</code> along with the latest version of the document or view/search/query data the node has (read from the single replica). Currently there is no way to tell that fewer than <code>R</code> replies were received from nodes holding replicas of shards.</li>
+<li>A write will return a <code>202 Accepted</code> to indicate that the coordinator received a reply from at least one replica (i.e., the one in Partition B, itself) but fewer than <code>R</code> replies.</li>
+</ul>
+<h2 id="a-note-on-responses"><a href="#a-note-on-responses">A note on responses</a></h2>
+<p>In the above, it&rsquo;s easy to overlook the fact that <code>R</code> is all about replies to the coordinator&rsquo;s requests. For writes in particular, this has some ramifications that it&rsquo;s important to take note of.</p>
+<ol>
+<li>A <code>202</code> could be received in a non-partitioned cluster. For some reason a replica might receive the write request from the coordinator node, write the data but for some reason not respond in a timely manner. Responses to a client therefore guarantee only a lower-bound to the number of writes which occurred. While there may have been <code>R</code> (or more) successful writes, the coordinator can only know about those for which it received a response. And so it must must return <code>202</code>.</li>
+<li>Interestingly, this also means writes may happen where the coordinator receives no responses. The client receives a <code>500</code> response with a <code>reason: timeout</code> JSON body, but the cluster has still written the data. Or perhaps it didn&rsquo;t &ndash; neither the coordinator nor therefore the client can know.</li>
+<li>For reads, the behaviour differs slightly when the coordinator knows that it cannot possibly receive <code>R</code> responses. In that case, it returns when it has received as many as it is able to &ndash; in Partition A this is two, in Partition B this is one. If, instead, nodes are just slow to respond, if the coordinator doesn&rsquo;t receive R responses before its timeout, it will return a <code>500</code>. See this <a href="https://mail-archives.apache.org/mod_mbox/couchdb-dev/201510.mbox/%3CCAJ1bcfFO1H+e-j=fmo0DAAjKmHnwnB6pKfg7UhH5wK0UxhhgPw@mail.gmail.com%3E">mailing list thread</a>.</li>
+</ol>
+<p>This all illustrates that it&rsquo;s essential to remember that R is all about responses received by the coordinator, and not about, for example, whether data was written or not to a given number replica. This is why it was called out in the description of the partitioned cluster that nodes reply promptly.</p>
+<h2 id="concurrent-modifications"><a href="#concurrent-modifications">Concurrent modifications</a></h2>
+<p>As time goes by, it&rsquo;s clear from the above that CouchDB 2.0 will accept writes to the same document on both sides of the partition. This will mean the data on each side of the partition will diverge.</p>
+<p>For writes to different documents, all will be well. When the partition heals, nodes will work out amongst themselves which updates they are missing and update themselves accordingly. Soon all nodes in the cluster will be consistent with each other, and fully up-to-date.</p>
+<p>For changes made to the same document on both sides of the partition, the nodes will reconcile divergent copies of a document to create a <em>conflicted document</em>, in exactly the same manner as happens when remote CouchDB instances replicate with each other. Again, all nodes will become consistent; it&rsquo;s just some documents are conflicted in that consistent state. It is the user&rsquo;s responsibility to detect and fix these conflicts.</p>
+<p>There is a brief discussion of resolving conflicted documents in the <a href="http://docs.couchdb.org/en/1.6.1/replication/conflicts.html#working-with-conflicting-documents">CouchDB docs</a>. In essence, the cluster will continue to operate, returning one of the versions of the document that was written during the partition. The user must provide the logic for merging the changes made separately during the partition.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<p>This short discussion shows that CouchDB 2.0&rsquo;s clustering behaviour favours availability of data for both reading and writing. It also describes the coordinating node&rsquo;s behaviour in the face of partitions and how it indicates this to the client application, in particular how and why it is related <em>purely to the number of responses received</em> during operations.</p>
+<p>It&rsquo;s important to understand this, and what happens as data diverges on the different sides of a network partition &ndash; and how to fix the results of this divergence &ndash; in order to create well-behaved applications. However, this behaviour does allow the building of extremely robust programs with the careful application of knowledge and conflict handling code.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://dx13.co.uk/articles/2015/10/19/couchdb-20s-read-and-write-behaviour-in-a-cluster.html" target="_new">https://dx13.co.uk/articles/2015/10/19/couchdb-20s-read-and-write-behaviour-in-a-cluster.html</a>
+
+
+
+</body>
+</html>
+

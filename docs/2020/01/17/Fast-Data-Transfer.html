@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Fast Data Transfer</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Fast Data Transfer">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/01/17/Fast-Data-Transfer.html" />
+    <meta property="og:description" content="Copying data faster than replication" />
+    <meta property="article:published_time" content="2020-01-17 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/juliana-kozoski-X3-IypGOGSE-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Fast Data Transfer" />
+    <meta name="twitter:description" content="Copying data faster than replication" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Fast Data Transfer">
+    <meta itemprop="description" content="Copying data faster than replication">
+    <meta itemprop="image" content="/img/juliana-kozoski-X3-IypGOGSE-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Fast Data Transfer</a></h1>
+  
+  <div class="postmeta">Jan 17, 2020 | Glynn Bird | 
+
+<span class="tag">Replication</span>
+
+<span class="tag">Transfer</span>
+
+</div>
+  
+  <p>Cloudant replication is the database&rsquo;s method of of choice for transferring data from a <em>source</em> to a <em>target</em> database. It&rsquo;s main use-cases are:</p>
+<ul>
+<li>Mobile apps - keeping mobile application data synched with a server-side copy where the data can be modified at both sides.</li>
+<li>Cross-region sync - a database can exist in two geographies and traffic can be load balanced between them, routed so that a customer is directed to their nearest copy or can be used for disaster recovery fail-over.</li>
+<li>One-off data transfer - if data needs to be moved from one CouchDB/Cloudant service to another.</li>
+<li>Removing tombstones - deleted Cloudant documents leave a &ldquo;tombstone&rdquo; document behind which can&rsquo;t be deleted without replicating data to a new database and ignoring the deletions.</li>
+<li>Backup - taking a copy of valuable data: in some cases only the data and not the design documents that trigger index builds need to be retained.</li>
+</ul>
+<p>Replication is easy to set up, can be run as a one-off or continuous operation and can be resumed from its last position. For all of its good points, replication does have some drawbacks:</p>
+<ul>
+<li>Conflict removal - any <a href="https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html">conflicted documents</a> on the source are carefully retained on the target side.</li>
+<li>Document alteration - the documents can not be changed in flight. If, for example, you wish to replicate data from a non-partitioned database to a partitioned database, altering the <code>_id</code> field on the way, this cannot be achieved with replication.</li>
+<li>Speed - replication&rsquo;s focus on transferring everything from the source to the target (winning revisions, conflicts, deletions and attachments) makes it precise but not as fast as simple data transfer could be.</li>
+</ul>
+<p><img src="/img/juliana-kozoski-X3-IypGOGSE-unsplash.jpg" alt="fire hose"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/X3-IypGOGSE">Juliana Kozoski on Unsplash</a></p>
+</blockquote>
+<h2 id="how-fast-is-replication"><a href="#how-fast-is-replication">How fast is replication?</a></h2>
+<p>It depends how many documents you have, how big they are, how many of them are conflicted, how many attachments there are, how big <em>they</em> are, how many deletions you have, the reads-per-second capacity at the source, the writes-per-second capacity at the target, network bandwidth, how geographically close the source and target are etc.</p>
+<p>As an indicative example, I was able to transfer 500,000 documents (around 700 bytes each) in around 300 seconds. This number is highly dependent on the provisioned capacity of the Cloudant service you have. A free &ldquo;Lite&rdquo; account, for example,  can only transfer 20 documents per second because it is rate-limited to 20 reads per second.</p>
+<p>If we&rsquo;re prepared to make some assumptions and drop some of replication&rsquo;s features, we can achieve a faster data transfer than that using <em>couchfirehose</em>, a command-line utility that transfers data from a source to a target database without using replication.</p>
+<h2 id="how-do-i-install-couchfirehose"><a href="#how-do-i-install-couchfirehose">How do I install couchfirehose?</a></h2>
+<p>Simply run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; npm install -g couchfirehose
+</span></span></code></pre></div><h2 id="how-do-a-i-transfer-data-using-couchfirehose"><a href="#how-do-a-i-transfer-data-using-couchfirehose">How do a I transfer data using couchfirehose?</a></h2>
+<p>Let&rsquo;s set up our Cloudant URL, including authentication credentials, in an environment variable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; export URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://myusername:mypassword@mycloudantservice.cloudant.com&#34;</span>
+</span></span></code></pre></div><p>We can then use the <code>URL</code> variable in our next command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; couchfirehose --source <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mysourcedb&#34;</span> --target <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mytargetdb&#34;</span>
+</span></span></code></pre></div><p>As well as <code>--source</code> and <code>--target</code> there are other parameters we can use to customise the data transfer:</p>
+<ul>
+<li><code>--source</code>/<code>-s</code> - the URL of the source Cloudant database, including authentication.</li>
+<li><code>--target</code>/<code>-t</code> - the URL of the target Cloudant database, including authentication.</li>
+<li><code>--batchsize</code>/<code>-b</code> - the number of documents per write request. (Default 500)</li>
+<li><code>--concurrency</code>/<code>-c</code> - the number of writes in flight. (Default 2)</li>
+<li><code>--maxwrites</code>/<code>-m</code> - the maximum number of write requests to issue per second. (Default 5)</li>
+<li><code>--filterdesigndocs</code>/<code>--fdd</code> - whether to omit design documents from the data transfer. (Default false)</li>
+<li><code>--filterdeletions</code>/<code>--fd</code> - whether to omit deleted documents from the data transfer. (Default false)</li>
+<li><code>--resetrev</code>/<code>-r</code> - omits the revision token, resetting the targets revisions to `1-xxx&rsquo;. (Default false)</li>
+<li><code>--transform</code> - the path of synchronous JavaScript transformation function. (Default null)</li>
+<li><code>--selector</code> - a selector query used to filter the source&rsquo;s documents. (Default null)</li>
+</ul>
+<p>e.g.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; <span style="color:#75715e"># filter out deleted documents</span>
+</span></span><span style="display:flex;"><span>&gt; couchfirehose --source <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mysourcedb&#34;</span> --target <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mytargetdb&#34;</span> --fd true
+</span></span><span style="display:flex;"><span>&gt; <span style="color:#75715e"># larger batch size</span>
+</span></span><span style="display:flex;"><span>&gt; couchfirehose --source <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mysourcedb&#34;</span> --target <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mytargetdb&#34;</span> -b <span style="color:#ae81ff">2000</span>
+</span></span><span style="display:flex;"><span>&gt; <span style="color:#75715e"># ensure that only five writes are made per second</span>
+</span></span><span style="display:flex;"><span>&gt; couchfirehose --source <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mysourcedb&#34;</span> --target <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mytargetdb&#34;</span> -m <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>&gt; <span style="color:#75715e"># allow eight writes to be in flight at any one time</span>
+</span></span><span style="display:flex;"><span>&gt; couchfirehose --source <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mysourcedb&#34;</span> --target <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mytargetdb&#34;</span> -c <span style="color:#ae81ff">8</span>
+</span></span></code></pre></div><p>By experimenting with these parameters, it&rsquo;s possible to see a four-fold increase in speed compared with replication, all though it&rsquo;s worth remembering that this <strong>is not replication</strong>:</p>
+<ul>
+<li>conflicts, attachments and optionally deletions/design-docs are left behind.</li>
+<li>there maybe unexpected results if the source data is non-static or the target database is not empty.</li>
+<li>the <em>couchfirehose</em> process is not &ldquo;resumable&rdquo;.</li>
+</ul>
+<h2 id="advanced-features"><a href="#advanced-features">Advanced features</a></h2>
+<p>We don&rsquo;t have to transfer all of the source data to the target if we don&rsquo;t want to. By supplying a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#selector-syntax">Cloudant Query Selector</a> as the <code>--selector</code> parameter, the source data will be filtered according to the query e.g.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; <span style="color:#75715e"># only transfer completed orders</span>
+</span></span><span style="display:flex;"><span>&gt; couchfirehose --source <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/s&#34;</span> --target <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/t&#34;</span> --selector <span style="color:#e6db74">&#39;{&#34;status&#34;:&#34;completed&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span>&gt; <span style="color:#75715e"># only transfer last year&#39;s data that is not null</span>
+</span></span><span style="display:flex;"><span>&gt; couchfirehose --source <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/s&#34;</span> --target <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/t&#34;</span> --selector <span style="color:#e6db74">&#39;{&#34;year&#34;:2018,&#34;value&#34;:{&#34;$ne&#34;:null}}&#39;</span>
+</span></span></code></pre></div><p>We can also supply a custom JavaScript function to the <code>--transform</code> parameter, where the function transforms the source document prior to it being written to the target. Create your function in a file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">doc</span>) =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// delete unwanted field
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">delete</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">deprecatedAttribute</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// add a new field
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">newAttribute</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;new&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// coerce the type of a field
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">doc</span>,<span style="color:#a6e22e">price</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;string&#39;</span>) {
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">price</span> <span style="color:#f92672">=</span> parseFloat(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">price</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// modify the _id as we&#39;re moving to a partitioned database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">doc</span>,<span style="color:#a6e22e">_id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">userid</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;:&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// ignore zero value transactions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">price</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// if we return null, the document is not written to the target
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">doc</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">f</span>
+</span></span></code></pre></div><p>The <em>transform</em> feature can be used to correct data, add new attributes, remove unwanted attributes and for migrations from a non-partitioned database to a partitioned database, modify the <code>_id</code> field to contain a partition key.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

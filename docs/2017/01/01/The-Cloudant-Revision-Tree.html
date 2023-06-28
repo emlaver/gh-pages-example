@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>The Revision Tree</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="The Revision Tree">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/01/01/The-Cloudant-Revision-Tree.html" />
+    <meta property="og:description" content="How Cloudant stores revisions in a tree" />
+    <meta property="article:published_time" content="2017-01-01 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/gilly-stewart-27380-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="The Revision Tree" />
+    <meta name="twitter:description" content="How Cloudant stores revisions in a tree" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="The Revision Tree">
+    <meta itemprop="description" content="How Cloudant stores revisions in a tree">
+    <meta itemprop="image" content="/img/gilly-stewart-27380-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">The Revision Tree</a></h1>
+  
+  <div class="postmeta">Jan 1, 2017 | Mike Rhodes | 
+
+<span class="tag">Revisions</span>
+
+</div>
+  
+  <p>On the surface, Cloudant&rsquo;s document API appears to be a reasonably simple way to upload JSON data to a key value store and update the JSON data for a particular key. However, the reality is more complicated &ndash; isn&rsquo;t it always? &ndash; and understanding what&rsquo;s happening is important in using Cloudant effectively and becoming an advanced user of the database.</p>
+<p>The takeaway point is this: <strong>a document in Cloudant is a tree and Cloudant&rsquo;s document HTTP API is essentially a tree manipulation API</strong>.</p>
+<p>Below, we&rsquo;ll create and manipulate these trees to get a feel for what this means. The default behaviours of many calls allow you to ignore the tree in order that Cloudant appears more like a database, and we&rsquo;ll explore why and how this works as we go.</p>
+<p>Aside: why a tree? A document&rsquo;s tree representation is key to Cloudant&rsquo;s replication, which is essentially transferring tree nodes from one location to another in order to synchronise data robustly.</p>
+<p>All this information is valid for CouchDB, but I&rsquo;ve chosen to refer to Cloudant throughout for simplicity. This mini-tutorial assumes a basic knowledge of the Cloudant document API. Let&rsquo;s get started.</p>
+<h2 id="building-a-simple-document-tree"><a href="#building-a-simple-document-tree">Building a simple document tree</a></h2>
+<p>Uploading a new document to Cloudant gives you something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XPUT <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d <span style="color:#e6db74">&#39;{&#34;foo&#34;:&#34;bar&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;mydoc&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-4c6114c65e295552ab1019e2b046b10e&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Updating that document gives you this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XPUT <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?rev=1-4c6114c65e295552ab1019e2b046b10e&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d <span style="color:#e6db74">&#39;{&#34;foo&#34;:&#34;baz&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;mydoc&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;2-cfcd6781f13994bde69a1c3320bfdadb&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Each call has returned a new rev ID in the response. If we didn&rsquo;t already know the two rev IDs for this document, we could find them out by making a request for the document using the revs=true querystring parameter:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?revs=true&#39;</span> | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;2-cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;baz&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_revisions&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;start&#34;</span>: 2,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ids&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;4c6114c65e295552ab1019e2b046b10e&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>The special thing about this request is that the response lists the rev IDs in order &ndash; which defines the history of the document. From this call, we can construct a tree for the document with a single branch and two nodes. We use the _revisions field, and construct the tree backwards using the start and ids array:</p>
+<p><img src="/img/tree1.png" alt="tree 1"></p>
+<p>The tree has two nodes. Cloudant labels each node with its rev ID. Cloudant also labels one node winner; we&rsquo;ll come to that in a moment.</p>
+<p><em>Note: Cloudant calls these tree nodes revisions but I&rsquo;m going to stick with node to emphasise the tree semantics.</em></p>
+<p>Now we&rsquo;ve seen the tree, let&rsquo;s see how we can think about the three calls if we consider them in terms of trees rather updates to a JSON document.</p>
+<ol>
+<li>The first call creates a new document tree and its root node, 1-4c6114c65e295552ab1019e2b046b10e.</li>
+<li>The second call adds a node to the tree, parented by the node we pass in via the rev querystring parameter. The call returns the rev ID of the new node, 2-cfcd6781f13994bde69a1c3320bfdadb.</li>
+<li>The final call uses the revs=true parameter to return the history of the 2- node along with its content.</li>
+</ol>
+<p>One other thing is worth mentioning at this point: a rev ID can be used to retrieve any node of the tree at any time. This is done by using the rev querystring parameter when making a GET request for the document. While that node will be returned, the JSON content of the document at that point may not: Cloudant cleans up the content of old tree nodes to conserve space.</p>
+<h2 id="the-winner-node"><a href="#the-winner-node">The winner node</a></h2>
+<p>The winner abstraction is key to Cloudant&rsquo;s database semantics. It&rsquo;s used to give the appearance of a single value for a document rather than a tree. It does this by freeing us from having to specify the rev ID of the node we want with every call &ndash; though some calls, like updates, always need one. Let&rsquo;s look at how this works.</p>
+<p>Cloudant applies the winner label to the node at the tip of the tree as shown in the diagram above. This node is the one that Cloudant will refer to when responding to document retrieval requests that do not have any particular rev ID specified. The rev ID for this node is included in the response.</p>
+<p>While the node that Cloudant chooses to label the winner for any given document is an implementation detail, it&rsquo;s essentially decided by choosing the longest path in the document tree that&rsquo;s not terminated by a deletion node. This will be more obvious later when we introduce a branch to the tree.</p>
+<p>An essential property is that Cloudant chooses which node to label winner in a deterministic way. This means that when the database is replicated, Cloudant will label the same node as winner at all replicas, given the same document tree.</p>
+<p>Consider the last call above:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?revs=true&#39;</span>
+</span></span></code></pre></div><p>By not specifying a rev ID to return, we&rsquo;re instructing Cloudant to return information about the tree node pointed to by the winner label.</p>
+<h2 id="updates-are-tree-manipulation"><a href="#updates-are-tree-manipulation">Updates are tree manipulation</a></h2>
+<p>We&rsquo;ve now seen that an update to a document can be viewed as adding a new node to the document&rsquo;s tree. And we have seen that the update request&rsquo;s rev parameter is specifying which existing node in the document tree should be used as the parent for this new node.</p>
+<p>If we update twice more, we can see the tree grow. In the background, Cloudant will be updating the winner pointer to a new rev ID each time. It sends that back in the rev field of the response:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XPUT <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?rev=2-cfcd6781f13994bde69a1c3320bfdadb&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d <span style="color:#e6db74">&#39;{&#34;foo&#34;:&#34;bop&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;mydoc&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;3-2766344359f70192d3a68bf205c37743&#34;</span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&gt; curl -XPUT <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?rev=3-2766344359f70192d3a68bf205c37743&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d <span style="color:#e6db74">&#39;{&#34;foo&#34;:&#34;bloop&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;mydoc&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;4-a5be949eeb7296747cc271766e9a498b&#34;</span><span style="color:#f92672">}</span><span style="color:#ae81ff">\
+</span></span></span></code></pre></div><p>Retrieving the tree description again using revs=true, we can see this has changed the JSON description of the document tree history to include the new rev IDs (node labels):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?revs=true&#39;</span> | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;4-a5be949eeb7296747cc271766e9a498b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bloop&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_revisions&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;start&#34;</span>: 4,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ids&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;a5be949eeb7296747cc271766e9a498b&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;2766344359f70192d3a68bf205c37743&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;4c6114c65e295552ab1019e2b046b10e&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>The tree now has four nodes, as shown by the _revisions array. As we didn&rsquo;t specify a rev in the request, Cloudant has again returned the node content and history for the winner node, as we&rsquo;d expect. As with any direct request to retrieve a document, we could have supplied a rev parameter to receive information about a different node.</p>
+<p><img src="/img/tree2.png" alt="tree 2"></p>
+<h2 id="branching-in-the-document-tree"><a href="#branching-in-the-document-tree">Branching in the document tree</a></h2>
+<p>To show how the tree can branch, we need to make this document a conflicted document. A conflicted document is a document where there are two or more active branches. An active branch is one that ends in a node that is not deleted. This often happens during replication, where a document with a common history may have been updated in different ways in the databases being replicated.</p>
+<p>If you&rsquo;ve been using Cloudant for a while, you&rsquo;ll be familiar with Cloudant&rsquo;s behaviour when you send the &ldquo;wrong&rdquo; rev ID with an update: the 409 Conflict response. With our new tree knowledge, we can see that what Cloudant is doing is either (a) rejecting a request that tries to add a node to a parent which already has a child, or (b) trying to use a parent node that doesn&rsquo;t exist. It does this so the tree remains a single stem, which makes sense for a database. This can be seen if we try to add a second child to our 1- revision:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -XPUT <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?rev=1-4c6114c65e295552ab1019e2b046b10e&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d <span style="color:#e6db74">&#39;{&#34;foo&#34;:&#34;baz&#34;}&#39;</span> -v
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>&gt; PUT /tree-demo/mydoc?rev<span style="color:#f92672">=</span>1-4c6114c65e295552ab1019e2b046b10e HTTP/1.1
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>&lt; HTTP/1.1 <span style="color:#ae81ff">409</span> Conflict
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#e6db74">&#34;conflict&#34;</span>,<span style="color:#e6db74">&#34;reason&#34;</span>:<span style="color:#e6db74">&#34;Document update conflict.&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>However, we can use the _bulk_docs call to bypass these protections (which is what Cloudant&rsquo;s replicator does). Clearly, this is something you&rsquo;d never use day-to-day, but it&rsquo;s instructive to see the effects. In the following call, we show this bypassing in action by creating a new branch rooted at the first update we made above.</p>
+<p>The _bulk_docs request takes a JSON body describing the updates to make. First, we create the body of the request in bulk.json:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;docs&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;_revisions&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;ids&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;4c6114c65e295552ab1019e2b046b10e&#34;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;start&#34;</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;bar&#34;</span>: <span style="color:#e6db74">&#34;baz&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;new_edits&#34;</span>: false
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>This document describes a new node for the document mydoc that we created above, <code>3-917fa2381192822767f010b95b45325b</code>. This node has a history that <em>diverges from the existing document</em>. The new node&rsquo;s history is described using the <code>_revisions</code> field, using the same format as we received in <code>revs=true</code> calls above. In this history, the first two rev IDs are the same, but the third is different. This will cause a branch to happen at rev <code>2-</code>.</p>
+<p>By including <code>new_edits=false</code> in the JSON, we tell Cloudant to graft this node into the document tree, creating any parent nodes required. Without <code>new_edits=false</code>, Cloudant would reject this update as the history is incompatible with the <code>winner</code> node.</p>
+<p>Next, send the request using this body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XPOST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/_bulk_docs&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d @bulk.json <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">&#34;Content-Type:application/json&#34;</span>
+</span></span></code></pre></div><p>We now have a tree which branches. To check this, we can make a request to Cloudant that will return the content of the nodes at the tip of each branch, along with the history of each of these nodes.</p>
+<p>The <code>open_revs</code> parameter is specifically used for retrieving the content of multiple tip nodes at once. To return all the branches&rsquo; tip nodes, we pass <code>open_revs=all</code> into the <code>GET</code> for the document. This is a second way to get non-<code>winner</code> nodes, along with specifying <code>rev</code>.</p>
+<p>As above, we also include <code>revs=true</code> so that the history of each tip node is also returned. We also specify <code>Accept: application/json</code> to get a simpler return format: all the tip nodes in a JSON array.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?open_revs=all&amp;revs=true&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">&#34;Accept:application/json&#34;</span> | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ok&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;4-a5be949eeb7296747cc271766e9a498b&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bloop&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_revisions&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;start&#34;</span>: 4,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;ids&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;a5be949eeb7296747cc271766e9a498b&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;2766344359f70192d3a68bf205c37743&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;4c6114c65e295552ab1019e2b046b10e&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ok&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;bar&#34;</span>: <span style="color:#e6db74">&#34;baz&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_revisions&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;start&#34;</span>: 3,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;ids&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;4c6114c65e295552ab1019e2b046b10e&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Which represents the following tree:</p>
+<p><img src="/img/tree3.png" alt="tree 3"></p>
+<h2 id="resolving-the-conflicted-state"><a href="#resolving-the-conflicted-state">Resolving the conflicted state</a></h2>
+<p>A document is conflicted so long as it has two or more branches which don&rsquo;t end in a deletion node. A conflicted document is clearly in a bad state for a database: some data is effectively hidden. So before we finish, let&rsquo;s <em>resolve</em> the conflict. In tree terms, resolving means updating the document&rsquo;s tree so that there is only one active branch.</p>
+<p>As we have two active branches, we need to update one branch with a deletion node, called a tombstone, to make that branch inactive. We do this by making a <code>DELETE</code> request to the document&rsquo;s resource. This request specifies the parent rev ID (<code>rev</code>) as the node at the tip of the branch we wish to mark as a dead end.</p>
+<p>Before this, we need to choose which branch to keep. To do this, we need to retrieve both. Instead of using <code>open_revs=all</code>, we can retrieve each individually.</p>
+<p>First, let&rsquo;s look at what Cloudant considers the <em>winner</em> document node. This corresponds to the data it returns when a simple document lookup is carried out:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc&#39;</span> | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;4-a5be949eeb7296747cc271766e9a498b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;foo&#34;</span>: <span style="color:#e6db74">&#34;bloop&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>And, as stated earlier, we can get the other branch&rsquo;s data by specifying the rev ID of the node at the tip of the other branch:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?rev=3-917fa2381192822767f010b95b45325b&#39;</span> | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;bar&#34;</span>: <span style="color:#e6db74">&#34;baz&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Let&rsquo;s say that the non-winning node, <code>3-917fa2381192822767f010b95b45325b</code> contains the JSON data we actually want for this document. We issue a delete request specifying the unwanted branch&rsquo;s tip node&rsquo;s rev ID as its parent:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XDELETE <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?rev=4-a5be949eeb7296747cc271766e9a498b&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;mydoc&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;5-ab21cb5ac4c8da916c47c45330d8a655&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Recapping what we&rsquo;re doing here, this request instructs Cloudant to add a <em>tombstone</em> node to the parent node specified by the rev parameter, thereby rendering that branch inactive.</p>
+<p>Recall the algorithm to select the node the <code>winner</code> label points to is to choose the longest active path in a document tree. Therefore, after this operation, Cloudant will have moved the <code>winner</code> label to point at the tip of the remaining active branch. A lookup of the doc ID without specifying a rev ID therefore now returns the other node:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc&#39;</span> | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;bar&#34;</span>: <span style="color:#e6db74">&#34;baz&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>A corollary of this is that a document is not considered deleted &ndash; that is, a query for that document will not return a <code>404 Not Found</code> &ndash; until all branches are inactive. This can be the source of great confusion if one doesn&rsquo;t know beforehand that a document is conflicted. Deleting the document appears to bring back to life another version of the document!</p>
+<p>If a document has many active branches, it will take several requests to add a tombstone to every branch tip to make the document actually appear deleted. Using the open_revs=all argument will show how many active branch tips there are.</p>
+<p>Returning to our example, we can study the resulting tree using the request that we&rsquo;ve made a few times now:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?open_revs=all&amp;revs=true&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">&#34;Accept:application/json&#34;</span> | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ok&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;5-ab21cb5ac4c8da916c47c45330d8a655&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_deleted&#34;</span>: true,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_revisions&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;start&#34;</span>: 5,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;ids&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;ab21cb5ac4c8da916c47c45330d8a655&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;a5be949eeb7296747cc271766e9a498b&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;2766344359f70192d3a68bf205c37743&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;4c6114c65e295552ab1019e2b046b10e&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ok&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;mydoc&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;bar&#34;</span>: <span style="color:#e6db74">&#34;baz&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;_revisions&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;start&#34;</span>: 3,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;ids&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;917fa2381192822767f010b95b45325b&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;cfcd6781f13994bde69a1c3320bfdadb&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;4c6114c65e295552ab1019e2b046b10e&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>The response still shows both branches. This is expected, as the branches still exist! However, we can see that the branch ending in <code>5-</code> is deleted and so the <code>3-</code> branch is the only active branch. Which therefore gives us this final tree:</p>
+<p><img src="/img/tree4.png" alt="tree 4"></p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<p>Hopefully, this has shown how the Cloudant API for documents is really a tree manipulation API. There convenience wrappers and behaviours for common operations which make the API more database-like, most of which make use of the tree node labelled winner.</p>
+<p>It&rsquo;s useful to think this way, as it explains what effect requests are having on stored data which helps with understanding how to make Cloudant work effectively. It also helps to understand replication as the replication process is just using calls like the ones above to retrieve and duplicate document tree nodes from one database to another.</p>
+<p>Before finishing, it&rsquo;s worth repeating that the content of tree nodes that are not at the tip of a branch is discarded periodically by Cloudant &ndash; so don&rsquo;t rely on it sticking around!</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://dx13.co.uk/articles/2017/1/1/the-tree-behind-cloudants-documents-and-how-to-use-it.html" target="_new">https://dx13.co.uk/articles/2017/1/1/the-tree-behind-cloudants-documents-and-how-to-use-it.html</a>
+
+
+
+</body>
+</html>
+

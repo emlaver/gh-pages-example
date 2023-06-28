@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Custom Indexers</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Custom Indexers">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/09/26/Custom-indexers-for-Cloudant.html" />
+    <meta property="og:description" content="With Cloud Functions and Redis" />
+    <meta property="article:published_time" content="2017-09-26 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/aaron-huber-542345-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Custom Indexers" />
+    <meta name="twitter:description" content="With Cloud Functions and Redis" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Custom Indexers">
+    <meta itemprop="description" content="With Cloud Functions and Redis">
+    <meta itemprop="image" content="/img/aaron-huber-542345-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Custom Indexers</a></h1>
+  
+  <div class="postmeta">Sep 26, 2017 | Glynn Bird | 
+
+<span class="tag">Serverless</span>
+
+<span class="tag">Indexing</span>
+
+</div>
+  
+  <p>Cloudant offers highly available storage and retrieval of JSON documents across a cluster of computing which includes a primary index on the documents&rsquo; <code>_id</code> field. You can also use the same cluster to power secondary indexes built to provide <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">selection &amp; aggregation using MapReduce</a>, <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#search">full-text search using Apache Lucene</a>, or <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant-geo.html#cloudant-geospatial">GeoSpatial queries</a>.</p>
+<p>What if you want something a little different that isn&rsquo;t supported by the built-in indexers? You can build you own!</p>
+<p>In this article, I&rsquo;ll build a custom in-memory index using Redis whose data is fed from a Cloudant database&rsquo;s changes feed.</p>
+<h2 id="the-data"><a href="#the-data">The data</a></h2>
+<p>Let&rsquo;s say we&rsquo;re storing documents in Cloudant that represent a page view on our website. Each document represents a single page view:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;96f898f0f6ff4a9baac4503992f31b01&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-ff7b85665c4c297838963c80ecf481a3&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;path&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/blog/post-1.html&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2017-07-04 17:15:59 +00:00&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;mobile&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;browser&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Chrome&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ip&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;85.25.222.52&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The documents are never modified. Instead, we keep writing new documents as events arrive. The data set just keeps growing.</p>
+<h2 id="custom-indexes"><a href="#custom-indexes">Custom indexes</a></h2>
+<p>We are going to build two custom indexes in Redis that would be tricky or inefficient to achieve in Cloudant with its built-in indexers. In general, they are queries that do not lend themselves well to key range lookups or text searches:</p>
+<ul>
+<li>Retrieve the top ten pages viewed</li>
+<li>Find the number of unique IP addresses used to access our site</li>
+</ul>
+<p>We may also want these statistics broken down by month. Let&rsquo;s examine each query in a little more detail.</p>
+<h3 id="top-ten-pages"><a href="#top-ten-pages">Top ten pages</a></h3>
+<p>It&rsquo;s easy to count things in Cloudant. Simply create a MapReduce view with a JavaScript map function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">path</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>map</code> function emits the path (e.g., <code>&quot;/blog/post-1.html&quot;</code>) with a null value. Then we can use the built-in <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#reduce-functions"><code>_count</code></a> reducer which will calculate counts of each value:</p>
+<pre tabindex="0"><code>/blog/post-1.html --&gt; 5028
+/blog/post-2.html --&gt; 12025
+/blog/post-3.html --&gt; 885
+</code></pre><p>What it <em>doesn&rsquo;t</em> do for you is sort the list by count (it is sorted by the key instead). To get the most popular, you&rsquo;d have to query <em>all</em> the totals and sort the results yourself. This isn&rsquo;t a big deal if you have a few distinct pages, but if you have tens of thousands, then it makes the query relatively expensive—especially if you need this answer frequently and quickly.</p>
+<p>To solve this problem with Redis, we can store the blog post name and the count in a <a href="https://redis.io/topics/data-types#sorted-sets">Redis sorted set</a>:</p>
+<pre tabindex="0"><code>ZINCRBY &#39;leaderboard&#39; &#39;/blog/post-1.html&#39; 1
+</code></pre><p>Then it is easy to retrieve the top ten items quickly from the in-memory store:</p>
+<pre tabindex="0"><code>ZREVRANGEBYSCORE &#39;leaderboard&#39; +inf -inf WITHSCORES LIMIT 0 10
+</code></pre><h3 id="distinct-counts-of-ip-addresses"><a href="#distinct-counts-of-ip-addresses">Distinct counts of IP addresses</a></h3>
+<p>Counting the number of unique IP addresses visiting our site is an example of the <a href="https://en.wikipedia.org/wiki/Count-distinct_problem">count-distinct problem</a>. It uses more memory the more unique things you&rsquo;re counting, and with over 4 billion possible IP addresses, this operation has the potential to get tricky.</p>
+<p>Redis offers a solution to this problem with its <a href="http://antirez.com/news/75">HyperLogLog data structure</a>. It allows distinct counts to be performed with a fixed memory footprint of 12kb as long as you can accept an approximate answer (&lt;1% error).</p>
+<p>Data is added to the structure with <code>PFADD</code>:</p>
+<pre tabindex="0"><code>PFADD ipcount &#34;85.25.222.52&#34;
+</code></pre><p>And the count is retrieved with <code>PFCOUNT</code>:</p>
+<pre tabindex="0"><code>PFCOUNT ipcount
+</code></pre><h2 id="streaming-the-changes"><a href="#streaming-the-changes">Streaming the changes</a></h2>
+<p>We can write a simple Node.js script that glues together Cloudant and Redis. Here&rsquo;s what we want it to do:</p>
+<ul>
+<li>Listen to a Cloudant database&rsquo;s <a href="https://console.bluemix.net/docs/services/Cloudant/api/database.html#get-changes">changes feed</a></li>
+<li>Update the totals in the Redis database for each change</li>
+</ul>
+<p><img src="/img/customindex1.jpg" alt="customindex1"></p>
+<p>First we need to define some environment variables containing the URLs of our cloud-based Cloudant and Redis services; otherwise, local services are assumed (e.g., local CouchDB on port 5984 and local Redis on port 6739). For example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export CLOUDANT_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://USER:PASS@HOST.cloudant.com&#34;</span>
+</span></span><span style="display:flex;"><span>export DBNAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pageviews&#34;</span>
+</span></span><span style="display:flex;"><span>export REDIS_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;redis://x:PASS@HOST:PORT&#34;</span>
+</span></span></code></pre></div><p>Then we can run a Node.js process that listens to the Cloudant changes feed and writes updates to Redis for each incoming change. Here&rsquo;s the code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// connect to Cloudant
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">CLOUDANT_URL</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;http://localhost:5984&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">dbname</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">DBNAME</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;pageviews&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudant</span>({<span style="color:#a6e22e">url</span><span style="color:#f92672">:</span><span style="color:#a6e22e">url</span> , <span style="color:#a6e22e">plugin</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;promises&#39;</span>}).<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">dbname</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// connect to Redis
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">redis</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;redis&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">redisurl</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">REDIS_URL</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;redis://localhost:6379&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">createClient</span>(<span style="color:#a6e22e">redisurl</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">redis_leaderboard</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;leaderboard&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">redis_ipcount</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;ipcount&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// listen to changes 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">feed</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">follow</span>({<span style="color:#a6e22e">since</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;now&#39;</span>, <span style="color:#a6e22e">include_docs</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>});
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">feed</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;change&#39;</span>, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">change</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">path</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">ip</span>) {
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// do multiple Redis commands in 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">multi</span>()
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// increment the leaderboard sorted set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      .<span style="color:#a6e22e">zincrby</span>(<span style="color:#a6e22e">redis_leaderboard</span>, <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">path</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// add the IP to the HyperLogLog data set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      .<span style="color:#a6e22e">pfadd</span>(<span style="color:#a6e22e">redis_ipcount</span>, <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">ip</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// execute both actions together
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      .<span style="color:#a6e22e">exec</span>();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">feed</span>.<span style="color:#a6e22e">follow</span>();
+</span></span></code></pre></div><p>As documents are added to the Cloudant database, the Redis <code>leaderboard</code> and <code>ipcount</code> are updated too!</p>
+<p>We can then log into the Redis command-line interface:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>redis-cli -h HOST -p PORT -a PASSWORD
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># or redis-cli for a local service</span>
+</span></span></code></pre></div><p>And query the data like so:</p>
+<pre tabindex="0"><code>127.0.0.1:6379&gt; PFCOUNT ipcount
+(integer) 375608
+127.0.0.1:6379&gt; ZREVRANGEBYSCORE &#39;leaderboard&#39; +inf -inf WITHSCORES LIMIT 0 5
+ 1) &#34;/blog/post-160.html&#34;
+ 2) &#34;606&#34;
+ 3) &#34;/blog/post-152.html&#34;
+ 4) &#34;597&#34;
+ 5) &#34;/blog/post-30.html&#34;
+ 6) &#34;593&#34;
+ 7) &#34;/blog/post-35.html&#34;
+ 8) &#34;589&#34;
+ 9) &#34;/blog/post-191.html&#34;
+10) &#34;589&#34;
+</code></pre><h2 id="monthly-reporting"><a href="#monthly-reporting">Monthly reporting</a></h2>
+<p>An enhancement to this approach is to have a monthly leaderboard and monthly unique IP address counts. We can easily enable this feature by parsing the date string in the Node.js code and writing to Redis keys with the month included (e.g., <code>&quot;leaderboard_2017-07&quot;</code>). On a month boundary, new data will be automatically fed into the next month&rsquo;s key:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// connect to Cloudant
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">CLOUDANT_URL</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;http://localhost:5984&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">dbname</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">DBNAME</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;pageviews&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudant</span>({<span style="color:#a6e22e">url</span><span style="color:#f92672">:</span><span style="color:#a6e22e">url</span> , <span style="color:#a6e22e">plugin</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;promises&#39;</span>}).<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">dbname</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// connect to Redis
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">redis</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;redis&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">redisurl</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">REDIS_URL</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;redis://localhost:6379&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">redis</span>.<span style="color:#a6e22e">createClient</span>(<span style="color:#a6e22e">redisurl</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// pad
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">pad</span>(<span style="color:#a6e22e">number</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (<span style="color:#e6db74">&#34;0&#34;</span><span style="color:#f92672">+</span><span style="color:#a6e22e">number</span>).<span style="color:#a6e22e">slice</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>); 
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// listen to changes 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">feed</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">follow</span>({<span style="color:#a6e22e">since</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;now&#39;</span>, <span style="color:#a6e22e">include_docs</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>});
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">feed</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;change&#39;</span>, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">change</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">path</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">ip</span>) {
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">datestr</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getUTCFullYear</span>() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;-&#39;</span> <span style="color:#f92672">+</span> (<span style="color:#a6e22e">pad</span>(<span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getUTCMonth</span>()<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">leaderboard</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;leaderboard_&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">datestr</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ipcount</span> <span style="color:#f92672">=</span>  <span style="color:#e6db74">&#39;ipcount_&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">datestr</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// do multiple Redis commands in 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">multi</span>()
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// increment the leaderboard sorted set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      .<span style="color:#a6e22e">zincrby</span>(<span style="color:#a6e22e">leaderboard</span>, <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">path</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// add the IP to the HyperLogLog data set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      .<span style="color:#a6e22e">pfadd</span>(<span style="color:#a6e22e">ipcount</span>, <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">ip</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// execute both actions together
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      .<span style="color:#a6e22e">exec</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;change&#39;</span>, <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">path</span>, <span style="color:#a6e22e">change</span>.<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">ip</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">feed</span>.<span style="color:#a6e22e">follow</span>();
+</span></span></code></pre></div><p>Now look at the Redis keys being generated:</p>
+<pre tabindex="0"><code>127.0.0.1:6379&gt; SCAN 0
+1) &#34;0&#34;
+2) 1) &#34;ipcount_2017-06&#34;
+   2) &#34;leaderboard_2017-06&#34;
+   3) &#34;ipcount_2017-07&#34;
+   4) &#34;leaderboard_2017-07&#34;
+</code></pre><p>We have an <code>ipcount</code> HyperLogLog and a <code>leaderboard</code> sorted set for each month.</p>
+<p>Another feature of the HyperLogLog data type is that we can combine multiple monthly instances to get an approximate unique count across all the counters. For example:</p>
+<pre tabindex="0"><code>127.0.0.1:6379&gt; PFCOUNT ipcount_2017-01 ipcount_2017-02 ipcount_2017-03 ipcount_2017-04 ipcount_2017-05 ipcount_2017-06 ipcount_2017-07 ipcount_2017-08 ipcount_2017-09 ipcount_2017-10 ipcount_2017-11 ipcount_2017-12
+</code></pre><p>This query gives us an annual unique IP count from the monthly data structures.</p>
+<h2 id="going-serverless"><a href="#going-serverless">Going serverless</a></h2>
+<p>So far we&rsquo;ve created Node.js processes that listen to the Cloudant changes feed. There&rsquo;s another way: if we create an OpenWhisk action that processes a single change, then we can trigger it from a Cloudant changes feed automatically. This passes the responsibility of the changes-feed-handling to OpenWhisk. We only need to to worry about the data processing.</p>
+<p><img src="/img/customindex2.jpg" alt="customindex1"></p>
+<p>Here is the <a href="https://github.com/ibm-watson-data-lab/custom-indexes">OpenWhisk action</a> and the <a href="https://github.com/ibm-watson-data-lab/custom-indexes/blob/master/deploy.sh">deployment script</a>.</p>
+<p>As well as handling the changes feed logic, we can also deploy additional OpenWhisk actions that interrogate the Redis database and expose the aggregations as HTTP APIs.</p>
+<p>You can access the APIs at the following URLs:</p>
+<ul>
+<li><a href="https://openwhisk.ng.bluemix.net/api/v1/web/NAMESPACE/leaderboard/getipcount.json">https://openwhisk.ng.bluemix.net/api/v1/web/NAMESPACE/leaderboard/getipcount.json</a></li>
+<li><a href="https://openwhisk.ng.bluemix.net/api/v1/web/NAMESPACE/leaderboard/getleaderboard.json">https://openwhisk.ng.bluemix.net/api/v1/web/NAMESPACE/leaderboard/getleaderboard.json</a></li>
+</ul>
+<p>Here, <code>NAMESPACE</code> is a combination of your Bluemix username and space. You can find yours by doing <code>wsk namespace list</code>.</p>
+<h2 id="serverless-vs-app"><a href="#serverless-vs-app">Serverless vs. App</a></h2>
+<p>Which approach is better? The serverless approach leaves us with less infrastructure to worry about, but there are advantages for the app-based deployment in this case.</p>
+<ul>
+<li>OpenWhisk doesn&rsquo;t allow subscription to the changes feed with <code>&quot;include_docs=true&quot;</code> set, so the OpenWhisk action has to call Cloudant to fetch the document body.</li>
+<li>OpenWhisk&rsquo;s stateless nature means that each invocation of the action requires a connection and disconnection to both Cloudant and Redis—the app will reuse the connections again and again.</li>
+<li>With further refinements to the app, we could reduce the writes to Redis by buffering some of them in the app and only writing to Redis periodically (say every 10 seconds). This approach would be impossible to achieve in OpenWhisk.</li>
+</ul>
+<p>OpenWhisk offers a pay-as-you go approach. Each invocation would cost you the <a href="https://console.bluemix.net/openwhisk/learn/pricing?env_id=ibm:yp:us-south">OpenWhisk cost</a> plus <a href="https://www.ibm.com/analytics/us/en/technology/cloud-data-services/cloudant/pricing/">one read to the Cloudant database</a> and a <a href="https://www.compose.com/pricing/#redis">fixed monthly cost for Redis</a>. An always-on app approach would incur the cost of a <a href="https://www.ibm.com/cloud-computing/bluemix/pricing">24x7 Bluemix instance</a> and a <a href="https://www.compose.com/pricing/#redis">fixed monthly cost for Redis</a>.</p>
+<p>The best solution depends on the volume of data being processed and which Cloudant &amp; Bluemix plan you are on.</p>
+<h2 id="custom-indexes-vs-built-in-indexes"><a href="#custom-indexes-vs-built-in-indexes">Custom indexes vs. Built-in indexes</a></h2>
+<p>Cloudant already has a number of built-in indexing engines:</p>
+<ul>
+<li>The primary index on the <code>_id</code> field</li>
+<li>Secondary <a href="https://docs.cloudant.com/creating_views.html">Map/Reduce indexes</a></li>
+<li>Secondary <a href="https://docs.cloudant.com/search.html">Search indexes</a></li>
+<li>Secondary <a href="https://docs.cloudant.com/geo.html">Geospatial indexes</a></li>
+</ul>
+<p>The secondary indexes are defined via the creation of <a href="https://docs.cloudant.com/design_documents.html">Design Documents</a>, or by creating a <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html">Cloudant Query index</a>. Cloudant takes responsibility of the initial build of the index and will keep each index up-to-date automatically as data is added, updated, or modified.</p>
+<p>The custom indexes fed from Cloudant&rsquo;s changes feed are not managed by Cloudant. It is your responsibility to create the index from a standing start and to keep it up-to-date as the data changes over time. If you were starting with pre-existing data, you would have to spool through all the changes feed from zero to build up a first-cut of the index. If your custom indexer went offline for a time, you&rsquo;d have to be careful that you hadn&rsquo;t missed some changes!</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<p>We&rsquo;ve seen how we can write code to process a Cloudant database&rsquo;s changes feed, writing running totals and counts to an in-memory store. It&rsquo;s a use-case for problems that don&rsquo;t suit Cloudant&rsquo;s built-in indexing engines. We have also seen how the code can be deployed to the OpenWhisk serverless platform.</p>
+<p>For more, see the <a href="https://github.com/ibm-watson-data-lab/custom-indexes">code on Github</a>. Thanks for reading!</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/custom-indexers-for-cloudant-6b7e65186db1" target="_new">https://medium.com/ibm-watson-data-lab/custom-indexers-for-cloudant-6b7e65186db1</a>
+
+
+
+</body>
+</html>
+

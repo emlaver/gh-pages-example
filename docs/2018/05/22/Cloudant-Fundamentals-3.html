@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Cloudant Fundamentals 3/10</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Cloudant Fundamentals 3/10">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/05/22/Cloudant-Fundamentals-3.html" />
+    <meta property="og:description" content="The _rev token" />
+    <meta property="article:published_time" content="2018-05-22 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/sergei-akulich-trees.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Cloudant Fundamentals 3/10" />
+    <meta name="twitter:description" content="The _rev token" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Cloudant Fundamentals 3/10">
+    <meta itemprop="description" content="The _rev token">
+    <meta itemprop="image" content="/img/sergei-akulich-trees.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Cloudant Fundamentals 3/10</a></h1>
+  
+  <div class="postmeta">May 22, 2018 | Glynn Bird | 
+
+<span class="tag">Fundamentals</span>
+
+</div>
+  
+  <p>In <a href="/2018/04/27/Cloudant-Fundamentals-1.html">part one</a> of this series we looked at Cloudant JSON, and in <a href="/2018/05/14/Cloudant-Fundamentals-2.html">part two</a> we saw how an <code>_id</code> is made. In this part we&rsquo;ll focus on the humble <code>_rev</code> token.</p>
+<p>When you first create a document, you don&rsquo;t need to worry about the <code>_rev</code> token — it is generated for you and returned to you in the receipt.</p>
+<p>If we <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#create">create a new document</a> with a body of <code>{&quot;a&quot;:1,&quot;b&quot;:2}</code>, we get a reply from the database of:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ok&#34;</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;4245507c8acee2f2986298688244708c&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;1-25f9b97d75a648d1fcd23f0a73d2776e&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We can see the <code>_id</code> and the <code>_rev</code> if we <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#read">fetch the document</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;4245507c8acee2f2986298688244708c&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;1-25f9b97d75a648d1fcd23f0a73d2776e&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Fields starting with the underscore character <code>_</code> are reserved for Cloudant-specifc purposes. You can&rsquo;t add your own custom <code>_name</code> field, for example.</p>
+<p><img src="/img/sergei-akulich-trees.jpg" alt="Pine trees in a forest, with sun shining through the canopy"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/HyEtBCPlgmY?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Sergei Akulich</a> on <a href="https://unsplash.com/search/photos/versions?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></p>
+</blockquote>
+<h2 id="what-is-the-_rev-token"><a href="#what-is-the-_rev-token">What is the _rev token?</a></h2>
+<p>The <code>_rev</code> token consists of two parts separated by a hyphen character <code>-</code>:</p>
+<ul>
+<li>a number that increments with each version of the document</li>
+<li>a 32-character string that is a <a href="https://simple.wikipedia.org/wiki/Cryptographic_hash_function">cryptographic hash</a> of the document&rsquo;s body.</li>
+</ul>
+<h2 id="why-does-cloudant-have-a-_rev-token"><a href="#why-does-cloudant-have-a-_rev-token">Why does Cloudant have a _rev token?</a></h2>
+<p>The <code>_rev</code> token keeps track of the revisions that a document goes through in its life:</p>
+<ol>
+<li>First revision 1-25f9b97d75a648d1fcd23f0a73d2776e</li>
+<li>Second revision 2-524e981baaeec9bbecf92c4c01242308</li>
+<li>Third revision 3-e95ca5ca4dc5407fd09b8e0e0acf25fd</li>
+</ol>
+<p>Cloudant actually stores revisions in a tree data structure, the simplest form being an ever-growing list of revisions:</p>
+<p><img src="/img/revtree.png" alt="revision tree"></p>
+<p>Things can get much more complicated than this when we talk about <a href="https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-one/">conflicts</a> but that is for another time.</p>
+<p>As to why data is stored like this, it&rsquo;s because Cloudant was built to work as a distributed database with the data stored across many nodes in a cluster. Distributed systems are complicated, and the revision tree allows the database to handle conflicting writes without losing data, rather like Git would not lose data in a conflicting merge. The revision tree is also essential when replicating data from one location to another. Two databases in any state could be replicated in either direction without loss of data, thanks to the revision tree.</p>
+<h2 id="can-i-use-the-revsion-tree-as-a-version-control-system-for-my-documents"><a href="#can-i-use-the-revsion-tree-as-a-version-control-system-for-my-documents">Can I use the revsion tree as a version control system for my documents?</a></h2>
+<p>No.</p>
+<p>Cloudant doesn&rsquo;t keep the <em>bodies</em> of old revisions (they are destroyed in a process called &ldquo;compaction&rdquo;), but the history of revision <em>tokens</em> is retained.</p>
+<h2 id="deleting-a-document-creates-another-revision"><a href="#deleting-a-document-creates-another-revision">Deleting a document creates another revision</a></h2>
+<p>A Cloudant document can never really be deleted. When you do a <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#delete">delete API call</a> another revision is added to the end of the tree:</p>
+<ol>
+<li>First revision 1-25f9b97d75a648d1fcd23f0a73d2776e</li>
+<li>Second revision 2-524e981baaeec9bbecf92c4c01242308</li>
+<li>Third revision 3-e95ca5ca4dc5407fd09b8e0e0acf25fd</li>
+<li>Fourth revision 4-d0b8f4e0375c952eb957de7dc1947aef</li>
+</ol>
+<p>The last revision will look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>, <span style="color:#e6db74">&#34;4245507c8acee2f2986298688244708c&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;4-d0b8f4e0375c952eb957de7dc1947aef&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_deleted&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Deleting a document leaves this final revision and the tree of revision tokens behind.</p>
+<h2 id="i-dont-care-about-revision-tokens---make-them-go-away"><a href="#i-dont-care-about-revision-tokens---make-them-go-away">I don&rsquo;t care about revision tokens - make them go away</a></h2>
+<p>You can&rsquo;t really make revision tokens go away, but there are libraries aimed at new starters that hide them from you so you can get on with building your app. Take a look at <a href="https://www.npmjs.com/package/cloudant-quickstart">cloudant-quickstart</a> which does just that.</p>
+<p>Even if you are putting your fingers in your ears and pretending that revision tokens don&rsquo;t exist, they are still being recorded in the database so you should try to avoid modifying the same document over and over if possible and be aware that a deleted document leaves a piece of data behind.</p>
+<h2 id="next-time"><a href="#next-time">Next time</a></h2>
+<p>In the next part we&rsquo;ll take a look at using Cloudant&rsquo;s HTTP API using the <code>curl</code> command-line tool.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-the-rev-token-fb0fc19a3145" target="_new">https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-the-rev-token-fb0fc19a3145</a>
+
+
+
+</body>
+</html>
+

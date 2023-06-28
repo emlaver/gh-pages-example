@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Choosing a Cloudant library</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Choosing a Cloudant library">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/07/12/Choosing-a-Cloudant-library.html" />
+    <meta property="og:description" content="Which level of abstraction is right for you?" />
+    <meta property="article:published_time" content="2017-07-12 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/tobias-fischer-185901-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Choosing a Cloudant library" />
+    <meta name="twitter:description" content="Which level of abstraction is right for you?" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Choosing a Cloudant library">
+    <meta itemprop="description" content="Which level of abstraction is right for you?">
+    <meta itemprop="image" content="/img/tobias-fischer-185901-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Choosing a Cloudant library</a></h1>
+  
+  <div class="postmeta">Jul 12, 2017 | Glynn Bird | 
+
+<span class="tag">Library</span>
+
+<span class="tag">Node.js</span>
+
+</div>
+  
+  <p>The beauty of Apache CouchDB and Cloudant is that you don&rsquo;t need to a library to be able to start using it. Some databases require a &ldquo;driver&rdquo; module to be installed to handle communication between your application and your database, but when your database speaks HTTP then you only need <code>curl</code>, a web browser, or anything that can make web requests. For example:</p>
+<ul>
+<li>your Raspberry Pi could write IoT data to a remote database by making PUT requests from curl</li>
+<li>your web page could fetch data directly from the database by making in-page HTTP calls</li>
+<li>your PHP code could read and write from its data store without any third-party add-on code</li>
+</ul>
+<p>Sometimes developers need a little help. To avoid repeating the same low-level code, to abstract the API calls into more semantically meaningful methods, and to <em>make life easier</em> we often employ libraries.</p>
+<p><img src="/img/tobias-fischer-185901-unsplash.jpg" alt="library"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/PkbZahEG2Ng">Tobias Fischer</a> on Unsplash</p>
+</blockquote>
+<p>In this article we&rsquo;ll explore some options that a JavaScript/Node.js developer could choose when writing code against CouchDB or Cloudant, from the lowest level to the highest.</p>
+<h2 id="level-0---no-libraries"><a href="#level-0---no-libraries">Level 0 - no libraries</a></h2>
+<p>If you want to learn the HTTP in detail, then you can choose to use no libraries whatsoever:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">CLOUDANT_URL</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;appointments&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">https</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;https&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">req</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">https</span>.<span style="color:#a6e22e">request</span>(<span style="color:#a6e22e">url</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/_all_docs?include_docs=true&#39;</span>, (<span style="color:#a6e22e">res</span>) =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;data&#39;</span>, (<span style="color:#a6e22e">chunk</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">stdout</span>.<span style="color:#a6e22e">write</span>(<span style="color:#a6e22e">chunk</span>);
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;error&#39;</span>, (<span style="color:#a6e22e">e</span>) =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#a6e22e">e</span>.<span style="color:#a6e22e">message</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">end</span>();
+</span></span></code></pre></div><p>This approach uses the <a href="https://nodejs.org/api/https.html">Node.js https</a> library to make a single API call. It leaves you to formulate your own URL and to join the separate chunks of reply data into a complete JSON response.</p>
+<h2 id="level-1---an-http-request-library"><a href="#level-1---an-http-request-library">Level 1 - an HTTP request library</a></h2>
+<p>To help with formulating HTTP requests, there a several third-party HTTP libraries to choose from. I usually go for <a href="http://npmjs.com/package/request">request</a>, but others are available.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">request</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;request&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">CLOUDANT_URL</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;appointments&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">r</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">method</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;get&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/_all_docs&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">qs</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">include_docs</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">json</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">request</span>(<span style="color:#a6e22e">r</span>, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">response</span>, <span style="color:#a6e22e">body</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">body</span>);
+</span></span><span style="display:flex;"><span>}); 
+</span></span></code></pre></div><p>The <em>request</em> module makes it simpler to deal with HTTP requests, and if you ask it nicely, it will parse the JSON response for you too. You still get to learn the CouchDB API, but the mechanics of making the HTTP call are simplified.</p>
+<h2 id="level-2---the-nano-library"><a href="#level-2---the-nano-library">Level 2 - the Nano library</a></h2>
+<p><a href="https://www.npmjs.com/package/nano">Nano</a> is an open-source project that was donated to the Apache Software Foundation and has become the official Node.js library for CouchDB.</p>
+<p>It doesn&rsquo;t actually do much — it is a thin wrapper around CouchDB&rsquo;s API — but it does make your code a little easier to write and to maintain:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">nano</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;nano&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">CLOUDANT_URL</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;appointments&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">mydb</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">nano</span>(<span style="color:#a6e22e">url</span>).<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">db</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mydb</span>.<span style="color:#a6e22e">list</span>({<span style="color:#a6e22e">include_docs</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>}, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">data</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>Using Nano allows you to abstract the API calls away. In this case, the <code>list</code> function makes a <code>GET /db/_all_docs</code> API call. You can use the Nano library and not know what API calls are being made on your behalf.</p>
+<h2 id="level-3---the-cloudant-sdk"><a href="#level-3---the-cloudant-sdk">Level 3 - the Cloudant SDK</a></h2>
+<p>The <a href="https://www.npmjs.com/package/cloudant">Cloudant</a> library is the officially support method of interacting with your Cloudant database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">CloudantV1</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@ibm-cloud/cloudant&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">service</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">CloudantV1</span>.<span style="color:#a6e22e">newInstance</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">DB</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;appointments&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">list</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">service</span>.<span style="color:#a6e22e">postAllDocs</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">DB</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">includeDocs</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">list</span>)
+</span></span></code></pre></div><h2 id="level-4---pouchdb"><a href="#level-4---pouchdb">Level 4 - PouchDB</a></h2>
+<p>You can use <a href="https://www.npmjs.com/package/pouchdb-http">PouchDB</a> as an HTTP-only client too:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">PouchDB</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;pouchdb-http&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">CLOUDANT_URL</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PouchDB</span>(<span style="color:#a6e22e">url</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">allDocs</span>({<span style="color:#a6e22e">include_docs</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>}).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>);
+</span></span></code></pre></div><p>It has its own naming convention for functions, but function calls result in the equivalent API call. If you&rsquo;re developing with PouchDB on the client side, it may be easier to stick with the same API to deal with your server-side CouchDB or Cloudant database.</p>
+<h2 id="alternatives"><a href="#alternatives">Alternatives</a></h2>
+<p>The great thing about open-source is that you aren&rsquo;t limited to &ldquo;official&rdquo; products. If you don&rsquo;t like the tools, help improve the open-source offerrings by raising issues or submitting code — find alternative tools or build your own! You can choose whether you&rsquo;re looking for a library that can do callbacks or Promises and whether it allows you to learn the CouchDB API or hides it from you.</p>
+<p>In my opinion, it makes sense to get started with a high-level library that abstracts and hides details from you at first. It allows you to build more quickly with less distraction. As you get more serious in your work, you may find you need to see more detail and switch to a lower-level of abstraction.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/choosing-a-cloudant-library-d14c06f3d714" target="_new">https://medium.com/ibm-watson-data-lab/choosing-a-cloudant-library-d14c06f3d714</a>
+
+
+
+</body>
+</html>
+

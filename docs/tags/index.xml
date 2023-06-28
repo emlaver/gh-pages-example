@@ -1,10 +1,875 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on My New Hugo Site</title>
-    <link>https://emlaver.github.io/tags/</link>
-    <description>Recent content in Tags on My New Hugo Site</description>
+    <title>Tags on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/</link>
+    <description>Recent content in Tags on Cloudant blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://emlaver.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Mon, 27 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTTP</title>
+      <link>https://blog.cloudant.com/tags/http/</link>
+      <pubDate>Mon, 27 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/http/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PouchDB</title>
+      <link>https://blog.cloudant.com/tags/pouchdb/</link>
+      <pubDate>Thu, 09 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/pouchdb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Replication</title>
+      <link>https://blog.cloudant.com/tags/replication/</link>
+      <pubDate>Thu, 09 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/replication/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tag2</title>
+      <link>https://blog.cloudant.com/tags/tag2/</link>
+      <pubDate>Thu, 02 Feb 2023 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/tag2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tag3</title>
+      <link>https://blog.cloudant.com/tags/tag3/</link>
+      <pubDate>Thu, 02 Feb 2023 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/tag3/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tag1</title>
+      <link>https://blog.cloudant.com/tags/tag1/</link>
+      <pubDate>Wed, 01 Feb 2023 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/tag1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CouchApp</title>
+      <link>https://blog.cloudant.com/tags/couchapp/</link>
+      <pubDate>Tue, 16 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/couchapp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deprecation</title>
+      <link>https://blog.cloudant.com/tags/deprecation/</link>
+      <pubDate>Tue, 16 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/deprecation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Geospatial</title>
+      <link>https://blog.cloudant.com/tags/geospatial/</link>
+      <pubDate>Tue, 28 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/geospatial/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Search</title>
+      <link>https://blog.cloudant.com/tags/search/</link>
+      <pubDate>Tue, 28 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/search/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Indexing</title>
+      <link>https://blog.cloudant.com/tags/indexing/</link>
+      <pubDate>Mon, 28 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/indexing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>querying</title>
+      <link>https://blog.cloudant.com/tags/querying/</link>
+      <pubDate>Mon, 28 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/querying/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Changes</title>
+      <link>https://blog.cloudant.com/tags/changes/</link>
+      <pubDate>Fri, 11 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/changes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Migration</title>
+      <link>https://blog.cloudant.com/tags/migration/</link>
+      <pubDate>Fri, 14 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/migration/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TXE</title>
+      <link>https://blog.cloudant.com/tags/txe/</link>
+      <pubDate>Fri, 14 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/txe/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Performance</title>
+      <link>https://blog.cloudant.com/tags/performance/</link>
+      <pubDate>Fri, 12 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/performance/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>views</title>
+      <link>https://blog.cloudant.com/tags/views/</link>
+      <pubDate>Fri, 12 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/views/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Static</title>
+      <link>https://blog.cloudant.com/tags/static/</link>
+      <pubDate>Wed, 20 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/static/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CodeEngine</title>
+      <link>https://blog.cloudant.com/tags/codeengine/</link>
+      <pubDate>Mon, 16 Aug 2021 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/codeengine/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Serverless</title>
+      <link>https://blog.cloudant.com/tags/serverless/</link>
+      <pubDate>Mon, 16 Aug 2021 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/serverless/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cloudant-go-sdk</title>
+      <link>https://blog.cloudant.com/tags/cloudant-go-sdk/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cloudant-go-sdk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cloudant-java-sdk</title>
+      <link>https://blog.cloudant.com/tags/cloudant-java-sdk/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cloudant-java-sdk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cloudant-node-sdk</title>
+      <link>https://blog.cloudant.com/tags/cloudant-node-sdk/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cloudant-node-sdk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cloudant-python-sdk</title>
+      <link>https://blog.cloudant.com/tags/cloudant-python-sdk/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cloudant-python-sdk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>java-cloudant</title>
+      <link>https://blog.cloudant.com/tags/java-cloudant/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/java-cloudant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mobile</title>
+      <link>https://blog.cloudant.com/tags/mobile/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/mobile/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nodejs-cloudant</title>
+      <link>https://blog.cloudant.com/tags/nodejs-cloudant/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/nodejs-cloudant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>python-cloudant</title>
+      <link>https://blog.cloudant.com/tags/python-cloudant/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/python-cloudant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SDKs</title>
+      <link>https://blog.cloudant.com/tags/sdks/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/sdks/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>swift-cloudant</title>
+      <link>https://blog.cloudant.com/tags/swift-cloudant/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/swift-cloudant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sync</title>
+      <link>https://blog.cloudant.com/tags/sync/</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/sync/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deletion</title>
+      <link>https://blog.cloudant.com/tags/deletion/</link>
+      <pubDate>Fri, 21 May 2021 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/deletion/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GitHub</title>
+      <link>https://blog.cloudant.com/tags/github/</link>
+      <pubDate>Mon, 08 Feb 2021 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/github/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Conflicts</title>
+      <link>https://blog.cloudant.com/tags/conflicts/</link>
+      <pubDate>Thu, 26 Nov 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/conflicts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HA</title>
+      <link>https://blog.cloudant.com/tags/ha/</link>
+      <pubDate>Tue, 27 Oct 2020 06:01:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/ha/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Proxy</title>
+      <link>https://blog.cloudant.com/tags/proxy/</link>
+      <pubDate>Tue, 27 Oct 2020 06:01:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/proxy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Backup</title>
+      <link>https://blog.cloudant.com/tags/backup/</link>
+      <pubDate>Fri, 09 Oct 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/backup/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Automation</title>
+      <link>https://blog.cloudant.com/tags/automation/</link>
+      <pubDate>Thu, 30 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Compliance</title>
+      <link>https://blog.cloudant.com/tags/compliance/</link>
+      <pubDate>Thu, 30 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/compliance/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Open Source</title>
+      <link>https://blog.cloudant.com/tags/open-source/</link>
+      <pubDate>Thu, 30 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/open-source/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Schema</title>
+      <link>https://blog.cloudant.com/tags/schema/</link>
+      <pubDate>Fri, 24 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/schema/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Validation</title>
+      <link>https://blog.cloudant.com/tags/validation/</link>
+      <pubDate>Fri, 24 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/validation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Compaction</title>
+      <link>https://blog.cloudant.com/tags/compaction/</link>
+      <pubDate>Fri, 17 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/compaction/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Restore</title>
+      <link>https://blog.cloudant.com/tags/restore/</link>
+      <pubDate>Wed, 01 Jul 2020 06:01:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/restore/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Failover</title>
+      <link>https://blog.cloudant.com/tags/failover/</link>
+      <pubDate>Wed, 01 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/failover/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Geo</title>
+      <link>https://blog.cloudant.com/tags/geo/</link>
+      <pubDate>Fri, 01 May 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/geo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Transfer</title>
+      <link>https://blog.cloudant.com/tags/transfer/</link>
+      <pubDate>Fri, 17 Jan 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/transfer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Filter</title>
+      <link>https://blog.cloudant.com/tags/filter/</link>
+      <pubDate>Fri, 13 Dec 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/filter/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Best-practice</title>
+      <link>https://blog.cloudant.com/tags/best-practice/</link>
+      <pubDate>Thu, 21 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/best-practice/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MapReduce</title>
+      <link>https://blog.cloudant.com/tags/mapreduce/</link>
+      <pubDate>Fri, 08 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/mapreduce/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Query</title>
+      <link>https://blog.cloudant.com/tags/query/</link>
+      <pubDate>Fri, 08 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/query/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Continuous Delivery</title>
+      <link>https://blog.cloudant.com/tags/continuous-delivery/</link>
+      <pubDate>Fri, 01 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/continuous-delivery/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Continuous Integration</title>
+      <link>https://blog.cloudant.com/tags/continuous-integration/</link>
+      <pubDate>Fri, 01 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/continuous-integration/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>All docs</title>
+      <link>https://blog.cloudant.com/tags/all-docs/</link>
+      <pubDate>Fri, 25 Oct 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/all-docs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pagination</title>
+      <link>https://blog.cloudant.com/tags/pagination/</link>
+      <pubDate>Fri, 25 Oct 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/pagination/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Analysis</title>
+      <link>https://blog.cloudant.com/tags/analysis/</link>
+      <pubDate>Mon, 16 Sep 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Logging</title>
+      <link>https://blog.cloudant.com/tags/logging/</link>
+      <pubDate>Mon, 16 Sep 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/logging/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Design Docs</title>
+      <link>https://blog.cloudant.com/tags/design-docs/</link>
+      <pubDate>Fri, 16 Aug 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/design-docs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Double Metaphone</title>
+      <link>https://blog.cloudant.com/tags/double-metaphone/</link>
+      <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/double-metaphone/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Node.js</title>
+      <link>https://blog.cloudant.com/tags/node.js/</link>
+      <pubDate>Fri, 24 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/node.js/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Partitioned Databases</title>
+      <link>https://blog.cloudant.com/tags/partitioned-databases/</link>
+      <pubDate>Fri, 24 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/partitioned-databases/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>COS</title>
+      <link>https://blog.cloudant.com/tags/cos/</link>
+      <pubDate>Wed, 15 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://blog.cloudant.com/tags/kubernetes/</link>
+      <pubDate>Wed, 15 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SQL</title>
+      <link>https://blog.cloudant.com/tags/sql/</link>
+      <pubDate>Tue, 23 Apr 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/sql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Time-series</title>
+      <link>https://blog.cloudant.com/tags/time-series/</link>
+      <pubDate>Mon, 08 Apr 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/time-series/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sizing</title>
+      <link>https://blog.cloudant.com/tags/sizing/</link>
+      <pubDate>Tue, 05 Mar 2019 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/sizing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CSV</title>
+      <link>https://blog.cloudant.com/tags/csv/</link>
+      <pubDate>Fri, 18 Jan 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/csv/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Watson</title>
+      <link>https://blog.cloudant.com/tags/watson/</link>
+      <pubDate>Fri, 18 Jan 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/watson/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Count</title>
+      <link>https://blog.cloudant.com/tags/count/</link>
+      <pubDate>Fri, 14 Dec 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/count/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>soundex</title>
+      <link>https://blog.cloudant.com/tags/soundex/</link>
+      <pubDate>Wed, 12 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/soundex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cache</title>
+      <link>https://blog.cloudant.com/tags/cache/</link>
+      <pubDate>Fri, 23 Nov 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cache/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nginx</title>
+      <link>https://blog.cloudant.com/tags/nginx/</link>
+      <pubDate>Fri, 23 Nov 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/nginx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Warehouse</title>
+      <link>https://blog.cloudant.com/tags/warehouse/</link>
+      <pubDate>Fri, 16 Nov 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/warehouse/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Data</title>
+      <link>https://blog.cloudant.com/tags/data/</link>
+      <pubDate>Fri, 14 Sep 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/data/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>JSON</title>
+      <link>https://blog.cloudant.com/tags/json/</link>
+      <pubDate>Fri, 14 Sep 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/json/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Time</title>
+      <link>https://blog.cloudant.com/tags/time/</link>
+      <pubDate>Fri, 24 Aug 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/time/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Aggregation</title>
+      <link>https://blog.cloudant.com/tags/aggregation/</link>
+      <pubDate>Mon, 06 Aug 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/aggregation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Fundamentals</title>
+      <link>https://blog.cloudant.com/tags/fundamentals/</link>
+      <pubDate>Mon, 06 Aug 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/fundamentals/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Modelling</title>
+      <link>https://blog.cloudant.com/tags/modelling/</link>
+      <pubDate>Fri, 29 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/modelling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TypeScript</title>
+      <link>https://blog.cloudant.com/tags/typescript/</link>
+      <pubDate>Fri, 29 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/typescript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>API</title>
+      <link>https://blog.cloudant.com/tags/api/</link>
+      <pubDate>Mon, 04 Jun 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/api/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Emoji</title>
+      <link>https://blog.cloudant.com/tags/emoji/</link>
+      <pubDate>Wed, 30 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/emoji/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Date</title>
+      <link>https://blog.cloudant.com/tags/date/</link>
+      <pubDate>Thu, 24 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/date/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CLI</title>
+      <link>https://blog.cloudant.com/tags/cli/</link>
+      <pubDate>Thu, 22 Feb 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cli/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Local</title>
+      <link>https://blog.cloudant.com/tags/local/</link>
+      <pubDate>Tue, 13 Feb 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/local/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Attachments</title>
+      <link>https://blog.cloudant.com/tags/attachments/</link>
+      <pubDate>Thu, 21 Dec 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/attachments/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Domain</title>
+      <link>https://blog.cloudant.com/tags/domain/</link>
+      <pubDate>Thu, 07 Dec 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/domain/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ElasticSearch</title>
+      <link>https://blog.cloudant.com/tags/elasticsearch/</link>
+      <pubDate>Thu, 30 Nov 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/elasticsearch/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Architecture</title>
+      <link>https://blog.cloudant.com/tags/architecture/</link>
+      <pubDate>Tue, 07 Nov 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/architecture/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Library</title>
+      <link>https://blog.cloudant.com/tags/library/</link>
+      <pubDate>Wed, 12 Jul 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/library/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DocumentDB</title>
+      <link>https://blog.cloudant.com/tags/documentdb/</link>
+      <pubDate>Tue, 28 Mar 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/documentdb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DynamoDB</title>
+      <link>https://blog.cloudant.com/tags/dynamodb/</link>
+      <pubDate>Fri, 24 Mar 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/dynamodb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Revisions</title>
+      <link>https://blog.cloudant.com/tags/revisions/</link>
+      <pubDate>Sun, 01 Jan 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/revisions/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Redis</title>
+      <link>https://blog.cloudant.com/tags/redis/</link>
+      <pubDate>Tue, 22 Nov 2016 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/redis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cluster</title>
+      <link>https://blog.cloudant.com/tags/cluster/</link>
+      <pubDate>Sun, 31 Jan 2016 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/cluster/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Slack</title>
+      <link>https://blog.cloudant.com/tags/slack/</link>
+      <pubDate>Thu, 13 Aug 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/tags/slack/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>MapReduce</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="MapReduce">
+    <meta property="og:url" content="https://blog.cloudant.com/2011/01/13/mapreduce-from-the-basics-to-the-actually-useful.html" />
+    <meta property="og:description" content="From the basics to the actually useful" />
+    <meta property="article:published_time" content="2011-01-13 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/thor-alvis-760122-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="MapReduce" />
+    <meta name="twitter:description" content="From the basics to the actually useful" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="MapReduce">
+    <meta itemprop="description" content="From the basics to the actually useful">
+    <meta itemprop="image" content="/img/thor-alvis-760122-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">MapReduce</a></h1>
+  
+  <div class="postmeta">Jan 13, 2011 | Mike Miller | 
+
+<span class="tag">MapReduce</span>
+
+</div>
+  
+  <p>Recently, Tim Anglade culminated his NOSQL World Tour with the release of <a href="http://nosqltapes.com">the NOSQL Tapes</a>, a collection of live interviews collected globally. Not only do I find that site aesthetically pleasing (courtesy of our own <a href="http://twitter.com/steadicat">Steadicat</a>), but there is a tremendous amount of solid content, from technical discussions to opinions and conjectures from many of the young leaders in the field. I was fortunate to get a bit of Tim’s time when he stopped in Seattle and we recorded a <a href="http://nosqltap.es/8">longish video</a> on MapReduce in my lab at UW. While I love the old school feel of a chalk-talk, I must admit I’m pretty embarrassed at how rambling and fragmented my explanations are, not to mention my shoddy use of available board space. Therefore the Physics Professor in me feels obligated to try again, albeit offline this time.</p>
+<h3 id="brief-nosql-taxonomy"><a href="#brief-nosql-taxonomy">Brief NOSQL Taxonomy</a></h3>
+<p>To set the MapReduce stage, I’m going to offer a very naive taxonomy of NoSQL data stores (apologies to the experts). I have yet to meet a database that isn’t a key/value store, so let’s focus on some higher level distinction. In particular, let’s focus on the difference between <em>big tables</em> (BigTable, HBase, Cassandra, etc.) and _document store_s (CouchDB, MongoDB). All of these solutions are finding solid acceptance in the wild, so what – if any – difference is there? My one-word answer is <em>flexibility</em>. Huh, isn’t all NoSQL flexible? Well… yes and no. In my eyes, BigTable and its derivatives excel at one thing in particular: structuring your data for the efficient I/O access that is necessary to get blazing read speeds for large data sets. Somewhat orthogonal, document stores, especially CouchDB, prioritize flexibility. In particular, there is no requirement to define columns, column families, or super columns up front. You simply encapsulate your data as documents and push them into the store. How then, you may ask, can you get efficient queries? MongoDB treats the problem with blazingly fast in-memory table scans and document introspection for index builds, whereas CouchDB takes a different approach with something called incremental MapReduce. I’m going to briefly explain the latter and then show you how it works in action.</p>
+<h3 id="mapreduce-primer"><a href="#mapreduce-primer">MapReduce Primer</a></h3>
+<p>MapReduce is an old design pattern that was recently made famous by Google. There are many different implementations, and I won’t even try to address them all. It suffices to say that MapReduce is all about giving programmers an efficient way to consume data without needing to know how or where it is actually stored. Further, MapReduce excels at traversing datasets that live on more than one machine. It is simple, a bit restrictive, but extremely powerful. I’m going to show you how it works in CouchDB (well, actually in BigCouch hosted on Cloudant.com).</p>
+<p>Broadly speaking, CouchDB (and Cloudant’s BigCouch) use MapReduce as a tool to let you introspect your data and build persistent ‘views’ (indices) for fast query responses. And, oh yeah, it does it incrementally. Let’s examine the pieces in detail:</p>
+<ul>
+<li><strong>View builds.</strong> The process of scanning over your data to create indices that make queries fast. This step also often performs data normalization.</li>
+<li><strong>MapReduce.</strong> The framework by which user code gets executed for index builds.</li>
+<li><strong>View queries</strong>. How you get the isnformation out of your indices</li>
+<li><strong>Incremental.</strong> When new documents are added or existing documents are modified/removed, you don’t need to rescan your entire dataset. Instead the view engine only rescans the new/modified documents, and deletes the contributions from the deleted/modified documents. It’s a complex implementation, but one that really separates the Couch MapReduce model from, e.g., Hadoop’s or Riak’s implementations.</li>
+</ul>
+<p>For full details on Cloudant’s implementation of MapReduce, take a look at <a href="http://blog.cloudant.com/dynamo-and-couchdb-clusters">Dynamo and CouchDB Clusters</a> and <a href="http://oreillynet.com/pub/e/1760">Adam’s O’Reilly Webcast</a>. So what do you actually have to do? Well, you simply need to write one or two functions. The ‘map’ function is required, and the ‘reduce’ is optional. For simple sorting problems (e.g. building a SEO reverse index) map alone suffices. For data aggregation, reduce comes into the picture. CouchDB allows you to write these functions in any language you choose, although JavaScript is the most common. Let’s put some meat on the bones with examples. Below I’m going to show you how to do three of the most common things people do with CouchDB’s MapReduce:</p>
+<ol>
+<li>sort documents based on arbitrary information</li>
+<li>calculate aggregate statistics</li>
+<li>perform a time-series analysis</li>
+</ol>
+<h3 id="our-example-problem"><a href="#our-example-problem">Our Example Problem</a></h3>
+<p>We are going to load and analyze FAA plane crash data from <a href="http://data.gov/">data.gov</a> using Cloudant. If you want to follow along at home, you have two choices.</p>
+<ol>
+<li>Use CouchDB replication to copy my db into yours via: {% highlight tcsh %}$ curl &lsquo;http://<usr>:<pwd>@<usr>.cloudant.com/_replicate&rsquo; -Hcontent-type:application/json -d &lsquo;{&ldquo;source&rdquo;:&ldquo;<a href="http://mlmiller.cloudant.com/planes%22,%22target%22:%22http://">http://mlmiller.cloudant.com/planes&quot;,&quot;target&quot;:&quot;http://</a><usr>:<pwd>@<usr>.cloudant.com/planes&rdquo;,&ldquo;create_target&rdquo;:true}&rsquo;{% endhighlight %}</li>
+<li>Repeat from scratch by <a href="http://github.com/mlmiller/examples/tree/master/aviation">getting the code</a> from Github.</li>
+</ol>
+<p>(1) is simpler and <em>doesn’t require any special software installed on your machine</em>. All you need is to have a free account on <a href="http://cloudant.com">Cloudant</a>. (2) is a bit more effort but should work with any CouchDB server. If you go with (1), the best way to check the progress is to <a href="http://cloudant.com">login to your account</a>, click on your user dashboard (top right) and then click on the newly created ‘planes’ database. If you examine the Stats tab and refresh periodically, you will see the db size increasing, as well as some MapReduce ‘views’ running as the data imports:</p>
+<p><img src="/img/planes-indexing.png" alt=""></p>
+<p>That bar that registers 31.7% is telling you that MapReduce is being used to index your documents in real time without you having to write any code at all. The ‘2839 of 8952’ on the right represents the fraction of freshly added/updated documents that is processed in this current pass, and if you click on ‘show details’ you can see the results of the MapReduce processes on each of the cluster nodes that contain any chunk of your data. That&rsquo;s just how easy it is to get your code running, in parallel, in realtime!</p>
+<h3 id="data-import"><a href="#data-import">Data Import</a></h3>
+<p>I’ve chosen to import the FAA crash data using my favorite tools: Python and Benoit’s wonderful <a href="http://couchdbkit.org/">Couchdbkit</a> library. If you use the Python <a href="https://code.google.com/p/boto/">Boto</a> module for AWS, you will feel right at home. In <a href="https://github.com/mlmiller/examples/blob/master/aviation/upload.py">upload.py</a>, I use the very handy <code>DictReader</code> class from Python’s <code>csv</code> module to parse the <code>AviationData.txt.gz</code>. <code>DictReader</code> slurps a line of a CSV (or similarly structured text file) with column headings and gives you back a dictionary. It’s a one-liner to serialize that Python dictionary and push it into Cloudant. If you want to try this yourself the <code>README</code> file has instructions on installing the Couchdbkit module and executing the <code>upload.py</code> script, but it just boils down to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>python upload.py AviationData.txt.gz <span style="color:#e6db74">&#39;http://&lt;username&gt;:&lt;password&gt;@&lt;username&gt;.cloudant.com&#39;</span> planes
+</span></span></code></pre></div><p>My inported data lives at <a href="http://mlmiller.cloudant.com/planes">http://mlmiller.cloudant.com/planes</a>. One thing to note: you can see that I don’t take any steps to discover the type of the data on import. Instead, we just throw it all into Cloudant and we can sort it out later using MapReduce (<em>flexible</em>). Once the data is fully imported, I can login into <a href="https://cloudant.com/">cloudant.com</a> and view the ‘planes’ database in the dashboard:</p>
+<p><img src="/img/planes-stats.png" alt=""></p>
+<p>I’ve also gone into the Permissions tab and granted read access to the data:</p>
+<p><img src="/img/planes-permissions.png" alt=""></p>
+<p>Each document contains quite a bit of data, too much to fit onto a single screen shot, in fact:</p>
+<p><img src="/img/planes-documents.png" alt=""></p>
+<p>But the important thing to note is that we have data for nearly 70,000 domestic accidents, spanning the range 1988–2010. If you want to look at a single document from your command line, you can via:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://&lt;usr&gt;:&lt;pwd&gt;@&lt;usr&gt;.cloudant.com/planes/_all_docs?limit=1&amp;include_docs=true&#39;</span>
+</span></span></code></pre></div><p>and if you want it pretty printed, my favorite is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://&lt;usr&gt;:&lt;pwd&gt;@&lt;usr&gt;.cloudant.com/planes/_all_docs?limit=1&amp;include_docs=true&#39;</span> | python -m json.tool
+</span></span></code></pre></div><p>Since I&rsquo;ve granted read permissions on mlmiller/planes, you can execute this yourself via:</p>
+<pre tabindex="0"><code>$ curl -X GET &#39;http://mlmiller.cloudant.com/planes/_all_docs?limit=1&amp;include_docs=true&#39; | python -m json.tool
+{
+    &#34;offset&#34;: 0,
+    &#34;rows&#34;: [
+        {
+            &#34;doc&#34;: {
+                &#34;&#34;: &#34;&#34;,
+                &#34;Accident Number&#34;: &#34;LAX08CA100&#34;,
+                &#34;Air Carrier&#34;: &#34;&#34;,
+                &#34;Aircraft Category&#34;: &#34;&#34;,
+                &#34;Aircraft Damage&#34;: &#34;Substantial&#34;,
+                &#34;Airport Code&#34;: &#34;U42&#34;,
+                &#34;Airport Name&#34;: &#34;Salt Lake City Muni 2&#34;,
+                &#34;Amateur Built&#34;: &#34;Yes&#34;,
+                &#34;Broad Phase of Flight&#34;: &#34;&#34;,
+                &#34;Country&#34;: &#34;United States&#34;,
+                &#34;Engine Type&#34;: &#34;Reciprocating&#34;,
+                &#34;Event Date&#34;: &#34;04/12/2008&#34;,
+                &#34;Event Id&#34;: &#34;20080513X00662&#34;,
+                &#34;FAR Description&#34;: &#34;&#34;,
+                &#34;Injury Severity&#34;: &#34;Non-Fatal&#34;,
+                &#34;Investigation Type&#34;: &#34;Accident&#34;,
+                &#34;Latitude&#34;: &#34;40.619445&#34;,
+                &#34;Location&#34;: &#34;Salt Lake City, UT&#34;,
+                &#34;Longitude&#34;: &#34;-111.992777&#34;,
+                &#34;Make&#34;: &#34;Questair, Inc.&#34;,
+                &#34;Model&#34;: &#34;Venture&#34;,
+                &#34;Number of Engines&#34;: &#34;1&#34;,
+                &#34;Publication Date&#34;: &#34;05/28/2008&#34;,
+                &#34;Purpose of Flight&#34;: &#34;Personal&#34;,
+                &#34;Registration Number&#34;: &#34;N36V&#34;,
+                &#34;Report Status&#34;: &#34;Probable Cause&#34;,
+                &#34;Schedule&#34;: &#34;&#34;,
+                &#34;Total Fatal Injuries&#34;: &#34;&#34;,
+                &#34;Total Minor Injuries&#34;: &#34;2&#34;,
+                &#34;Total Serious Injuries&#34;: &#34;&#34;,
+                &#34;Total Uninjured&#34;: &#34;&#34;,
+                &#34;Weather Condition&#34;: &#34;VMC&#34;,
+                &#34;_id&#34;: &#34;0fedbabcd21f15785750457f83000947&#34;,
+                &#34;_rev&#34;: &#34;1-3e9637bb5214c82fc7b29bb4a75e765b&#34;
+            },
+            &#34;id&#34;: &#34;0fedbabcd21f15785750457f83000947&#34;,
+            &#34;key&#34;: &#34;0fedbabcd21f15785750457f83000947&#34;,
+            &#34;value&#34;: {
+                &#34;rev&#34;: &#34;1-3e9637bb5214c82fc7b29bb4a75e765b&#34;
+            }
+        }
+    ],
+    &#34;total_rows&#34;: 68388
+}
+</code></pre><h3 id="example-1-sort"><a href="#example-1-sort">Example 1: Sort</a></h3>
+<p>Now that we have the data, let’s get down to business. Key/Value is great, but I want to be able get find all the documents for a given brand of plane, say Cessna. This is really an inverted index, and is in the absolute sweet spot for MapReduce. We can accomplish this with a ‘map-only’ view that looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">Make</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The MapReduce code is actually stored in the database as part of a view in a design document (see the <a href="http://guide.couchdb.org/editions/1/en/views.html">CouchDB Book</a> for more details). My favorite method is to use a client-side tool such as <code>couchapp</code> or <code>couchdbkit</code> that allows me to organize <code>map.js</code> and <code>reduce.js</code> files according to a filesystem hierarchy and then automatically upload them to the database as a design document. I actually snuck that two-liner into <a href="https://github.com/mlmiller/examples/blob/master/aviation/upload.py#L20"><code>upload.py</code></a>, where I have:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>loader <span style="color:#f92672">=</span> FileSystemDocsLoader(<span style="color:#e6db74">&#39;_design/&#39;</span>)
+</span></span><span style="display:flex;"><span>loader<span style="color:#f92672">.</span>sync(db, verbose<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><p>Those two lines unpack the contents of the <code>_design</code> directory and build a design document. That directory looks like:</p>
+<p><img src="/img/folders.png" alt=""></p>
+<p>This gives me a design document with the name <code>example</code>; that contains two views, one called <code>date</code> and one called <code>make</code>. You can see the entire design document from the command line via:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET http://mlmiller.cloudant.com/planes/_design/example
+</span></span></code></pre></div><p>or you can just browse the ‘_design’ code in the file <a href="https://github.com/mlmiller/examples/blob/master/aviation/_design/example/views/make/map.js"><code>_design/example/views/make/map.js</code></a>. The code looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">Make</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>emit()</code> function generates a key/value pair that gets sorted according to CouchDB&rsquo;s deterministic <a href="http://wiki.apache.org/couchdb/View_collation#Collation_Specification">collation order</a>. These key/value pairs are either stored directly in the view index, or passed through the reducer first (see below). Don’t worry about the second argument to the emit method, that’s for the the reduce phase and we don’t need that for a basic sort. The moment that we upload that design document to Cloudant, the index is kept up to date automatically. That’s quite different than the default CouchDB behavior, but it’s a nice optimization to make sure that the query response is snappy.</p>
+<p>Query (finally!). Let’s find all of the documents (‘rows’) that have <code>doc.Make==&quot;Cessna&quot;</code>. Since we emitted <code>doc.Make</code> in our map code, <code>doc.Make</code> is therefore the ‘key’ for this index, and that means we get snappy responses to queries like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?reduce=false&amp;key=&#34;Cessna&#34;&amp;limit=10&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;total_rows&#34;</span>:68387,<span style="color:#e6db74">&#34;offset&#34;</span>:13905,<span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f8300324c&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f83003a2f&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f830060ec&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f83006bfb&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f8300a5ae&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f8300e15d&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f830162b7&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f8301a3a4&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f8301a54e&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0fedbabcd21f15785750457f83058740&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;Cessna&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>The full list of query options is <a href="http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options">given here</a>, but really there are only a handful of options I typically use. For this query, if you remove the <code>limit</code> argument you will get the entire list of crashes with a Cessna involved. If you want to do some fun statistics, you can try:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?reduce=false&amp;key=&#34;Airbus&#34;&#39;</span> | wc -l <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?reduce=false&amp;key=&#34;Boeing&#34;&#39;</span> | wc -l <span style="color:#ae81ff">773</span>
+</span></span></code></pre></div><p>Well that’s interesting! But wait, isn’t there a more efficient way to calculate statistics than slurping the entire set of Boeing lines to the client and doing a client-side count? You bet, and that’s where reduce comes in.</p>
+<h3 id="example-2-data-aggregation"><a href="#example-2-data-aggregation">Example 2: Data Aggregation</a></h3>
+<p>Now we want to go beyond simple sorts and aggregate to find the total number of crashes for different types of planes. Reduce is perfect for this, and that’s why we did <code>emit(doc.Make,1)</code> in <code>map.js</code>. If you look at the corresponding <a href="https://github.com/mlmiller/examples/blob/master/aviation/_design/example/views/make/reduce.js"><code>reduce.js</code></a> file for that view you’ll see nothing more than: <code>_sum</code>.</p>
+<p>What the heck is that? Well there are certain aggregation tasks that are simply so common (count, sum, average, min, max, etc.) that we have coded them up in erlang and pushed them into the database. Cloudant has an ever growing number of built-in reduces (<em>builtins</em>), and using a builtin is always faster and less error prone than writing it yourself. As an avid user, I can admit that I haven’t used a non-builtin reduce in at least 9 months. So the <code>_sum</code> that we use here is simply going to add up the numbers that we emitted as the 2nd argument to <code>emit()</code> in the <code>map.js</code> function. Now we can answer the Boeing vs. Airbus question without any client side work via:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?key=&#34;Boeing&#34;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:null,<span style="color:#e6db74">&#34;value&#34;</span>:771<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]}</span>
+</span></span><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?key=&#34;Airbus&#34;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:null,<span style="color:#e6db74">&#34;value&#34;</span>:13<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>Check that out! Hmm, now suppose I want to find the total number of accidents, I can then just do:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:null,<span style="color:#e6db74">&#34;value&#34;</span>:68387<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>Very cool, and if I want to make a graph of how they plot out vs manufacture I can add the <code>group=true</code> option:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?group=true&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:53<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;107.5 Flying Corporation&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;1200&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;1977 COLFER-CHAN&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;1ST FTR GP&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;2000 McCoy&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;2001 MCGIRL&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;2003 Nash&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;2007 Savage Air LLC&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;67 FLYING DUTCHMAN&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;85 MANISTA&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;A Pair of Jacks&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;A. H. GETTINGS&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#e6db74">&#34;A. LE FRANCOIS&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span>:1<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>…
+</span></span></code></pre></div><p>(truncated because it’s a looong list!)</p>
+<p>Ok, so aggregation seems pretty straightforward. Now let’s go the last step to time-series.</p>
+<h3 id="example-3-time-series-analysis"><a href="#example-3-time-series-analysis">Example 3: Time Series Analysis</a></h3>
+<p>Let’s get a bit more numerical and ask, what’s the distribution of crashes and fatalities vs time. That’s what the <code>date</code> view is for. If you inspect any of our crash documents you will see that they have a two other important fields: <code>Event Date</code> and <code>Total Fatal Injuries</code>. Let’s create an index that allows us to answer time-based queries about both the number of accidents and the number of fatalities. While a bit morbid, it’s good to know what the odds are! This example is a bit more complex because we are going to use an array for both arguments of <code>emit()</code>. Take a look at the code in the <a href="https://github.com/mlmiller/examples/blob/master/aviation/_design/example/views/date/map.js"><code>map.js</code></a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">then</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(Date.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">doc</span>[<span style="color:#e6db74">&#39;Event Date&#39;</span>]));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">fatalities</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>[<span style="color:#e6db74">&#39;Total Fatal Injuries&#39;</span>]<span style="color:#f92672">!=</span><span style="color:#e6db74">&#34;&#34;</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">fatalities</span> <span style="color:#f92672">=</span> parseInt(<span style="color:#a6e22e">doc</span>[<span style="color:#e6db74">&#39;Total Fatal Injuries&#39;</span>]);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">then</span>.<span style="color:#a6e22e">getFullYear</span>(), <span style="color:#a6e22e">then</span>.<span style="color:#a6e22e">getMonth</span>()], [<span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">fatalities</span>]);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This is a bit more complex because we do some processing of the data. In line #2 we unpack the <code>Event Date</code> variable into a JavaScript Date object, very handy. I find myself using <code>new Date(Date.parse(some_weird_timestamp))</code> all the time. Line #6 simply casts our fatalities info into an integer. The magic is in <code>emit</code>, where we use JavaScript arrays <code>[]</code> for both the key and the value. Then, for reduce we use good ol’ <code>_sum</code>. One of Cloudant’s additional builtins is a <code>_sum</code> that works on arrays, very handy. Now to query this index we get rows that are sorted by year, then month. The index looks like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/date?group_level=2&#39;</span> | more
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,0<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>207,185<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,1<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>232,96<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,2<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>280,95<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,3<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>303,113<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>387,133<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,5<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>349,106<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,6<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>433,283<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,7<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>399,96<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,8<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>332,119<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,9<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>239,129<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,10<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>224,134<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982,11<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>208,96<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1983,0<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>199,102<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1983,1<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>210,72<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1983,2<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>264,91<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span>…
+</span></span></code></pre></div><p>So, e.g., 1982 month 0 (January) had 207 crashes and 185 fatalities. What was that <code>group_level</code> command? Let’s try changing it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/date?group_level=1&#39;</span> | more
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1982<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>3593,1585<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1983<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>3556,1273<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1984<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>3457,1229<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1985<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>3096,1648<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1986<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>2880,1180<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1987<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>2828,1237<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span>…
+</span></span></code></pre></div><p>Well that’s interesting! <code>group_level=1</code> vs <code>2</code> has a big effect: with <code>group_level=2</code> we get the full granularity/dimensionality of the array we used for the key (first argument to <code>emit</code>). But we can, at query time, reduce even further by integrating over month! Very cool, and the gory details are few: <code>group_level</code> runs between <code>0</code> and <code>length(key)</code>, so in this case valid values are 0, 1, 2. If we specify <code>group_level=0</code>, we’ll get sum statistics over the entire date range:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/date?group_level=0&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:null,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>68387,38652<span style="color:#f92672">]}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>Awesome. And therein lies the power of using MapReduce for an efficient index build. With Cloudant you don’t need to install any software, you simply use the cloud hosted cluster to run your code. If you think about it, all we really had to do was write 9 lines of javascript for the map method, and no original code for the reduce method. We can use this same exact index to query for a given date range, say 1994:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/date?group_level=2&amp;startkey=\[1994\]&amp;endkey=\[1995\]&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,0<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>116,60<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,1<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>142,42<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,2<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>191,67<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,3<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>179,72<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>224,74<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,5<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>223,98<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,6<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>267,131<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,7<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>260,101<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,8<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>212,200<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,9<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>169,129<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,10<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>131,79<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,11<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>143,130<span style="color:#f92672">]}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>or if we want to do can turn off the reduce in the query and get all of the crashes from a given year/month combo:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/date?key=\[1994,4\]&amp;reduce=false&#39;</span> | more
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;total_rows&#34;</span>:68387,<span style="color:#e6db74">&#34;offset&#34;</span>:34959,<span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510c7c60&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,1<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510c87b7&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,0<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510c951a&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,2<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510c9b0a&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,0<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510c9bbb&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,0<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510c9c15&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,1<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510c9d6d&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,0<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510ca925&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,0<span style="color:#f92672">]}</span>,
+</span></span><span style="display:flex;"><span>…
+</span></span></code></pre></div><p>Wow, handy! And if you want to really blow your mind, add the query-string parameter <code>?include_docs=true</code> to get the full documents themselves.</p>
+<h3 id="summary"><a href="#summary">Summary</a></h3>
+<p>There’s a lot of power in MapReduce, and I hope I’ve given you enough to get your hands dirty running it an an extremely simple way using a hosted service. If you have more questions, there are lots of examples on the <a href="http://wiki.apache.org/couchdb/">CouchDB wiki</a> or on the (<a href="https://cloudant.tenderapp.com">Cloudant support center</a>). But the rule of thumb is:</p>
+<ul>
+<li><strong>sort:</strong> map only</li>
+<li><strong>aggregate:</strong> use a <code>_sum</code> reduce + <code>group_level</code></li>
+<li><strong>time-series:</strong> use an array of <code>[year, month, day, …]</code> + <code>group_level</code></li>
+</ul>
+<p>In the next post, we’ll show you how to link Cloudant MapReduce views with builtin full-text/numerical search for killer data visualizations.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

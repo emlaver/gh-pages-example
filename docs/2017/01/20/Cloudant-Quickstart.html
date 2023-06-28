@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>cloudant-quickstart</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="cloudant-quickstart">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/01/20/Cloudant-Quickstart.html" />
+    <meta property="og:description" content="Simple Cloudant Node.js library" />
+    <meta property="article:published_time" content="2017-01-20 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/goh-rhy-yan-273919-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="cloudant-quickstart" />
+    <meta name="twitter:description" content="Simple Cloudant Node.js library" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="cloudant-quickstart">
+    <meta itemprop="description" content="Simple Cloudant Node.js library">
+    <meta itemprop="image" content="/img/goh-rhy-yan-273919-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">cloudant-quickstart</a></h1>
+  
+  <div class="postmeta">Jan 20, 2017 | Glynn Bird | 
+
+<span class="tag">Node.js</span>
+
+</div>
+  
+  <p>I frequently talk with developers who are using Cloudant or Apache CouchDB for the first time and I&rsquo;ve found that things they find most difficult to come to terms with are:</p>
+<ul>
+<li>Design Documents - a feature unique to this database family. They are special documents holding index definitions a other data manipulation magic. Once mastered, they can be used to great effect but to a first-timer they are baffling.</li>
+<li>Multi-version Concurrency Control - MVCC is the mechanism whereby documents are stored in a tree of revisions, allowing databases to be synced with other copies without data loss.</li>
+</ul>
+<p>In a lot of use-cases, the developer doesn&rsquo;t want to have to learn about Design Documents to query or aggregate data nor do they want MVCC getting in the way of storing and updating their data. What would Cloudant or CouchDB look like without these concepts? Or without show &amp; list functions, update handlers, attachments and replication?</p>
+<p>To find out, I wrote the <em>cloudant-quickstart</em> library that hides away this powerful but esoteric functionality and concentrates on making data manipulation simple and intuitive.</p>
+<h2 id="introducing-cloudant-quickstart"><a href="#introducing-cloudant-quickstart">Introducing cloudant-quickstart</a></h2>
+<p>The <em>cloudant-quickstart</em> library is a Node.js module that can be used with Cloudant and allows:</p>
+<ul>
+<li>database creation</li>
+<li>document insert, update, bult insert and delete</li>
+<li>document get, multi-get and bulk fetch</li>
+<li>database querying</li>
+<li>aggregation for counting, totalising and statistics</li>
+</ul>
+<p>All of this is achieved without you dealing with any of Cloudant&rsquo;s inner complexities.</p>
+<h2 id="installing"><a href="#installing">Installing</a></h2>
+<p>The library can used within your own project like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; npm install --save cloudant-quickstart
+</span></span></code></pre></div><p>and then used within your code by adding the URL of your Cloudant instance and defining which Cloudant database you want to work with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://myusername:mypassword@host.cloudant.com&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cities</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant-quickstart&#39;</span>)(<span style="color:#a6e22e">url</span>, <span style="color:#e6db74">&#39;cities&#39;</span>);
+</span></span></code></pre></div><h2 id="creating-a-database"><a href="#creating-a-database">Creating a database</a></h2>
+<p>A new Cloudant database can be created on first-use with the <code>create</code> function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">create</span>();
+</span></span></code></pre></div><p>All the function calls we make are going to be asynchronous: they return a <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> which you handle with &rsquo;then&rsquo; and &lsquo;catch&rsquo; functions, but for brevity, I&rsquo;ve omitted much of the scaffolding from the code samples. e.g. to log the output of the <code>info</code> function you could do</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">info</span>().<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>)
+</span></span></code></pre></div><p>We are going to import some data from <a href="http://www.geonames.org/">geonames.org</a> which stores the location and population of cities of the world.</p>
+<h2 id="inserting-data"><a href="#inserting-data">Inserting data</a></h2>
+<p>Single documents can be added to a database with the <code>insert</code> function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">city</span> <span style="color:#f92672">=</span> { 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;3041563&#39;</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;Andorra la Vella&#39;</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">latitude</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">42.50779</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">longitude</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1.52109</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">country</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;AD&#39;</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">15853</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">timezone</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Europe/Andorra&#39;</span> 
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">city</span>);
+</span></span></code></pre></div><p>If an <code>_id</code> property is supplied, then this becomes the key field of the document. If omitted, an &lsquo;_id&rsquo; is automatically generated.</p>
+<p>The same function can be used to insert multiple documents - simply pass in an array of objects instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">multi</span> <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;1000501&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Grahamstown&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">latitude</span><span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">33.30422</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">longitude</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">26.53276</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">country</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;ZA&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">91548</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">timezone</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Africa/Johannesburg&#39;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;1000543&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Graaff-Reinet&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">latitude</span><span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">32.25215</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">longitude</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">24.53075</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">country</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;ZA&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">62896</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">timezone</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Africa/Johannesburg&#39;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>];
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">multi</span>);
+</span></span></code></pre></div><p>The array of data can be as long as you like. Let&rsquo;s get some data from Github and store it in a local file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl https://raw.githubusercontent.com/glynnbird/cities/master/cities.json &gt; cities.json
+</span></span></code></pre></div><p>It can then be imported in batches with one function call:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">mydata</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;./cities.json&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">data</span>);
+</span></span></code></pre></div><p>Records can be retrieved by their ids with the <code>get</code> function singly:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;1000543&#39;</span>);
+</span></span></code></pre></div><p>or in batches by providing an array of ids:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">get</span>([<span style="color:#e6db74">&#39;1000501&#39;</span>, <span style="color:#e6db74">&#39;1000543&#39;</span>]);
+</span></span></code></pre></div><p>Individual documents can be updated by supplying the id and a new document body to the <code>update</code> function (or just a new object):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">update</span>(<span style="color:#e6db74">&#39;1000501&#39;</span>, <span style="color:#a6e22e">newdoc</span>);
+</span></span></code></pre></div><p>and a document can be deleted with the <code>del</code> function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">del</span>(<span style="color:#e6db74">&#39;1000501&#39;</span>);
+</span></span></code></pre></div><p>Assuming we have managed to create a suitable data set, then we next need to query it.</p>
+<h2 id="querying-data"><a href="#querying-data">Querying data</a></h2>
+<p>The database can by queried by any field by using the <code>query</code> function, passing in a query object:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">query</span>({ <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;York&#39;</span> }).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>);
+</span></span><span style="display:flex;"><span>[ { <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2633352&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;York&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">latitude</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">53.95763</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">longitude</span><span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1.08271</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">country</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;GB&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">144202</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">timezone</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Europe/London&#39;</span> },
+</span></span><span style="display:flex;"><span>  { <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;4562407&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;York&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">latitude</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">39.9626</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">longitude</span><span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">76.72774</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">country</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;US&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">43718</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">timezone</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;America/New_York&#39;</span> } ]
+</span></span></code></pre></div><p>The query can also contain <a href="https://docs.cloudant.com/cloudant_query.html#selector-syntax">Cloudant Query selector operators</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// find cities with a population &gt; 5m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">query</span>({ <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#39;$gt&#39;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5000000</span>} })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// cities with population &gt; 5m in Brazil or USA
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">query</span>({ <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#39;$gt&#39;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5000000</span>}, <span style="color:#a6e22e">country</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#39;$in&#39;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;BR&#39;</span>,<span style="color:#e6db74">&#39;US&#39;</span>]} })
+</span></span></code></pre></div><h2 id="aggregation"><a href="#aggregation">Aggregation</a></h2>
+<p>Create aggregated views of your data with the <code>count</code>, <code>sum</code> and <code>stats</code> functions.</p>
+<p>The <code>count</code> function simply counts things:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">count</span>().<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">23515</span>
+</span></span></code></pre></div><p>or can count things grouped by other fields within the document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// get counts of cities by country code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">count</span>(<span style="color:#e6db74">&#39;country&#39;</span>).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>);
+</span></span><span style="display:flex;"><span>{ <span style="color:#a6e22e">AD</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AE</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">13</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AF</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">48</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AG</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AI</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1.</span>..
+</span></span></code></pre></div><p>The <code>sum</code> function calculates totals:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// get sum of all population fields
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">sum</span>(<span style="color:#e6db74">&#39;population&#39;</span>).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2694222973</span>
+</span></span></code></pre></div><p>and can be used to group the totals by other fields:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// get totals of population grouped by country
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">sum</span>(<span style="color:#e6db74">&#39;population&#39;</span>,<span style="color:#e6db74">&#39;country&#39;</span>).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>);
+</span></span><span style="display:flex;"><span>{ <span style="color:#a6e22e">AD</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">36283</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AE</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3272938</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AF</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">6308267</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">AG</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">24226.</span>..
+</span></span></code></pre></div><p>The <code>stats</code> function calculates statistics on one or more fields, which can be grouped by other fields</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// get stats on cities&#39; population by timezone and country
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">stats</span>(<span style="color:#e6db74">&#39;population&#39;</span>, <span style="color:#e6db74">&#39;timezone&#39;</span>).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>);
+</span></span><span style="display:flex;"><span>{ <span style="color:#e6db74">&#39;Africa/Abidjan&#39;</span><span style="color:#f92672">:</span> 
+</span></span><span style="display:flex;"><span>   { <span style="color:#a6e22e">sum</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">8399817</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">count</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">57</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">min</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">15068</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">max</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3677115</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">mean</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">147365.2105263158</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">variance</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">240877692698.44693</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">stddev</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">490792.9224208993</span> },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;Africa/Accra&#39;</span><span style="color:#f92672">:</span> 
+</span></span><span style="display:flex;"><span>   { <span style="color:#a6e22e">sum</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">7064394</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">count</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">58</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">min</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">18077</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">max</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1963264</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">mean</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">121799.89655172414</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">variance</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">96426027195.8169</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">stddev</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">310525.4050731065</span> },...
+</span></span></code></pre></div><h2 id="how-does-this-work"><a href="#how-does-this-work">How does this work?</a></h2>
+<p>It&rsquo;s still Cloudant under-the-hood but this library is taking care of a few details on your behalf:</p>
+<ul>
+<li>when you create a database, a <a href="https://docs.cloudant.com/cloudant_query.html">Cloudant Query</a> index is created that indexes all fields. This index then powers the <code>query</code> operator.</li>
+<li>the <code>update</code> and <code>delete</code> functions hide revision tokens from you - behind the scenes these operations fetch the latest revision, over-writing the data with your supplied document. If it doesn&rsquo;t work, it tries again later, up to three times, at increasingly longer time intervals.</li>
+<li>the <code>count</code>, <code>sum</code> and <code>stats</code> functions use Cloudant&rsquo;s MapReduce to work, creating the required Design Document if necessary.</li>
+</ul>
+<p>In production systems, it&rsquo;s important to understand Design Documents, MVCC and the other features of Cloudant, but when you&rsquo;re getting started
+it&rsquo;s helpful to be able to write data quickly and create queries without any fuss.</p>
+<h2 id="is-this-free"><a href="#is-this-free">Is this free?</a></h2>
+<p>Yes! This is a free, open-source library that can work with any Cloudant account.</p>
+<ul>
+<li>Code - <a href="https://github.com/glynnbird/cloudant-quickstart">https://github.com/glynnbird/cloudant-quickstart</a></li>
+<li>NPM page: <a href="https://www.npmjs.org/package/cloudant-quickstart">https://www.npmjs.org/package/cloudant-quickstart</a></li>
+</ul>
+<p>Feel free to give it a go and we&rsquo;d welcome any feedback through the project&rsquo;s <a href="https://github.com/glynnbird/cloudant-quickstart/issues">Github Issues</a> page.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/cloudant-and-node-js-made-simple-with-the-cloudant-quickstart-library-7deb7601448c" target="_new">https://medium.com/ibm-watson-data-lab/cloudant-and-node-js-made-simple-with-the-cloudant-quickstart-library-7deb7601448c</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Cloudant Fundamentals 4/10</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Cloudant Fundamentals 4/10">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/05/29/Using-API-with-curl.html" />
+    <meta property="og:description" content="Using the API with curl" />
+    <meta property="article:published_time" content="2018-05-29 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/michael-podger-43123-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Cloudant Fundamentals 4/10" />
+    <meta name="twitter:description" content="Using the API with curl" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Cloudant Fundamentals 4/10">
+    <meta itemprop="description" content="Using the API with curl">
+    <meta itemprop="image" content="/img/michael-podger-43123-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Cloudant Fundamentals 4/10</a></h1>
+  
+  <div class="postmeta">May 29, 2018 | Glynn Bird | 
+
+<span class="tag">Fundamentals</span>
+
+<span class="tag">API</span>
+
+</div>
+  
+  <p>The <a href="https://curl.haxx.se/">curl</a> command-line tool allows you to make HTTP requests from a terminal:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl <span style="color:#e6db74">&#39;http://www.website.com/&#39;</span>
+</span></span><span style="display:flex;"><span>&lt;html&gt;
+</span></span><span style="display:flex;"><span>&lt;h1&gt;This is a web page&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>&lt;/html&gt;
+</span></span></code></pre></div><p><a href="https://console.bluemix.net/docs/services/Cloudant/api/index.html#api-reference-overview">Cloudant&rsquo;s API</a> is entirely HTTP. You don&rsquo;t need any special software drivers or to understand a bespoke protocol — it&rsquo;s just web requests. You can access the database from a browser, a mobile app, any programming language or, in this case, from the command line.</p>
+<p>The first thing you&rsquo;ll need is your Cloudant service&rsquo;s URL. It&rsquo;ll look something like this:</p>
+<pre tabindex="0"><code>https://username:password@hostname.cloudant.com
+</code></pre><ul>
+<li>all traffic between you and Cloudant is sent over HTTPS</li>
+<li>the administrator&rsquo;s username and password are encoded into a URL using &ldquo;Basic&rdquo; authentication (other forms of <a href="https://console.bluemix.net/docs/services/Cloudant/api/authentication.html#authentication">authentication</a> are available)</li>
+<li>the domain name <code>hostname.cloudant.com</code> is the address of your Cloudant cluster.</li>
+</ul>
+<h2 id="put-your-url-in-an-environment-variable"><a href="#put-your-url-in-an-environment-variable">Put your URL in an environment variable</a></h2>
+<p>We don&rsquo;t want to have to type that URL every time, so a nice shortcut is to put it into an environment variable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ export URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://username:password@hostname.cloudant.com&#34;</span>
+</span></span></code></pre></div><p>We can then access our the <code>$URL</code> variable using <code>curl</code> which comes pre-installed on Macs and Linux machines and is available <a href="https://curl.haxx.se/">to download</a> on other platforms:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl $URL
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;couchdb&#34;</span>:<span style="color:#e6db74">&#34;Welcome&#34;</span>,<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;2.1.1&#34;</span>,<span style="color:#e6db74">&#34;vendor&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;IBM Cloudant&#34;</span>,<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;6656&#34;</span>,<span style="color:#e6db74">&#34;variant&#34;</span>:<span style="color:#e6db74">&#34;paas&#34;</span><span style="color:#f92672">}</span>,<span style="color:#e6db74">&#34;features&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;geo&#34;</span>,<span style="color:#e6db74">&#34;scheduler&#34;</span>,<span style="color:#e6db74">&#34;iam&#34;</span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>If you see some JSON, you&rsquo;re in!</p>
+<p><img src="/img/michael-podger-43123-unsplash.jpg" alt="A dewy spider web"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/jpgRztEuaV4?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">michael podger</a> on Unsplash</p>
+</blockquote>
+<h2 id="lets-create-a-database"><a href="#lets-create-a-database">Let&rsquo;s create a database</a></h2>
+<p>Databases are created with a <code>PUT</code> API call.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X PUT <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true<span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>the <code>-X</code> parameter defines the HTTP method. If omitted it is assumed to be <code>GET</code>, but <code>PUT</code>, <code>POST</code> and <code>DELETE</code> (and others) are allowed. We are asking a database called <code>newdb</code> to be created and as we got <code>{&quot;ok&quot;:true}</code> back, then it worked!</p>
+<p>If we tried to do the same thing again, we&rsquo;d get an error because it already exists:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X PUT <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#e6db74">&#34;file_exists&#34;</span>,<span style="color:#e6db74">&#34;reason&#34;</span>:<span style="color:#e6db74">&#34;The database could not be created, the file already exists.&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Sometimes it&rsquo;s good to see the HTTP status code in the response. Adding <code>-i</code> to the command will do that:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -i -X PUT <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb&#34;</span>
+</span></span><span style="display:flex;"><span>HTTP/2 <span style="color:#ae81ff">412</span>
+</span></span><span style="display:flex;"><span>content-type: application/json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#e6db74">&#34;file_exists&#34;</span>,<span style="color:#e6db74">&#34;reason&#34;</span>:<span style="color:#e6db74">&#34;The database could not be created, the file already exists.&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>In the above example <code>412</code> is our error code. There&rsquo;s a <a href="https://console.bluemix.net/docs/services/Cloudant/api/http.html#http-status-codes">full list here</a>, but in general:</p>
+<ul>
+<li>20x - good</li>
+<li>30x - nothing happened</li>
+<li>40x/50x - your request failed</li>
+</ul>
+<h2 id="adding-data"><a href="#adding-data">Adding data</a></h2>
+<p>We can add data to our database by posting a JSON object. We have to specify the data <em>is</em> JSON by specifying a &ldquo;Content-type&rdquo; header:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">&#34;Content-type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d <span style="color:#e6db74">&#39;{&#34;x&#34;:1}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;2ded8ec775b6728227143ac575613060&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-0785e9eb543380151003dc452c3a001a&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>This time we&rsquo;re using a <code>POST</code> endpoint and passing our JSON using the <code>-d</code> parameter. Cloudant has auto-generated an ID for us which we see in the response.</p>
+<p>If the JSON you want to add is in a file, you can do the following instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">&#34;Content-type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -d@myfile.json <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb&#34;</span>
+</span></span></code></pre></div><h2 id="reading-the-document-back"><a href="#reading-the-document-back">Reading the document back</a></h2>
+<p>We can read the document back again with a <code>GET</code> request:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb/2ded8ec775b6728227143ac575613060&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;_id&#34;</span>:<span style="color:#e6db74">&#34;2ded8ec775b6728227143ac575613060&#34;</span>,<span style="color:#e6db74">&#34;_rev&#34;</span>:<span style="color:#e6db74">&#34;1-0785e9eb543380151003dc452c3a001a&#34;</span>,<span style="color:#e6db74">&#34;x&#34;</span>:1<span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Where <code>2ded8ec775b6728227143ac575613060</code> was the auto-generated ID (it will be a different ID in your case).</p>
+<h2 id="modifying-a-document"><a href="#modifying-a-document">Modifying a document</a></h2>
+<p>To create another revision we need to do a new POST request, passing in the new document body <em>including the old document&rsquo;s revision token</em>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>       -H <span style="color:#e6db74">&#34;Content-type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>       -d <span style="color:#e6db74">&#39;{&#34;_id&#34;:&#34;2ded8ec775b6728227143ac575613060&#34;,&#34;_rev&#34;:&#34;1-0785e9eb543380151003dc452c3a001a&#34;,&#34;x&#34;:2}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>       <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;2ded8ec775b6728227143ac575613060&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;2-8c49edca19d786e747fb5bea32c4cb91&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>We are free to add any new fields we want in the next revision of the document. Your schema can evolve over time to reflect the data your application needs to store. Cloudant doesn&rsquo;t allow you to modify individual attributes of the document — you must present the entire document you want to write with each revision.</p>
+<h2 id="deleting-a-document"><a href="#deleting-a-document">Deleting a document</a></h2>
+<p>The act of deleting a document causes a final revision to the document to be added with a <code>_deleted: true</code> flag added. Cloudant needs to know the ID of the document and the revision token that is to be deleted.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X DELETE <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb/2ded8ec775b6728227143ac575613060?rev=2-8c49edca19d786e747fb5bea32c4cb91&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;2ded8ec775b6728227143ac575613060&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;3-fb567087695adb203ba116e130794a84&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>This time our HTTP method is &ldquo;DELETE&rdquo; and the URL contains the document ID. The revision token is passed in as a &ldquo;rev&rdquo; parameter. Notice how you get another revision token in reply.</p>
+<h2 id="reducing-the-keyboard-strain"><a href="#reducing-the-keyboard-strain">Reducing the keyboard strain</a></h2>
+<p>If you&rsquo;re sick of typing long curl commands, you can reduce the strain by creating an &ldquo;alias&rdquo;.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ alias acurl<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;curl -i -H &#34;Content-type: application/json&#34;&#39;</span>
+</span></span></code></pre></div><p>Using your <code>acurl</code> alias conjunction with your <code>URL</code> environment variable, you get:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ acurl -X POST -d@myfile.json <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/newdb&#34;</span>
+</span></span></code></pre></div><p>A more comprehensive <code>acurl</code> can be found <a href="https://console.bluemix.net/docs/services/Cloudant/guides/acurl.html#authorized-curl-acurl-">here</a> which exchanges your credentials for a token and uses this in subsequent requests.</p>
+<h2 id="next-time"><a href="#next-time">Next time</a></h2>
+<p>Now we are able to create, read, update and delete single documents, next time we&rsquo;ll find out how to do the same thing in bulk.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-using-the-api-with-curl-4c4a4f278104" target="_new">https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-using-the-api-with-curl-4c4a4f278104</a>
+
+
+
+</body>
+</html>
+

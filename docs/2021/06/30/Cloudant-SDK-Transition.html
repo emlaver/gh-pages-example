@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Cloudant SDK Transition</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Cloudant SDK Transition">
+    <meta property="og:url" content="https://blog.cloudant.com/2021/06/30/Cloudant-SDK-Transition.html" />
+    <meta property="og:description" content="Introducing Cloudant&#39;s new SDKS and changes to supported SDKs" />
+    <meta property="article:published_time" content="2021-06-30 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/suzanne-d-williams-VMKBFR6r_jg-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Cloudant SDK Transition" />
+    <meta name="twitter:description" content="Introducing Cloudant&#39;s new SDKS and changes to supported SDKs" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Cloudant SDK Transition">
+    <meta itemprop="description" content="Introducing Cloudant&#39;s new SDKS and changes to supported SDKs">
+    <meta itemprop="image" content="/img/suzanne-d-williams-VMKBFR6r_jg-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Cloudant SDK Transition</a></h1>
+  
+  <div class="postmeta">Jun 30, 2021 | Richard Ellis | 
+
+<span class="tag">SDKs</span>
+
+<span class="tag">mobile</span>
+
+<span class="tag">sync</span>
+
+<span class="tag">java-cloudant</span>
+
+<span class="tag">python-cloudant</span>
+
+<span class="tag">nodejs-cloudant</span>
+
+<span class="tag">swift-cloudant</span>
+
+<span class="tag">cloudant-go-sdk</span>
+
+<span class="tag">cloudant-java-sdk</span>
+
+<span class="tag">cloudant-node-sdk</span>
+
+<span class="tag">cloudant-python-sdk</span>
+
+</div>
+  
+  <p>The IBM Cloudant team is introducing new Cloudant API SDKs and announcing end-of-life (EOL) for some existing libraries.
+The new SDKs offer more consistency in the Cloudant SDK portfolio and unification with the common IBM Cloud SDK
+experience. We leveraged this to produce improved <a href="https://cloud.ibm.com/apidocs/cloudant">API documentation</a> spanning
+the Cloudant HTTP and SDK APIs. This makes it easier to find not only the desired API, but also code examples for your
+chosen ecosystem.</p>
+<p><img src="/img/suzanne-d-williams-VMKBFR6r_jg-unsplash.jpg" alt="Green chrysalis, translucent chrysalis, and imago of butterflies"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/VMKBFR6r_jg">Suzanne D. Williams on Unsplash</a></p>
+</blockquote>
+<h2 id="summary-of-sdk-changes"><a href="#summary-of-sdk-changes">Summary of SDK changes</a></h2>
+<h4 id="cloudant-api-sdks"><a href="#cloudant-api-sdks">Cloudant API SDKs</a></h4>
+<table>
+<thead>
+<tr>
+<th>Ecosystem</th>
+<th>Existing supported library</th>
+<th>Existing library EOL</th>
+<th>Replaced by new supported SDK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Go</td>
+<td>-</td>
+<td>-</td>
+<td><a href="https://github.com/IBM/cloudant-go-sdk">https://github.com/IBM/cloudant-go-sdk</a></td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>com.cloudant:cloudant-client</code><BR/><a href="https://github.com/cloudant/java-cloudant">https://github.com/cloudant/java-cloudant</a></td>
+<td>Dec 31 2021</td>
+<td><code>com.ibm.cloud:cloudant</code><BR/><a href="https://github.com/IBM/cloudant-java-sdk">https://github.com/IBM/cloudant-java-sdk</a></td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td><code>@cloudant/cloudant</code><BR/><a href="https://github.com/cloudant/nodejs-cloudant">https://github.com/cloudant/nodejs-cloudant</a></td>
+<td>Dec 31 2021</td>
+<td><code>@ibm-cloud/cloudant</code><BR/><a href="https://github.com/IBM/cloudant-node-sdk">https://github.com/IBM/cloudant-node-sdk</a></td>
+</tr>
+<tr>
+<td>Python</td>
+<td><code>cloudant</code><BR/><a href="https://github.com/cloudant/python-cloudant">https://github.com/cloudant/python-cloudant</a></td>
+<td>Dec 31 2021</td>
+<td><code>ibmcloudant</code><BR/><a href="https://github.com/IBM/cloudant-python-sdk">https://github.com/IBM/cloudant-python-sdk</a></td>
+</tr>
+<tr>
+<td>Swift</td>
+<td><code>SwiftCloudant</code><BR/><a href="https://github.com/cloudant/swift-cloudant">https://github.com/cloudant/swift-cloudant</a></td>
+<td>Dec 31 2021</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h4 id="mobile-sync-libraries"><a href="#mobile-sync-libraries">Mobile sync libraries</a></h4>
+<table>
+<thead>
+<tr>
+<th>Ecosystem</th>
+<th>Existing supported library</th>
+<th>Existing library EOL</th>
+<th>Replaced by new supported SDK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>iOS</td>
+<td><a href="https://github.com/cloudant/CDTDatastore">https://github.com/cloudant/CDTDatastore</a></td>
+<td>Dec 31 2021</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Android</td>
+<td><a href="https://github.com/cloudant/sync-android">https://github.com/cloudant/sync-android</a></td>
+<td>Dec 31 2021</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="introducing-new-cloudant-api-sdks"><a href="#introducing-new-cloudant-api-sdks">Introducing new Cloudant API SDKs</a></h2>
+<p>The team at IBM Cloudant has been working hard to produce new SDKs that provide a more unified API experience.
+Our goal has been to provide all of our supported languages with:</p>
+<ul>
+<li>more modern, complete and consistent Cloudant API coverage</li>
+<li>equivalent functionality between languages</li>
+<li>enhanced documentation and examples</li>
+<li>unified IBM Cloud SDK experience</li>
+</ul>
+<p>The new IBM Cloudant API SDKs have been delivered into the <code>IBM</code> GitHub organization to live alongside the SDKs from
+many other IBM Cloud services. You can find them here:</p>
+<ul>
+<li>Go: <a href="https://github.com/IBM/cloudant-go-sdk">https://github.com/IBM/cloudant-go-sdk</a></li>
+<li>Java: <a href="https://github.com/IBM/cloudant-java-sdk">https://github.com/IBM/cloudant-java-sdk</a></li>
+<li>Node: <a href="https://github.com/IBM/cloudant-node-sdk">https://github.com/IBM/cloudant-node-sdk</a></li>
+<li>Python: <a href="https://github.com/IBM/cloudant-python-sdk">https://github.com/IBM/cloudant-python-sdk</a></li>
+</ul>
+<p>The new SDKs are built on the <a href="https://github.com/IBM/ibm-cloud-sdk-common/">common IBM Cloud SDK cores</a> that are in use
+across many other IBM Cloud service SDKs. Amongst other things this shared core provides the new Cloudant SDKs with
+revamped IAM auth, flexibility of configuration and upgraded HTTP options.</p>
+<p>In addition to the improvements described above, the change to the new SDKs has given us the room to resolve some
+long-standing feature requests from the old libraries. Read more about the benefits of the new SDKs in their
+repositories.</p>
+<p>You may notice <a href="#why-are-the-new-sdks-still-early-releases">these libraries are flagged <code>beta</code></a>. We consider these
+libraries production-ready and capable, but there are still some limitations we&rsquo;re working to resolve, and refinements
+we want to deliver. We are working really hard to minimise the disruption from now until the 1.0 releases. For now,
+be sure to pin versions to avoid surprises.</p>
+<p>This is only the beginning of our new SDKs chapter and we are looking forward to taking advantage of these new
+foundations to provide extra features and functionality to evolve the Cloudant development experience. We welcome your
+feedback on the new SDKs, please feel free to provide it via issues in the repositories or by
+<a href="#where-can-i-get-more-help">contacting Cloudant support</a>.</p>
+<h2 id="eol-for-existing-libraries"><a href="#eol-for-existing-libraries">EOL for existing libraries</a></h2>
+<p>It is never easy to take the decision to retire existing software. IBM Cloudant&rsquo;s SDK portfolio developed from a variety
+of forks of open source projects and prototypes. As a result, we have reached a position where the existing libraries
+exhibit wide discrepancies in API coverage, functionality and even naming (e.g. <code>insert</code> vs <code>save</code> vs <code>create_document</code>).
+These factors produce challenges in communication, maintenance, and our ability to add new features.</p>
+<p>Further to that the demand for SDKs has varied in response to changing use cases, industry trends, and the emergence of
+new ecosystems. Coupled with the rate of change of the existing underlying ecosystems it has become increasingly
+challenging to keep the current portfolio up-to-date.</p>
+<p>Over time IBM Cloudant has become more integrated with the IBM Cloud experience and the existing SDKs were not in a
+position to take advantage of the available common frameworks and tooling that would enable us to provide a more unified
+IBM Cloud experience. The introduction of the new SDKs has resolved that gap, but it has also driven us to re-evaluate
+the other libraries.</p>
+<p>Motivated by these reasons we have taken the difficult decision to announce that the end-of-life for the following
+libraries will be December 31 2021:</p>
+<h4 id="java-cloudant"><a href="#java-cloudant">java-cloudant</a></h4>
+<ul>
+<li>Maven <code>com.cloudant:cloudant-client</code>; <a href="https://github.com/cloudant/java-cloudant">https://github.com/cloudant/java-cloudant</a></li>
+</ul>
+<h4 id="nodejs-cloudant"><a href="#nodejs-cloudant">nodejs-cloudant</a></h4>
+<ul>
+<li>NPM <code>@cloudant/cloudant</code>; <a href="https://github.com/cloudant/nodejs-cloudant">https://github.com/cloudant/nodejs-cloudant</a></li>
+</ul>
+<h4 id="python-cloudant"><a href="#python-cloudant">python-cloudant</a></h4>
+<ul>
+<li>PyPi <code>cloudant</code>; <a href="https://github.com/cloudant/python-cloudant">https://github.com/cloudant/python-cloudant</a></li>
+</ul>
+<h4 id="swift-cloudant"><a href="#swift-cloudant">swift-cloudant</a></h4>
+<ul>
+<li>Swift Package Manager <code>SwiftCloudant</code>; <a href="https://github.com/cloudant/swift-cloudant">https://github.com/cloudant/swift-cloudant</a></li>
+</ul>
+<h4 id="cdtdatastore"><a href="#cdtdatastore">CDTDatastore</a></h4>
+<ul>
+<li>CocoaPods <code>CDTDatastore</code>; <a href="https://github.com/cloudant/CDTDatastore">https://github.com/cloudant/CDTDatastore</a></li>
+</ul>
+<h4 id="sync-android"><a href="#sync-android">sync-android</a></h4>
+<ul>
+<li>Maven <code>com.cloudant:cloudant-sync-datastore*</code>; <a href="https://github.com/cloudant/sync-android">https://github.com/cloudant/sync-android</a></li>
+</ul>
+<h3 id="migrating-from-existing-libraries-to-new-sdks"><a href="#migrating-from-existing-libraries-to-new-sdks">Migrating from existing libraries to new SDKs</a></h3>
+<p>For Java, Node.js and Python we recommend migrating from the existing libraries to the new SDKs. Unfortunately the new
+Cloudant API SDKs are not API compatible with the existing language libraries, but we have produced
+migration guides for each language. These guides outline the major differences and will help you get started. They also
+provide a mapping of the existing functions to their new equivalents.</p>
+<ul>
+<li><a href="https://github.com/cloudant/java-cloudant/blob/master/MIGRATION.md">Java migration guide</a></li>
+<li><a href="https://github.com/cloudant/nodejs-cloudant/blob/master/MIGRATION.md">Node.js migration guide</a></li>
+<li><a href="https://github.com/cloudant/python-cloudant/blob/master/MIGRATION.md">Python migration guide</a></li>
+</ul>
+<p>These migration guides also link to our new API documentation that includes full operation listings and for each
+operation provides the complete parameter descriptions and a usage example. The new SDKs also have documentation
+published in the language-specific API document format that may also help you identify the syntax you need to use.</p>
+<p>Please raise issues on the repositories or <a href="#where-can-i-get-more-help">contact Cloudant support</a> if you would like
+additional help with specific migration scenarios, we will do our best to assist you and potentially add new examples to
+cover more complex uses.</p>
+<h3 id="libraries-without-replacements"><a href="#libraries-without-replacements">Libraries without replacements</a></h3>
+<p>For the Swift library and mobile sync libraries, we have no plans to provide replacements at this time and as such we do
+not have any migration guides. For more information see the FAQs:</p>
+<ul>
+<li><a href="#why-arent-you-replacing-the-mobile-sync-libraries">Why aren&rsquo;t you replacing the mobile sync libraries?</a></li>
+<li><a href="#why-arent-you-replacing-the-swift-library">Why aren&rsquo;t you replacing the Swift library?</a></li>
+</ul>
+<p>There has been some interest in the Apache CouchDB community about developing forks of the mobile sync libraries. We
+will update this post with more information as it becomes available.</p>
+<h2 id="faqs"><a href="#faqs">FAQs</a></h2>
+<h4 id="what-does-end-of-life-eol-mean"><a href="#what-does-end-of-life-eol-mean">What does end-of-life (EOL) mean?</a></h4>
+<p>It means that IBM Cloudant will no longer:</p>
+<ul>
+<li>fix bugs or release new versions</li>
+<li>provide official support for use of the libraries</li>
+</ul>
+<h4 id="can-i-keep-using-a-library-after-the-eol-date"><a href="#can-i-keep-using-a-library-after-the-eol-date">Can I keep using a library after the EOL date?</a></h4>
+<p>Yes, you are free to continue using the code for as long as you wish. The existing released binaries will remain
+available from their respective public repositories. You do need to be aware that Cloudant will no longer be making new
+releases with fixes or updated dependency versions for e.g. security updates. You also need to be aware that Cloudant
+support will not provide specific support for libraries that have passed EOL.</p>
+<h4 id="can-i-fork-an-eol-library"><a href="#can-i-fork-an-eol-library">Can I fork an EOL library?</a></h4>
+<p>Absolutely! The code is open-source and Apache 2 licensed. Although we will archive (make read only) the current
+repositories on GitHub the code will still be accessible and fork-able and current forks will be unaffected.</p>
+<h4 id="i-dont-want-to-change-my-code-what-can-i-do"><a href="#i-dont-want-to-change-my-code-what-can-i-do">I don&rsquo;t want to change my code, what can I do?</a></h4>
+<ul>
+<li>You can continue to use the existing library subject to your acceptance of the risks
+<a href="#can-i-keep-using-a-library-after-the-eol-date">outlined above</a>.</li>
+<li>You can fork the library and maintain your own version.</li>
+<li>You may be able to consume a fork produced by others who also don&rsquo;t want to migrate.</li>
+<li>For Node.js you may be able to use <a href="https://github.com/apache/couchdb-nano">Apache CouchDB Nano</a> which shares much of
+the same API as <a href="https://github.com/cloudant/nodejs-cloudant">nodejs-cloudant</a>.</li>
+</ul>
+<h4 id="why-arent-you-replacing-the-mobile-sync-libraries"><a href="#why-arent-you-replacing-the-mobile-sync-libraries">Why aren&rsquo;t you replacing the mobile sync libraries?</a></h4>
+<p>Usage of the mobile sync libraries with IBM Cloudant services is very low compared to the direct API libraries. The
+mobile libraries are functionally complex including their own data stores, replicators and query engines. Many of the
+few existing users do not require full replication or client side query features for their use cases and that coupled
+with the limitations of the DB-per-user model mean the libraries are not widely used in the ways originally intended.
+Significant investment would be required to bring the large feature set up-to-date and keep pace with server-side
+Cloudant features. At this time the low usage of the libraries does not justify that investment.</p>
+<p>As a Cloudant customer if you want to express your support for mobile sync libraries, please
+<a href="#where-can-i-get-more-help">contact Cloudant support</a> and make a feature request.</p>
+<h4 id="why-arent-you-replacing-the-swift-library"><a href="#why-arent-you-replacing-the-swift-library">Why aren&rsquo;t you replacing the Swift library?</a></h4>
+<p>We do not currently have plans for a new Swift SDK. The reasons for this are:</p>
+<ul>
+<li>Low usage of the <a href="https://github.com/cloudant/swift-cloudant">swift-cloudant</a> library</li>
+<li>The current <a href="https://github.com/IBM/ibm-cloud-sdk-common#overview">IBM Cloud SDK core primary languages</a> are Go, Java,
+Node.js and Python</li>
+<li><a href="https://forums.swift.org/t/december-12th-2019/31735">Reduced focus on server-side Swift</a></li>
+</ul>
+<p>As a Cloudant customer if you want to express your support for a Swift SDK, please
+<a href="#where-can-i-get-more-help">contact Cloudant support</a> and make a feature request.</p>
+<h4 id="why-arent-you-transferring-the-repos-to-another-project"><a href="#why-arent-you-transferring-the-repos-to-another-project">Why aren&rsquo;t you transferring the repos to another project?</a></h4>
+<p>We want to avoid the impression that any continuation of the project is officially supported by IBM Cloudant. Transfer
+of the repositories will mean existing links do not show deprecation notices and we&rsquo;d particularly want to avoid new
+binaries being published where they might get pulled in-range without consumers knowing they were using a different
+project that was now unsupported by IBM Cloudant.</p>
+<h4 id="are-the-new-sdks-apache-couchdb-compatible"><a href="#are-the-new-sdks-apache-couchdb-compatible">Are the new SDKs Apache CouchDB compatible?</a></h4>
+<p>Yes! Even though we are using the IBM Cloud common SDK framework the API SDKs still use the HTTP API and retain
+compatibility with Apache CouchDB 3.x APIs. We have also included custom authenticators to enhance compatibility with
+CouchDB&rsquo;s session cookies. We have made some opinionated decisions not to expose some HTTP operations in the SDKs to
+better reflect the non-administrative API set exposed to Cloudant users and avoid encouraging use of APIs that are
+deprecated or not considered best-practice to use, but the majority of the CouchDB APIs are available to use.</p>
+<h4 id="are-the-new-sdks-open-source"><a href="#are-the-new-sdks-open-source">Are the new SDKs open-source?</a></h4>
+<p>Yes, the new SDKs are open-source and Apache 2 licensed.</p>
+<h4 id="why-are-the-new-sdks-still-early-releases"><a href="#why-are-the-new-sdks-still-early-releases">Why are the new SDKs still early releases?</a></h4>
+<p>The new SDKs have been available in early-release status for almost a year and we are confident in their functionality.
+We are continuing our testing program and addressing feedback from early adopters as well as fixing server issues
+exposed by some of the new client-side capabilities. Our expectation is that the <code>beta</code> tag will be removed in the very near future.</p>
+<p>The SDKs will initially remain 0.x versions because we still expect some API changes. The already existing Apache
+CouchDB API does not translate trivially to the OpenAPI format we use for code generation to produce models and that has
+resulted in a few rough edges. We are ironing out those few wrinkles to improve the SDK API as much as possible before
+declaring a 1.0 with hopefully a much more stable long-term API. The majority of the API is already stable and we are
+focused on rapid resolution of the remaining trouble spots as we actively drive towards 1.0 releases.</p>
+<h4 id="my-business-depends-on-the-existing-libraries-and-it-is-not-possible-for-me-to-migrate-in-the-time-frame-what-can-i-do"><a href="#my-business-depends-on-the-existing-libraries-and-it-is-not-possible-for-me-to-migrate-in-the-time-frame-what-can-i-do">My business depends on the existing libraries and it is not possible for me to migrate in the time-frame. What can I do?</a></h4>
+<p>See:</p>
+<ul>
+<li><a href="#can-i-keep-using-a-library-after-the-eol-date">Can I keep using a library after the EOL date?</a></li>
+<li><a href="#i-dont-want-to-change-my-code-what-can-i-do">I don&rsquo;t want to change my code, what can I do?</a></li>
+</ul>
+<h4 id="what-about-apache-couchdb-nano"><a href="#what-about-apache-couchdb-nano">What about Apache CouchDB Nano?</a></h4>
+<p><a href="https://github.com/apache/couchdb-nano">Apache CouchDB Nano</a> remains the official Apache CouchDB library for Node.js
+and is not owned by IBM Cloudant. The existing <a href="https://github.com/cloudant/nodejs-cloudant">nodejs-cloudant</a>
+library extended Nano with Cloudant specific functions and often delivered those features back to Nano when Cloudant
+only functions were contributed to Apache CouchDB.
+With our new code generation model and core IBM Cloud modules this approach was no longer a good fit for our Node.js
+library. We felt that it was preferable to provide the same user experience, feature availability and enhanced
+documentation for the new official Cloudant Node.js SDK as for the other SDK ecosystems. Continuing to use Nano as a
+base would have prevented that synergy.
+We hope that increased choice and diversity for Apache CouchDB and Cloudant users in Node.js will be welcomed.</p>
+<h4 id="where-can-i-get-more-help"><a href="#where-can-i-get-more-help">Where can I get more help?</a></h4>
+<p>Please feel free to open issues on the project GitHub repositories or contact support via your IBM Cloudant dashboard.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

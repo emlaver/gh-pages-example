@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CLI on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/cli/</link>
+    <description>Recent content in CLI on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 22 Feb 2018 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/cli/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>couchreplicate</title>
+      <link>https://blog.cloudant.com/2018/02/22/Cloudant-Replication-with-couchreplicate.html</link>
+      <pubDate>Thu, 22 Feb 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/02/22/Cloudant-Replication-with-couchreplicate.html</guid>
+      <description>One of Apache CouchDB™&amp;rsquo;s killer features is replication. JSON data is easily replicated between data centers, from a mobile device to the cloud, or vice versa. The CouchDB replication protocol is shared by Apache CouchDB itself, the IBM Cloudant database-as-a-service, Cloudant Sync libraries for iOS and Android and the PouchDB in-browser database.
+Setting up a single replication is as easy as filling in a form in the Replication tab of your Cloudant or CouchDB dashboard:</description>
+    </item>
+    
+    <item>
+      <title>couchdiff</title>
+      <link>https://blog.cloudant.com/2017/05/10/Diff-your-database-couchdiff.html</link>
+      <pubDate>Wed, 10 May 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/05/10/Diff-your-database-couchdiff.html</guid>
+      <description>The Unix diff command-line utility has been around since the 1970s. It compares two text files line by line and tells you the differences between them.
+Photo by Hermes Rivera on Unsplash
+If I diff two files a.txt and b.txt containing versions of the same poem I can find the differences between them with the command:
+$ diff a.txt b.txt 2c2 &amp;lt; T.S. Eliot 1888-1965 --- &amp;gt; T.S. Eliot 6a7 &amp;gt; Sprouting despondently at area gates.</description>
+    </item>
+    
+    <item>
+      <title>Command-line tools</title>
+      <link>https://blog.cloudant.com/2015/10/19/Command-line-tools-for-Cloudant.html</link>
+      <pubDate>Mon, 19 Oct 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/10/19/Command-line-tools-for-Cloudant.html</guid>
+      <description>Some developers spend their days dragging and dropping in a graphical user interface, others are more comfortable typing green letters into a black background on a command-line terminal. If you are the latter type of developer, then this blog post is for you. We introduce a range of command-line tools that you can use to interface with IBM Cloudant (or plain Apache CouchDB).
+Cloudant and CouchDB share an RESTful HTTP API allowing access from any programming language or from the command-line using the curl utility.</description>
+    </item>
+    
+  </channel>
+</rss>

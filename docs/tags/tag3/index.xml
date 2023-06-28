@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tag3 on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/tag3/</link>
+    <description>Recent content in Tag3 on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 02 Feb 2023 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/tag3/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Another blog post</title>
+      <link>https://blog.cloudant.com/an/other/custom-url.html</link>
+      <pubDate>Thu, 02 Feb 2023 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/an/other/custom-url.html</guid>
+      <description>In quam voluptatem et laudantium enim sed expedita asperiores ut fugit nulla ad animi suscipit et voluptatem velit! Sit quasi velit aut magnam explicabo ut omnis earum non iure suscipit.
+Est excepturi laborum ut esse nemo et debitis tempora. Et consequatur cupiditate cum odit voluptate quo unde pariatur et nihil eius quo nobis sint et sunt laudantium qui eligendi inventore.
+Italic bold
+Image:
+Photo by Kelly Sikkema on Unsplash
+Sub heading 2 An unordered list:</description>
+    </item>
+    
+  </channel>
+</rss>

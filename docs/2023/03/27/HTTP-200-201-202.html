@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>HTTP 200, 201 &amp; 202</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="HTTP 200, 201 &amp; 202">
+    <meta property="og:url" content="https://blog.cloudant.com/2023/03/27/HTTP-200-201-202.html" />
+    <meta property="og:description" content="What does success mean in Cloudant?" />
+    <meta property="article:published_time" content="2023-03-27 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/kenny-eliason-e-g2bhvb2iQ-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="HTTP 200, 201 &amp; 202" />
+    <meta name="twitter:description" content="What does success mean in Cloudant?" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="HTTP 200, 201 &amp; 202">
+    <meta itemprop="description" content="What does success mean in Cloudant?">
+    <meta itemprop="image" content="/img/kenny-eliason-e-g2bhvb2iQ-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">HTTP 200, 201 &amp; 202</a></h1>
+  
+  <div class="postmeta">Mar 27, 2023 | Glynn Bird | 
+
+<span class="tag">HTTP</span>
+
+</div>
+  
+  <p>When a Cloudant operation succeeds, it will reply with an HTTP code that is between 200 and 300. Sometimes a client application might see a 200 response and in other circumstances a 201 or 202 response. This blog post explains the difference between these response codes.</p>
+<p><img src="/img/kenny-eliason-e-g2bhvb2iQ-unsplash.jpg" alt="200"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/e-g2bhvb2iQ">Kenny Eliason on Unsplash</a></p>
+</blockquote>
+<h2 id="http-200"><a href="#http-200">HTTP 200</a></h2>
+<p>The HTTP 200 response is the classic HTTP response that means &ldquo;OK&rdquo;. It can can be found for most operations that fetch documents singly or in bulk:</p>
+<ul>
+<li><a href="https://cloud.ibm.com/apidocs/cloudant#getdocument">Fetching a document by id</a></li>
+<li><a href="https://cloud.ibm.com/apidocs/cloudant#postalldocs">Listing documents in a database</a></li>
+<li><a href="https://cloud.ibm.com/apidocs/cloudant#getview">Querying MapReduce views</a></li>
+<li><a href="https://cloud.ibm.com/apidocs/cloudant#postfind">Querying using a selector</a></li>
+<li><a href="https://cloud.ibm.com/apidocs/cloudant#postsearch">Querying a search index</a></li>
+<li>and many others.</li>
+</ul>
+<p>HTTP 200 means that the API call was well formed and the response will contain the document or documents requested.</p>
+<h2 id="writes-in-cluster"><a href="#writes-in-cluster">Writes in cluster</a></h2>
+<p>Cloudant clusters are multi-node distributed systems, with three copies of each document and each index being stored on separate machines. The database is <em>eventually consistent</em> so the service prefers to be <em>available</em> rather than <em>consistent</em> i.e. if a node is down, it will continue to service reads and writes, even if it means that the failed node will have to catch up when it comes back online.</p>
+<p>When a document is written to a Cloudant database, whether it be an insert, update or delete operation, the node handling the request calculates which three nodes need to store the document. The three nodes are sent the new request and the handling node responds to the user as soon as either:</p>
+<ul>
+<li>(At least) 2 or the 3 nodes respond that they have accepted the request. This results in an HTTP &ldquo;201 Created&rdquo; response.</li>
+<li>One node accepts the request and other two do not (yet). This results in an &ldquo;HTTP 202 Accepted&rdquo; response.</li>
+</ul>
+<h2 id="should-i-worry-about-an-http-202-response"><a href="#should-i-worry-about-an-http-202-response">Should I worry about an HTTP 202 response?</a></h2>
+<p>In short &ldquo;no&rdquo;. A HTTP 202 response means that the data is safely stored in at least one Cloudant node and the others have already received the update, or will in due course via Cloudant&rsquo;s internal replication. It may be that the other nodes already have the document revision in question, but they were too slow to respond to the coordinating node. In any case, no further action is required.</p>
+<p>The <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-client-libraries">Client Libraries</a> all treat any 2xx response as a success and client applications should follow this example.</p>
+<hr>
+<p>For more details on how Cloudant&rsquo;s clustering works, see <a href="https://blog.cloudant.com/2015/10/19/Read-Write-Behaviour-in-a-cluster.html">this blog post</a>.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

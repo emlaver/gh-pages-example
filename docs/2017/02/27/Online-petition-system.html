@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Build a serverless web app</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Build a serverless web app">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/02/27/Online-petition-system.html" />
+    <meta property="og:description" content="Using Cloud Functions &amp; Cloudant" />
+    <meta property="article:published_time" content="2017-02-27 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/markus-spiske-221494-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Build a serverless web app" />
+    <meta name="twitter:description" content="Using Cloud Functions &amp; Cloudant" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Build a serverless web app">
+    <meta itemprop="description" content="Using Cloud Functions &amp; Cloudant">
+    <meta itemprop="image" content="/img/markus-spiske-221494-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Build a serverless web app</a></h1>
+  
+  <div class="postmeta">Feb 27, 2017 | Glynn Bird | 
+
+<span class="tag">Serverless</span>
+
+</div>
+  
+  <p>Is it possible to create a web application that collects data from a web form without using any servers? Of course not, but you would be forgiven for thinking that when reading the word &ldquo;serverless&rdquo;. &ldquo;Serverless&rdquo; means that instead of having fixed numbers of dedicated machines sitting in data centres waiting for traffic to come in, we can supply the code that handles a single piece of work (e.g. the submission of a web form) to a an application framework like <a href="https://www.ibm.com/cloud-computing/bluemix/openwhisk">IBM Cloud Functions</a> and let <em>it</em> scale out the computing power required. If no traffic arrives, you don&rsquo;t pay anything - no fixed costs!</p>
+<p>Let&rsquo;s take an example. In the UK, there is a government petitions website where members of the public can gather support for issues they would like debated in the House of Commons. Recently, over 1.8m signatures were collected on a petition urging the government to <a href="https://petition.parliament.uk/petitions/171928">rescind Donald Trump&rsquo;s state visit</a> invitation.</p>
+<p>If you were building an IT system to collect large-scale public petitions, you would have no idea how popular each was to be or how much computing power you&rsquo;d need to make the site performant. The &ldquo;serverless&rdquo; paradigm is compelling in this use-case, as you only pay for the traffic you generate.</p>
+<h2 id="lets-build-a-large-scale-petition-system"><a href="#lets-build-a-large-scale-petition-system">Let&rsquo;s build a large-scale petition system</a></h2>
+<p>Modelling our system on the UK model, our petition system will have a public-facing website with a simple form detailing the issue being &ldquo;signed&rdquo;. The user supplies their name, location, email addresss, confirms that they are a resident of the country in question, and submits the form. Our app saves the data in a Cloudant database and sends a verification email to the signatory.</p>
+<p><img src="/img/workflow1.png" alt="workflow1"></p>
+<p>When the email arrives, the user clicks on the link to confirm and sign the petition</p>
+<p><img src="/img/workflow2.png" alt="workflow2"></p>
+<p>At some future date, we can count the confirmed records in the database to see if the petition has reached the 100,000 records needed to trigger a debate in parliament.</p>
+<p>We want our <em>whole infrastructure</em> to be &ldquo;serverless&rdquo; i.e. we won&rsquo;t stand up our own servers to run the website - the hosting, form handling, email sending, and database will be run by others with minimal or ideally no fixed costs.</p>
+<h2 id="serverless-hosting"><a href="#serverless-hosting">Serverless hosting</a></h2>
+<p>An obvious choice for &ldquo;serverless&rdquo; web hosting is <a href="https://pages.github.com/">GitHub Pages</a>. Sign up for GitHub, create a repository, and put some HTML/JavaScript/CSS in a <code>gh-pages</code> branch. Your website will be served out at <code>http://USERNAME.github.io/REPO/</code>. You can even point your  custom domain name to GitHub and it serves out your pages on that domain e.g. <code>mypetition.com</code>.</p>
+<h2 id="serverless-computing"><a href="#serverless-computing">Serverless computing</a></h2>
+<p>Use <a href="https://www.ibm.com/cloud-computing/bluemix/openwhisk">IBM Cloud Functions</a> to handle form submissions and email verification requests. OpenWhisk lets you write your code in JavaScript, Swift, or Python and have it run in response to incoming events&ndash;in this case the submission of a web form or the clicking of a link in an email.</p>
+<h2 id="serverless-transactional-email"><a href="#serverless-transactional-email">Serverless transactional email</a></h2>
+<p>In order to send emails to signatories, you need a transactional email service. I set up an email template with placeholders for the content that changes between recipients. The email provider ensures that the emails are sent, avoiding each users&rsquo; spam filter. I used <a href="https://sendgrid.com/">SendGrid</a> because they let you send a templated email via a simple API call.</p>
+<h2 id="serverless-database-storage"><a href="#serverless-database-storage">Serverless database storage</a></h2>
+<p>Ultimately we need to store our data <em>somewhere</em>. So <em>someone</em> is going to have to manage some servers and disks. By using the <a href="https://console.ng.bluemix.net/catalog/cloudant-nosql-db">Cloudant</a> database-as-a-service, we don&rsquo;t have to have fixed servers dedicated to us; we can simply consume a database service on a shared cluster and pay only for the requests and storage that we use.</p>
+<h2 id="designing-our-data-flows"><a href="#designing-our-data-flows">Designing our data flows</a></h2>
+<p>OpenWhisk computing tasks are built up from <em>actions</em>. You can combine many <em>actions</em> into <em>sequences</em> of actions and activate them with incoming data (such as an API call).</p>
+<p>Create two API calls that activate OpenWhisk computing resources:</p>
+<ul>
+<li><code>POST /petition/submit</code> - to verify a form submission, save the data to Cloudant, and dispatch the email.</li>
+<li><code>POST /petition/confirm</code> - to confirm that the user has clicked on a link from the email. Another GitHub pages page renders on the browser, which makes an API call to OpenWhisk. The database record updates to mark the signature as &ldquo;confirmed&rdquo;.</li>
+</ul>
+<p><img src="/img/workflow3.png" alt="workflow3"></p>
+<p>The <code>POST /petition/submit</code> is actually three separate OpenWhisk actions chained in a sequence, whereas <code>POST /petition/confirm</code> is configured as a single OpenWhisk action.</p>
+<p>OpenWhisk uses IBM&rsquo;s <a href="https://console.ng.bluemix.net/docs/services/apiconnect/index.html">API Connect</a> to map actions and action sequences to public-facing API calls.</p>
+<h2 id="sign-up-for-the-services"><a href="#sign-up-for-the-services">Sign up for the services</a></h2>
+<p>Going serverless means you don&rsquo;t have to deal with equipment, virtual servers, operating systems or networking, but you still have to sign up for some accounts:</p>
+<ul>
+<li>sign up for an <a href="https://bluemix.net">IBM Bluemix</a> account</li>
+<li>follow <a href="https://console.ng.bluemix.net/docs/openwhisk/index.html#getting-started-with-openwhisk">Getting started with OpenWhisk</a> to get the <code>wsk</code> tool installed and authenticated</li>
+<li>inside Bluemix, sign up for a Cloudant service. Make a note of the Cloudant URL, including username and password.</li>
+<li>setup a <a href="https://sendgrid.com/">SendGrid</a> account, create an API key that has permissions to send transactional emails and create an email template</li>
+<li>create a <a href="https://github.com/">Github</a> account create a repository with your web site in it and branch to a <code>gh-pages</code> branch</li>
+</ul>
+<h2 id="deploying-cloud-functions-code"><a href="#deploying-cloud-functions-code">Deploying Cloud Functions code</a></h2>
+<p>IBM Cloud Functions has nice dashboard where you can paste your code, build sequences, and try your code. This is fine when taking your first few steps with &ldquo;serverless&rdquo; but very soon you&rsquo;ll want to script the deployment of your code so that it can be automated and reproduced easily.</p>
+<p>Assuming you have the <code>wsk</code> tool installed and it is authenticated against your Bluemix service, then installing our code is a breeze. Just clone the <em>git</em> repository &lsquo;<a href="https://github.com/ibm-cds-labs/online-petition.git'">https://github.com/ibm-cds-labs/online-petition.git'</a> and run the <code>deploy.sh</code> script from the <code>openwhisk</code> directory.</p>
+<p>This script assumes that you have the following environment variables set up:</p>
+<ul>
+<li><code>COUCH_URL</code> = the URL of the Cloudant service e.g. <a href="https://u:p@host.cloudant.com">https://u:p@host.cloudant.com</a></li>
+<li><code>COUCH_DBNAME</code> = the name of the Cloudant database e.g. petition</li>
+<li><code>SENDGRIDBEARER</code> = the SendGrid API key</li>
+<li><code>SENDGRIDSENDER</code> = the email address that emails will appear to come from</li>
+<li><code>SENDGRIDTEMPLATEID</code> = the SendGrid email template id to email</li>
+</ul>
+<p>GIST! <a href="https://gist.github.com/glynnbird/2a80a059f4002e327f42e83feebfef7f">https://gist.github.com/glynnbird/2a80a059f4002e327f42e83feebfef7f</a></p>
+<p>It&rsquo;s worth understanding each step in the deployment script. Notice how the credentials are encapsulated into a &lsquo;package&rsquo; called &lsquo;petition&rsquo; to which each of the actions is added. Then three of the actions are combined into a sequence before they are finally exposed as public API calls using the <code>api-experimental</code> command. Each API call also has an &lsquo;OPTIONS&rsquo; method - this is quirk of CORS restrictions (the rules that prevent a website from making API calls to other servers). We need the dummy &lsquo;OPTIONS&rsquo; API call to convince the browser that the main &lsquo;POST&rsquo; request is permitted.</p>
+<h2 id="try-it-yourself"><a href="#try-it-yourself">Try it yourself</a></h2>
+<p>You can sign our demo petition yourself <a href="https://ibm-cds-labs.github.io/online-petition/">here</a>. The code that appears on that page is in <a href="https://github.com/ibm-cds-labs/online-petition">this GitHub repository</a>. The IBM Cloud Functions &ldquo;actions&rdquo; and the deployment script can be found in the <a href="https://github.com/ibm-cds-labs/online-petition/tree/master/openwhisk">openwhisk directory</a>.</p>
+<h2 id="whos-paying-the-bill"><a href="#whos-paying-the-bill">Who&rsquo;s paying the bill?</a></h2>
+<p>So I have a totally &ldquo;serverless&rdquo; system with Github serving the static content, IBM Cloud Functions handling the form submissions, SendGrid sending emails, and Cloudant storing the data. But is serverless free?</p>
+<blockquote>
+<p>Not free - it&rsquo;s pay-as-you-go.</p>
+</blockquote>
+<ul>
+<li>GitHub reserves the right to <a href="https://help.github.com/articles/github-terms-of-service/">disable or throttle</a> your site&rsquo;s usage if your content is very popular</li>
+<li>SendGrid has a <a href="https://sendgrid.com/pricing/">range of plans</a> that start at free for the first month but typically allow you to send tens of thousands of emails from $10 per month.</li>
+<li><a href="https://console.ng.bluemix.net/openwhisk/learn/pricing">IBM Cloud Functions has a free tier</a> and then takes payment depending on the volume, memory, and execution time of your actions.</li>
+<li>Cloudant&rsquo;s default <a href="https://console.ng.bluemix.net/docs/services/Cloudant/offerings/bluemix.html#ibm-bluemix">Lite Plan</a> offers a limited API call limit for free, or increased capacity for additional dollars per month.</li>
+</ul>
+<p>So it&rsquo;s possible to create something like this and run it for free for a while (until your free trial runs out!) and up to a certain amount of traffic (depending on whether you run out of hosting, email capacity, or database storage first).</p>
+<p>The important point is that you can setup an IT system with $0 fixed costs, paying extra money to add extra capacity. IBM Cloud Functions lets you  scale your application to deal with spikes in traffic but have no fixed costs for when there is no demand.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/how-i-used-serverless-infrastructure-to-build-a-large-scale-petition-system-2779161c4c68" target="_new">https://medium.com/ibm-watson-data-lab/how-i-used-serverless-infrastructure-to-build-a-large-scale-petition-system-2779161c4c68</a>
+
+
+
+</body>
+</html>
+

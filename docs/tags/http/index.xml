@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HTTP on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/http/</link>
+    <description>Recent content in HTTP on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 27 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/http/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTTP 200, 201 &amp; 202</title>
+      <link>https://blog.cloudant.com/2023/03/27/HTTP-200-201-202.html</link>
+      <pubDate>Mon, 27 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2023/03/27/HTTP-200-201-202.html</guid>
+      <description>When a Cloudant operation succeeds, it will reply with an HTTP code that is between 200 and 300. Sometimes a client application might see a 200 response and in other circumstances a 201 or 202 response. This blog post explains the difference between these response codes.
+Photo by Kenny Eliason on Unsplash
+HTTP 200 The HTTP 200 response is the classic HTTP response that means &amp;ldquo;OK&amp;rdquo;. It can can be found for most operations that fetch documents singly or in bulk:</description>
+    </item>
+    
+    <item>
+      <title>HTTP 409</title>
+      <link>https://blog.cloudant.com/2023/03/27/HTTP-409.html</link>
+      <pubDate>Mon, 27 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2023/03/27/HTTP-409.html</guid>
+      <description>Cloudant&amp;rsquo;s HTTP API will return a variety of HTTP response codes in reply to API requests. One that causes a good deal of confusion is 409 - Document update conflict.
+tl;dr - a 409 - Document update conflict response doesn&amp;rsquo;t mean that Cloudant created a conflict, in fact it avoided creating a conflict.
+In this blog post we&amp;rsquo;ll explore what a 409 response means and how to prevent 409s happening in your application.</description>
+    </item>
+    
+    <item>
+      <title>HTTP 429</title>
+      <link>https://blog.cloudant.com/2023/03/27/HTTP-429.html</link>
+      <pubDate>Mon, 27 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2023/03/27/HTTP-429.html</guid>
+      <description>Cloudant is a Database-as-a-Service that allows customers to provision the database capacity they need in terms of the number of read, write and query operations per second.
+If the consumed capacity is exceeds the provisioned capacity in a given one second window, Cloudant will respond with an HTTP 429 Too Many Requests response to further requests.
+In this blog post we&amp;rsquo;ll explore which Cloudant APIs fall into the three categories and how your application can avoid HTTP 429 responses.</description>
+    </item>
+    
+    <item>
+      <title>Timing HTTP Requests</title>
+      <link>https://blog.cloudant.com/2019/12/06/Timing-HTTP-Requests-in-Nodejs.html</link>
+      <pubDate>Fri, 06 Dec 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/12/06/Timing-HTTP-Requests-in-Nodejs.html</guid>
+      <description>Building a Cloudant-based application with Node.js means that your app will making many HTTP requests to your Cloudant service. It&amp;rsquo;s important to understand how such HTTP traffic is coordinated in Node and to be able to measure the anatomy of each request so that you can measure latencies and eliminate unwanted delays.
+Photo by John Barkiple on Unsplash
+In this post we&amp;rsquo;ll be using the Official Node.js Cloudant library, exploring HTTP connection pooling and finding out how to instrument your Node.</description>
+    </item>
+    
+  </channel>
+</rss>

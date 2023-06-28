@@ -1,20 +1,1150 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>My New Hugo Site</title>
-    <link>https://emlaver.github.io/</link>
-    <description>Recent content on My New Hugo Site</description>
+    <title>Cloudant blog</title>
+    <link>https://blog.cloudant.com/</link>
+    <description>Recent content on Cloudant blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://emlaver.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Mon, 27 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>About</title>
-      <link>https://emlaver.github.io/about/</link>
-      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
+      <title>HTTP 200, 201 &amp; 202</title>
+      <link>https://blog.cloudant.com/2023/03/27/HTTP-200-201-202.html</link>
+      <pubDate>Mon, 27 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://emlaver.github.io/about/</guid>
-      <description>Hugo is the world’s fastest framework for building websites. It is written in Go.
-It makes use of a variety of open source projects including:
-https://github.com/russross/blackfriday https://github.com/alecthomas/chroma https://github.com/muesli/smartcrop https://github.com/spf13/cobra https://github.com/spf13/viper Learn more and contribute on GitHub.</description>
+      <guid>https://blog.cloudant.com/2023/03/27/HTTP-200-201-202.html</guid>
+      <description>When a Cloudant operation succeeds, it will reply with an HTTP code that is between 200 and 300. Sometimes a client application might see a 200 response and in other circumstances a 201 or 202 response. This blog post explains the difference between these response codes.
+Photo by Kenny Eliason on Unsplash
+HTTP 200 The HTTP 200 response is the classic HTTP response that means &amp;ldquo;OK&amp;rdquo;. It can can be found for most operations that fetch documents singly or in bulk:</description>
+    </item>
+    
+    <item>
+      <title>HTTP 409</title>
+      <link>https://blog.cloudant.com/2023/03/27/HTTP-409.html</link>
+      <pubDate>Mon, 27 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2023/03/27/HTTP-409.html</guid>
+      <description>Cloudant&amp;rsquo;s HTTP API will return a variety of HTTP response codes in reply to API requests. One that causes a good deal of confusion is 409 - Document update conflict.
+tl;dr - a 409 - Document update conflict response doesn&amp;rsquo;t mean that Cloudant created a conflict, in fact it avoided creating a conflict.
+In this blog post we&amp;rsquo;ll explore what a 409 response means and how to prevent 409s happening in your application.</description>
+    </item>
+    
+    <item>
+      <title>HTTP 429</title>
+      <link>https://blog.cloudant.com/2023/03/27/HTTP-429.html</link>
+      <pubDate>Mon, 27 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2023/03/27/HTTP-429.html</guid>
+      <description>Cloudant is a Database-as-a-Service that allows customers to provision the database capacity they need in terms of the number of read, write and query operations per second.
+If the consumed capacity is exceeds the provisioned capacity in a given one second window, Cloudant will respond with an HTTP 429 Too Many Requests response to further requests.
+In this blog post we&amp;rsquo;ll explore which Cloudant APIs fall into the three categories and how your application can avoid HTTP 429 responses.</description>
+    </item>
+    
+    <item>
+      <title>Taxi Service</title>
+      <link>https://blog.cloudant.com/2023/03/09/Taxi-service-using-Cloudant.html</link>
+      <pubDate>Thu, 09 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2023/03/09/Taxi-service-using-Cloudant.html</guid>
+      <description>We&amp;rsquo;ve all used taxi or ride-sharing services where the customer uses a mobile app to define the start and end point of their journey, then a driver chooses the job and makes their way to the start point. Such applications are complex distributed, real-time systems with data originating from:
+The customer (start &amp;amp; end points, current location, ride preferences). The driver (current position, photographs). The taxi company (billing etc). Elsewhere (traffic conditions, mapping, route planning) These actors are expecting that data can be shared between them from disconnected databases over potentially flaky mobile connections.</description>
+    </item>
+    
+    <item>
+      <title>Replication Efficiency Improvements</title>
+      <link>https://blog.cloudant.com/2023/02/08/Replication-efficiency-improvements.html</link>
+      <pubDate>Wed, 08 Feb 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2023/02/08/Replication-efficiency-improvements.html</guid>
+      <description>Cloudant&amp;rsquo;s replication is a rock-solid protocol that allows a database&amp;rsquo;s changes to be easily synced to a different database. This feature is used widely to create multi-region Cloudant topologies, allowing dependent applications to survive a regional Cloud outage.
+Cloudant has recently published a number of improvements that make replication even better than before - in our internal benchmarks we have seen replications speeds of 3x the previous version. Some of these features have been switched off by default, but may become the default behaviour in future releases.</description>
+    </item>
+    
+    <item>
+      <title>Another blog post</title>
+      <link>https://blog.cloudant.com/an/other/custom-url.html</link>
+      <pubDate>Thu, 02 Feb 2023 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/an/other/custom-url.html</guid>
+      <description>In quam voluptatem et laudantium enim sed expedita asperiores ut fugit nulla ad animi suscipit et voluptatem velit! Sit quasi velit aut magnam explicabo ut omnis earum non iure suscipit.
+Est excepturi laborum ut esse nemo et debitis tempora. Et consequatur cupiditate cum odit voluptate quo unde pariatur et nihil eius quo nobis sint et sunt laudantium qui eligendi inventore.
+Italic bold
+Image:
+Photo by Kelly Sikkema on Unsplash
+Sub heading 2 An unordered list:</description>
+    </item>
+    
+    <item>
+      <title>Just testing</title>
+      <link>https://blog.cloudant.com/some/custom-url.html</link>
+      <pubDate>Wed, 01 Feb 2023 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/some/custom-url.html</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Italic bold</description>
+    </item>
+    
+    <item>
+      <title>CouchApp function deprecation</title>
+      <link>https://blog.cloudant.com/2022/08/16/Show-list-rewrite-udpate-functions-deprecated.html</link>
+      <pubDate>Tue, 16 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/08/16/Show-list-rewrite-udpate-functions-deprecated.html</guid>
+      <description>IBM Cloudant, the Database-as-a-Service based on the Apache CouchDB project, is giving notice that the following features are deprecated:
+show functions - used to modify the format of the response when requesting a single document from the database. Show functions are accessed via URLs of the form: /&amp;lt;db&amp;gt;/_design/&amp;lt;design-doc&amp;gt;/_show/&amp;lt;show-name&amp;gt;/&amp;lt;docid&amp;gt;. See CouchDB docs on Show Functions. list functions - similar to show functions, but applied to the output of MapReduce views. List functions are accessed via URLs of the form /&amp;lt;db&amp;gt;/_design/&amp;lt;design-doc&amp;gt;/_list/&amp;lt;list-name&amp;gt;/&amp;lt;view-name&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>Simple Geospatial Queries</title>
+      <link>https://blog.cloudant.com/2022/06/28/Simple-Geospatial-Queries.html</link>
+      <pubDate>Tue, 28 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/06/28/Simple-Geospatial-Queries.html</guid>
+      <description>In this blog post I&amp;rsquo;ll show how to perform basic Geospatial queries using standard Cloudant secondary indexes:
+Find documents within a &amp;ldquo;rectangle&amp;rdquo;. Find the nearest. Photo by Adolfo Félix on Unsplash
+The data To demonstrate, I&amp;rsquo;ll use a dataset containing GeoJSON - an industry-standard JSON representation of geographical content. My database contains a number of &amp;ldquo;features&amp;rdquo; represented by a decimal latitude,longitude point representing the WGS84 coordinate of the feature. Other attributes of the feature are stored in the properties object.</description>
+    </item>
+    
+    <item>
+      <title>Indexing with the Cloudant Dashboard</title>
+      <link>https://blog.cloudant.com/2022/03/28/Indexing-with-the-Cloudant-Dashboard.html</link>
+      <pubDate>Mon, 28 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/03/28/Indexing-with-the-Cloudant-Dashboard.html</guid>
+      <description>The Cloudant dashboard gives new and experienced Cloudant users the opportunity to add, edit and delete documents while refining the indexing and querying options that best suit their application&amp;rsquo;s use-cases.
+Photo by Zach Wiley on Unsplash
+In this blog post we&amp;rsquo;ll set up some simple indexes using the dashboard and see how each of Cloudant&amp;rsquo;s querying mechanisms work.
+The data set Let&amp;rsquo;s first create some sample data representing books in a library:</description>
+    </item>
+    
+    <item>
+      <title>Getting Cloudant Support</title>
+      <link>https://blog.cloudant.com/2022/03/11/Getting-Cloudant-Support.html</link>
+      <pubDate>Fri, 11 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/03/11/Getting-Cloudant-Support.html</guid>
+      <description>Support is available for your paid IBM Cloudant Standard accounts but not for free, Lite accounts. This blog post shows how to raise a support ticket.
+Photo by Matthew Waring on Unsplash
+Note that you may still raise a support ticket against free IBM Cloud accounts pertaining to the subjects of account management, billing and IAM, just not support cases about specific Cloudant services.
+Creating an IBM Cloud account If you haven&amp;rsquo;t done so already, create an IBM Cloud account at https://cloud.</description>
+    </item>
+    
+    <item>
+      <title>Using the Changes Feed</title>
+      <link>https://blog.cloudant.com/2022/01/21/Using-the-Cloudant-changes-feed.html</link>
+      <pubDate>Fri, 21 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/01/21/Using-the-Cloudant-changes-feed.html</guid>
+      <description>A Cloudant database&amp;rsquo;s changes feed&amp;rsquo;s primary use-case is to power the replication of data from a source to a target database. The Cloudant replicator is built to handle the changes feed and performs the necessary checks to ensure data is copied accurately to its destination.
+There is a raw changes feed API that can be used to consume a single database&amp;rsquo;s changes but it must be used with care.
+The _changes API endpoint can be used in several ways and can output data in a variety of formats, but this article will focus on best practice and how to avoid some pitfalls when developing against the Changes API.</description>
+    </item>
+    
+    <item>
+      <title>Migrating from TXE</title>
+      <link>https://blog.cloudant.com/2022/01/14/Migrating-from-Cloudant-TXE-to-Standard.html</link>
+      <pubDate>Fri, 14 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/01/14/Migrating-from-Cloudant-TXE-to-Standard.html</guid>
+      <description>In this blog post we&amp;rsquo;ll show how data stored in a Cloudant on Transaction Engine (TXE) instance can be easily migrated to Cloudant Standard. There are few differences betweeen the two offerrings, so we&amp;rsquo;ll explore ways to avoid any pitfalls along the way.
+There isn&amp;rsquo;t a way of converting an existing account from TXE to Standard, so the first step is to provision a new Cloudant Standard account.
+Photo by Julia Craice on Unsplash</description>
+    </item>
+    
+    <item>
+      <title>Projection</title>
+      <link>https://blog.cloudant.com/2021/11/12/Projection.html</link>
+      <pubDate>Fri, 12 Nov 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2021/11/12/Projection.html</guid>
+      <description>Cloudant&amp;rsquo;s MapReduce indexes give you complete control over what data from your primary JSON objects are stored in your secondary indexes. JavaScript functions are used to programmatically decide which document attributes are selected for inclusion as either the key or the value of the views - the JavaScript functions can even be used to process the data before it&amp;rsquo;s saved in the index.
+Photo by Jeremy Yap on Unsplash
+In this blog post we&amp;rsquo;ll look at a technique called projection which produces the fastest, most efficient data selection indexes.</description>
+    </item>
+    
+    <item>
+      <title>CouchApps No Longer Work</title>
+      <link>https://blog.cloudant.com/2021/10/20/CouchApps-no-longer-work.html</link>
+      <pubDate>Wed, 20 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2021/10/20/CouchApps-no-longer-work.html</guid>
+      <description>Cloudant mainly stores JSON documents in collections called databases, but Cloudant also has the ability to store attachments in Cloudant documents. An attachment is a binary blob of data with a file name and mime type. It could be a PDF, a JPG or a Word document.
+Some users employed attachments to store HTML, CSS, JavaScript files and other assets in the database so that it could be used as a webserver - applications following this pattern were known as CouchApps.</description>
+    </item>
+    
+    <item>
+      <title>Code Engine &amp; Cloudant</title>
+      <link>https://blog.cloudant.com/2021/08/16/Code-Engine-and-Cloudant.html</link>
+      <pubDate>Mon, 16 Aug 2021 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2021/08/16/Code-Engine-and-Cloudant.html</guid>
+      <description>One of the great advantages of cloud infrastructure is that it offers the option of trying things out at zero or near-zero cost.
+You can spin up services, create applications and try them out. If they don’t work or don’t get traction, you simply deprovision the infrastructure and try something else. The barrier to innovation is thus significantly lowered.
+In this post, we’ll take you through a basic scenario that combines two such IBM services to build a serverless polling application:</description>
+    </item>
+    
+    <item>
+      <title>Cloudant SDK Transition</title>
+      <link>https://blog.cloudant.com/2021/06/30/Cloudant-SDK-Transition.html</link>
+      <pubDate>Wed, 30 Jun 2021 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2021/06/30/Cloudant-SDK-Transition.html</guid>
+      <description>The IBM Cloudant team is introducing new Cloudant API SDKs and announcing end-of-life (EOL) for some existing libraries. The new SDKs offer more consistency in the Cloudant SDK portfolio and unification with the common IBM Cloud SDK experience. We leveraged this to produce improved API documentation spanning the Cloudant HTTP and SDK APIs. This makes it easier to find not only the desired API, but also code examples for your chosen ecosystem.</description>
+    </item>
+    
+    <item>
+      <title>Removing Tombstones</title>
+      <link>https://blog.cloudant.com/2021/05/21/Removing-Tombstones.html</link>
+      <pubDate>Fri, 21 May 2021 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2021/05/21/Removing-Tombstones.html</guid>
+      <description>Cloudant and its sister database Apache CouchDB store document data in revision trees. When a document is deleted, a special deletion (&amp;quot;deleted&amp;quot;: true) revision is added to the head of the tree. This allows the intention that the document is to be deleted to be replicated around, whether that be to other nodes in the cluster or to other Cloudant or CouchDB services in other geographies. Without this mechanism, it would be possible for a deleted document to be unintentionally resurrected via replication from an external replica.</description>
+    </item>
+    
+    <item>
+      <title>GitHub Webhooks and Cloud Functions</title>
+      <link>https://blog.cloudant.com/2021/02/08/GitHub-Webhooks-and-Cloud-Functions.html</link>
+      <pubDate>Mon, 08 Feb 2021 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2021/02/08/GitHub-Webhooks-and-Cloud-Functions.html</guid>
+      <description>Some GitHub repositories are not just source code for apps, they can also store data files holding JSON, YAML, XML or any other file format e.g.
+A collection of reference data such as this countries of the world GeoJSON. &amp;ldquo;Infrastructure as code&amp;rdquo; files, such as Terraform configuration. In this blog post we&amp;rsquo;ll create an IBM Cloud Function that is triggered by a commit to a GitHub repository, which stores a copy of JSON data from GitHub in a Cloudant database.</description>
+    </item>
+    
+    <item>
+      <title>Repairing a database with conflicts</title>
+      <link>https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html</link>
+      <pubDate>Thu, 26 Nov 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html</guid>
+      <description>Cloudant conflicts occur when disconnected replicas of a database are updated in different ways at the same time. The replicas could be:
+Copies of a database hosted in different regions that are replicating continuously to each other, while both accepting writes. A mobile application going offline and replicating its updates to the cloud later, only to find that some of its changes clash with the cloud-based copy. Copies of the same database shard in a single-region cluster.</description>
+    </item>
+    
+    <item>
+      <title>Migrating a Cloudant Account</title>
+      <link>https://blog.cloudant.com/2020/11/25/Migrating-a-Cloudant-Account.html</link>
+      <pubDate>Wed, 25 Nov 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/11/25/Migrating-a-Cloudant-Account.html</guid>
+      <description>There are several reasons why you&amp;rsquo;d want to copy data from one Cloudant account to another:
+To copy data to a different region as you want to setup a cross-region database service (e.g. Dallas and Frankfurt). To move from self-hosted CouchDB service to a hosted Cloudant account. To migrate from a Cloudant dedicated service to a cloud-based, multi-tenant Cloudant service. To move from a Cloudant Standard account to Cloudant on Transaction Engine account.</description>
+    </item>
+    
+    <item>
+      <title>HAProxy as a reverse proxy</title>
+      <link>https://blog.cloudant.com/2020/10/27/HAProxy-as-a-reverse-proxy.html</link>
+      <pubDate>Tue, 27 Oct 2020 06:01:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/10/27/HAProxy-as-a-reverse-proxy.html</guid>
+      <description>The IBM Cloudant helps you build a flexible disaster recovery capability into your applications through a cross-region disaster recovery setup using either active-passive or active-active configuration. For either configuration, IBM Cloudant doesn&amp;rsquo;t provide a facility to manage explicitly any failover or reroute requests between Cloudant regions and has to be implemented within the application logic itself, or by using a load balancer/proxy. To enable auto-failover, we can put an HTTP proxy server in front of IBM Cloudant and then configure our application to talk to the proxy server rather than the IBM Cloudant instance directly.</description>
+    </item>
+    
+    <item>
+      <title>Automated Daily Backups</title>
+      <link>https://blog.cloudant.com/2020/10/09/Automated-Daily-Backups.html</link>
+      <pubDate>Fri, 09 Oct 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/10/09/Automated-Daily-Backups.html</guid>
+      <description>Cloudant is already reslient in that it stores data in triplicate across a region&amp;rsquo;s three availability zones but that&amp;rsquo;s not the same thing as having a backup:
+what if you delete or modify a bunch of documents and wish to restore them later? (Note that you can access the previous revision of a document for a short time, but it will be eventually compacted so this behaviour isn&amp;rsquo;t to be relied upon).</description>
+    </item>
+    
+    <item>
+      <title>Compliance automation via Auditree</title>
+      <link>https://blog.cloudant.com/2020/07/30/compliance-automation-auditree.html</link>
+      <pubDate>Thu, 30 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/07/30/compliance-automation-auditree.html</guid>
+      <description>Over the past few years Cloudant has been engaging in more and more compliance related work. This is a good thing; it gives customers confidence in the systems holding their data, and it gives us a way to critically evaluate &amp;amp; improve our product &amp;amp; processes.
+A compliance accreditation is made up of controls. In some cases lots of controls, all of which need to be consistently &amp;amp; continually executed, with evidence of successful (or otherwise) execution collected for audit.</description>
+    </item>
+    
+    <item>
+      <title>JSON Schema Validation</title>
+      <link>https://blog.cloudant.com/2020/07/24/JSON-Schema-Validation.html</link>
+      <pubDate>Fri, 24 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/07/24/JSON-Schema-Validation.html</guid>
+      <description>JSON Schema is a standard that allows you to specify the form of your JSON and allow programmatic validation of JSON against the specification.
+In your application there would be a formal definition of the types of JSON being stored (e.g. users, orders, products etc) which could be used to verify objects prior to being allowed into the database.
+Having a formal schema definition has several advantages:
+It can be used to validate documents prior to being stored in the databases.</description>
+    </item>
+    
+    <item>
+      <title>How to recover a deleted document</title>
+      <link>https://blog.cloudant.com/2020/07/17/How-to-recover-a-deleted-document.html</link>
+      <pubDate>Fri, 17 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/07/17/How-to-recover-a-deleted-document.html</guid>
+      <description>Introduction This article describes how you might be able to recover data in Cloudant after it has been deleted or overwritten.
+Photo by Joshua Coleman on Unsplash
+Deleting a Cloudant document leaves behind a so-called tombstone - a shell of the original document containing only an _id/_rev pair and a _deleted: true flag. Soon after deletion (or after updating a document), the previous revision&amp;rsquo;s document body is removed in a process called &amp;ldquo;compaction&amp;rdquo;.</description>
+    </item>
+    
+    <item>
+      <title>Selective restoration from backup</title>
+      <link>https://blog.cloudant.com/2020/07/01/Selective-restoratio-from-backup.html</link>
+      <pubDate>Wed, 01 Jul 2020 06:01:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/07/01/Selective-restoratio-from-backup.html</guid>
+      <description>As part of the disaster recovery process, the Cloudant NoSQL database offers the database backup and restore through the command-line utilities such as couchbackup &amp;amp; couchrestore respectively.
+couchbackup - Dumps the JSON data from a database to a backup text file. couchrestore - Restores data from a backup text file to a database. The couchrestore utility has one limitation: it can restore the full database but can’t selectively restore specific records.</description>
+    </item>
+    
+    <item>
+      <title>Automatic Cross-region Failover</title>
+      <link>https://blog.cloudant.com/2020/07/01/Automatic-failover-between-Cloudant-regions.html</link>
+      <pubDate>Wed, 01 Jul 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/07/01/Automatic-failover-between-Cloudant-regions.html</guid>
+      <description>IBM Cloudant NoSQL database offers high availability through in-region automatic data redundancy by storing data in triplicate across three servers within a single region. In a true sense, achieving high availability and eliminating single point failure couldn’t be accomplished using a single region Cloudant setup. So, to address this, we have to consider doing two things:
+Configure cross-region redundancy by setting up Cloudant accounts in two or more regions, create databases in each region, and set up bidirectional continuous replications between the corresponding databases in each account.</description>
+    </item>
+    
+    <item>
+      <title>Building a Store Finder</title>
+      <link>https://blog.cloudant.com/2020/05/01/Building-A-Store-Finder.html</link>
+      <pubDate>Fri, 01 May 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/05/01/Building-A-Store-Finder.html</guid>
+      <description>In this post we&amp;rsquo;ll be creating a web-based store finder using Cloudant. A user visits your website and wants to know which of your branches is closest to their current location.
+Photo by Sherzod Max on Unsplash
+To build this need a search index that can sort search results by distance but first, we need a database of branches.
+Data preparation Let&amp;rsquo;s say we have a list of branches that looks like this:</description>
+    </item>
+    
+    <item>
+      <title>Optimising Cloudant Queries</title>
+      <link>https://blog.cloudant.com/2020/05/20/Optimising-Cloudant-Queries.html</link>
+      <pubDate>Fri, 24 Apr 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/05/20/Optimising-Cloudant-Queries.html</guid>
+      <description>Cloudant Query is a JSON-based query language inspired by MongoDB. It allows the developer to express the slice of data they need from a database using a mixture of logical and comparison operators.
+For example, if the following JSON is sent to the database&amp;rsquo;s _find endpoint:
+POST /orders/_find { &amp;#34;selector&amp;#34;: { &amp;#34;$and&amp;#34;: [ { &amp;#34;date&amp;#34;: { &amp;#34;$gte&amp;#34;: &amp;#34;2018-01-01&amp;#34; } }, { &amp;#34;date&amp;#34;: { &amp;#34;$lt&amp;#34;: &amp;#34;2019-01-01&amp;#34; } }, { &amp;#34;status&amp;#34;: &amp;#34;cancelled&amp;#34; }, { &amp;#34;user&amp;#34;: &amp;#34;bob@aol.</description>
+    </item>
+    
+    <item>
+      <title>Fast Data Transfer</title>
+      <link>https://blog.cloudant.com/2020/01/17/Fast-Data-Transfer.html</link>
+      <pubDate>Fri, 17 Jan 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/01/17/Fast-Data-Transfer.html</guid>
+      <description>Cloudant replication is the database&amp;rsquo;s method of of choice for transferring data from a source to a target database. It&amp;rsquo;s main use-cases are:
+Mobile apps - keeping mobile application data synched with a server-side copy where the data can be modified at both sides. Cross-region sync - a database can exist in two geographies and traffic can be load balanced between them, routed so that a customer is directed to their nearest copy or can be used for disaster recovery fail-over.</description>
+    </item>
+    
+    <item>
+      <title>Filtered Replication</title>
+      <link>https://blog.cloudant.com/2019/12/13/Filtered-Replication.html</link>
+      <pubDate>Fri, 13 Dec 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/12/13/Filtered-Replication.html</guid>
+      <description>Cloudant&amp;rsquo;s replication protocol allows data to flow from one Cloudant database to another, on the same Cloudant service or to an entirely separate service on the other side of the world. The replication protocol is also understood by Apache CouchDB and PouchDB allowing hybrid and mobile apps to be created with Cloudant acting as the cloud-based source of truth. The changes feed itself is also used to stream data to external services such as couchwarehouse.</description>
+    </item>
+    
+    <item>
+      <title>Timing HTTP Requests</title>
+      <link>https://blog.cloudant.com/2019/12/06/Timing-HTTP-Requests-in-Nodejs.html</link>
+      <pubDate>Fri, 06 Dec 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/12/06/Timing-HTTP-Requests-in-Nodejs.html</guid>
+      <description>Building a Cloudant-based application with Node.js means that your app will making many HTTP requests to your Cloudant service. It&amp;rsquo;s important to understand how such HTTP traffic is coordinated in Node and to be able to measure the anatomy of each request so that you can measure latencies and eliminate unwanted delays.
+Photo by John Barkiple on Unsplash
+In this post we&amp;rsquo;ll be using the Official Node.js Cloudant library, exploring HTTP connection pooling and finding out how to instrument your Node.</description>
+    </item>
+    
+    <item>
+      <title>Best &amp; Worst Practice</title>
+      <link>https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html</link>
+      <pubDate>Thu, 21 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html</guid>
+      <description>So you’re new to Cloudant, but you’re not new to database systems. As an offering manager and engineer for Cloudant the past four years, I’ve had the chance to see the product from all angles: the customers who use it, the engineers that run it, and the folks who support and sell it.
+In many ways, this article is inspired by Dimagi’s perspective as users. I’d like to add our perspective as providers of the database service, and summarize the best — and worst!</description>
+    </item>
+    
+    <item>
+      <title>Case-sensitivity in queries</title>
+      <link>https://blog.cloudant.com/2019/11/08/Case-sensitivity-in-queries.html</link>
+      <pubDate>Fri, 08 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/11/08/Case-sensitivity-in-queries.html</guid>
+      <description>By default, some Cloudant operations are case sensitive - the query parameter must match the value in the document exactly for it to be included in search results - but if you need a case insensitive query then there are number of solutions.
+Photo by Amador Loureiro on Unsplash
+Let&amp;rsquo;s see how each of the Cloudant query mechanisms handle case sensitivity with a database of cars whose documents look like this which we need to query by the &amp;ldquo;model&amp;rdquo; attribute:</description>
+    </item>
+    
+    <item>
+      <title>Improve and then improve some more</title>
+      <link>https://blog.cloudant.com/2019/11/01/Improve-and-then-improve-some-more.html</link>
+      <pubDate>Fri, 01 Nov 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/11/01/Improve-and-then-improve-some-more.html</guid>
+      <description>Modern software development requires a constant feedback loop in which software component correctness and whole-stack integration success can be efficiently validated. This feedback loop is realized through automation and continuous integration (CI). Well-implemented CI is imperative &amp;ndash; it increases transparency amongst developers for all aspects of the software development lifecycle (SLDC) by yielding the ability to rapidly build, test, and iterate on issues that might arise. Rapid iteration is the keystone of an agile workflow and is critical to business success, especially when you&amp;rsquo;re a startup that gets acquired by a company like IBM.</description>
+    </item>
+    
+    <item>
+      <title>Paginating _all_docs</title>
+      <link>https://blog.cloudant.com/2019/10/25/Paginating-all_docs-and-views.html</link>
+      <pubDate>Fri, 25 Oct 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/10/25/Paginating-all_docs-and-views.html</guid>
+      <description>If you are using the GET /&amp;lt;db&amp;gt;/_all_docs endpoint to fetch documents in bulk, then you may have come across the limit and skip parameters which allow you to define how many documents you would like, and the offset into the range you want to start from. Using this skip/limit pattern to iterate through a result set works, but it gets progressively slower the larger the value of skip.
+Photo by Anastasia Zhenina on Unsplash</description>
+    </item>
+    
+    <item>
+      <title>Logging with LogDNA</title>
+      <link>https://blog.cloudant.com/2019/09/13/Cloudant-Logging-with-LogDNA.html</link>
+      <pubDate>Mon, 16 Sep 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/09/13/Cloudant-Logging-with-LogDNA.html</guid>
+      <description>Cloudant is now rolling out customer-facing logging for its Cloudant services. In this post we&amp;rsquo;ll explore how to set it up and how it can help you keep tabs on your Cloudant service.
+Note: The IBM Cloud Log Analysis service is available in the following IBM Cloud regions: https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-log-analysis-integration.
+Photo by Pär Pärsson on Unsplash
+Setting up logging Firstly we need to setup an IBM Log Analysis with LogDNA service in the IBM Cloud - choose the service from the Developer Tools section of the catalog:</description>
+    </item>
+    
+    <item>
+      <title>Design Docs For Life</title>
+      <link>https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html</link>
+      <pubDate>Fri, 16 Aug 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html</guid>
+      <description>A Design Document is a special Cloudant document whose _id field begins with _design/ e.g. _design/search. It stores meta data about a secondary index or indexes: the name of the index, which fields are to be indexed etc. Design documents are created in one of two ways:
+You create and update them manually as you would for any normal Cloudant document. This method is required for MapReduce views, Cloudant Search and Geospatial indexes.</description>
+    </item>
+    
+    <item>
+      <title>Fuzzy search using Double Metaphone</title>
+      <link>https://blog.cloudant.com/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html</link>
+      <pubDate>Thu, 08 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html</guid>
+      <description>Introduction In an earlier article I explained how to do a fuzzy search for documents that contain words that sound like some other given word. The technique I described there uses a view that implements the Soundex algorithm. The aim of the Soundex algorithm is to encode words alike that sound alike so that they can be matched despite minor differences in spelling. Soundex was invented before the invention of the electronic computer and is fairly simple.</description>
+    </item>
+    
+    <item>
+      <title>Replicating from a Query</title>
+      <link>https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html</link>
+      <pubDate>Fri, 21 Jun 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html</guid>
+      <description>Cloudant and CouchDB&amp;rsquo;s replication protocol allows documents to be copied from a source database to a target database with the minimum of fuss. This unlocks a wealth of use-cases:
+Multiple copies of a database across geographies to allow for disaster recovery, or to be used in a high-availability configuration. Data being replicated from a cloud-based primary to an on-premise backup. Mobile devices taking a copy of data, taking if offline and modifying it before replicating it back to the original source database.</description>
+    </item>
+    
+    <item>
+      <title>Paging with Bookmarks</title>
+      <link>https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html</link>
+      <pubDate>Fri, 31 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html</guid>
+      <description>Imagine you are creating a web application showing a set of search results, whether they be books, actors or products in your store. As the user scrolls to the bottom of the search results, another page of matches is appended to the bottom. This is known as an &amp;ldquo;infinite scroll&amp;rdquo; design pattern and allows the user to endlessly scroll through a large data set with ease, while only fetching a smaller batches of data from the database each time.</description>
+    </item>
+    
+    <item>
+      <title>Partitioned Databases and Node.js</title>
+      <link>https://blog.cloudant.com/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</link>
+      <pubDate>Fri, 24 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</guid>
+      <description>The Cloudant database has four supported client libraries: Node.js, Java, Goand Python. In this post, we&amp;rsquo;ll see examples on how the Node.js library can be used with the new Partition Databases feature.
+Here&amp;rsquo;s a table of all the functions we&amp;rsquo;ll be using:
+Operation Raw API Call Node.js function call Create database PUT /db?partitioned=true client.putDatabase Add document POST /db client.postDocument Get document GET /db/&amp;lt;id&amp;gt; client.getDocument Get info GET /db/&amp;lt;partition_key&amp;gt; client.getPartitionInformation Get all docs POST /db/&amp;lt;partition_key&amp;gt;/_all_docs client.</description>
+    </item>
+    
+    <item>
+      <title>Scheduled Cloudant Backups</title>
+      <link>https://blog.cloudant.com/2019/05/16/Scheduled-Cloudant-Backups.html</link>
+      <pubDate>Wed, 15 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/05/16/Scheduled-Cloudant-Backups.html</guid>
+      <description>The Couchbackup project provides a simple command-line tool to backup a Cloudant database to a file. From there it can uploaded to IBM Cloud Object Storage for archival.
+# backup a single database to a file couchbackup --db mydatabase &amp;gt; mydatabase.txt # copy the file to Object Storage aws --endpoint-url=$ENDPOINT \ s3 cp mydatabase.txt s3://mycloudantbackups/ As well a command-line tool, couchbackup can also be used as a Node.js library so that you can script your own workflows to suit your application.</description>
+    </item>
+    
+    <item>
+      <title>Optimal Cloudant Indexing</title>
+      <link>https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html</link>
+      <pubDate>Fri, 10 May 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html</guid>
+      <description>Traditionally, this is taught at Cloudant data modelling class:
+Design JSON representations of the objects that exist in your application - products, users, orders etc. If necessary, create multiple document &amp;ldquo;types&amp;rdquo; in the same database - use a field in the document to differentiate one from the other e.g. &amp;quot;type&amp;quot;: &amp;quot;product&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;user&amp;quot; etc Build indexes on the fields which you are going to query against e.g. if I am going to search products by category in product name order, I&amp;rsquo;m going to need an index on category &amp;amp; name.</description>
+    </item>
+    
+    <item>
+      <title>Analysing Backups with SQL Query</title>
+      <link>https://blog.cloudant.com/2019/04/23/Analysing-Cloudant-Backups-with-SQL-Query.html</link>
+      <pubDate>Tue, 23 Apr 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/04/23/Analysing-Cloudant-Backups-with-SQL-Query.html</guid>
+      <description>In this post we discussed storing time-series data in time-boxed Cloudant databases to allow recent data to be stored in Cloudant and older data to be archived and deleted from Cloudant. In this post we&amp;rsquo;ll examine how to query data that has been archived and backed up to Object Storage using the IBM SQL Query service.
+Object storage is much cheaper per gigabyte than a database, is endlessly extensible and makes a great choice for storing backups and archived data.</description>
+    </item>
+    
+    <item>
+      <title>Time-series Data Storage</title>
+      <link>https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html</link>
+      <pubDate>Mon, 08 Apr 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html</guid>
+      <description>Time-series data is simply the recording of data points in time order such as:
+Internet of Things (IoT) installations where sensors report readings periodically. Monitoring user-interface interactions from a website to get a sense of which part of the page your users are interested in. Storing the logs from a distributed computer system for diagnostics. Recording the sales of products from a store. In this post we&amp;rsquo;ll examine options for storing time-series data in Cloudant.</description>
+    </item>
+    
+    <item>
+      <title>Building a CRM System</title>
+      <link>https://blog.cloudant.com/2019/03/29/Building-a-CRM-System.html</link>
+      <pubDate>Fri, 29 Mar 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/03/29/Building-a-CRM-System.html</guid>
+      <description>A Customer Relationship Management (CRM) system is simply a means of recording your business&amp;rsquo;s relations with your customers. It may consist of:
+a searchable database of your customers, with the customer name, description and contact details. a time-ordered list of notes detailing the interactions you have had with the customer. a list of contact details of the people you have relationships with at that company. It may also store other &amp;ldquo;per customer&amp;rdquo; objects e.</description>
+    </item>
+    
+    <item>
+      <title>Partitioned Databases - Sizing</title>
+      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html</link>
+      <pubDate>Tue, 05 Mar 2019 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html</guid>
+      <description>This is the fourth part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and Part Three may also be of interest.
+Choosing a partition key for a partitioned Cloudant databases is about selecting an attribute that has:
+Many values - lots of small partitions are better than a few large ones. No hot spots - avoid designing a system that makes one partition handle a high proportion of the workload.</description>
+    </item>
+    
+    <item>
+      <title>Partitioned Databases - Data Migration</title>
+      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html</link>
+      <pubDate>Tue, 05 Mar 2019 08:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html</guid>
+      <description>This is the third part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and Part Four may also be of interest.
+Cloudant&amp;rsquo;s new Partitioned Databases feature allows a Cloudant database to be organised into partitions (blocks of data guaranteed to reside on the same database shard) by specifying a two part _id field consisting of the parition and document id e.g.
+{ &amp;#34;_id&amp;#34;: &amp;#34;US:52412&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;Boston&amp;#34;, &amp;#34;state&amp;#34;: &amp;#34;Massachusetts&amp;#34;, &amp;#34;country&amp;#34;: &amp;#34;US&amp;#34; .</description>
+    </item>
+    
+    <item>
+      <title>Partitioned Databases - Data Design</title>
+      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html</link>
+      <pubDate>Tue, 05 Mar 2019 07:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html</guid>
+      <description>This is the second part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Three and Part Four may also be of interest.
+Modelling data with a JSON document store is very different from modelling data in a relational database system. Generations of computer scientists have been taught how to normalize data into tables, that is organising data into their own collections so that information is not repeated and relationships between collections are modelled with foreign keys.</description>
+    </item>
+    
+    <item>
+      <title>Partitioned Databases - Introduction</title>
+      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html</link>
+      <pubDate>Tue, 05 Mar 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html</guid>
+      <description>This is the first part of a series of posts on Partitioned Databases in Cloudant. Part Two, Part Three and Part 4 may also be of interest.
+Cloudant has a new feature called Partitioned Databases which makes querying faster to execute while being cheaper per query request. In this article, we&amp;rsquo;ll find out what Partitioned Databases are, how to set them up and how they work. Other posts provide a deep dive into data modelling and data migration.</description>
+    </item>
+    
+    <item>
+      <title>Natural Language Classification</title>
+      <link>https://blog.cloudant.com/2019/01/18/Natural-Language-Classification.html</link>
+      <pubDate>Fri, 18 Jan 2019 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/01/18/Natural-Language-Classification.html</guid>
+      <description>In this post we&amp;rsquo;ll combine the Cloudant database with IBM&amp;rsquo;s Watson Natural Language Classifier (NLC) service to automatically determine whether reviews left on a website are positive or negative.
+Imagine we are capturing product reviews on an e-commerce website and storing them as JSON in a Cloudant database:
+{ &amp;#34;_id&amp;#34;: &amp;#34;product885252:review1005252&amp;#34;, &amp;#34;date&amp;#34;: &amp;#34;2019-01-26T15:22:41.000Z&amp;#34;, &amp;#34;product_id&amp;#34;: &amp;#34;885252&amp;#34;, &amp;#34;product_name&amp;#34;: &amp;#34;Gourmexia Smoothie Blender B662X&amp;#34;, &amp;#34;reviewer&amp;#34;: &amp;#34;susan1982&amp;#34;, &amp;#34;review&amp;#34;: &amp;#34;Very well made device. Works straight out of the box - really happy!</description>
+    </item>
+    
+    <item>
+      <title>Count Distinct</title>
+      <link>https://blog.cloudant.com/2018/12/14/Count-Distinct-with-Cloudant.html</link>
+      <pubDate>Fri, 14 Dec 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/12/14/Count-Distinct-with-Cloudant.html</guid>
+      <description>In 2017 I blogged about creating custom indexes outside of Cloudant for problems that didn&amp;rsquo;t fit Cloudant&amp;rsquo;s indexing engine. One of those was the count distinct problem.
+Imagine you are recording web events as people (and bots) interact with your website - events that look like this in JSON documents in a Cloudant database:
+{ &amp;#34;_id&amp;#34;: &amp;#34;96f898f0f6ff4a9baac4503992f31b01&amp;#34;, &amp;#34;_rev&amp;#34;: &amp;#34;1-ff7b85665c4c297838963c80ecf481a3&amp;#34;, &amp;#34;path&amp;#34;: &amp;#34;/blog/post-1.html&amp;#34;, &amp;#34;date&amp;#34;: &amp;#34;2018-12-04&amp;#34;, &amp;#34;time&amp;#34;: &amp;#34;17:15:59&amp;#34;, &amp;#34;mobile&amp;#34;: true, &amp;#34;browser&amp;#34;: &amp;#34;Chrome&amp;#34;, &amp;#34;ip&amp;#34;: &amp;#34;85.</description>
+    </item>
+    
+    <item>
+      <title>Fuzzy search using soundex</title>
+      <link>https://blog.cloudant.com/2018/12/12/soundex-view.html</link>
+      <pubDate>Wed, 12 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/12/12/soundex-view.html</guid>
+      <description>If you want to find documents in your database that contain a word that sounds like some other word even though it does not have the same spelling (a homophone), you can use the soundex algorithm.
+Soundex is an algorithm for indexing names by how they are pronounced in English.
+Its purpose is to encode words that sound alike with the same representation so that they can be matched despite minor differences in spelling.</description>
+    </item>
+    
+    <item>
+      <title>Caching with Nginx</title>
+      <link>https://blog.cloudant.com/2018/11/23/Caching-Cloudant-with-Nginx.html</link>
+      <pubDate>Fri, 23 Nov 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/11/23/Caching-Cloudant-with-Nginx.html</guid>
+      <description>Cloudant and its open-source sibling Apache CouchDB were were born on the web. Their HTTP/HTTPS API is not a bolt-on afterthought - it is the way of interacting with the database built in from the ground up. Let&amp;rsquo;s take the use-case of Cloudant being used as a back-end database in a traditional client/server web app:
+Web users interact with a web page, sending HTTP requests to one of a number of application servers.</description>
+    </item>
+    
+    <item>
+      <title>The Data Warehouse</title>
+      <link>https://blog.cloudant.com/2018/11/16/Cloudant-and-the-data-warehouse.html</link>
+      <pubDate>Fri, 16 Nov 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/11/16/Cloudant-and-the-data-warehouse.html</guid>
+      <description>Addendum: Since publication of this blog, couchwarehouse has added support for MySQL and PostgreSQL as well as SQLite. This post is still valid, but bear in mind you now have a choice of target database types.
+One of Cloudant&amp;rsquo;s best use-cases is as a rock-solid, always-on operational datastore. It is built for fault-tolerance, storing multiple copies of your data on separate servers so that a Cloudant cluster can withstand the loss of multiple nodes without loss of service.</description>
+    </item>
+    
+    <item>
+      <title>Stale, update and stable</title>
+      <link>https://blog.cloudant.com/2018/11/06/What-is-stale-update-and-stable.html</link>
+      <pubDate>Tue, 06 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/11/06/What-is-stale-update-and-stable.html</guid>
+      <description>tl;dr If you are using stale=ok in queries to Cloudant or CouchDB 2.x, you most likely want to be using update=false instead. If you are using stale=update_after, use update=lazy instead.
+This question has come up a few times, so here&amp;rsquo;s a reference to what the situation is with these parameters to query requests in Cloudant and CouchDB 2.x.
+CouchDB originally used stale=ok on the query string to specify that you were okay with receiving out-of-date results.</description>
+    </item>
+    
+    <item>
+      <title>Search Analyzers</title>
+      <link>https://blog.cloudant.com/2018/10/19/Search-Analyzers.html</link>
+      <pubDate>Fri, 19 Oct 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/10/19/Search-Analyzers.html</guid>
+      <description>Cloudant Search is the free-text search technology built in to the Cloudant database that is powered by Apache Lucene. Lucene-based indexes are used for:
+finding documents that best match a supplied string. constructing fielded queries in Lucene&amp;rsquo;s query language e.g. state:florida AND (status:provisional OR status:published). counting facets, that is counts of repeating values within the result set. or all of the above. When creating a Cloudant Search index, thought must be given as to which fields from your documents need to indexed and how they are to be indexed.</description>
+    </item>
+    
+    <item>
+      <title>Generating sample data</title>
+      <link>https://blog.cloudant.com/2018/09/14/Generating-sample-JSON-data.html</link>
+      <pubDate>Fri, 14 Sep 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/09/14/Generating-sample-JSON-data.html</guid>
+      <description>Application development using Cloudant as the database, for me, starts with data design. Having carefully considered how your application&amp;rsquo;s data should be modelled in JSON we may turn to the querying and indexing required:
+How do my queries perform with 10k, 1m or 10m documents? How long does it take for a new batch of data to be indexed? Is it better to use a Cloudant MapReduce or Cloudant Search index to solve a particular problem?</description>
+    </item>
+    
+    <item>
+      <title>Time-sortable _ids</title>
+      <link>https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html</link>
+      <pubDate>Fri, 24 Aug 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html</guid>
+      <description>A Cloudant database document&amp;rsquo;s _id field has to be unique. When you create a document and leave the _id field blank, the database will create one for you:
+curl -X POST \ -d&amp;#39;{&amp;#34;x&amp;#34;:1}&amp;#39; \ -H &amp;#39;Content-type: application/json&amp;#39; &amp;#34;https://USERNAME:PASSWORD@HOST.cloudant.com/mydb&amp;#34; {&amp;#34;ok&amp;#34;:true,&amp;#34;id&amp;#34;:&amp;#34;97728a06c27d1e11378cd43635c98c1e&amp;#34;,&amp;#34;rev&amp;#34;:&amp;#34;1-0785e9eb543380151003dc452c3a001a&amp;#34;} Cloudant&amp;rsquo;s generated _id fields are 32 characters long and made entirely of numerals and lowercase letters. They are unique, or at least have a negligible probability of clashing, by virtue of being a long pseudo-random string of characters.</description>
+    </item>
+    
+    <item>
+      <title>Searching Jekyll Sites</title>
+      <link>https://blog.cloudant.com/2018/08/10/Adding-Search-to-a-Static-Jekyll-site.html</link>
+      <pubDate>Fri, 10 Aug 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/08/10/Adding-Search-to-a-Static-Jekyll-site.html</guid>
+      <description>I&amp;rsquo;m a big fan of Jekyll for building static websites. If you&amp;rsquo;re not familiar with Jekyll, it takes a collection of configuration, templates and source files (I write my posts in Markdown) and transforms them into static HTML files that can be delivered to the world by any web server. Jekyll is built into GitHub Pages so that you can host the source files for your website or blog in a Git repository and have the resultant static web site served out by GitHub Pages without having to manage any server infrastructure yourself.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 10/10</title>
+      <link>https://blog.cloudant.com/2018/08/06/Cloudant-Fundamentals-Aggregation.html</link>
+      <pubDate>Mon, 06 Aug 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/08/06/Cloudant-Fundamentals-Aggregation.html</guid>
+      <description>It&amp;rsquo;s been an emotional journey through Cloudant&amp;rsquo;s fundamentals but we&amp;rsquo;re nearly at the end. In this final post, we&amp;rsquo;ll discuss data aggregation: counting, summing and statistics.
+Cloudant Query which we used for part 8 and part 9 of this series does not have the ability to perform aggregations, only selection. i.e. you can do SELECT * FROM mydb WHERE actor=&#39;Al Pacino&#39; but not SELECT COUNT(*) FROM mydb WHERE actor=&#39;Al Pacino&#39;.</description>
+    </item>
+    
+    <item>
+      <title>Conflicts</title>
+      <link>https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html</link>
+      <pubDate>Wed, 25 Jul 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html</guid>
+      <description>Conflicts occur in Cloudant and Apache CouchDB databases when the same document is written to in different ways in separate copies of the database. This can occur when there is:
+a mobile app and a server-side replica and the data is replicated between them. two databases that are replicated together. a single, multi-node database that receives mulitple writes to the same document at the same time. Although the database will try to prevent conflicts happening in this circumstance by returning an HTTP 409 response, conflicts may still arise in some circumstancces.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 9/10</title>
+      <link>https://blog.cloudant.com/2018/07/12/CloudantFundamentals-Indexing.html</link>
+      <pubDate>Thu, 12 Jul 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/07/12/CloudantFundamentals-Indexing.html</guid>
+      <description>In part 7 of this series, we saw a warning in the search results:
+&amp;ldquo;no matching index found, create an index to optimize query time&amp;rdquo;
+This is Cloudant&amp;rsquo;s polite way of saying that your query is expensive and the database is having to walk through the whole data set to calculate the answer. In small databases this is not a problem but in a production system, with the data growing all the time, an index is essential.</description>
+    </item>
+    
+    <item>
+      <title>Modelling with TypeScript</title>
+      <link>https://blog.cloudant.com/2018/06/29/Modelling-Cloudant-Data-in-TypeScript.html</link>
+      <pubDate>Fri, 29 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/29/Modelling-Cloudant-Data-in-TypeScript.html</guid>
+      <description>TypeScript is a programming language that is a super-set of JavaScript written by Microsoft. TypeScript code compiles to various flavours of JavaScript to run in the browser, in Node.js or in concert with frameworks such as React, Angular, Vue.js etc. Programming in TypeScript brings you the luxury of:
+type checking for function parameters, return values etc default and optional values for function parameters interfaces, for defining the shape of objects being passed in and out of functions classes with constructors, inheritance &amp;amp; access modifiers enumerations iterators module import/export and lots more Ultimately your TypeScript code is transpiled into JavaScript, targetted for your destination platform, so it can&amp;rsquo;t do any more than JavaScript.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 8/10</title>
+      <link>https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</link>
+      <pubDate>Mon, 25 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</guid>
+      <description>In the previous part of this series we discovered the _find endpoint which allows us to formulate queries in JSON and ask Cloudant to answer them.
+In this post, we&amp;rsquo;ll look to doing the same thing but using Node.js code. Again we&amp;rsquo;ll lean on the cloudant-quickstart library.
+Making queries Using the query we made last time, we can pass the selector directly to the query function of cloudant-quickstart object to get an array of matching documents back.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 7/10</title>
+      <link>https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html</link>
+      <pubDate>Mon, 18 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html</guid>
+      <description>In previous posts we&amp;rsquo;ve looked add adding and retrieving documents from a Cloudant database by their key fields - the _id field. There&amp;rsquo;s a good chance that you want your database to be able to do more than that which is where querying comes in.
+Making a query A Cloudant Query allows questions to be asked of your Cloudant data, questions such as:
+get me all the documents where the dob field is less than 1970-01-01 get me all the documents where the dob field is less than 1970-01-01 and the actor field is Marlon Brando get the first fifty films staring Matthew Broderick in date order get the next 50 films matching the previous query Queries are expressed as JSON documents such as:</description>
+    </item>
+    
+    <item>
+      <title>Optimising Cloudant for Serverless</title>
+      <link>https://blog.cloudant.com/2018/06/14/Optimising-Cloudant-for-Serverless.html</link>
+      <pubDate>Thu, 14 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/14/Optimising-Cloudant-for-Serverless.html</guid>
+      <description>IBM Cloudant is a great fit for serverless applications - build a JSON document in the schema of your choice and post it to a Cloudant database using the HTTP API. Both IBM Cloud Functions and IBM Cloudant can scale to deal with your application&amp;rsquo;s workload without you worrying about operating systems, machine reboots, queues, networking etc.
+Building a serverless application makes you think differently about how to optimise for performance:</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 6/10</title>
+      <link>https://blog.cloudant.com/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</link>
+      <pubDate>Tue, 12 Jun 2018 08:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</guid>
+      <description>In the previous two posts we saw how how the command-line tool curl is all that is required to do basic read and write operations with Cloudant, and how two API calls can be used for bulk commands.
+In this post we&amp;rsquo;ll look at equivalent tasks using programmatic means.
+You don&amp;rsquo;t need a special library to work with Cloudant - just something capbable of making HTTP requests. The libraries do help, however, with authentication and parameter encoding.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 5/10</title>
+      <link>https://blog.cloudant.com/2018/06/04/Cloudant-Fundamentals-The-Bulk-API.html</link>
+      <pubDate>Mon, 04 Jun 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/04/Cloudant-Fundamentals-The-Bulk-API.html</guid>
+      <description>In the last blog post we saw how to do CRUD (Create/Read/Update/Delete) operations with the Cloudant database using the curl command line tool. In this post we&amp;rsquo;ll use just two API calls to achieve the same thing, but with the capability of working on multiple documents at the same time.
+If you have two or five or a hundred documents to add to Cloudant, then you need to look at bulk operations API.</description>
+    </item>
+    
+    <item>
+      <title>Emoji in Cloudant</title>
+      <link>https://blog.cloudant.com/2018/05/30/Emoji-in-Cloudant-documents.html</link>
+      <pubDate>Wed, 30 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/30/Emoji-in-Cloudant-documents.html</guid>
+      <description>Cloudant and Apache CouchDB databases store their data as JSON documents so there&amp;rsquo;s only a handful of data types to choose from: strings, booleans, numbers, objects and arrays.
+Here&amp;rsquo;s a document representing a person in a JSON:
+{ &amp;#34;name&amp;#34;: &amp;#34;Glynn&amp;#34;, &amp;#34;startDate&amp;#34;: &amp;#34;2018-05-11T15:29:31.354Z&amp;#34;, &amp;#34;verified&amp;#34;: true, &amp;#34;mood&amp;#34;: &amp;#34;tired&amp;#34;, &amp;#34;nationality&amp;#34;: &amp;#34;British&amp;#34;, &amp;#34;favouriteFood&amp;#34;: &amp;#34;Eggs&amp;#34;, &amp;#34;musicalInstruments&amp;#34;: [&amp;#34;Guitar&amp;#34;,&amp;#34;Piano&amp;#34;,&amp;#34;Voice&amp;#34;], &amp;#34;phobia&amp;#34;: &amp;#34;Spiders&amp;#34;, &amp;#34;profile&amp;#34;: &amp;#34;Does computers at IBM.&amp;#34; } Long gone are the days when we were limited to the ASCII character set in our code.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 4/10</title>
+      <link>https://blog.cloudant.com/2018/05/29/Using-API-with-curl.html</link>
+      <pubDate>Tue, 29 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/29/Using-API-with-curl.html</guid>
+      <description>The curl command-line tool allows you to make HTTP requests from a terminal:
+$ curl &amp;#39;http://www.website.com/&amp;#39; &amp;lt;html&amp;gt; &amp;lt;h1&amp;gt;This is a web page&amp;lt;/h1&amp;gt; &amp;lt;/html&amp;gt; Cloudant&amp;rsquo;s API is entirely HTTP. You don&amp;rsquo;t need any special software drivers or to understand a bespoke protocol — it&amp;rsquo;s just web requests. You can access the database from a browser, a mobile app, any programming language or, in this case, from the command line.
+The first thing you&amp;rsquo;ll need is your Cloudant service&amp;rsquo;s URL.</description>
+    </item>
+    
+    <item>
+      <title>Date formats</title>
+      <link>https://blog.cloudant.com/2018/05/22/Date-formats.html</link>
+      <pubDate>Thu, 24 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/22/Date-formats.html</guid>
+      <description>Apache CouchDB and IBM Cloudant are JSON document stores and as such don&amp;rsquo;t have a native date type - only the data primitives allowed in the JSON specification.
+Before discussing date storage formats, we should first tackle the issue of timezones. Timezones are utterly baffling so best practice is to store dates in the UTC timezone in the database even if your data originated from many places across the globe. Storing data in the same univeral timezone in the database means all the dates and times in our date store are in the same &amp;ldquo;units&amp;rdquo;.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 3/10</title>
+      <link>https://blog.cloudant.com/2018/05/22/Cloudant-Fundamentals-3.html</link>
+      <pubDate>Tue, 22 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/22/Cloudant-Fundamentals-3.html</guid>
+      <description>In part one of this series we looked at Cloudant JSON, and in part two we saw how an _id is made. In this part we&amp;rsquo;ll focus on the humble _rev token.
+When you first create a document, you don&amp;rsquo;t need to worry about the _rev token — it is generated for you and returned to you in the receipt.
+If we create a new document with a body of {&amp;quot;a&amp;quot;:1,&amp;quot;b&amp;quot;:2}, we get a reply from the database of:</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 2/10</title>
+      <link>https://blog.cloudant.com/2018/05/14/Cloudant-Fundamentals-2.html</link>
+      <pubDate>Mon, 14 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/14/Cloudant-Fundamentals-2.html</guid>
+      <description>Last time we looked at how to design a JSON document schema that models the data in your application. I didn&amp;rsquo;t mention a vital field: the document&amp;rsquo;s _id.
+Every Cloudant document has an _id - if you don&amp;rsquo;t supply one when you write a new document then Cloudant will generate one for you. Letting Cloudant make an _id for you is the easiest solution, but there are some cases where you might want to keep control of the _id field for yourself.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 1/10</title>
+      <link>https://blog.cloudant.com/2018/04/27/Cloudant-Fundamentals-1.html</link>
+      <pubDate>Fri, 27 Apr 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/04/27/Cloudant-Fundamentals-1.html</guid>
+      <description>Cloudant is a JSON document store, based on Apache CouchDB, running as-a-service in the IBM Cloud. The form of JSON you store in the database is up to you. You don&amp;rsquo;t need to tell the database about the schema you&amp;rsquo;re using ahead of time.
+Here&amp;rsquo;s a typical document:
+{ &amp;#34;type&amp;#34;: &amp;#34;person&amp;#34;, &amp;#34;born&amp;#34;: &amp;#34;1743-04-13&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;Thomas Jefferson&amp;#34;, &amp;#34;potus&amp;#34;: 3, &amp;#34;diedInOffice&amp;#34;: false, &amp;#34;address&amp;#34;: { &amp;#34;street&amp;#34;: &amp;#34;931 Thomas Jefferson Pkwy&amp;#34;, &amp;#34;town&amp;#34;: &amp;#34;Charlottesville&amp;#34;, &amp;#34;state&amp;#34;: &amp;#34;Virginia&amp;#34;, &amp;#34;stateCode&amp;#34;: &amp;#34;VA&amp;#34;, &amp;#34;zip&amp;#34;: &amp;#34;22902&amp;#34; }, &amp;#34;description&amp;#34;: &amp;#34;Thomas Jefferson (April 13 [O.</description>
+    </item>
+    
+    <item>
+      <title>couchreplicate</title>
+      <link>https://blog.cloudant.com/2018/02/22/Cloudant-Replication-with-couchreplicate.html</link>
+      <pubDate>Thu, 22 Feb 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/02/22/Cloudant-Replication-with-couchreplicate.html</guid>
+      <description>One of Apache CouchDB™&amp;rsquo;s killer features is replication. JSON data is easily replicated between data centers, from a mobile device to the cloud, or vice versa. The CouchDB replication protocol is shared by Apache CouchDB itself, the IBM Cloudant database-as-a-service, Cloudant Sync libraries for iOS and Android and the PouchDB in-browser database.
+Setting up a single replication is as easy as filling in a form in the Replication tab of your Cloudant or CouchDB dashboard:</description>
+    </item>
+    
+    <item>
+      <title>Local documents</title>
+      <link>https://blog.cloudant.com/2018/02/14/Local-Documents.html</link>
+      <pubDate>Tue, 13 Feb 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/02/14/Local-Documents.html</guid>
+      <description>The Apache CouchDB™ family has a JSON document database for every application:
+Apache CouchDB can be installed on your own desktop or servers in single node or clustered installations IBM Cloudant is a hosted version of CouchDB running on IBM&amp;rsquo;s cloud PouchDB can be installed in many flavours but is commonly used as an in-browser database, to store client-side data with or without network connectivity All three members of the family can sync data between each other to create hybrid, multi-homed applications where data lives on a mobile device, or in the cloud, or both.</description>
+    </item>
+    
+    <item>
+      <title>Partial Indexes</title>
+      <link>https://blog.cloudant.com/2018/01/10/Partial-Indexes.html</link>
+      <pubDate>Wed, 10 Jan 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/01/10/Partial-Indexes.html</guid>
+      <description>Indexing is what makes database queries fast and scalable. Without and index, a database is forced to trawl through every record to calculate the answer to a query. A carefully designed index allows a query to be answered with a fraction of a work by jumping to the pertinent portion.
+Image by Jay Wennington
+Indexing basics Let&amp;rsquo;s dive in with the example of road safety data from the UK government&amp;rsquo;s open data portal.</description>
+    </item>
+    
+    <item>
+      <title>Detaching attachments</title>
+      <link>https://blog.cloudant.com/2017/12/21/Detaching-Attachments-with-Serverless.html</link>
+      <pubDate>Thu, 21 Dec 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/12/21/Detaching-Attachments-with-Serverless.html</guid>
+      <description>Imagine we have an app that collects geo-coded photographs. We give the app to thousands of students and ask them to collect pictures of storefronts, together with the company name and data from the phone&amp;rsquo;s GPS. Using the latitude and longitude, the company name, and the photograph we intend to crowd-source a business directory.
+Our app is based on Offline First design principles. It stores its data locally on the mobile device, syncing to the cloud when there is a decent connection.</description>
+    </item>
+    
+    <item>
+      <title>Using your own domain</title>
+      <link>https://blog.cloudant.com/2017/12/07/Using-your-own-domain-name.html</link>
+      <pubDate>Thu, 07 Dec 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/12/07/Using-your-own-domain-name.html</guid>
+      <description>Until recently, Cloudant allowed you to bring your own domain name through its &amp;ldquo;virtual hosts&amp;rdquo; functionality. This feature is now being removed for security reasons.
+If you still want to be able to access the Cloudant API through your own domain name, you can do it by creating a serverless proxy that is hosted on IBM Cloud Functions, IBM&amp;rsquo;s serverless platform.
+A number of serverless &amp;ldquo;actions&amp;rdquo; are deployed—one per API call you need to proxy.</description>
+    </item>
+    
+    <item>
+      <title>Elasticsearch hybrid</title>
+      <link>https://blog.cloudant.com/2017/11/30/Making-a-Cloudant-ElasticSearch-hybird.html</link>
+      <pubDate>Thu, 30 Nov 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/11/30/Making-a-Cloudant-ElasticSearch-hybird.html</guid>
+      <description>On the face of it, IBM Cloudant and Elasticsearch seem to be very similar products. They both:
+Store JSON documents without you needing to define a schema up-front. Have an HTTP API. &amp;ldquo;Shard&amp;rdquo; each collection into pieces and store multiple copies across a distributed cluster. Can be used to perform &amp;ldquo;free text&amp;rdquo; search, i.e., query which documents best match a supplied string. Cloudant is a resilient database that guarantees that data is stored on disk on multiple nodes when you write your data.</description>
+    </item>
+    
+    <item>
+      <title>Tracking cryptocurrencies</title>
+      <link>https://blog.cloudant.com/2017/11/16/track-cryptocurrency-with-serverless.html</link>
+      <pubDate>Thu, 16 Nov 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/11/16/track-cryptocurrency-with-serverless.html</guid>
+      <description>Tracking your cryptocurrency portfolio with serverless functions &amp;amp; Cloudant Monitor the value of your bitcoin hoard with serverless Cloud Functions writing data to Cloudant
+The value of crypto-currencies can vary greatly over time. If you&amp;rsquo;re lucky, some coins bought for a handful of dollars a few years ago can be worth thousands of dollars now.
+There are many websites and apps that can help you monitor your portfolio, but what&amp;rsquo;s the fun in using a ready-made solution when you can build your own?</description>
+    </item>
+    
+    <item>
+      <title>Replication topologies</title>
+      <link>https://blog.cloudant.com/2017/11/07/Cloudant-replication-topologies.html</link>
+      <pubDate>Tue, 07 Nov 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/11/07/Cloudant-replication-topologies.html</guid>
+      <description>Cloudant&amp;rsquo;s (and CouchDB&amp;rsquo;s) replication feature allows you to keep databases in sync across countries and continents. However, sometimes it&amp;rsquo;s not obvious how to use this basic pair-wise feature in order to create more complicated replication topologies, like three or more geographical replicas, and then how to do disaster recovery between them. Let&amp;rsquo;s discuss these in turn.
+Throughout the following, it&amp;rsquo;s important to remember that replication is an asynchronous, best-effort process in which a change is propagated to peers sometime after the client receives the response to its write request.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Envoy</title>
+      <link>https://blog.cloudant.com/2017/10/05/Cloudant-Envoy-serverless-edition.html</link>
+      <pubDate>Thu, 05 Oct 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/10/05/Cloudant-Envoy-serverless-edition.html</guid>
+      <description>Cloudant Envoy is software that sits between mobile users and a Cloudant database. It allows the apps to follow the CouchDB &amp;ldquo;one-database-per-user&amp;rdquo; model on mobile devices, while storing the data in a single server-side database. Without Envoy, each mobile user would have their own server-side database, which makes querying data across users very tricky.
+Envoy&amp;rsquo;s trick is to act as a proxy, seamlessly modifying the HTTP API calls heading for the Cloudant service:</description>
+    </item>
+    
+    <item>
+      <title>Custom Indexers</title>
+      <link>https://blog.cloudant.com/2017/09/26/Custom-indexers-for-Cloudant.html</link>
+      <pubDate>Tue, 26 Sep 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/09/26/Custom-indexers-for-Cloudant.html</guid>
+      <description>Cloudant offers highly available storage and retrieval of JSON documents across a cluster of computing which includes a primary index on the documents&amp;rsquo; _id field. You can also use the same cluster to power secondary indexes built to provide selection &amp;amp; aggregation using MapReduce, full-text search using Apache Lucene, or GeoSpatial queries.
+What if you want something a little different that isn&amp;rsquo;t supported by the built-in indexers? You can build you own!</description>
+    </item>
+    
+    <item>
+      <title>Custom Replication</title>
+      <link>https://blog.cloudant.com/2017/08/22/Custom-Cloudant-replication.html</link>
+      <pubDate>Tue, 22 Aug 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/08/22/Custom-Cloudant-replication.html</guid>
+      <description>Cloudant has first-class replication built in. A database can be replicated to another local database or to a remote Cloudant instance—or to any other database that speaks the same replication protocol, such as Apache CouchDB™ or PouchDB. A replication process can be one-shot or continuous, and replication streams can be &amp;ldquo;filtered&amp;rdquo;, i.e. the documents that are replicated can be a subset of the total.
+Not all applications need replication. It is essential when there are multiple, disconnected copies of the data where the data can be modified on either side.</description>
+    </item>
+    
+    <item>
+      <title>Piecemeal, Bulk or Batch</title>
+      <link>https://blog.cloudant.com/2017/07/25/Piecemeal-Bulk-or-Batch.html</link>
+      <pubDate>Tue, 25 Jul 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/07/25/Piecemeal-Bulk-or-Batch.html</guid>
+      <description>There are many different deployment models for CouchDB-style databases, but thankfully CRUD operations work the same across all of them. Apache CouchDB™ is a database, specifically a JSON document store, with an HTTP API. IBM Cloudant is Apache CouchDB with a few extra bells and whistles run as-a-service in pay-as-you go, dedicated and local configurations.
+In this article, I&amp;rsquo;m going to explain your options for writing data using the CouchDB API, the different calls, and the tradeoffs therein.</description>
+    </item>
+    
+    <item>
+      <title>Querying Cloudant with SQL</title>
+      <link>https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html</link>
+      <pubDate>Tue, 18 Jul 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html</guid>
+      <description>Cloudant and its Apache CouchDB stable-mate are &amp;ldquo;NoSQL&amp;rdquo; databases—that is, they are schemaless JSON document stores. Unlike a traditional relational database, you don&amp;rsquo;t need to define your schema before writing data to the database. Just post your JSON to the database and change your mind as often as you like!
+One of the appealing things about relational databases is the query language. Structured Query Language or SQL was developed by IBM in the 1970s and was widely adopted across a host of databases ever since.</description>
+    </item>
+    
+    <item>
+      <title>Choosing a Cloudant library</title>
+      <link>https://blog.cloudant.com/2017/07/12/Choosing-a-Cloudant-library.html</link>
+      <pubDate>Wed, 12 Jul 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/07/12/Choosing-a-Cloudant-library.html</guid>
+      <description>The beauty of Apache CouchDB and Cloudant is that you don&amp;rsquo;t need to a library to be able to start using it. Some databases require a &amp;ldquo;driver&amp;rdquo; module to be installed to handle communication between your application and your database, but when your database speaks HTTP then you only need curl, a web browser, or anything that can make web requests. For example:
+your Raspberry Pi could write IoT data to a remote database by making PUT requests from curl your web page could fetch data directly from the database by making in-page HTTP calls your PHP code could read and write from its data store without any third-party add-on code Sometimes developers need a little help.</description>
+    </item>
+    
+    <item>
+      <title>couchdiff</title>
+      <link>https://blog.cloudant.com/2017/05/10/Diff-your-database-couchdiff.html</link>
+      <pubDate>Wed, 10 May 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/05/10/Diff-your-database-couchdiff.html</guid>
+      <description>The Unix diff command-line utility has been around since the 1970s. It compares two text files line by line and tells you the differences between them.
+Photo by Hermes Rivera on Unsplash
+If I diff two files a.txt and b.txt containing versions of the same poem I can find the differences between them with the command:
+$ diff a.txt b.txt 2c2 &amp;lt; T.S. Eliot 1888-1965 --- &amp;gt; T.S. Eliot 6a7 &amp;gt; Sprouting despondently at area gates.</description>
+    </item>
+    
+    <item>
+      <title>PouchDB</title>
+      <link>https://blog.cloudant.com/2017/05/04/PouchDB-swiss-army-knife.html</link>
+      <pubDate>Thu, 04 May 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/05/04/PouchDB-swiss-army-knife.html</guid>
+      <description>PouchDB is a database. It&amp;rsquo;s a JSON document store to be precise, allowing you to create, read, update, delete and query your documents with a simple JavaScript API. It&amp;rsquo;s most commonly used in a browser, to keep data on the client side. Storing data within the browser allows your web applications to keep working, even when the network connection is flaky or non-existant - this is called an offline first approach.</description>
+    </item>
+    
+    <item>
+      <title>Moving data from DocumentDB</title>
+      <link>https://blog.cloudant.com/2017/03/28/Moving-data-from-DocumenDB.html</link>
+      <pubDate>Tue, 28 Mar 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/03/28/Moving-data-from-DocumenDB.html</guid>
+      <description>In this article we&amp;rsquo;re going to look at extracting data from Microsoft Azure&amp;rsquo;s DocumentDB service and then importing the data into IBM Cloudant.
+Getting the data out Once again, I&amp;rsquo;ve written a script to do this for you: documentdbexport.
+First, install the tool:
+$ npm install -g documentdbexport Define a couple of environment variables with your Azure credentials:
+$ export AZURE_ENDPOINT=&amp;#34;https://mydocumentdb.documents.azure.com:443/&amp;#34; $ export AZURE_KEY=&amp;#34;GeIZysnonvgpk2&amp;#34; Then, simply run documentdbexport, supplying the name of the database and collection to export:</description>
+    </item>
+    
+    <item>
+      <title>Moving data from DynamoDB</title>
+      <link>https://blog.cloudant.com/2017/03/24/Moving-data-from-DynamoDB.html</link>
+      <pubDate>Fri, 24 Mar 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/03/24/Moving-data-from-DynamoDB.html</guid>
+      <description>If you have data in an Amazon DynamoDB service and want to move it to IBM Cloudant or Apache CouchDB, how would you go about it? First of all, DynamoDB has a peculiar form of JSON. A single temperature measurement would be expressed like this:
+{ &amp;#34;temperature&amp;#34;: { &amp;#34;N&amp;#34;: &amp;#34;8391&amp;#34; }, &amp;#34;time&amp;#34;: { &amp;#34;S&amp;#34;: &amp;#34;2017-03-09T01:38:11+0000&amp;#34; }, &amp;#34;id&amp;#34;: { &amp;#34;S&amp;#34;: &amp;#34;1489023491&amp;#34; } } Instead of the more straightforward JSON:
+{ &amp;#34;temperature&amp;#34;: 8391, &amp;#34;time&amp;#34;: &amp;#34;2017-03-09T01:38:11+0000&amp;#34;, &amp;#34;id&amp;#34;: &amp;#34;1489023491&amp;#34; } Cloudant and CouchDB can store any JSON documents with nested objects of arbitrary complexity, whereas DynamoDB stores a series of key values at the top of the JSON tree.</description>
+    </item>
+    
+    <item>
+      <title>Build a serverless web app</title>
+      <link>https://blog.cloudant.com/2017/02/27/Online-petition-system.html</link>
+      <pubDate>Mon, 27 Feb 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/02/27/Online-petition-system.html</guid>
+      <description>Is it possible to create a web application that collects data from a web form without using any servers? Of course not, but you would be forgiven for thinking that when reading the word &amp;ldquo;serverless&amp;rdquo;. &amp;ldquo;Serverless&amp;rdquo; means that instead of having fixed numbers of dedicated machines sitting in data centres waiting for traffic to come in, we can supply the code that handles a single piece of work (e.g. the submission of a web form) to a an application framework like IBM Cloud Functions and let it scale out the computing power required.</description>
+    </item>
+    
+    <item>
+      <title>cloudant-quickstart</title>
+      <link>https://blog.cloudant.com/2017/01/20/Cloudant-Quickstart.html</link>
+      <pubDate>Fri, 20 Jan 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/01/20/Cloudant-Quickstart.html</guid>
+      <description>I frequently talk with developers who are using Cloudant or Apache CouchDB for the first time and I&amp;rsquo;ve found that things they find most difficult to come to terms with are:
+Design Documents - a feature unique to this database family. They are special documents holding index definitions a other data manipulation magic. Once mastered, they can be used to great effect but to a first-timer they are baffling. Multi-version Concurrency Control - MVCC is the mechanism whereby documents are stored in a tree of revisions, allowing databases to be synced with other copies without data loss.</description>
+    </item>
+    
+    <item>
+      <title>The Revision Tree</title>
+      <link>https://blog.cloudant.com/2017/01/01/The-Cloudant-Revision-Tree.html</link>
+      <pubDate>Sun, 01 Jan 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/01/01/The-Cloudant-Revision-Tree.html</guid>
+      <description>On the surface, Cloudant&amp;rsquo;s document API appears to be a reasonably simple way to upload JSON data to a key value store and update the JSON data for a particular key. However, the reality is more complicated &amp;ndash; isn&amp;rsquo;t it always? &amp;ndash; and understanding what&amp;rsquo;s happening is important in using Cloudant effectively and becoming an advanced user of the database.
+The takeaway point is this: a document in Cloudant is a tree and Cloudant&amp;rsquo;s document HTTP API is essentially a tree manipulation API.</description>
+    </item>
+    
+    <item>
+      <title>Caching HTTP requests</title>
+      <link>https://blog.cloudant.com/2016/11/22/Caching-Requests-with-Cachemachine.html</link>
+      <pubDate>Tue, 22 Nov 2016 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2016/11/22/Caching-Requests-with-Cachemachine.html</guid>
+      <description>A cache is a copy of data stored in place where it can be retrieved quickly with the original and most up-to-date copy being a separate, slower repository. Examples of caching include:
+microprocessors contain on-board data caches to save having to fetch the data from memory. spinning disks contain a cache of a data in memory to save having to fetch data on disk. web browsers cache a page&amp;rsquo;s assets on the client machine to save having to fetch data from the network.</description>
+    </item>
+    
+    <item>
+      <title>Chrome Extensions</title>
+      <link>https://blog.cloudant.com/2016/05/11/Chrome-Extensions-with-PouchDB.html</link>
+      <pubDate>Wed, 11 May 2016 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2016/05/11/Chrome-Extensions-with-PouchDB.html</guid>
+      <description>Google Chrome extensions are small web applications that are downloaded and installed in the user&amp;rsquo;s Chrome browser. They have a minimal user interface, usually a small icon to the right of the URL bar and a pop-down panel, but have additional rights over and above normal websites:
+they can be bundled and submitted to the Chrome Web store as a distribution mechanism they have limited access to the host computer to save files, access networking tools and communicate with connected devices they have access to the browser&amp;rsquo;s inner workings and can alter the rendering of web pages Chrome extensions are really just web applications built from HTML, CSS and JavaScript, and we can use the framework of our choice to build them.</description>
+    </item>
+    
+    <item>
+      <title>couchbackup</title>
+      <link>https://blog.cloudant.com/2016/03/22/Simple-CouchDB-Cloudant-backup.html</link>
+      <pubDate>Tue, 22 Mar 2016 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2016/03/22/Simple-CouchDB-Cloudant-backup.html</guid>
+      <description>How do you back up an Apache CouchDB™ or Cloudant database? One solution is to use CouchDB&amp;rsquo;s built-in replication API. Let&amp;rsquo;s say we have a Cloudant database called mydata that we need to back up.
+In CouchDB 1.x, backing up an entire database was as simple as locating the database&amp;rsquo;s .couch file and copying it somewhere else. With its 2.x release, CouchDB and the Cloudant database shard the data, splitting a single database into pieces and distributing the data across multiple servers.</description>
+    </item>
+    
+    <item>
+      <title>Understanding Indexing</title>
+      <link>https://blog.cloudant.com/2016/01/31/Understanding-Cloudant-Indexing.html</link>
+      <pubDate>Sun, 31 Jan 2016 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2016/01/31/Understanding-Cloudant-Indexing.html</guid>
+      <description>While less convoluted than the read and write behaviour in a cluster, the behaviour of indexing in a clustered CouchDB or Cloudant environment merits a discussion. Understanding how indexing and querying works in a cluster will help avoid confusing situations where queries to a view index on Cloudant will produce different results because the indexes contain different data.
+tl;dr: Writing indexing functions (map/reduce in views, index for search indexes and so on) which can return different values for the same input document will cause the indexes on shard replicas to differ, meaning they could return different values for the same query even when data doesn&amp;rsquo;t change.</description>
+    </item>
+    
+    <item>
+      <title>Command-line tools</title>
+      <link>https://blog.cloudant.com/2015/10/19/Command-line-tools-for-Cloudant.html</link>
+      <pubDate>Mon, 19 Oct 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/10/19/Command-line-tools-for-Cloudant.html</guid>
+      <description>Some developers spend their days dragging and dropping in a graphical user interface, others are more comfortable typing green letters into a black background on a command-line terminal. If you are the latter type of developer, then this blog post is for you. We introduce a range of command-line tools that you can use to interface with IBM Cloudant (or plain Apache CouchDB).
+Cloudant and CouchDB share an RESTful HTTP API allowing access from any programming language or from the command-line using the curl utility.</description>
+    </item>
+    
+    <item>
+      <title>Understanding Read/Write</title>
+      <link>https://blog.cloudant.com/2015/10/19/Read-Write-Behaviour-in-a-cluster.html</link>
+      <pubDate>Mon, 19 Oct 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/10/19/Read-Write-Behaviour-in-a-cluster.html</guid>
+      <description>CouchDB 2.0 has clustering code contributed by Cloudant, which was inspired by Amazon&amp;rsquo;s Dynamo paper.
+When using CouchDB in a cluster, databases are sharded and replicated. This means that a single database is split into, say, 24 shards and each shard is stored on more than one node (replica). A shard contains a specific portion of the documents in the database. A consistent hashing technique is used to allocate documents to shards.</description>
+    </item>
+    
+    <item>
+      <title>Slack to Cloudant</title>
+      <link>https://blog.cloudant.com/2015/08/13/Slack-to-Cloudant.html</link>
+      <pubDate>Thu, 13 Aug 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/08/13/Slack-to-Cloudant.html</guid>
+      <description>Slack’s Integration API and Cloudant’s HTTP API make it simple to store data directly into a Cloudant database without breaking a sweat. This tutorial shows how to create a custom slash command in Slack and how to post it directly to Cloudant.
+Slack is a messaging and team-working application that is used widely to allow disparate teams of people to chat, share files, and interact on desktop, tablet, and mobile platforms.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Conflicts - 3/3</title>
+      <link>https://blog.cloudant.com/2015/01/26/Introduction-to-Conflicts-Part-Three.html</link>
+      <pubDate>Mon, 26 Jan 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/01/26/Introduction-to-Conflicts-Part-Three.html</guid>
+      <description>In Parts One and Two of this series, we looked at:
+what are document conflicts in Cloudant? how do they arise? what does a conflict look like? the consequences of conflicts how to detect conflicts singly and in bulk how to resolve conflicts If your application replicates data between Cloudant and mobile device and the data is allowed to be modified (like an email inbox), then conflicts will arise in your application when the two replicas are combined, and the resolution of those conflicts is your application&amp;rsquo;s responsibility.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Conflicts - 2/3</title>
+      <link>https://blog.cloudant.com/2015/01/20/Introduction-to-Conflicts-Part-Two.html</link>
+      <pubDate>Tue, 20 Jan 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/01/20/Introduction-to-Conflicts-Part-Two.html</guid>
+      <description>In Part One of this series we looked at:
+what are document conflicts in Cloudant? how do they arise? what does a conflict look like? the consequences of conflicts In this blog we will discuss how we can detect conflicts and how we should go about resolving them.
+Conflicts are most often a natural side-effect of having a distributed database architecture. Conflicts retain the history of a document, keeping versions of a document that has been modified in different ways on two independent systems (e.</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Conflicts - 1/3</title>
+      <link>https://blog.cloudant.com/2015/01/12/Introduction-to-Conflicts-Part-One.html</link>
+      <pubDate>Mon, 12 Jan 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/01/12/Introduction-to-Conflicts-Part-One.html</guid>
+      <description>This is the first of a three-part blog series on how to deal with conflicts in the IBM Cloudant JSON document store. This blog assumes you have a working knowledge of Cloudant&amp;rsquo;s database, and its API.
+In part one, we introduce the concept of a document conflict, describe what it looks like, and explain what happens if conflicts are left unresolved. Later in this series, we show how to tidy up conflicts, and discuss how they can be avoided.</description>
+    </item>
+    
+    <item>
+      <title>MapReduce</title>
+      <link>https://blog.cloudant.com/2011/01/13/mapreduce-from-the-basics-to-the-actually-useful.html</link>
+      <pubDate>Thu, 13 Jan 2011 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2011/01/13/mapreduce-from-the-basics-to-the-actually-useful.html</guid>
+      <description>Recently, Tim Anglade culminated his NOSQL World Tour with the release of the NOSQL Tapes, a collection of live interviews collected globally. Not only do I find that site aesthetically pleasing (courtesy of our own Steadicat), but there is a tremendous amount of solid content, from technical discussions to opinions and conjectures from many of the young leaders in the field. I was fortunate to get a bit of Tim’s time when he stopped in Seattle and we recorded a longish video on MapReduce in my lab at UW.</description>
+    </item>
+    
+    <item>
+      <title>Search</title>
+      <link>https://blog.cloudant.com/search.html</link>
+      <pubDate>Thu, 01 Jan 1970 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/search.html</guid>
+      <description>Search e.g. MapReduce or title:HTTP </description>
     </item>
     
   </channel>

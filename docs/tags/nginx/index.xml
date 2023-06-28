@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nginx on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/nginx/</link>
+    <description>Recent content in Nginx on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 23 Nov 2018 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Caching with Nginx</title>
+      <link>https://blog.cloudant.com/2018/11/23/Caching-Cloudant-with-Nginx.html</link>
+      <pubDate>Fri, 23 Nov 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/11/23/Caching-Cloudant-with-Nginx.html</guid>
+      <description>Cloudant and its open-source sibling Apache CouchDB were were born on the web. Their HTTP/HTTPS API is not a bolt-on afterthought - it is the way of interacting with the database built in from the ground up. Let&amp;rsquo;s take the use-case of Cloudant being used as a back-end database in a traditional client/server web app:
+Web users interact with a web page, sending HTTP requests to one of a number of application servers.</description>
+    </item>
+    
+  </channel>
+</rss>

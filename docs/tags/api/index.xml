@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>API on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/api/</link>
+    <description>Recent content in API on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 04 Jun 2018 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/api/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cloudant Fundamentals 5/10</title>
+      <link>https://blog.cloudant.com/2018/06/04/Cloudant-Fundamentals-The-Bulk-API.html</link>
+      <pubDate>Mon, 04 Jun 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/04/Cloudant-Fundamentals-The-Bulk-API.html</guid>
+      <description>In the last blog post we saw how to do CRUD (Create/Read/Update/Delete) operations with the Cloudant database using the curl command line tool. In this post we&amp;rsquo;ll use just two API calls to achieve the same thing, but with the capability of working on multiple documents at the same time.
+If you have two or five or a hundred documents to add to Cloudant, then you need to look at bulk operations API.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 4/10</title>
+      <link>https://blog.cloudant.com/2018/05/29/Using-API-with-curl.html</link>
+      <pubDate>Tue, 29 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/29/Using-API-with-curl.html</guid>
+      <description>The curl command-line tool allows you to make HTTP requests from a terminal:
+$ curl &amp;#39;http://www.website.com/&amp;#39; &amp;lt;html&amp;gt; &amp;lt;h1&amp;gt;This is a web page&amp;lt;/h1&amp;gt; &amp;lt;/html&amp;gt; Cloudant&amp;rsquo;s API is entirely HTTP. You don&amp;rsquo;t need any special software drivers or to understand a bespoke protocol — it&amp;rsquo;s just web requests. You can access the database from a browser, a mobile app, any programming language or, in this case, from the command line.
+The first thing you&amp;rsquo;ll need is your Cloudant service&amp;rsquo;s URL.</description>
+    </item>
+    
+  </channel>
+</rss>

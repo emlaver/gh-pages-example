@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Partitioned Databases - Introduction</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Partitioned Databases - Introduction">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html" />
+    <meta property="og:description" content="Organise data into partitions for a speed boost and cost savings." />
+    <meta property="article:published_time" content="2019-03-05 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/toa-heftiba-82432-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Partitioned Databases - Introduction" />
+    <meta name="twitter:description" content="Organise data into partitions for a speed boost and cost savings." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Partitioned Databases - Introduction">
+    <meta itemprop="description" content="Organise data into partitions for a speed boost and cost savings.">
+    <meta itemprop="image" content="/img/toa-heftiba-82432-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Partitioned Databases - Introduction</a></h1>
+  
+  <div class="postmeta">Mar 5, 2019 | Glynn Bird | 
+
+<span class="tag">Partitioned Databases</span>
+
+</div>
+  
+  <blockquote>
+<p>This is the first part of a series of posts on Partitioned Databases in Cloudant. <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Part Two</a>, <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">Part Three</a> and <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html">Part 4</a> may also be of interest.</p>
+</blockquote>
+<p>Cloudant has a new feature called <em>Partitioned Databases</em> which makes querying faster to execute while being cheaper per query request. In this article, we&rsquo;ll find out what Partitioned Databases are, how to set them up and how they work. Other posts provide a deep dive into <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">data modelling</a> and <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">data migration</a>.</p>
+<p><img src="/img/toa-heftiba-82432-unsplash.jpg" alt="pie"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/jjZsHhEtees">Toa Heftiba on Unsplash</a></p>
+</blockquote>
+<h2 id="creating-a-partitioned-database"><a href="#creating-a-partitioned-database">Creating a partitioned database</a></h2>
+<p>Normally a database is created with the <code>PUT /db</code> API endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X PUT <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>: true<span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>To specify that you want a <em>partitioned database</em>, simply add <code>?partitioned=true</code> to the URL:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X PUT <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mypartitioneddb?partitioned=true&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>: true<span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>The <code>partitioned</code> flag can only be supplied when creating the database - an existing database cannot be transformed into a partitioned database after the fact.</p>
+<h2 id="the-two-part-_id-field"><a href="#the-two-part-_id-field">The two-part _id field</a></h2>
+<p>Partitioned database documents still have a unique <code>_id</code> field, but with a twist - the <code>_id</code> field is in two parts:</p>
+<ol>
+<li>The partition key</li>
+<li>The document key</li>
+</ol>
+<p>separated by a &ldquo;:&rdquo; character:</p>
+<p><img src="/img/partition1.png" alt="partition key"></p>
+<p>The whole <code>_id</code> must be unique in the database, but there can be many documents with the same partition key. Documents sharing a partition key are stored together on the same database <em>shard</em> making it inexpensive for the database to find and query them collectively.</p>
+<p>A database created with <code>?partitioned=true</code> will insist on a two-part <code>_id</code> field for each of its documents. If you attempt to create a document in a partitioned database with an invalid <code>_id</code>, your request will receive a <code>400 - Bad Request</code> response.</p>
+<h2 id="how-cloudant-stores-data-in-a-partitioned-database"><a href="#how-cloudant-stores-data-in-a-partitioned-database">How Cloudant stores data in a partitioned database</a></h2>
+<p>Each Cloudant service is hosted on multi-server distributed system. When you create a database, whether it be partitioned or not, the documents in the database are spread around the database cluster with the database being split into mulitple <em>shards</em>. In a <em>partitioned database</em> the partition key defines the location of the data in the cluster, with all documents that share the same partition key residing on the same shard (the same document ids in a non-partitioned database would be scattered around the cluster).</p>
+<p>At query-time, we can direct queries to a single <em>partition</em>. As Cloudant knows on which shard each partition resides in the cluster, it need only query <em>that shard</em>. This saves computation expense, generates fewer network requests and the benefits are passed on to the caller in terms of performance and per-query cost.</p>
+<p><img src="/img/partition2.png" alt="partition query"></p>
+<p>The above diagram shows in simplistic terms that a full-database query hits every shard in the database, but a query directed to a single partition is only directed to one.</p>
+<p>In reality, there is more complexity at play: multiple <em>copies</em> of each shard are distributed around the cluster, but for the purposes if this post it&rsquo;s a detail that needn&rsquo;t concern us. If you ignore the concept of shards and that there are multiple copies of each, you can imagine your database split into a number of logical partitions, determined by the value of the partition key you supply in the <code>_id</code> field.</p>
+<h2 id="what-makes-a-good-partition-key"><a href="#what-makes-a-good-partition-key">What makes a good partition key?</a></h2>
+<p>A good partition key should have:</p>
+<ul>
+<li>Many values - lots of small partitions are better than a few large ones.</li>
+<li>No hot spots - avoid designing a system that makes one partition handle a high proportion of the workload. If the work is evenly distributed around the partitions, the database will perform more smoothly.</li>
+<li>Repeating - If each partition key is unique, there will be one document per partition. To get the best out of partitioned databases, there should be multiple documents per partition - documents that logically belong together.</li>
+</ul>
+<p>Let&rsquo;s look at some use-cases and some good and bad choices for a partition key.</p>
+<table>
+<thead>
+<tr>
+<th>Use-case</th>
+<th>Description</th>
+<th>Partition Key</th>
+<th>Effectiveness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E-commerce system - orders</td>
+<td>One document per order.</td>
+<td>user_id</td>
+<td>Good - all of a user&rsquo;s orders will be kept together.</td>
+</tr>
+<tr>
+<td>E-commerce system - orders</td>
+<td>One document per order.</td>
+<td>order_id</td>
+<td>Neutral - one document per partition is fine, but doesn&rsquo;t take full advantage of Partition Queries</td>
+</tr>
+<tr>
+<td>E-commerce system - orders</td>
+<td>One document per order</td>
+<td>status</td>
+<td>Bad - grouping orders by a handful of status values (provisional, paid, refunded, cancelled) will create too few over-large partitions</td>
+</tr>
+<tr>
+<td>Blogging platform</td>
+<td>One document per blog post.</td>
+<td>author_id</td>
+<td>Good - as long as there are many authors. Easy to query each author&rsquo;s posts.</td>
+</tr>
+<tr>
+<td>IOT - sensor readings</td>
+<td>One document per reading</td>
+<td>device_id</td>
+<td>Good - if there are many devices. Make sure that one device is not producing many more readings than the others.</td>
+</tr>
+<tr>
+<td>IOT - sensor readings</td>
+<td>One document per reading</td>
+<td>date</td>
+<td>Bad - current readings will cause a &ldquo;hot spot&rdquo; on the current date&rsquo;s partition.</td>
+</tr>
+</tbody>
+</table>
+<p>There are some use-cases where there isn&rsquo;t a viable choice for a partition key. In these situations, it&rsquo;s likely that a non-partitioned database is the best choice e.g. a database of users storing email address, password hash and a last-login date. None of these fields make for a suitable partition key, so a normal non-partitioned database should be used instead.</p>
+<h2 id="partition-database-crud"><a href="#partition-database-crud">Partition database CRUD</a></h2>
+<p>Once you&rsquo;ve created a database with <code>PUT /mydb?partitioned=true</code>, documents are added, updated and fetched in the <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#documents">usual way</a>:</p>
+<pre tabindex="0"><code>PUT /&lt;database&gt;/&lt;partitionkey&gt;:&lt;dockey&gt;
+POST /&lt;database&gt;  (supplying a JSON document with a two-part _id)
+GET /&lt;database&gt;&lt;partitionkey&gt;:&lt;dockey&gt;
+DELETE /&lt;database&gt;/&lt;partitionkey&gt;:&lt;dockey&gt;?rev=&lt;revision&gt;
+POST /&lt;database&gt;/_bulk_get
+POST /&lt;database&gt;/_bulk_docs
+</code></pre><p>All of the Create/Read/Update/Delete (endpoints) behave as normal except that they will enforce rules to ensure that your <code>_id</code> field meets the format expected of a partitioned database.</p>
+<h2 id="querying-a-single-partition"><a href="#querying-a-single-partition">Querying a single partition</a></h2>
+<p>Directing a query at a single partition is the key to achieving great performance and lower per-query prices. There&rsquo;s a whole raft of new API calls that allow data from a single partition to be fetched. Partitioned queries are subject to a timeout of five seconds and a maximum of 2000 results per query. See <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#querying">the documentation</a> for more details.</p>
+<p>In partitioned databases, indexes are partitioned by default. Index definitions may contain a <code>partitioned: false</code> flag to override this behaviour to make q <em>global</em> index(as they would be for a non-partitioned databases) - a global index will then only work for global queries. See <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#querying">the documentation</a> for more details.</p>
+<h3 id="cloudant-query-_find"><a href="#cloudant-query-_find">Cloudant Query _find</a></h3>
+<p>A new API endpoint allows a <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#query">Cloudant Query</a> to be directed to a single partition:</p>
+<pre tabindex="0"><code>POST /&lt;database&gt;/_partition/&lt;partitionkey&gt;/_find
+</code></pre><p>As with the global <code>_find</code> endpoint, queries against a pre-existing <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#working-with-indexes">Cloudant Query index</a> will yield the best performance.</p>
+<h3 id="cloudant-query-mapreduce"><a href="#cloudant-query-mapreduce">Cloudant Query MapReduce</a></h3>
+<p>Similarly, a <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce view</a> can be queried on a single partition:</p>
+<pre tabindex="0"><code>GET /&lt;database&gt;/_partition/&lt;partitionkey&gt;/_design/&lt;name&gt;/_view/&lt;view_name&gt;
+</code></pre><p>Advanced MapReduce features such as custom JavaScript reducers, rewrites, lists, shows, updates, filters and validators are not permitted on partitioned indexes.</p>
+<h3 id="cloudant-search"><a href="#cloudant-search">Cloudant Search</a></h3>
+<p>A Cloudant Search index can be queried on a single partition:</p>
+<pre tabindex="0"><code>GET /&lt;database&gt;/_partition/&lt;partitionkey&gt;/_design/&lt;name&gt;/_search/&lt;index_name&gt;
+</code></pre><h3 id="all-documents"><a href="#all-documents">All documents</a></h3>
+<p>All documents from a partition can be fetched with the partition&rsquo;s _all_docs endpoint:</p>
+<pre tabindex="0"><code>GET /&lt;database&gt;/_partition/&lt;partitionkey&gt;/_all_docs
+</code></pre><h2 id="pricing"><a href="#pricing">Pricing</a></h2>
+<p>The current Cloudant pricing information can be found <a href="https://console.bluemix.net/docs/services/Cloudant/offerings/pricing.html#pricing">here</a>.</p>
+<h2 id="summary"><a href="#summary">Summary</a></h2>
+<p>To see how you could design your application&rsquo;s data model to take advantage of Cloudant Query, read these companion posts on <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">data modelling</a> and <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">data migration</a>.</p>
+<h2 id="further-reading"><a href="#further-reading">Further reading</a></h2>
+<ul>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">Partitioned databases - Data Migration</a></li>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html">Partitioned databases - Partition sizing</a></li>
+<li><a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#partitioned-databases">Partitioned databases - Cloudant Documentation</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/couchdb-partitioned-databases-introduction-4a880e276773" target="_new">https://medium.com/@glynn_bird/couchdb-partitioned-databases-introduction-4a880e276773</a>
+
+
+
+</body>
+</html>
+

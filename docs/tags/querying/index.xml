@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>querying on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/querying/</link>
+    <description>Recent content in querying on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 28 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/querying/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Indexing with the Cloudant Dashboard</title>
+      <link>https://blog.cloudant.com/2022/03/28/Indexing-with-the-Cloudant-Dashboard.html</link>
+      <pubDate>Mon, 28 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/03/28/Indexing-with-the-Cloudant-Dashboard.html</guid>
+      <description>The Cloudant dashboard gives new and experienced Cloudant users the opportunity to add, edit and delete documents while refining the indexing and querying options that best suit their application&amp;rsquo;s use-cases.
+Photo by Zach Wiley on Unsplash
+In this blog post we&amp;rsquo;ll set up some simple indexes using the dashboard and see how each of Cloudant&amp;rsquo;s querying mechanisms work.
+The data set Let&amp;rsquo;s first create some sample data representing books in a library:</description>
+    </item>
+    
+    <item>
+      <title>Optimising Cloudant Queries</title>
+      <link>https://blog.cloudant.com/2020/05/20/Optimising-Cloudant-Queries.html</link>
+      <pubDate>Fri, 24 Apr 2020 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2020/05/20/Optimising-Cloudant-Queries.html</guid>
+      <description>Cloudant Query is a JSON-based query language inspired by MongoDB. It allows the developer to express the slice of data they need from a database using a mixture of logical and comparison operators.
+For example, if the following JSON is sent to the database&amp;rsquo;s _find endpoint:
+POST /orders/_find { &amp;#34;selector&amp;#34;: { &amp;#34;$and&amp;#34;: [ { &amp;#34;date&amp;#34;: { &amp;#34;$gte&amp;#34;: &amp;#34;2018-01-01&amp;#34; } }, { &amp;#34;date&amp;#34;: { &amp;#34;$lt&amp;#34;: &amp;#34;2019-01-01&amp;#34; } }, { &amp;#34;status&amp;#34;: &amp;#34;cancelled&amp;#34; }, { &amp;#34;user&amp;#34;: &amp;#34;bob@aol.</description>
+    </item>
+    
+    <item>
+      <title>Stale, update and stable</title>
+      <link>https://blog.cloudant.com/2018/11/06/What-is-stale-update-and-stable.html</link>
+      <pubDate>Tue, 06 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/11/06/What-is-stale-update-and-stable.html</guid>
+      <description>tl;dr If you are using stale=ok in queries to Cloudant or CouchDB 2.x, you most likely want to be using update=false instead. If you are using stale=update_after, use update=lazy instead.
+This question has come up a few times, so here&amp;rsquo;s a reference to what the situation is with these parameters to query requests in Cloudant and CouchDB 2.x.
+CouchDB originally used stale=ok on the query string to specify that you were okay with receiving out-of-date results.</description>
+    </item>
+    
+  </channel>
+</rss>

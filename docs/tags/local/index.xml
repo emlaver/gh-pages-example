@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Local on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/local/</link>
+    <description>Recent content in Local on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 13 Feb 2018 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/local/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Local documents</title>
+      <link>https://blog.cloudant.com/2018/02/14/Local-Documents.html</link>
+      <pubDate>Tue, 13 Feb 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/02/14/Local-Documents.html</guid>
+      <description>The Apache CouchDB™ family has a JSON document database for every application:
+Apache CouchDB can be installed on your own desktop or servers in single node or clustered installations IBM Cloudant is a hosted version of CouchDB running on IBM&amp;rsquo;s cloud PouchDB can be installed in many flavours but is commonly used as an in-browser database, to store client-side data with or without network connectivity All three members of the family can sync data between each other to create hybrid, multi-homed applications where data lives on a mobile device, or in the cloud, or both.</description>
+    </item>
+    
+  </channel>
+</rss>

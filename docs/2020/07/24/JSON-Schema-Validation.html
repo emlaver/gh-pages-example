@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>JSON Schema Validation</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="JSON Schema Validation">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/07/24/JSON-Schema-Validation.html" />
+    <meta property="og:description" content="Validating incoming JSON schemas with VDU functions" />
+    <meta property="article:published_time" content="2020-07-24 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/tim-arterbury-VkwRmha1_tI-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="JSON Schema Validation" />
+    <meta name="twitter:description" content="Validating incoming JSON schemas with VDU functions" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="JSON Schema Validation">
+    <meta itemprop="description" content="Validating incoming JSON schemas with VDU functions">
+    <meta itemprop="image" content="/img/tim-arterbury-VkwRmha1_tI-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">JSON Schema Validation</a></h1>
+  
+  <div class="postmeta">Jul 24, 2020 | Glynn Bird | 
+
+<span class="tag">Schema</span>
+
+<span class="tag">Validation</span>
+
+</div>
+  
+  <p><a href="https://json-schema.org/">JSON Schema</a> is a standard that allows you to specify the form of your JSON and allow programmatic validation of JSON against the specification.</p>
+<p>In your application there would be a formal definition of the types of JSON being stored (e.g. users, orders, products etc) which could be used to verify objects prior to being allowed into the database.</p>
+<p>Having a formal schema definition has several advantages:</p>
+<ul>
+<li>It can be used to validate documents prior to being stored in the databases. If it doesn&rsquo;t match the specification, it&rsquo;s not allowed in.</li>
+<li>The schema can be used to automatically generate documentation and coded to access the defined objects.</li>
+<li>API frameworks like <a href="https://www.fastify.io/docs/latest/Getting-Started/#serialize-your-data">Fastify</a> can use JSON Schema definitions to speed up the parsing of JSON payloads.</li>
+</ul>
+<p>JSON Schemas are clear, unambiguous, machine &amp; human readable definitions of the objects that your application needs.</p>
+<p><img src="/img/tim-arterbury-VkwRmha1_tI-unsplash.jpg" alt=""></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/VkwRmha1_tI">Tim Arterbury on Unsplash</a></p>
+</blockquote>
+<h2 id="what-does-a-json-schema-look-like"><a href="#what-does-a-json-schema-look-like">What does a JSON Schema look like?</a></h2>
+<p>As we&rsquo;re looking at Cloudant databases which store JSON objects, let&rsquo;s focus on a schema describing a JavaScript <em>Object</em>, in this case an object representing a person:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;abc123&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Bob Smith&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bob.smith@aol.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;password&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1f6b5d0e151388786d3820cded9408e2&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;salt&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;43614d9b1dec23da34a5b6f4eb71fb59&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;active&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;email_verified&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;19 Front Street, Darlington, DL5 1TY&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;joined&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2020-07-23T11:50:17.809Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>A JSON Schema representation of this object could be:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;$schema&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://json-schema.org/draft/2019-09/schema&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;$id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://glynnbird.com/person&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;object&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;properties&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>, <span style="color:#e6db74">&#34;enum&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;user&#34;</span>] },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>, <span style="color:#e6db74">&#34;format&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;email&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;password&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;salt&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;active&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;boolean&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;email_verified&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;boolean&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span>  { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;joined&#34;</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;string&#34;</span>, <span style="color:#e6db74">&#34;format&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;date-time&#34;</span>}
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;additionalProperties&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;required&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;type&#34;</span>, <span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#e6db74">&#34;email&#34;</span>, <span style="color:#e6db74">&#34;password&#34;</span>, <span style="color:#e6db74">&#34;salt&#34;</span>, <span style="color:#e6db74">&#34;active&#34;</span>, <span style="color:#e6db74">&#34;joined&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Note that each property&rsquo;s <em>data type</em> is specified with an optional <code>format</code> or <code>enum</code> for further validation. JSON Schema has a number of built in types (email/URL/date/time etc) and can also handle regular expression validation of other patterns.</p>
+<p>As <code>additionalProperties</code> is set to <code>false</code>, no extra properties other than those defined in the schema are allowed. The <code>required</code> array lists the properties that must be present - all others are optional.</p>
+<p>Try schema validation yourself using <a href="https://www.jsonschemavalidator.net/">this online tool</a>. Paste the schema in the left pane and the JSON in the right. Note how validation fails if there is a type/format mismatch, a missing mandatory property or the presence of any additional property.</p>
+<h2 id="implementing-json-schema"><a href="#implementing-json-schema">Implementing JSON Schema</a></h2>
+<p>There are <a href="https://json-schema.org/implementations.html">numerous implementations</a> of JSON Schema validators in a range of programming languages. I was drawn to the <a href="https://github.com/cfworker/cfworker/blob/master/packages/json-schema/README.md">cfworker/json-schema</a> JavaScript implementation which is designed to run on Cloudflare serverless workers with no dependencies.</p>
+<p>It would make sense to add JSON Schema validation in your application layer to prevent invalid JSON documents making it to Cloudant:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> { <span style="color:#a6e22e">Validator</span> } <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@cfworker/json-schema&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">validator</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Validator</span>(<span style="color:#a6e22e">myPersonSchema</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">validator</span>.<span style="color:#a6e22e">validate</span>(<span style="color:#a6e22e">myObject</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// { valid: true }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">valid</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">myObject</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Frameworks such as <a href="https://www.fastify.io/">Fastify</a> have JSON Schema support baked in and use them to get the best performance, as well as for schema validation.</p>
+<p>Next we&rsquo;ll look at how schema validation could work <em>inside</em> the Cloudant/CouchDB database.</p>
+<h2 id="validate-document-update-functions"><a href="#validate-document-update-functions">Validate Document Update functions</a></h2>
+<p>Cloudant and its open-source cousin Apache CouchDB have the ability to run user-defined JavaScript <a href="https://docs.couchdb.org/en/stable/ddocs/ddocs.html?highlight=validate_doc_update#validate-document-update-functions">Validate Document Update (VDU)</a> functions which decide whether an incoming document makes it to the database or not.</p>
+<p>Create a Cloudant database with a Design Document with the following content:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_design/vdu&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;validate_doc_update&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;function (newdoc) { throw({ forbidden: &#39;schema validation failed&#39; })  }&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This VDU function is executed before every regular document insert/update/delete operation and if it throws an error, then the document change is <strong>not</strong> stored. As this particular VDU function <em>always</em> throws an error, we are unable to write any further documents to the database:</p>
+<p><img src="/img/vdu1.png" alt="vdu1"></p>
+<p>We can write our own custom logic into that VDU function to, say, reject documents that contain a property &ldquo;b&rdquo;:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_design/vdu&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;validate_doc_update&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;function (newdoc) { if (typeof newdoc.b !== &#39;undefined&#39;) throw({ forbidden: &#39;schema validation failed })  }&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Now any document is valid unless it contains <code>b</code> property.</p>
+<p>We can keep extending this VDU logic to ensure that only documents that match our schema are allowed, but <em>that&rsquo;s what JSON Schema is for</em>. If only there was a way to run a JSON Schema validator in a VDU function&hellip;</p>
+<h2 id="adding-json-schema-validation-into-a-vdu-function"><a href="#adding-json-schema-validation-into-a-vdu-function">Adding JSON Schema validation into a VDU function</a></h2>
+<p>CouchDB allows JavaScript functions to be &ldquo;required&rdquo; in from elsewhere in the Design Document, so if we store a JSON Schema validator in there, we are able to access it from our VDU function.</p>
+<blockquote>
+<p>Note: writing JavaScript in Design Documents is difficult, prone to error and almost impossible to debug. Things get gnarly from here.</p>
+</blockquote>
+<p>First we need to add the <a href="https://github.com/cfworker/cfworker/blob/master/packages/json-schema/README.md">cfworker/json-schema</a> validator into our design document together with the schema(s) to validate against and our VDU function.</p>
+<p>The Design Document has the following shape:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_design/validate&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;views&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;lib&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;validator&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&lt;JSON Schema validator code goes here&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;person&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&lt;JSON Schema for a &#39;person&#39; object goes here&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;validate_doc_update&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&lt;VDU code goes here&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The finished code is difficult to read as the JavaScript is represented as <a href="https://gist.github.com/glynnbird/87e5e8ec01a04b4982c25c2bbda8d3ab">JSON strings in the Design Document</a>:</p>
+<script src="https://gist.github.com/glynnbird/87e5e8ec01a04b4982c25c2bbda8d3ab.js"></script>
+<p>Let&rsquo;s look at the VDU function in more detail:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">newdoc</span>) { 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">Validator</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;views/lib/validator&#39;</span>).<span style="color:#a6e22e">Validator</span>; 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">schema</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;views/lib/person&#39;</span>); 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">validator</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Validator</span>(<span style="color:#a6e22e">schema</span>); 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">r</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">validator</span>.<span style="color:#a6e22e">validate</span>(<span style="color:#a6e22e">newdoc</span>); 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">valid</span>) { 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throw</span>({<span style="color:#e6db74">&#39;forbidden&#39;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;schema does not match&#39;</span>})
+</span></span><span style="display:flex;"><span>  }  
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>it uses <code>require</code> to pull in the validator function from the design document.</li>
+<li>it uses <code>require</code> to pull in the JSON schema we wish to test. If your database is storing documents of different types, it could pull in the correct schema dynamically here.</li>
+<li>if the incoming <code>newdoc</code> fails to pass schema validation an error is thrown and the document is not allowed in.</li>
+</ul>
+<p>With this Design Document in place, the database only accepts objects that match the definition of our <em>person</em> object by testing the incoming object against the schema.</p>
+<hr>
+<p>If you find JSON Schema useful, they have an <a href="https://opencollective.com/json-schema">Open Collective page</a>.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

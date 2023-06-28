@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TXE on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/txe/</link>
+    <description>Recent content in TXE on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 14 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/txe/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Migrating from TXE</title>
+      <link>https://blog.cloudant.com/2022/01/14/Migrating-from-Cloudant-TXE-to-Standard.html</link>
+      <pubDate>Fri, 14 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/01/14/Migrating-from-Cloudant-TXE-to-Standard.html</guid>
+      <description>In this blog post we&amp;rsquo;ll show how data stored in a Cloudant on Transaction Engine (TXE) instance can be easily migrated to Cloudant Standard. There are few differences betweeen the two offerrings, so we&amp;rsquo;ll explore ways to avoid any pitfalls along the way.
+There isn&amp;rsquo;t a way of converting an existing account from TXE to Standard, so the first step is to provision a new Cloudant Standard account.
+Photo by Julia Craice on Unsplash</description>
+    </item>
+    
+  </channel>
+</rss>

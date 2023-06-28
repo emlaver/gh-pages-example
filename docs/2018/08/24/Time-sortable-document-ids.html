@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Time-sortable _ids</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Time-sortable _ids">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html" />
+    <meta property="og:description" content="Making _ids unique and time-sortable" />
+    <meta property="article:published_time" content="2018-08-24 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/jeff-frenette-635397-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Time-sortable _ids" />
+    <meta name="twitter:description" content="Making _ids unique and time-sortable" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Time-sortable _ids">
+    <meta itemprop="description" content="Making _ids unique and time-sortable">
+    <meta itemprop="image" content="/img/jeff-frenette-635397-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Time-sortable _ids</a></h1>
+  
+  <div class="postmeta">Aug 24, 2018 | Glynn Bird | 
+
+<span class="tag">Time</span>
+
+<span class="tag">Indexing</span>
+
+</div>
+  
+  <p>A Cloudant database document&rsquo;s <code>_id</code> field has to be unique. When you create a document and leave the <code>_id</code> field blank, the database will create one for you:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\ </span>
+</span></span><span style="display:flex;"><span>     -d<span style="color:#e6db74">&#39;{&#34;x&#34;:1}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> 
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;https://USERNAME:PASSWORD@HOST.cloudant.com/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;97728a06c27d1e11378cd43635c98c1e&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-0785e9eb543380151003dc452c3a001a&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Cloudant&rsquo;s generated <code>_id</code> fields are 32 characters long and made entirely of numerals and lowercase letters. They are unique, or at least have a negligible probability of clashing, by virtue of being a long pseudo-random string of characters.</p>
+<p>Alternatively, you may supply your own <code>_id</code> field which is useful when your app knows something unique about your domain&rsquo;s data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d<span style="color:#e6db74">&#39;{&#34;_id&#34;:&#34;user:glynn&#34;,&#34;x&#34;:1}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;https://USERNAME:PASSWORD@HOST.cloudant.com/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;user:glynn&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-0785e9eb543380151003dc452c3a001a&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>In this case I&rsquo;m using the <code>_id</code> to store both the <em>type</em> of the document (&ldquo;user&rdquo;) and something unique about each user I&rsquo;m storing (&ldquo;glynn&rdquo;) in the same portmanteau <code>_id</code>.</p>
+<h2 id="making-a-sortable-_id-field"><a href="#making-a-sortable-_id-field">Making a sortable _id field</a></h2>
+<p><img src="/img/jeff-frenette-635397-unsplash.jpg" alt="sortable"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/Y_AWfh0kGT4">Jeff Frenette on Unsplash</a></p>
+</blockquote>
+<p>In some applications it would be useful for the <code>_id</code> field to sort into date/time order. The <code>_id</code> is used to create the database&rsquo;s <em>primary index</em> which is used to fetch documents by their id (<code>GET /db/id</code>) and when selecting ranges of documents (<code>GET /db/_all_docs</code>). If a database&rsquo;s <code>_id</code> fields sorted into time order, I could extract data by time without having to create a secondary index e.g. I could fetch the 100 most recently added documents to a database by simply querying the primary index:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;https://USERNAME:PASSWORD@HOST.cloudant.com/mydb/_all_docs?descending=true&amp;limit=100&#34;</span>
+</span></span></code></pre></div><p>All I need is an <code>_id</code> scheme that can generate ids that are both unique in the database and yet sort into date/time order.</p>
+<p>One solution is published in the <a href="https://www.npmjs.com/package/kuuid">kuuid</a> Node.js library I wrote for just this purpose. Simply use <code>kuuid.id()</code> to generate your <code>_id</code> values:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// import the library
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">kuuid</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;kuuid&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// build up a new document using kuuid as the document&#39;s _id
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">kuuid</span>.<span style="color:#a6e22e">id</span>(),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Glynn&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;UK&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">verified</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// insert into the database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">doc</span>)
+</span></span></code></pre></div><p>which creates a document that looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;0001AKY50w6w4833bGxL26pDWU4UFhTX&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Glynn&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;UK&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">verified</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="how-do-sortable-ids-work"><a href="#how-do-sortable-ids-work">How do sortable ids work?</a></h2>
+<p>A <code>kuuid</code>-generated id consists of 32 characters made up of numbers and upper case &amp; lower case letters. It is split into two sections:</p>
+<p><img src="/img/kuuid.png" alt="kuuid"></p>
+<ol>
+<li>the first eight characters contain the date/time, stored as the number of seconds since the 1st of January 1970.</li>
+<li>the remaining twenty four characters are 128 bits of random data.</li>
+</ol>
+<p>Both pieces of information are encoded in &ldquo;base 62&rdquo;, allowing more information to be packed into the same number of characters by using a case-sensitive character set.</p>
+<p>Two ids generated in the same second will have the same first eight characters, but the chances of the remaining 24 characters clashing are vanishingly remote.</p>
+<p>The documents will be sorted in the database&rsquo;s primary index in <em>rough</em> date order, that is with a precision of one second.</p>
+<p>By judicious use of the <a href="https://console.bluemix.net/docs/services/Cloudant/api/database.html#get-documents">GET /db/_all_docs</a> and use of the <code>startkey</code>/<code>endkey</code>/<code>descending</code> parameters, the database&rsquo;s primary index can be queried to provide ranges of documents by type in approximate time order. The <code>kuuid</code> library provides a <code>prefix</code> function that calculates the 8-digit for string that correseponds to a user-supplied date or timestamp:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// get data between 1st &amp; 15th Feb 2018
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">kuuid</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;kuuid&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">startDate</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;2018-02-01T00:00:00.000Z&#39;</span> <span style="color:#75715e">// 1st Feb 2018
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">endDate</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;2018-02-15T00:00:00.000Z&#39;</span> <span style="color:#75715e">// 15th Feb 2018
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">k1</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">kuuid</span>.<span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">startDate</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">k2</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">kuuid</span>.<span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">endDate</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">list</span>({ <span style="color:#a6e22e">startkey</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">k1</span>, <span style="color:#a6e22e">endkey</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">k2</span> }).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// get data from 12:30 on 30th Nov 2017 to now, newest first
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;2017-11-30T12:30:00.000Z&#39;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">k3</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">kuuid</span>.<span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">date</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">list</span>({ <span style="color:#a6e22e">endkey</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">k3</span>, <span style="color:#a6e22e">descending</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> }).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>)
+</span></span></code></pre></div><p>This form of querying is a little convoluted, but if your ids are going to be 32-character random strings, it seems useful to make them loosely time-ordered just to be able to quickly establish the documents that were added recently, if nothing else.</p>
+<h2 id="combining-a-kuuid-and-a-document-type"><a href="#combining-a-kuuid-and-a-document-type">Combining a kuuid and a document type</a></h2>
+<p>Optionally, we could still keep the convention of storing the document <em>type</em> in the <code>_id</code> field too:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;user:&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">kuuid</span>.<span style="color:#a6e22e">id</span>(),
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Glynn&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;UK&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">verified</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Our <code>_id</code> field is now sorted by document type AND time!</p>
+<hr>
+<p>The <a href="https://github.com/glynnbird/kuuid#readme">source code</a> for this id generator is not complicated and can be easily reproduced in other programming languages. The Node.js implementation is <a href="https://www.npmjs.com/package/kuuid">published on npm</a>.</p>
+<p>Further reading:</p>
+<ul>
+<li><a href="https://segment.com/blog/a-brief-history-of-the-uuid/">A Brief History of the UUID</a>.</li>
+<li><a href="https://github.com/segmentio/ksuid">ksuid</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/time-sortable-document-ids-in-cloudant-c3af5b23d8bf" target="_new">https://medium.com/@glynn_bird/time-sortable-document-ids-in-cloudant-c3af5b23d8bf</a>
+
+
+
+</body>
+</html>
+

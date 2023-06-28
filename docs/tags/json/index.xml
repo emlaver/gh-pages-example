@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JSON on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/json/</link>
+    <description>Recent content in JSON on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 14 Sep 2018 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/json/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Generating sample data</title>
+      <link>https://blog.cloudant.com/2018/09/14/Generating-sample-JSON-data.html</link>
+      <pubDate>Fri, 14 Sep 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/09/14/Generating-sample-JSON-data.html</guid>
+      <description>Application development using Cloudant as the database, for me, starts with data design. Having carefully considered how your application&amp;rsquo;s data should be modelled in JSON we may turn to the querying and indexing required:
+How do my queries perform with 10k, 1m or 10m documents? How long does it take for a new batch of data to be indexed? Is it better to use a Cloudant MapReduce or Cloudant Search index to solve a particular problem?</description>
+    </item>
+    
+  </channel>
+</rss>

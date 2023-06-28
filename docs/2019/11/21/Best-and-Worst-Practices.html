@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Best &amp; Worst Practice</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Best &amp; Worst Practice">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html" />
+    <meta property="og:description" content="Advice for new users" />
+    <meta property="article:published_time" content="2019-11-21 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/elena-rabkina-349080-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Best &amp; Worst Practice" />
+    <meta name="twitter:description" content="Advice for new users" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Best &amp; Worst Practice">
+    <meta itemprop="description" content="Advice for new users">
+    <meta itemprop="image" content="/img/elena-rabkina-349080-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Best &amp; Worst Practice</a></h1>
+  
+  <div class="postmeta">Nov 21, 2019 | Stefan Kruger | 
+
+<span class="tag">Best-practice</span>
+
+</div>
+  
+  <p>So you’re new to Cloudant, but you’re not new to database systems. As an offering manager and engineer for Cloudant the past four years, I’ve had the chance to see the product from all angles: the customers who use it, the engineers that run it, and the folks who support and sell it.</p>
+<p><img src="/img/elena-rabkina-349080-unsplash.jpg" alt="image"></p>
+<p>In many ways, this article is inspired by <a href="https://www.dimagi.com/blog/what-every-developer-should-know-about-couchdb/">Dimagi’s perspective</a> as users. I’d like to add our perspective as providers of the database service, and summarize the best — and worst! — practices we see most often in the field.</p>
+<h2 id="rule-0-understand-the-api-you-are-targeting"><a href="#rule-0-understand-the-api-you-are-targeting">Rule 0: Understand the API you are targeting</a></h2>
+<p>You may use <a href="https://github.com/IBM/cloudant-java-sdk">Java</a>, <a href="https://github.com/IBM/cloudant-python-sdk">Python</a>, <a href="https://github.com/IBM/cloudant-go-sdk">Go</a> or <a href="https://github.com/IBM/cloudant-node-sdk">Node.js</a> or some other use-case specific language or platform that likely comes with convenient client-side libraries that integrate Cloudant access nicely, following the conventions you expect for your tools. This is great for programmer efficiency, but it also hides the API from view.</p>
+<p>This abstraction is what you want, of course — the whole reason for using a client library is to save yourself repeated, tedious boiler-plating — but understanding the underlying API is <em>vital</em> when it comes to troubleshooting, and when reporting problems. When you report a suspected problem to Cloudant, it helps us help you if you can provide a way for us to reproduce the problem.</p>
+<p>This does not mean cutting and pasting a hefty chunk of your application’s Java source verbatim into a support ticket, as we’re probably not able to build it. Also, your client-side code introduces uncertainties as to where the problem may be — your side or our side?</p>
+<p>Instead, Cloudant’s support teams will usually ask you to provide the set of API calls, ideally as a set of <a href="https://curl.haxx.se/">curl</a> commands that they can run, that demonstrates the issue. Adopting this approach to troubleshooting as a general rule also makes it easier for you to pinpoint where issues are failing. If your code is behaving unexpectedly, try to reproduce the problem using only direct access to the API.</p>
+<p>If you can’t, the problem isn’t with the Cloudant service itself.</p>
+<p>If you&rsquo;re investigating a performance issue, do consult the logs provided by IBM Cloud. If the logs show that your requests are handled quickly
+by Cloudant, but your application is slow, the root of that problem lies with your client-side application code. See the rule about logging and
+monitoring below.</p>
+<p>If you suspect that a problem you’ve encountered lies with an officially supported client library, then try to construct a small, self-contained code example that demonstrates the issue, with as few other dependencies as possible. If you’re using Java, it is helpful to us if you can use a minimal <a href="https://github.com/mikerhodes/java-cloudant-minimal">test harness</a> to highlight library issues.</p>
+<p>Occasionally Cloudant receives support tickets that state that “Cloudant is broken because my application is slow” without much in terms of supporting evidence. Nearly always this is traced back to issues in the application code on the client side, or misconceptions about how Cloudant works.</p>
+<p>Not always, but <em>nearly</em> always.</p>
+<p>By understanding the API better, you also gain experience in how Cloudant behaves, especially in terms of performance. If you&rsquo;re using a
+client library, you should aim to at least know how to find out which HTTP requests are generated by a given function call.</p>
+<ul>
+<li>Cloudant API <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-api-reference-overview">docs</a>.</li>
+<li>Logging <a href="https://cloud.ibm.com/docs/Cloudant?topic=cloudant-log-analysis-integration">integration</a>.</li>
+<li>Blog post on <a href="https://blog.cloudant.com/2019/09/16/Cloudant-Logging-with-LogDNA.html">logging</a>.</li>
+</ul>
+<h2 id="rule-1-documents-should-group-data-that-mostly-change-together"><a href="#rule-1-documents-should-group-data-that-mostly-change-together">Rule 1: Documents should group data that mostly change together</a></h2>
+<p>When you start to model your data, sooner or later you’ll run into the issue of how your documents should be structured. You’ve gleaned that Cloudant doesn’t enforce any kind of normalisation and that it has no transactions of the type you’re used to from, say, <a href="https://www.postgresql.org/">Postgres</a>, so the temptation can be to cram as much as possible into each document, given that this would also save on HTTP overhead.</p>
+<p>This is often a bad idea.</p>
+<p>If your model groups information together that doesn’t change together, you’re more likely to suffer from update conflicts.</p>
+<p>Consider a situation where you have users, each having a set of orders associated with them. One way might be to represent the orders as an array in the user document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{ <span style="color:#75715e">// DON&#39;T DO THIS
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#e6db74">&#34;customer_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">65522389</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;orders&#34;</span><span style="color:#f92672">:</span> [ {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;order_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">887865</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;items&#34;</span><span style="color:#f92672">:</span> [ {
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;item_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">9982</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;item_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Iron sprocket&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;cost&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">53.0</span>
+</span></span><span style="display:flex;"><span>        }, {
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;item_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2932</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;item_name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Rubber wedge&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;cost&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3.0</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>To add a new order, I need to fetch the complete document, unmarshal the JSON, add the item, marshal the new JSON, and send it back as an update. If I’m the only one doing so, it may work for a while. If the document is being updated concurrently, or being replicated, we’ll likely see update conflicts.</p>
+<p>Instead, keep orders separate as their own document type, referencing the customer id. Now the model is immutable. To add a new order, I simply create a <em>new</em> order document in the database, which cannot generate conflicts.</p>
+<p>To be able to retrieve all orders for a given customer, we can employ a view, which we’ll cover later.</p>
+<p>Avoid constructs that rely on updates to parts of existing documents, where possible. Bad data models are often extremely hard to change once you’re in production.</p>
+<p>The pattern above can be solved efficiently using partitioned databases, which are covered in greater detailed below.</p>
+<ul>
+<li>Cloudant guide to <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-five-tips-for-modeling-your-data-to-scale">data modelling</a>.</li>
+<li>Database <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-database-partitioning">partitions</a>.</li>
+</ul>
+<h2 id="rule-2-keep-documents-small"><a href="#rule-2-keep-documents-small">Rule 2: Keep documents small</a></h2>
+<p>Cloudant imposes a max doc size of 1 MB. This does not mean that a close-to-1-MB document size is a <em>good</em> idea. On the contrary, if you find you are creating documents that exceed single-digit KB in size, you should probably revisit your model. Several things in Cloudant becomes less performant as documents grow. JSON decoding is costly, for example.</p>
+<p>Given Rules 1 and 2, it&rsquo;s worth stressing that models that rely on updates have an upper volume limit of 1MB &ndash; the cut-off for document size. This isn&rsquo;t what you want.</p>
+<h2 id="rule-3-avoid-using-attachments"><a href="#rule-3-avoid-using-attachments">Rule 3: Avoid using attachments</a></h2>
+<p>Cloudant has support for storing attachments alongside documents, a long-standing feature it inherits from CouchDB. It can be handy to be able to store small icons and other static assets such as CSS and JavaScript files with the data if you’re using Cloudant as a backend for a web application.</p>
+<p>There are a few things to consider before using attachments in Cloudant today, especially if you’re looking at larger assets such as images and videos:</p>
+<ol>
+<li>Cloudant is expensive as a block store</li>
+<li>Cloudant’s internal implementation is not efficient in handling large amounts of binary data</li>
+</ol>
+<p>So: slow and expensive.</p>
+<p>It’s ok for small assets and/or occasional use, but as a rule, if you need to store binary data alongside Cloudant documents, it’s better to use a separate solution more suited for this purpose, and store only the attachment <em>metadata</em> in the Cloudant document. Yes, that means some extra code you need to write to upload the attachment to a suitable block store of your choice, verify that it succeeded before storing the token or URL to the attachment in the Cloudant document.</p>
+<p>Your databases will be smaller, cheaper, faster, and easier to replicate.</p>
+<ul>
+<li>Cloudant docs on <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-attachments">attachments</a>.</li>
+<li>Detaching Cloudant attachments to <a href="https://medium.com/ibm-watson-data-lab/detaching-cloudant-attachments-to-object-storage-with-serverless-functions-99b8c3c77925">Object Storage</a>.</li>
+</ul>
+<h2 id="rule-4-fewer-databases-are-better-than-many"><a href="#rule-4-fewer-databases-are-better-than-many">Rule 4: Fewer databases are better than many</a></h2>
+<p>If you can, limit the number of databases per Cloudant account to 500 or fewer. Whilst there is nothing magic about this particular number (Cloudant can safely handle more), there are several use cases that are adversely affected by large numbers of databases in an account.</p>
+<p>The replicator scheduler has a limited number of simultaneous replication jobs it is prepared to run. That means that as the number of databases grow, the replication latency is likely to increase if you try to replicate everything contained in an account.</p>
+<p>There is an operational aspect which is the flip side of the same coin: Cloudant’s operations team relies on replication, too, in order to move accounts around. By keeping down the number of databases you help us help you, should you need to shift your account from one location to another.</p>
+<p>So when should you use a single database and distinguish between different document types using views, and when should you use multiple databases to model your data? Cloudant can’t federate views across multiple databases, so if you have data that is unrelated to the extent that they will never be “joined” or queried together, then that data could be a candidate for splitting across multiple databases.</p>
+<p>Note that if you have an ever-growing dataset (like a log, or sensor readings or other types of time-series), it&rsquo;s also not a good idea to create a single, ever-growing, massive database. This kind of use-case requires time-boxing, which we&rsquo;ll cover in more detail below.</p>
+<h2 id="rule-5-avoid-the-database-per-user-anti-pattern-like-the-plague"><a href="#rule-5-avoid-the-database-per-user-anti-pattern-like-the-plague">Rule 5: Avoid the “database per user” anti-pattern like the plague</a></h2>
+<p>If you’re building out a multi-user service on top of Cloudant, it is tempting to let each user store their data in a separate database under the application account. That works well, mostly, if the number of users is small.</p>
+<p>Now add the need to derive cross-user analytics. The way you do that is to replicate all the user databases into a single analytics DB. All good. Now, this app suddenly becomes successful, and the number of users grow from 150 to 20,000. Now we have 20,000 replications just to keep the analytics DB current. If we also want to run in an active-active DR setup, we add another 20,000 replications and basically the system will stop functioning.</p>
+<p>Instead, multiplex user data into fewer databases, or shard users into a set of databases or accounts, or both. That way there is no need to replicate to provide an analytics DB, but auth becomes more complicated as Cloudant only provides authentication at the database level.</p>
+<p>It’s worth stating that the “database-per-user” approach is tempting because Cloudant permissions are “per database” — it’s not really the users’ fault that this pattern has emerged.</p>
+<h2 id="rule-6-avoid-writing-custom-javascript-reduce-functions"><a href="#rule-6-avoid-writing-custom-javascript-reduce-functions">Rule 6: Avoid writing custom JavaScript reduce functions</a></h2>
+<p>The map-reduce views in Cloudant are awesome. However, with great power comes great responsibility. The map-part of a map-reduce view is built incrementally, so shoddy code in the map impacts only indexing time, not query time. The reduce-part, unfortunately, will execute at query time. Cloudant provides a set of built-in reduce functions that are implemented internally in <a href="https://www.erlang.org/">Erlang</a>, which are performant at scale, and which your hand-crafted JavaScript reduces are not.</p>
+<p>If you find yourself writing reduce functions, stop and consider if you could re-organise your data so that this isn’t necessary, or so that you’re able to rely on the built-in reducers. Note that views on partitioned databases do not support custom reduces, which is one factor contributing to the significant speed-up queries on such views can offer.</p>
+<ul>
+<li>Cloudant docs on <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#reduce-functions">reduces</a></li>
+</ul>
+<h2 id="rule-7-understand-the-trade-offs-in-emitting-data-or-not-into-a-view"><a href="#rule-7-understand-the-trade-offs-in-emitting-data-or-not-into-a-view">Rule 7: Understand the trade-offs in emitting data or not into a view</a></h2>
+<p>As the document referenced by a view is always available using <code>include_docs=true</code>, it is possible to do something like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">indexed_field</span>, <span style="color:#66d9ef">null</span>);
+</span></span></code></pre></div><p>in order to allow lookups on <code>indexed_field</code>. This has advantages and disadvantages.</p>
+<ol>
+<li>The index is compact — this is good, as index size contributes to storage costs</li>
+<li>The index is robust — as the index does not store the document, you can access any field without thinking ahead of what to store in the index</li>
+<li>The disadvantage is that getting the document back is more costly than the alternative of emitting data into the index itself, as the database first has to look up the requested key in the index, and then read the associated document. Also, if you’re reading the whole document, but actually need only a single field, you’re making the database read and transmit data you don’t need.</li>
+</ol>
+<p>This also means that there is a potential race condition here — the document may have changed, or been deleted between the index and document read (although unlikely in practice).</p>
+<p>Emitting data into the index (a so-called “projection” in relational algebra terms) means that you can fine-tune the exact subset of the document that you actually need. In other words, you don’t need to emit the whole document. Only emit a value which represents the data you need in the app i.e. a cut-down object with minimal details, for example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">indexed_field</span>, {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>, <span style="color:#a6e22e">dob</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">dob</span>});
+</span></span></code></pre></div><p>Of course, if you change your mind on what fields you want to emit, the index will need rebuilding.</p>
+<p>Cloudant Query’s (CQ) JSON indexes use views this way under the hood. CQ can be a convenient replacement for some types of view queries, but not all. Do take the time to understand when to use one or the other.</p>
+<ul>
+<li>Cloudant Query <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">docs</a></li>
+<li>Cloudant guide to using <a href="https://cloud.ibm.com/docs/services/Cloudant/api?topic=cloudant-using-views#using-views">views</a>.</li>
+<li>Performance implications of using <a href="https://cloud.ibm.com/docs/services/Cloudant/api?topic=cloudant-using-views#multi-document-fetching">include_docs</a>.</li>
+</ul>
+<h2 id="rule-8-never-rely-on-the-default-behaviour-of-cloudant-querys-no-indexing"><a href="#rule-8-never-rely-on-the-default-behaviour-of-cloudant-querys-no-indexing">Rule 8: Never rely on the default behaviour of Cloudant Query’s no-indexing</a></h2>
+<p>It’s tempting to rely on CQs ability to query without creating explicit indexes. This is extremely costly in terms of performance, as every lookup is a full scan of the database rather than an indexed lookup. If your data is small, this won’t matter, but as the dataset grows, this will become a problem for you, and for the cluster as a whole. It is likely that we will limit this facility in the near future. The Cloudant dashboard allows you to create indexes in an easy way.</p>
+<p>Creating indexes and crafting CQs that take advantage of them requires some flair. To identify which index is being used by a particular query, send a POST to the <code>_explain</code> endpoint for the database, with the query as data.</p>
+<ul>
+<li>Cloudant Query <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">docs</a></li>
+</ul>
+<h2 id="rule-9-in-cloudant-search-or-cq-indexes-of-type-text-limit-the-number-of-fields"><a href="#rule-9-in-cloudant-search-or-cq-indexes-of-type-text-limit-the-number-of-fields">Rule 9: In Cloudant Search (or CQ indexes of type text), limit the number of fields</a></h2>
+<p>Cloudant Search and CQ indexes of type <code>text</code> (both of which are Apache Lucene under the hood) allow you to index any number of fields into the index. We&rsquo;ve seen some examples where this is abused either deliberately, or most often fat-fingered. Plan your indexing to comprise only the fields required by your actual queries. Indexes take space and can be costly to rebuild if the number of indexed fields are large.</p>
+<p>There’s also the issue of which fields you store in a Cloudant Search. Stored fields are retrieved in the query without doing <code>include_docs=true</code> so the trade-off is similar to Rule 7.</p>
+<ul>
+<li>Cloudant Search <a href="https://cloud.ibm.com/docs/services/Cloudant/api?topic=cloudant-search#search">docs</a>.</li>
+</ul>
+<h2 id="rule-10-avoid-conflicts"><a href="#rule-10-avoid-conflicts">Rule 10: Avoid conflicts</a></h2>
+<p>Cloudant is designed to treat conflicts as a natural state of data in a distributed system. This is a powerful feature that helps a Cloudant cluster be highly available at all times. However, the assumption is that conflicts are still reasonably rare. Keeping track of conflicts in Cloudant’s core has significant cost associated with it.</p>
+<p>It is perfectly possible (but a bad idea!) to just ignore conflicts, and the database will merrily carry on operating by choosing a random, but deterministic revision of conflicted documents. However, as the number of unresolved conflicts grows, the performance of the database goes down a black hole, especially when replicating.</p>
+<p>As a developer, it’s <em>your</em> responsibility to check for, and to resolve, conflicts — or even better, employ data models that make conflicts impossible.</p>
+<p>If you routinely create conflicts, you should really consider model changes: even if you resolve your conflicts diligently, the conflict branches in the revision tree will remain, and there is no easy way to tidy that up.</p>
+<ul>
+<li>Cloudant guide to <a href="https://cloud.ibm.com/docs/services/Cloudant/guides?topic=cloudant-conflicts#conflicts">conflicts</a>.</li>
+<li>Cloudant guide to versions and <a href="https://cloud.ibm.com/docs/services/Cloudant/guides?topic=cloudant-document-versioning-and-mvcc#document-versioning-and-mvcc">MVCC</a>.</li>
+<li>Three-part blog series on <a href="https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-one/">conflicts</a>.</li>
+</ul>
+<h2 id="rule-11-deleting-documents-wont-delete-them"><a href="#rule-11-deleting-documents-wont-delete-them">Rule 11: Deleting documents won’t delete them</a></h2>
+<p>Deleting a document from a Cloudant database doesn’t actually purge it. Deletion is implemented by writing a new revision of the document under deletion, with an added field <code>_deleted: true</code>. This special revision is called a <code>tombstone</code>. Tombstones still take up space and are also passed around by the replicator.</p>
+<p>Models that rely on frequent deletions of documents are not suitable for Cloudant.</p>
+<ul>
+<li>Cloudant tombstone <a href="https://cloud.ibm.com/docs/services/Cloudant/api?topic=cloudant-documents#-tombstone-documents">docs</a>.</li>
+</ul>
+<h2 id="rule-12-be-careful-with-updates"><a href="#rule-12-be-careful-with-updates">Rule 12: Be careful with updates</a></h2>
+<p>It is more expensive in the longer run to mutate existing documents than to create new ones, as Cloudant will always need to keep the document tree <em>structure</em> around, even if internal nodes in the tree will be stripped of their payloads. If you find that you create long revision trees, your replication performance will suffer. Moreover, if your update frequency goes above, say, once or twice every few seconds, you’re more likely to produce update conflicts.</p>
+<p>Prefer models that are immutable.</p>
+<p>The obvious question after rules 11 and 12 is — won’t the data set grow unbounded if my model is immutable? If you accept that deletes don’t fully purge the deleted data and that updates are actually not updating in place, in terms of data volume growth there is not much difference. Managing data volume over time requires different techniques.</p>
+<p>The only way to truly reclaim space is to delete <em>databases</em>, rather than documents. You can replicate only winning revisions to a new database and delete the old to get rid of lingering deletes and conflicts. Or perhaps you can build it into your model to regularly start new databases (say ‘annual data’) and archive off (or remove) outdated data, if your use case allows.</p>
+<h2 id="rule-13-replication-isnt-magic"><a href="#rule-13-replication-isnt-magic">Rule 13: Replication isn’t magic</a></h2>
+<blockquote>
+<p>“So let’s set up three clusters across the world, Dallas, London, Sydney, with bi-directional synchronisation between them to provide real-time collaboration between our 100,000 clients.”</p>
+</blockquote>
+<p>No. Just&hellip; no.</p>
+<p>Cloudant is good at replication. It’s so effortless that it can seem like magic, but note that it makes no latency guarantees. In fact, the whole system is designed with eventual consistency in mind. Treating Cloudant’s replication as a real time messaging system will not end up in a happy place. For this use case, put a system in between that was designed for this purpose, such as <a href="https://kafka.apache.org/">Apache Kafka</a>.</p>
+<p>It’s difficult to put a number on replication throughput — the answer is always “it depends”. Things that impact replication performance include, but are not limited to:</p>
+<ol>
+<li>Change frequency</li>
+<li>Document size</li>
+<li>Number of simultaneous replication jobs on the cluster as a whole</li>
+<li>Wide (conflicted) document trees</li>
+<li>Your reserved throughput capacity settings</li>
+</ol>
+<ul>
+<li>Blog post on <a href="https://dx13.co.uk/articles/2017/11/7/cloudant-replication-topologies-and-failover.html">replication topology</a>.</li>
+<li>Cloudant <a href="https://cloud.ibm.com/docs/services/Cloudant/guides?topic=cloudant-replication-guide#replication">guide to replication</a>.</li>
+<li>Updates to the <a href="https://developer.ibm.com/dwblog/2017/replicator-apache-couchdb-cloudant/">replication scheduler</a>.</li>
+</ul>
+<h2 id="rule-14-use-the-bulk-api"><a href="#rule-14-use-the-bulk-api">Rule 14: Use the bulk API</a></h2>
+<p>Cloudant has nice API endpoints for bulk loading (and reading) many documents at once. This can be much more efficient than reading/writing many documents one at a time. The write endpoint is:</p>
+<pre tabindex="0"><code>${database}/_bulk_docs.
+</code></pre><p>Its main purpose is to be a central part in the replicator algorithm, but it&rsquo;s available for your use, too, and it’s pretty awesome.</p>
+<p>With <code>_bulk_docs</code>, in addition to creating new docs you can also update and delete. Some client libraries, including <a href="https://pouchdb.com/">PouchDB</a>, implement create, update and delete even for single documents this way for fewer code paths.</p>
+<p>Here is an example creating one new, updating a second existing, and deleting a third document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -XPOST <span style="color:#e6db74">&#39;https://ACCT.cloudant.com/DB/_bulk_docs&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;docs&#34;:[{&#34;baz&#34;:&#34;boo&#34;}, \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         {&#34;_id&#34;:&#34;463bd...&#34;,&#34;foo&#34;:&#34;bar&#34;}, \
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         {&#34;_id&#34;:&#34;ae52d...&#34;,&#34;_rev&#34;:&#34;1-8147...&#34;,&#34;_deleted&#34;: true}]}&#39;</span>
+</span></span></code></pre></div><p>You can also fetch many documents at once by issuing a <code>POST</code> to <code>_all_docs</code>(there is also a newish endpoint called <code>_bulk_get</code>, but this is probably not what you want  —  it’s there for a specific internal purpose).</p>
+<p>To fetch a fixed set of docs using <code>_all_docs</code>, <code>POST</code> with a <code>keys</code> body:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -XPOST <span style="color:#e6db74">&#39;https://ACCT.cloudant.com/DB/_all_docs&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;keys&#34;:[&#34;ab234....&#34;,&#34;87addef...&#34;,&#34;76ccad...&#34;]}&#39;</span>
+</span></span></code></pre></div><p>Note also that Cloudant (at the time of writing) imposes a max request size of 11 MB, so <code>_bulk_docs</code> requests exceeding this size will be rejected with a <code>413: Payload Too Large</code> error.</p>
+<ul>
+<li>Cloudant <a href="https://cloud.ibm.com/docs/services/Cloudant/api?topic=cloudant-documents#bulk-operations">bulk operations docs</a>.</li>
+<li>Cloudant <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-ibm-cloud-public#request-and-document-size-limits">request and doc size limits</a></li>
+</ul>
+<h2 id="rule-15-eventual-consistency-is-a-harsh-taskmaster-aka-dont-read-your-writes"><a href="#rule-15-eventual-consistency-is-a-harsh-taskmaster-aka-dont-read-your-writes">Rule 15: Eventual Consistency is a harsh taskmaster (a.k.a. don’t read your writes)</a></h2>
+<p>Eventual consistency is a great idea on paper, and a key contributor to Cloudant’s ability to scale out in practice. However, it’s fair to say that the mindset required to develop against an eventually consistent data store does not feel natural to most people.</p>
+<p>You often get stung when writing tests:</p>
+<ol>
+<li>Create a database</li>
+<li>Populate the database with some test data</li>
+<li>Query the database for some subset of this test data</li>
+<li>Verify that the data you got back is the data you expected to get back</li>
+</ol>
+<p>Nothing wrong with that? That works on every other database you’ve ever used, right?</p>
+<p>Not on Cloudant.</p>
+<p>Or rather, it works 99 times out of 100.</p>
+<p>The reason for this is that there is a (mostly) small inconsistency window between writing data to the database, and this being available on all nodes of the cluster. As all nodes in a cluster are equal in stature, there is no guarantee that a write and a subsequent read will be serviced by the same node, so in some circumstances the read may be hitting a node before the written data has made it to this node.</p>
+<p>So why don’t you just put a short delay in your test between the write and the read? That will make the test less likely to fail, but the problem is still there.</p>
+<p>Cloudant has no transactional guarantees, and whilst document writes are atomic (you’re guaranteed that a document can either be read in its entirety, or not at all), there is no way to close the inconsistency window. It’s there by design.</p>
+<p>A more serious concern that should be at the forefront of every developer’s mind is that you can’t safely assume that data you write will be available to anyone else at a specific point in time. This takes some getting used to if you come from a different kind of database tradition.</p>
+<p><strong>Testing Tip</strong>: what you <em>can</em> do to avoid the inconsistency window in testing is to test against an single-node instance of Cloudant or CouchDB running say in Docker (docker stuff <a href="https://hub.docker.com/_/couchdb/">here</a>). A single node removes the eventual consistency issue, but beware that you are then testing against an environment that behaves differently to what you will target in production. <em>Caveat Emptor</em>.</p>
+<h2 id="rule-16-dont-mess-with-q-r-and-n-unless-you-really-know-what-you-are-doing"><a href="#rule-16-dont-mess-with-q-r-and-n-unless-you-really-know-what-you-are-doing">Rule 16: Don’t mess with Q, R and N unless you really know what you are doing</a></h2>
+<p>Cloudant’s quorum and sharding parameters, once you discover them, seem like tempting options to change the behaviour of the database.</p>
+<p><em>Stronger consistency — surely just set the write quorum to the replica count?</em></p>
+<p>No! Recall that there is no way to close the inconsistency window in a cluster.</p>
+<p>Don’t go there. The behaviour will be much harder to understand especially during network partitions. If you’re using Cloudant-the-service, the default values are fine for the vast majority of users.</p>
+<p>There are times when tweaking the shard count for a database is essential to get the best possible performance, but if you can’t say why this is, you’re likely to make your situation worse.</p>
+<h2 id="rule-17-design-document-ddoc-management-requires-some-flair"><a href="#rule-17-design-document-ddoc-management-requires-some-flair">Rule 17: Design document (ddoc) management requires some flair</a></h2>
+<p>As your data set grows, and your number of views goes up, sooner or later you will want to ponder how you organise your views across ddocs. A single ddoc can be used to form a so-called <code>view group</code>: a set of views that belong together by some metric that makes sense for your use case. If your views are pretty static, that makes your view query URLs semantically similar for related queries. It&rsquo;s also more performant at index time because the index loads the document once and generates multiple indexes from it.</p>
+<p>Ddocs themselves are read and written using the same read/write endpoints as any other document. This means that you can create, inspect, modify and delete ddocs from within your application. However, even small changes to ddocs can have big effects on your database. When you update a ddoc, <em>all</em> views in it become unavailable until indexing is complete. This can be problematic in production. To avoid it you have to do a crazy ddoc-swapping dance (see <a href="https://github.com/glynnbird/couchmigrate">couchmigrate</a>).</p>
+<p>In most cases, this is probably not what you want to have to deal with. As you start out, it is most likely more convenient to have a one-view-per-ddoc policy.</p>
+<p>Also, in case it isn’t obvious, views are code and should be subject to the same processes you use in terms of source code version management for the rest of your application code. How to achieve this may not be immediately obvious. You could version the JS snippets and then cut &amp; paste the code into the Cloudant dashboard to deploy whenever there is a change, and yes, we all resort to this from time to time.</p>
+<p>There are better ways to do this, and this is one reason to use some of the tools surrounding the <a href="http://docs.couchdb.org/en/2.0.0/couchapp/">couchapp</a> concept. A couchapp is a self-contained CouchDB web application that nowadays doesn’t see much use. Several couchapp tools exist that are there to make the deployment of a couchapp — including its views, crucially — easier.</p>
+<p>Using a couchapp tool means that you can automate deployment of views as needed, even when not using the couchapp concept itself.</p>
+<ul>
+<li>See for example <a href="https://github.com/couchapp/couchapp">couchapp</a> and <a href="https://github.com/drsm79/situp">situp</a>.</li>
+<li>Cloudant guide to <a href="https://cloud.ibm.com/docs/services/Cloudant/guides?topic=cloudant-design-document-management#design-document-management">design doc management</a>.</li>
+</ul>
+<h2 id="rule-18-cloudant-is-rate-limitedlet-this-inform-your-code"><a href="#rule-18-cloudant-is-rate-limitedlet-this-inform-your-code">Rule 18: Cloudant is rate limited — let this inform your code</a></h2>
+<p>Cloudant-the-service (unlike vanilla CouchDB) is sold on a “reserved throughput capacity” model. That means that you pay for the <em>right to use</em> up to a certain throughput, rather than the throughput you actually end up consuming. This takes a while to sink in. One somewhat flaky comparison might be that of a cell phone contract where you pay for a set number of minutes regardless of whether you end up using them or not.</p>
+<p>Although the cell phone contract comparison doesn’t really capture the whole situation. There is no constraint on the sum of requests you can make to Cloudant in a month; the constraint is on how <em>fast</em> you make requests.</p>
+<p>It’s really a promise that you make to Cloudant, not one that Cloudant makes to you: you promise to not make more requests per second than what you said you would up front. A top speed limit, if you like. If you transgress, Cloudant will fail your requests with a status of <code>429: Too Many Requests</code>. It&rsquo;s your responsibility to look out for this, and deal with it appropriately, which can be difficult when you&rsquo;ve got multiple app servers. How can they coordinate to ensure that they collectively stay below the requests-per-second limit?</p>
+<p>Cloudant’s official client libraries have some built-in provision for this that can be enabled (note: this is switched off by default to force you to think about it), following a “back-off &amp; retry” strategy. However, if you rely on this facility alone you will eventually be disappointed. Back-off &amp; retry only helps in cases of temporary transgression, not a persistent butting up against your provisioned throughput capacity limits.</p>
+<p>Your business logic <em>must</em> be able to handle this condition. Another way to look at it is that you get the allocation you pay for. If that allocation isn’t sufficient, the only solution is to pay for a higher allocation.</p>
+<p>Provisioned throughput capacity is split into three different buckets: <em>Lookups</em>, <em>Writes</em> and <em>Queries</em>. A <em>Lookup</em> is a “primary key” read — fetching a document based on its <code>_id</code>. A <em>Write</em> is storing a document or attachment on disk, and a <em>Query</em> is looking up documents via a secondary index (any API endpoint that has a <code>_design</code> or <code>_find</code> in it).</p>
+<p>You get different allocations of each and the ratios between them are fixed. This fact can be used to optimise for cost. As you get 20 <em>Lookups</em> for every 1 <em>Query</em> (per second), if you find that you’re mainly hitting the <em>Query</em> limit but you have plenty headroom in <em>Lookups</em>, it may be possible to reduce the reliance on <em>Queries</em> through some remodelling of the data or perhaps doing more work client-side.</p>
+<p>The corollary here though is that you can’t assume that any 3rd party library or framework will optimise for cost ahead of convenience. Client-side frameworks that support multiple persistence layers via plugins are unlikely to be aware of this, or perhaps even incapable of make such trade-offs.</p>
+<p>Checking this before committing to a particular tool is a good idea.</p>
+<p>It is also worth understanding that the rates aren’t directly equivalent to HTTP API endpoint calls. You should expect that for example a bulk update will count according to its constituent document writes.</p>
+<ul>
+<li>Cloudant docs on <a href="https://cloud.ibm.com/docs/services/Cloudant/offerings?topic=cloudant-ibm-cloud-public#ibm-cloud-public">plans and pricing</a> on IBM Public Cloud.</li>
+</ul>
+<h2 id="rule-19-partitioned-queries-are-faster-and-cheaper"><a href="#rule-19-partitioned-queries-are-faster-and-cheaper">Rule 19: Partitioned queries are faster and cheaper</a></h2>
+<p>Opting to create a <em>partitioned database</em> (as opposed to an unpartitioned database) means that Cloudant uses a <em>partition key</em> to decide on which shard each of your documents resides. Documents with the same <em>partition key</em> will be located on the same database shard. Requests for <code>_all_docs</code>, MapReduce views, Cloudant Query <code>_find</code> queries and Cloudant Search operations can be directed to a single partition instead of having to interrogate all shards in a &ldquo;scatter/gather&rdquo; pattern, which is the case for <em>global queries</em>.</p>
+<p>These <em>partitioned queries</em> exercie only one shard of the database making them faster to execute than global queries and for billing purposes are classified as &ldquo;read&rdquo; requests instead of the more expensive &ldquo;query&rdquo; requests, allowing you to get more usable capacity from the same Cloudant plan.</p>
+<p>Not all data designs lend themselves to a partitioned design, but if your data can be molded into a <code>&lt;partition key&gt;:&lt;document key&gt;</code> pattern, then your application can benefit in terms of performance and cost.</p>
+<ul>
+<li><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-database-partitioning">Partitioned Databases documentation</a></li>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases - Introduction blog</a></li>
+</ul>
+<h2 id="rule-20-use-timeboxed-databases-for-ever-growing-data-sets"><a href="#rule-20-use-timeboxed-databases-for-ever-growing-data-sets">Rule 20: Use timeboxed databases for ever-growing data sets</a></h2>
+<p>It&rsquo;s generally <em>not</em> a good idea to have an ever-growing database in Cloudant. Very large databases can be difficult to backup, require &ldquo;re-sharding&rdquo; to maintain good performance as they grow and suffer from long index build times.</p>
+<p>One way of mitigating this problem is to have several smaller databases instead, with a very common pattern being <em>timeboxed databases</em>: a large data set is split into smaller databases, each representing a time window e.g. a month.</p>
+<ul>
+<li><code>orders_2019_01</code></li>
+<li><code>orders_2019_02</code></li>
+<li><code>orders_2019_02</code></li>
+</ul>
+<p>New data is written to <em>this month&rsquo;s database</em> and queries for historical data can be directed to previous months&rsquo; databases. When a month&rsquo;s data is no longer of interest, it can be archived to Object Storage, the monthly Cloudant database deleted and the disk space recovered.</p>
+<ul>
+<li><a href="https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html">Time-series Data Storage blog</a></li>
+</ul>
+<h2 id="rule-21-logging-helps-you-see-whats-going-on"><a href="#rule-21-logging-helps-you-see-whats-going-on">Rule 21: Logging helps you see what&rsquo;s going on</a></h2>
+<p>Cloudant&rsquo;s logs indicating each API call made, what was requestede and how long it took to respond can be automatically spooled to LogDNA for analysis and reporting for IBM Cloud-based services. This data is useful to keeping an eye on request volumes, performance and whether your application is exceeding your Cloudant service&rsquo;s provisioned capacity.</p>
+<p>The logging service is easy to setup and free to get started. Paid-for plans allow data to be parsed, retained and archived to Object Storage. Slices and aggregations of your data can be built up into visual dashboards to give you an at-a-glance view of your Cloudant traffic.</p>
+<ul>
+<li><a href="https://blog.cloudant.com/2019/09/16/Cloudant-Logging-with-LogDNA.html">Cloudant Logging with LogDNA blog</a></li>
+</ul>
+<h2 id="rule-22-compress-your-http-traffic"><a href="#rule-22-compress-your-http-traffic">Rule 22: Compress your HTTP traffic</a></h2>
+<p>Cloudant will compress its JSON responses to you if you supply an HTTP header in the request indicating that your code can handle data in this format:</p>
+<pre tabindex="0"><code>Request:
+&gt; GET /cars/_all_docs?limit=5&amp;include_docs=true HTTP/2
+&gt; Host: myhost.cloudant.com
+&gt; Accept: */*
+&gt; Accept-Encoding: deflate, gzip
+
+Response:
+
+&lt; HTTP/2 200 
+&lt; content-type: application/json
+&lt; content-encoding: gzip
+</code></pre><p>Compressed content occupies a fraction of the size of the uncompressed equivalent, meaning that it takes a shorter time to transport the data from Cloudant&rsquo;s servers to your application.</p>
+<blockquote>
+<p>Note you may also choose to compress HTTP <em>request</em> bodies too by using the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding">Content-encoding</a> header. This help lower data transfer times when writing documents to Cloudant.</p>
+</blockquote>
+<h2 id="rule-23-treat-the-primary-index-as-a-free-search-index"><a href="#rule-23-treat-the-primary-index-as-a-free-search-index">Rule 23: Treat the primary index as a free search index</a></h2>
+<p>A default Cloudant document <code>_id</code> is a 32 character string, encoding 128 bits of
+random data. The <code>_id</code> attribute is used to construct the database&rsquo;s <em>primary index</em> which used by Cloudant to retreive documents by <code>_id</code> or <em>ranges</em> of keys when the user supplies a <code>startkey</code>/<code>endkey</code> pair. We can leverage this fact to pack <em>our data</em> into the <code>_id</code> field  and use it as &ldquo;free&rdquo; index which we can query for ranges of values.</p>
+<p>Here are some examples:</p>
+<ul>
+<li>Use time-sortable document ids so that your documents are sorted into rough date/time order. This makes it easy to retrieve recent additions to the database. See <a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html</a>.</li>
+<li>Pack searchable data into your <code>_id</code> field e.g. <code>&lt;customerid&gt;~&lt;date&gt;~&lt;orderid&gt;</code> can be used to retrieve data by customer, customer/date or customer/date/orderid.</li>
+<li>In a partitioned database, the judicious choice of <em>partition key</em> allows an entire database to be winnowed down to a handful of documents for a known partition key. Make sure your partitioning schema solves your most common use-case.</li>
+<li>In a partitioned database, the two parts of the key have to contain your own user-supplied data (there&rsquo;s no auto-generated _ids) so it&rsquo;s best to use it optimally e.g. in an IoT application <code>&lt;sensorid&gt;:&lt;time-sortable-id&gt;</code> allows data to be sorted by sensor and time without a secondary index. Implement this schema with <em>time-boxed databases</em> for best results.</li>
+</ul>
+<h2 id="thanks"><a href="#thanks">Thanks</a></h2>
+<p>Thanks to Glynn Bird, Robert Newson, Richard Ellis, Mike Broberg, and Jan Lehnardt for helpful comments. Any remaining errors are mine alone, and nothing to do with them.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

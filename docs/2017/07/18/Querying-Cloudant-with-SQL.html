@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Querying Cloudant with SQL</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Querying Cloudant with SQL">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html" />
+    <meta property="og:description" content="Converting SQL to Cloudant Query JSON" />
+    <meta property="article:published_time" content="2017-07-18 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/h-e-n-g-s-t-r-e-a-m-508476-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Querying Cloudant with SQL" />
+    <meta name="twitter:description" content="Converting SQL to Cloudant Query JSON" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Querying Cloudant with SQL">
+    <meta itemprop="description" content="Converting SQL to Cloudant Query JSON">
+    <meta itemprop="image" content="/img/h-e-n-g-s-t-r-e-a-m-508476-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Querying Cloudant with SQL</a></h1>
+  
+  <div class="postmeta">Jul 18, 2017 | Glynn Bird | 
+
+<span class="tag">SQL</span>
+
+<span class="tag">Query</span>
+
+</div>
+  
+  <p>Cloudant and its Apache CouchDB stable-mate are &ldquo;NoSQL&rdquo; databases—that is, they are schemaless JSON document stores. Unlike a traditional relational database, you don&rsquo;t need to define your schema before writing data to the database. Just post your JSON to the database and change your mind as often as you like!</p>
+<p>One of the appealing things about relational databases is the query language. <a href="https://en.wikipedia.org/wiki/SQL">Structured Query Language or SQL</a> was developed by IBM in the 1970s and was widely adopted across a host of databases ever since. In its simplest form, SQL reads like a sentence:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name, colour, price 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">FROM</span> animals
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;cat&#39;</span> <span style="color:#66d9ef">OR</span> (price <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">500</span> <span style="color:#66d9ef">AND</span> price <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1000</span>) 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">50</span>
+</span></span></code></pre></div><p>This statement translates to:</p>
+<blockquote>
+<p>&ldquo;Fetch me the name, colour and price from the animals database, but only the records that are cats, or ones which are more expensive than 500 but cheaper than 1000. And I only want a maximum of 50 records returned.&rdquo;</p>
+</blockquote>
+<p>It is a convenient way of expressing the fields you want to fetch, the filter you wish to apply to the data, and the maximum number of records you want in reply.</p>
+<p><img src="/img/h-e-n-g-s-t-r-e-a-m-508476-unsplash.jpg" alt="sorting"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/pjJdOE2XBRU">H E N G S T R E A M</a> on Unsplash</p>
+</blockquote>
+<p>Unfortunately, NoSQL databases don&rsquo;t generally support the SQL language. Cloudant and Apache CouchDB™ have their own form of query language where the query is expressed as a JSON object: &ldquo;<a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#query">Cloudant Query</a>&rdquo; (CQ) and &ldquo;<a href="https://blog.couchdb.org/2016/08/03/feature-mango-query/">Mango</a>,&rdquo; in their respective contexts. The CQ or Mango equivalent of the above SQL statement is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>	 <span style="color:#e6db74">&#34;fields&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>	  <span style="color:#e6db74">&#34;name&#34;</span>,
+</span></span><span style="display:flex;"><span>	  <span style="color:#e6db74">&#34;colour&#34;</span>,
+</span></span><span style="display:flex;"><span>	  <span style="color:#e6db74">&#34;price&#34;</span>
+</span></span><span style="display:flex;"><span>	 ],
+</span></span><span style="display:flex;"><span>	 <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>	  <span style="color:#e6db74">&#34;$or&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>	   {
+</span></span><span style="display:flex;"><span>	    <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>	     <span style="color:#e6db74">&#34;$eq&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cat&#34;</span>
+</span></span><span style="display:flex;"><span>	    }
+</span></span><span style="display:flex;"><span>	   },
+</span></span><span style="display:flex;"><span>	   {
+</span></span><span style="display:flex;"><span>	    <span style="color:#e6db74">&#34;$and&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>	     {
+</span></span><span style="display:flex;"><span>	      <span style="color:#e6db74">&#34;price&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>	       <span style="color:#e6db74">&#34;$gt&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">500</span>
+</span></span><span style="display:flex;"><span>	      }
+</span></span><span style="display:flex;"><span>	     },
+</span></span><span style="display:flex;"><span>	     {
+</span></span><span style="display:flex;"><span>	      <span style="color:#e6db74">&#34;price&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>	       <span style="color:#e6db74">&#34;$lt&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>	      }
+</span></span><span style="display:flex;"><span>	     }
+</span></span><span style="display:flex;"><span>	    ]
+</span></span><span style="display:flex;"><span>	   }
+</span></span><span style="display:flex;"><span>	  ]
+</span></span><span style="display:flex;"><span>	 },
+</span></span><span style="display:flex;"><span>	 <span style="color:#e6db74">&#34;limit&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div><p>It&rsquo;s a world of curly brackets! If you&rsquo;re happier expressing your query in SQL, then there is a way.</p>
+<h2 id="cloudant-quickstart--sql"><a href="#cloudant-quickstart--sql">cloudant-quickstart + SQL</a></h2>
+<p>The latest version of the <a href="https://www.npmjs.com/package/cloudant-quickstart">cloudant-quickstart</a> Node.js library can now accept SQL queries. It will convert the SQL into a Cloudant Query and deliver the results.</p>
+<p>Simply install the <code>cloudant-quickstart</code> library:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm install -s cloudant-quickstart
+</span></span></code></pre></div><p>And add it to your Node.js app by passing your Cloudant URL to the library:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant-quickstart&#39;</span>)(<span style="color:#e6db74">&#39;https://USER:PASS@HOST.cloudant.com/DATABASE&#39;</span>);
+</span></span></code></pre></div><p>We can then start querying our database with an SQL statement:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">query</span>(<span style="color:#e6db74">&#39;SELECT name FROM mydb&#39;</span>).<span style="color:#a6e22e">then</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// data!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  });
+</span></span></code></pre></div><p>Here are some other sample queries:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#66d9ef">fetch</span> <span style="color:#66d9ef">all</span> fields
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> mydb
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#66d9ef">fetch</span> selected fields
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name, colour, price <span style="color:#66d9ef">FROM</span> mydb
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#66d9ef">fetch</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">with</span> <span style="color:#66d9ef">WHERE</span> clause
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">WHERE</span> colour <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;tabby&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#66d9ef">fetch</span> <span style="color:#66d9ef">data</span> <span style="color:#66d9ef">with</span> a <span style="color:#66d9ef">more</span> complex <span style="color:#66d9ef">WHERE</span> clause
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">type</span><span style="color:#f92672">!=</span><span style="color:#e6db74">&#39;cat&#39;</span> <span style="color:#66d9ef">OR</span> (price <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">500</span> <span style="color:#66d9ef">AND</span> price <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1000</span>) 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#66d9ef">limit</span> the number <span style="color:#66d9ef">of</span> items returned
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#66d9ef">limit</span> the number <span style="color:#66d9ef">of</span> items <span style="color:#66d9ef">and</span> skip records
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">20</span>,<span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> ordering ascending
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> price
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> ordering descending
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> price <span style="color:#66d9ef">DESC</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> multiple field ordering descending
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">type</span>,price
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> <span style="color:#66d9ef">all</span> together
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name,colour,price <span style="color:#66d9ef">FROM</span> mydb <span style="color:#66d9ef">WHERE</span> <span style="color:#66d9ef">type</span><span style="color:#f92672">!=</span><span style="color:#e6db74">&#39;cat&#39;</span> <span style="color:#66d9ef">OR</span> (price <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">500</span> <span style="color:#66d9ef">AND</span> price <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1000</span>) <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">type</span>, price <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">20</span>,<span style="color:#ae81ff">10</span>
+</span></span></code></pre></div><p><code>cloudant-quickstart</code> achieves this by converting your SQL query into the equivalent Cloudant Query object. If you&rsquo;d like to see that data yourself, then call the <code>explain</code> function instead of <code>query</code> to be returned by the query that would have been used:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">q</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">explain</span>(<span style="color:#e6db74">&#34;SELECT name FROM mydb WHERE type!=&#39;cat&#39; OR (price &gt; 500 AND price &lt; 1000)&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">q</span>));
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// {&#34;fields&#34;:[&#34;name&#34;],&#34;selector&#34;:{&#34;$or&#34;:[{&#34;type&#34;:{&#34;$ne&#34;:&#34;cat&#34;}},{&#34;$and&#34;:[{&#34;price&#34;:{&#34;$gt&#34;:500}},{&#34;price&#34;:{&#34;$lt&#34;:1000}}]}]}}
+</span></span></span></code></pre></div><h2 id="limitations"><a href="#limitations">Limitations</a></h2>
+<p>Before we get carried away, this feature doesn&rsquo;t suddenly make Cloudant support joins, unions, transactions, stored procedures etc. It&rsquo;s just a translation from <a href="https://github.com/ibm-watson-data-lab/sqltomango">SQL to Cloudant Query</a>.</p>
+<p>It doesn&rsquo;t support aggregations or grouping either, but you can use <code>cloudant-quickstart</code>&rsquo;s <code>count</code>, <code>sum</code>, and <code>stats</code> functions to generate performant grouped aggregation without any fuss.</p>
+<p>This feature simply makes it easier to explore data sets if you already have SQL language experience.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/querying-your-cloudant-database-with-sql-bd670ee86291" target="_new">https://medium.com/ibm-watson-data-lab/querying-your-cloudant-database-with-sql-bd670ee86291</a>
+
+
+
+</body>
+</html>
+

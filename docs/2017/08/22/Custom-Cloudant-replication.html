@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Custom Replication</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Custom Replication">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/08/22/Custom-Cloudant-replication.html" />
+    <meta property="og:description" content="With Cloud Functions" />
+    <meta property="article:published_time" content="2017-08-22 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/guillaume-bolduc-259596-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Custom Replication" />
+    <meta name="twitter:description" content="With Cloud Functions" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Custom Replication">
+    <meta itemprop="description" content="With Cloud Functions">
+    <meta itemprop="image" content="/img/guillaume-bolduc-259596-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Custom Replication</a></h1>
+  
+  <div class="postmeta">Aug 22, 2017 | Glynn Bird | 
+
+<span class="tag">Serverless</span>
+
+<span class="tag">Replication</span>
+
+</div>
+  
+  <p>Cloudant has first-class replication built in. A database can be replicated to another local database or to a remote Cloudant instance—or to any other database that speaks the same replication protocol, such as <a href="http://couchdb.apache.org/">Apache CouchDB™</a> or <a href="https://pouchdb.com/">PouchDB</a>. A replication process can be one-shot or continuous, and replication streams can be &ldquo;filtered&rdquo;, i.e. the documents that are replicated can be a subset of the total.</p>
+<p>Not all applications need replication. It is essential when there are multiple, disconnected copies of the data where <em>the data can be modified on either side</em>. Cloudant solves the problem by never throwing away conflicting revisions of the same document and allows <a href="https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-one/">your app to decide how to resolve the situation</a>.</p>
+<h3 id="one-way-street"><a href="#one-way-street">One-way street</a></h3>
+<p>Other apps <em>look</em> like they need replication but only really involve the movement of data from one place to another in one direction. This is a much simpler problem to solve and lets us get creative with replication.</p>
+<p>Let&rsquo;s take the example of a transport system. A central database contains a continuously growing collection of events:</p>
+<ul>
+<li>Bus AB12XJK has begun its journey on route X1 from Newcastle-upon-Tyne at 13:08 on 4th August 2017</li>
+<li>Bus AB12XJK has stopped for a break at 15:08 on 4th August 2017</li>
+<li>Bus AB12XJK has resumed its journey at at 15:30 on 4th August 2017</li>
+<li>Bus AB12XJK has arrived at its destination (Victoria Coach Station) at 19:10 on on 4th August 2017</li>
+</ul>
+<p>This trip could be modelled in a Cloudant database with the following document structure:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3007166d-3fd3-4e3f-be0d-43aa9c054a48&#34;</span>,  <span style="color:#75715e">// auto-generated id
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-16e262673ed141f0b711f33e6bb0fdc1&#34;</span>, <span style="color:#75715e">// revision token
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#e6db74">&#34;route&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;X1&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Newcastle to London Express&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;start&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Newcastle-upon-Tyne&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;end&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Victoria, London&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;scheduled_start&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2017-08-04 13:05:00 Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;actual_start&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2017-08-04 13:08:00 Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;scheduled_arrival&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2017-08-04 13:05:00 Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;estimated_arrival&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2017-08-04 13:08:00 Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;actual_arrival&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;stops&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;comfort_break&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;location&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Woodall services&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;start&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2017-08-04 15:00:00 Z&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;actual_start&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;end&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2017-08-04 15:30:00 Z&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;actual_end&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;driver&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Sheila Davies&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;employee_num&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;SD_1552&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;vehicle&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;model&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Volvo 9700&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;registration&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;PQ89MGW&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Some things to note about this document structure:</p>
+<ul>
+<li>The document&rsquo;s id is auto-generated by the database, although you could provide your own.</li>
+<li>The revision token contains a number (<code>1</code>), a hyphen (<code>-</code>), and a hash of the contents of the document (<code>16e262...</code>). If the document changes, the number will be incremented and the system will compute a new hash.</li>
+<li>The other fields are up to us. Our data model allows for multiple &ldquo;stops&rdquo; on a journey (hence the array of objects).</li>
+<li>This document contains everything we need to get a snapshot of the progress of this journey. Although it contains references to other data structures—route id, employee id, vehicle registration—Cloudant is not a relational database. So it is ok to take copies of related data in our object to allow us to get a useful view of the data without de-referencing everything.</li>
+</ul>
+<p>We can use this data to show the progress of a particular journey on our company website, to perform analytics (e.g., statistics of how many journeys were late on arrival) and to power public displays at each end.</p>
+<p><img src="/img/board.jpg" alt="board"></p>
+<blockquote>
+<p>Image courtesy of <a href="http://bit.ly/2uZAwrk">Flickr user Carlbob.com</a></p>
+</blockquote>
+<h3 id="moving-the-data"><a href="#moving-the-data">Moving the data</a></h3>
+<p>Let&rsquo;s imagine we were building such a display. We would need:</p>
+<ul>
+<li>A display!</li>
+<li>The arrivals and departures data for the station in question.</li>
+<li>A local data store so we can cache the data locally. If the remote database becomes disconnected, we can still render the most recent information.</li>
+</ul>
+<p>We can use PouchDB or CouchDB within the display. Both are small enough to be incorporated into an embedded system, but we want to keep data volumes to a minimum. A single display only needs to know about journeys that list <em>it</em> as the starting or destination point. It would be overkill to replicate the <em>entire</em> database to each display.</p>
+<p><img src="/img/busstation2.png" alt="all screens get all data"></p>
+<p>We could use <a href="https://console.bluemix.net/docs/services/Cloudant/api/advanced_replication.html#filtered-replication">Filtered Replication</a>. This approach involves sending a JavaScript function to Cloudant—a function that decides which documents are replicated and which are not. It would be simple to create a filter by bus station (i.e., a function which passed any document whose start <em>or</em> destination matches the display&rsquo;s station). But there are drawbacks to this approach.</p>
+<p><img src="/img/busstation3.png" alt="filtered replication"></p>
+<p>Because our database contains all documents back to the beginning of time, a first-time replication will begin at zero and have to spool through every document in turn. It would work eventually but is increasingly inefficient as the data size grows.</p>
+<p>Another solution is to have a <em>copy</em> of each station&rsquo;s data in its own database:</p>
+<p><img src="/img/busstation4.png" alt="bus station schematic"></p>
+<p>This &ldquo;one database per station&rdquo; approach has some advantages:</p>
+<ul>
+<li>The station display can replicate the data easily from its paired database without filtering and with a reduced data size.</li>
+<li>The per-station databases can be destroyed and recreated daily, keeping the replicatable data sizes much smaller because the display boards are only interested in today&rsquo;s data and the data only pertains to <em>its</em> station.</li>
+<li>The per-station databases could contain only a subset of the original document—just the bare minimum required for the display boards, keeping the document sizes small.</li>
+</ul>
+<h3 id="building-a-custom-cloudant-replication"><a href="#building-a-custom-cloudant-replication">Building a custom Cloudant replication</a></h3>
+<p>My solution doesn&rsquo;t use Cloudant replication to feed the per-station databases. Instead, it uses the OpenWhisk serverless platform. An OpenWhisk Node.js function is called with each change on the main database. The code identifies which per-station databases need to be fed (the start and destination stations and any calling points along the way), prunes the document structure, and makes the writes to the relevant &ldquo;per station&rdquo; databases.</p>
+<p><img src="/img/busstation1.png" alt="bus station schematic"></p>
+<p>Here&rsquo;s the <a href="https://github.com/ibm-watson-data-lab/custom-replication">sample code</a>. It includes the <a href="https://github.com/ibm-watson-data-lab/custom-replication/blob/master/onchange.js">OpenWhisk action</a> that is called with every change and a <a href="https://github.com/ibm-watson-data-lab/custom-replication/blob/master/deploy.sh">deployment script</a> that deploys it to OpenWhisk and creates the Cloudant changes feed trigger.</p>
+<h2 id="building-your-own"><a href="#building-your-own">Building your own</a></h2>
+<p>Fork <a href="https://github.com/ibm-watson-data-lab/custom-replication">the code</a> and build your own logic to decide how data is routed from your primary database to the secondary database(s).</p>
+<p>Hopefully this article provided some new ideas for thinking about data movement in your own applications. If you enjoyed it, the clap button awaits you below.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/custom-cloudant-replication-d0753284d834" target="_new">https://medium.com/ibm-watson-data-lab/custom-cloudant-replication-d0753284d834</a>
+
+
+
+</body>
+</html>
+

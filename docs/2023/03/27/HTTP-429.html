@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>HTTP 429</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="HTTP 429">
+    <meta property="og:url" content="https://blog.cloudant.com/2023/03/27/HTTP-429.html" />
+    <meta property="og:description" content="Rate limiting explained" />
+    <meta property="article:published_time" content="2023-03-27 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/isabella-fischer-FrGYMDjdg4U-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="HTTP 429" />
+    <meta name="twitter:description" content="Rate limiting explained" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="HTTP 429">
+    <meta itemprop="description" content="Rate limiting explained">
+    <meta itemprop="image" content="/img/isabella-fischer-FrGYMDjdg4U-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">HTTP 429</a></h1>
+  
+  <div class="postmeta">Mar 27, 2023 | Glynn Bird | 
+
+<span class="tag">HTTP</span>
+
+</div>
+  
+  <p>Cloudant is a Database-as-a-Service that allows customers to provision the database capacity they need in terms of the number of read, write and query operations per second.</p>
+<p>If the consumed capacity is exceeds the provisioned capacity in a given one second window, Cloudant will respond with an <em>HTTP 429 Too Many Requests</em> response to further requests.</p>
+<p><img src="/img/isabella-fischer-FrGYMDjdg4U-unsplash.jpg" alt="speed limit"></p>
+<p>In this blog post we&rsquo;ll explore which Cloudant APIs fall into the three categories and how your application can avoid HTTP 429 responses.</p>
+<h2 id="reads-writes-and-queries"><a href="#reads-writes-and-queries">Reads, Writes and Queries</a></h2>
+<p>Cloudant API operations are classified as one of three types:</p>
+<h3 id="reads"><a href="#reads">Reads</a></h3>
+<ul>
+<li>Single document fetches, by a known id: <code>GET /&lt;db&gt;/&lt;doc_id&gt;</code>.</li>
+<li>All multi-document operations on a <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-database-partitioning">partitioned database</a>, charged as one read per document e.g. <code>GET /&lt;db&gt;/_partition/&lt;partition_id&gt;/_all_docs</code>.</li>
+</ul>
+<h3 id="writes"><a href="#writes">Writes</a></h3>
+<ul>
+<li>Single document writes: <code>PUT /&lt;db&gt;/&lt;doc_id&gt;</code> or <code>POST /&lt;db&gt;</code>.</li>
+<li>Bulk document writes: <code>POST /&lt;db&gt;/_bulk_docs</code>.</li>
+</ul>
+<h3 id="queries"><a href="#queries">Queries</a></h3>
+<ul>
+<li>All documents: <code>GET/POST /&lt;db&gt;/_all_docs</code>.</li>
+<li>Bulk documents: <code>POST /&lt;db&gt;/_bulk_get</code>.</li>
+<li>Cloudant Queries: <code>POST /&lt;db&gt;/_find</code>.</li>
+<li>Cloudant MapReduce: <code>GET/POST /&lt;db&gt;/_design/&lt;design_doc&gt;/_view/&lt;view_name&gt;</code></li>
+<li>Cloudant Search: <code>GET/POST /&lt;db&gt;/_design/&lt;design_doc&gt;/_search/&lt;view_name&gt;</code></li>
+</ul>
+<h2 id="provisioned-capacity"><a href="#provisioned-capacity">Provisioned Capacity</a></h2>
+<p>Each Cloudant instance has its own Provisioned Capacity expressed as number, with each increment representing 100 reads, 50 writes and 5 queries per second. So an instance with a Provisioned Capacity of 100 has 10,000 reads, 5,000 writes and 500 queries per second. The more you pay, the greater the number of reads, writes and queries your Cloudant instance will be able to service.</p>
+<p>The capacity of your instance can be changed at any time using the IBM Cloud web UI or via the <a href="https://cloud.ibm.com/apidocs/cloudant#putcapacitythroughputconfiguration">API</a>. When your target capacity is changed, the capacity of the instance will be changed asynchronously to meet the new target.</p>
+<p><img src="/img/429-1.png" alt="IBM Cloud dashboard screenshot"></p>
+<p>Importantly, the provisioned capacity is a hard limit. If a Cloudant instance receives more reads, writes or queries in a given second than its capacity, then the excess requests will recieve a <em>HTTP 429 Too Many Requests</em> response. Further requests will be allowed again at the start of next second boundary.</p>
+<h2 id="how-do-i-avoid-http-429-responses"><a href="#how-do-i-avoid-http-429-responses">How do I avoid HTTP 429 responses?</a></h2>
+<h3 id="set-your-provisioned-capacity-correctly"><a href="#set-your-provisioned-capacity-correctly">Set your provisioned capacity correctly</a></h3>
+<p>The provisioned capacity of your Cloudant instance should be set such that your application never exhausts the reads, writes and queries per second limit. There is an <a href="https://cloud.ibm.com/apidocs/cloudant#getcurrentthroughputinformation">API call</a> which can tell you whether your applicaiton is hitting the limit and the the HTTP 429 responses can be found in your Cloudant logs. See <a href="https://blog.cloudant.com/2019/09/16/Cloudant-Logging-with-LogDNA.html">Logging with LogDNA</a>.</p>
+<p>Set the capacity of your Cloudant service higher than the peak traffic required at your application&rsquo;s busiest time.</p>
+<h3 id="retry-rate-limited-requests"><a href="#retry-rate-limited-requests">Retry rate-limited requests</a></h3>
+<p>If your application receives a HTTP 429 response, you may elect to retry the request a number of times - backing off exponentially with each attempt e.g after 1s, 2s and 4s. This technique is suitable for small blips in traffic that push your application above its normal usage. Retry logic is not suitable for sustained API traffic that exceeds the capacity of your Cloudant instance.</p>
+<p>The official IBM Cloudant SDKs can be configured to <a href="https://github.com/IBM/ibm-cloud-sdk-common/#automatic-retries">attempt retries after a 429 response</a> so that your higher-level application code need not know that a retry occurred.</p>
+<h3 id="spread-out-load-from-background-tasks"><a href="#spread-out-load-from-background-tasks">Spread out load from background tasks</a></h3>
+<p>If your application performs background tasks periodically, make sure that they are set up such that the load they bear on your Cloudant service doesn&rsquo;t use up capacity needed for operational API calls.</p>
+<ul>
+<li>Keep bulk inserts to reasonable batch size e.g. 100 small docs per request.</li>
+<li>Remember that replication tasks contribute to your Cloudant usage - with reads consumed at the <em>source</em> and writes at the _target.</li>
+<li>If replication is proceeding too fast (and exhausting your Cloudant instance&rsquo;s capacity), then the speed can be tuned with additional <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-guide#tuning-replication-speed">replication parameters</a></li>
+<li>Run background workloads at a low concurrency and a moderate rate to avoid starving operational API calls.</li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

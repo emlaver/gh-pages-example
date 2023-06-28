@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Date on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/date/</link>
+    <description>Recent content in Date on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 24 May 2018 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/date/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Date formats</title>
+      <link>https://blog.cloudant.com/2018/05/22/Date-formats.html</link>
+      <pubDate>Thu, 24 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/22/Date-formats.html</guid>
+      <description>Apache CouchDB and IBM Cloudant are JSON document stores and as such don&amp;rsquo;t have a native date type - only the data primitives allowed in the JSON specification.
+Before discussing date storage formats, we should first tackle the issue of timezones. Timezones are utterly baffling so best practice is to store dates in the UTC timezone in the database even if your data originated from many places across the globe. Storing data in the same univeral timezone in the database means all the dates and times in our date store are in the same &amp;ldquo;units&amp;rdquo;.</description>
+    </item>
+    
+  </channel>
+</rss>

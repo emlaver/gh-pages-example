@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Paginating _all_docs</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Paginating _all_docs">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/10/25/Paginating-all_docs-and-views.html" />
+    <meta property="og:description" content="Paging through all_docs and views" />
+    <meta property="article:published_time" content="2019-10-25 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/anastasia-zhenina-XOW1WqrWNKg-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Paginating _all_docs" />
+    <meta name="twitter:description" content="Paging through all_docs and views" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Paginating _all_docs">
+    <meta itemprop="description" content="Paging through all_docs and views">
+    <meta itemprop="image" content="/img/anastasia-zhenina-XOW1WqrWNKg-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Paginating _all_docs</a></h1>
+  
+  <div class="postmeta">Oct 25, 2019 | Glynn Bird | 
+
+<span class="tag">Pagination</span>
+
+<span class="tag">All docs</span>
+
+</div>
+  
+  <p>If you are using the <code>GET /&lt;db&gt;/_all_docs</code> endpoint to fetch documents in bulk, then you may have come across the <code>limit</code> and <code>skip</code> parameters which allow you to define how many documents you would like, and the offset into the range you want to start from. Using this <code>skip</code>/<code>limit</code> pattern to iterate through a result set works, but it gets progressively slower the larger the value of <code>skip</code>.</p>
+<p><img src="/img/anastasia-zhenina-XOW1WqrWNKg-unsplash.jpg" alt="pages"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/XOW1WqrWNKg">Anastasia Zhenina on Unsplash</a></p>
+</blockquote>
+<p>There&rsquo;s a better way, and this blog post shows how it&rsquo;s done.</p>
+<h2 id="what-is-the-_all_docs-endpoint"><a href="#what-is-the-_all_docs-endpoint">What is the _all_docs endpoint?</a></h2>
+<p>The <code>GET /&lt;db&gt;/_all_docs</code> is used to fetch data from a Cloudant database&rsquo;s <em>primary index</em>, that is the index that keeps each document&rsquo;s <code>_id</code> in order. The <code>_all_docs</code> endpoint takes a number of optional parameters which configure the range of data requested and whether to return each document&rsquo;s body or not, With no parameters provided, <code>_all_docs</code> streams all of a database&rsquo;s documents, returning only the document <code>_id</code> and its current <code>_rev</code> token.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">curl</span> <span style="color:#e6db74">&#34;$URL/mydb/_all_docs&#34;</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;total_rows&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">23515</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rows&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;aardvark&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;aardvark&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3-be42a3233372a6a2dff84a65fdd9cbab&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;alligator&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;alligator&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-3256046064953e2f0fdb376211fe78ab&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>If <code>include_docs=true</code> is supplied, then an additional <code>doc</code> attribute is added to each &ldquo;row&rdquo; in the result set containing the document body.</p>
+<h2 id="limit-startkey-endkey"><a href="#limit-startkey-endkey">Limit, startkey, endkey</a></h2>
+<p>To access data from <code>_all_docs</code> in reasonably sized pages, we need to supply the <code>limit</code> parameter to tell Cloudant how many documents to return:</p>
+<pre tabindex="0"><code># get me 10 documents
+GET /mydb/_all_docs?limit=10
+</code></pre><p>We can also limit the range of document <code>_id</code>s we want by supplying, one or more of <code>startkey</code> or <code>endkey</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># get me 100 documents from _id bear onwards</span>
+</span></span><span style="display:flex;"><span>GET /mydb/_all_docs?limit<span style="color:#f92672">=</span>100&amp;startkey<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bear&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># get me 5 documents between _id bear --&gt; frog</span>
+</span></span><span style="display:flex;"><span>GET /mydb/_all_docs?limit<span style="color:#f92672">=</span>100&amp;startkey<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;bear&#34;</span>&amp;endkey<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;frog&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># get me 5 documents up to _id moose</span>
+</span></span><span style="display:flex;"><span>GET /mydb/_all_docs?limit<span style="color:#f92672">=</span>100&amp;endkey<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;moose&#34;</span>
+</span></span></code></pre></div><p>This gives us the ability to define the size of the data set to return and the range of the <code>_id</code> field to return, but that isn&rsquo;t quite the same as pagination.</p>
+<blockquote>
+<p>Note that the <code>startkey</code>/<code>endkey</code> values are in double quotes. This is because they are expected to be JSON-encoded and <code>JSON.stringify('moose') === &quot;moose&quot;</code>.</p>
+</blockquote>
+<h2 id="pagination"><a href="#pagination">Pagination</a></h2>
+<p>In order to iterate through a range of documents in an orderly and performant manner, we need to devise an algorithm to page through the range. Let&rsquo;s say we need to page through _all_docs in blocks of 10.</p>
+<p>We have two options:</p>
+<h3 id="option-1---fetch-one-document-too-many"><a href="#option-1---fetch-one-document-too-many">Option 1 - Fetch one document too many</a></h3>
+<p>Instead of fetching ten documents (<code>limit=10</code>), fetch eleven instead (<code>limit=11</code>) but hide the eleventh document from your users. The <code>_id</code> of the eleventh document becomes the <code>startkey</code> of your request for the next page of results.</p>
+<pre tabindex="0"><code># first request
+GET /mydb/_all_docs?limit=11
+{
+  &#34;total_rows&#34;: 10000,
+  &#34;rows&#34;: [
+    { &#34;id&#34;: &#34;aardvark&#34; ....},
+    { &#34;id&#34;: &#34;alligator&#34; ....},
+    { &#34;id&#34;: &#34;antelope&#34; ....},
+    { &#34;id&#34;: &#34;badger&#34; ....},
+    { &#34;id&#34;: &#34;bear&#34; ....},
+    { &#34;id&#34;: &#34;cat&#34; ....},
+    { &#34;id&#34;: &#34;doormouse&#34; ....},
+    { &#34;id&#34;: &#34;donkey&#34; ....},
+    { &#34;id&#34;: &#34;elephant&#34; ....},
+    { &#34;id&#34;: &#34;frog&#34; ....},
+    { &#34;id&#34;: &#34;gazelle&#34; ...}   // &lt;-- this is the 11th result we use as the startkey of the next request
+   ]
+}    
+</code></pre><pre tabindex="0"><code># second request
+GET /mydb/_all_docs?limit=11&amp;startkey=&#34;gazelle&#34;
+{
+  &#34;total_rows&#34;: 10000,
+  &#34;rows&#34;: [
+    { &#34;id&#34;: &#34;gazelle&#34; ....},
+    { &#34;id&#34;: &#34;ibis&#34; ....},
+    ...
+   ]
+} 
+</code></pre><p>This works but we end up fetching n+1 documents when only n are required.</p>
+<h3 id="option-2---the-u0000-trick"><a href="#option-2---the-u0000-trick">Option 2 - the \u0000 trick</a></h3>
+<p>If we are determined to only fetch <code>n</code> documents each time, then we need to calculate a value of <code>startkey</code> which means &ldquo;the next id after the last _id in the result set&rdquo; e.g. if the last document in our first page of results is &ldquo;frog&rdquo;, what should the <code>startkey</code> of the next call to _all_docs be? It can&rsquo;t be &ldquo;frog&rdquo;, otherwise we&rsquo;d get the same document id again. It turns out that you can append <code>\u0000</code> to the end of a key string to indicate the &ldquo;next key&rdquo; (\u0000 is a Unicode null character which becomes <code>%00</code> when encoded into a URL).</p>
+<pre tabindex="0"><code># first request
+GET /mydb/_all_docs?limit=10
+{
+  &#34;total_rows&#34;: 10000,
+  &#34;rows&#34;: [
+    { &#34;id&#34;: &#34;aardvark&#34; ....},
+    { &#34;id&#34;: &#34;alligator&#34; ....},
+    { &#34;id&#34;: &#34;antelope&#34; ....},
+    { &#34;id&#34;: &#34;badger&#34; ....},
+    { &#34;id&#34;: &#34;bear&#34; ....},
+    { &#34;id&#34;: &#34;cat&#34; ....},
+    { &#34;id&#34;: &#34;doormouse&#34; ....},
+    { &#34;id&#34;: &#34;donkey&#34; ....},
+    { &#34;id&#34;: &#34;elephant&#34; ....},
+    { &#34;id&#34;: &#34;frog&#34; ....} // &lt;-- append \u0000 to this to get the startkey of the next request
+  ]
+}  
+</code></pre><pre tabindex="0"><code># second request
+GET /mydb/_all_docs?limit=10&amp;startkey=&#34;frog%00&#34;
+{
+  &#34;total_rows&#34;: 10000,
+  &#34;rows&#34;: [
+    { &#34;id&#34;: &#34;gazelle&#34; ....},
+    { &#34;id&#34;: &#34;ibis&#34; ....},
+    ...
+   ]
+} 
+</code></pre><h2 id="pagination-of-views"><a href="#pagination-of-views">Pagination of views</a></h2>
+<p>MapReduce views, secondary indexes which are defined by key/value pairs emitted from user-supplied JavaScript functions, can be queried in a similar way to the <code>_all_docs</code> endpoint but with the <code>GET /&lt;db&gt;/_design/&lt;ddoc&gt;/_view/&lt;view&gt;</code> endpoint instead. You can:</p>
+<ul>
+<li>spool all the data from a view with no parameters.</li>
+<li>includes document bodies by supplying <code>include_docs=true</code>.</li>
+<li>choose the range of keys required using <code>startkey</code>/<code>endkey</code>, but in this case the data type of the keys may not be a string.</li>
+</ul>
+<p>Another complication is that unlike the primary index, where every <code>_id</code> is unique, there may be many entries in a secondary index with the same key e.g. lots of entries where the key is <code>&quot;mammal&quot;</code>. This makes pagination using only <code>startkey</code>/<code>endkey</code> tricky, so there are other parameters to help: <code>startkey_docid</code>/<code>endkey_docid</code>.</p>
+<pre tabindex="0"><code># get first page of cities by country
+GET /cities/_design/mydesigndoc/_view/bytype?limit=10&amp;reduce=false&amp;startkey=&#34;mammal&#34;&amp;endkey=&#34;mammal&#34;&amp;include_docs=true
+
+# get next page of cities by country
+GET /cities/_design/mydesigndoc/_view/bytype?limit=10&amp;reduce=false&amp;startkey=&#34;mammal&#34;&amp;endkey=&#34;mammal&#34;&amp;include_docs=true&amp;startkey_docid=horse%00
+</code></pre><p>In other words the second request has a value of <code>startkey_docid</code> that is the last document id from the previous page of results (horse) plus the magic <code>\u0000</code> character (which becomes <code>horse%00</code> in the URL).</p>
+<blockquote>
+<p>Note: <code>startkey_docid</code> only works if a <code>startkey</code> is supplied and where all index entries share the same key. If they don&rsquo;t share the same key, then pagination can be achieved with manipulation of <code>startkey</code>/<code>endkey</code> parameters only. Also note that the <code>startkey_docid</code> parameter is NOT JSON encoded.</p>
+</blockquote>
+<h2 id="pagination-with-bookmarks"><a href="#pagination-with-bookmarks">Pagination with bookmarks</a></h2>
+<p><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">Cloudant Query</a> and <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search">Cloudant Search</a> both use <em>bookmarks</em> as the key to unlock the next page of results from a result set. This is described in full <a href="https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html">in this blog post</a> and is easier to manage as there is no key manipulation to formulate the request for the next result set, simply pass the <em>bookmark</em> received in the first response in the second request.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

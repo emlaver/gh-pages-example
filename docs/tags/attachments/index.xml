@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Attachments on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/attachments/</link>
+    <description>Recent content in Attachments on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 21 Dec 2017 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/attachments/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Detaching attachments</title>
+      <link>https://blog.cloudant.com/2017/12/21/Detaching-Attachments-with-Serverless.html</link>
+      <pubDate>Thu, 21 Dec 2017 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2017/12/21/Detaching-Attachments-with-Serverless.html</guid>
+      <description>Imagine we have an app that collects geo-coded photographs. We give the app to thousands of students and ask them to collect pictures of storefronts, together with the company name and data from the phone&amp;rsquo;s GPS. Using the latitude and longitude, the company name, and the photograph we intend to crowd-source a business directory.
+Our app is based on Offline First design principles. It stores its data locally on the mobile device, syncing to the cloud when there is a decent connection.</description>
+    </item>
+    
+  </channel>
+</rss>

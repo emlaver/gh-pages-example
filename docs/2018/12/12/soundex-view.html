@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Fuzzy search using soundex</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Fuzzy search using soundex">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/12/12/soundex-view.html" />
+    <meta property="og:description" content="Using the soundex algorithm to find words that sound alike." />
+    <meta property="article:published_time" content="2018-12-12 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/chris-barbalis-1217112-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Fuzzy search using soundex" />
+    <meta name="twitter:description" content="Using the soundex algorithm to find words that sound alike." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Fuzzy search using soundex">
+    <meta itemprop="description" content="Using the soundex algorithm to find words that sound alike.">
+    <meta itemprop="image" content="/img/chris-barbalis-1217112-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Fuzzy search using soundex</a></h1>
+  
+  <div class="postmeta">Dec 12, 2018 | Brian Wilkins | 
+
+<span class="tag">soundex</span>
+
+<span class="tag">views</span>
+
+</div>
+  
+  <p>If you want to find documents in your database that contain a word that sounds like some other word even though it does not have the same spelling  (a homophone), you can use the soundex algorithm.</p>
+<p>Soundex is an algorithm for indexing names by how they are pronounced in English.</p>
+<p>Its purpose is to encode words that sound alike with the same representation so that they can be matched despite minor differences in spelling. The algorithm is described <a href="https://en.wikipedia.org/wiki/Soundex">here</a>.</p>
+<p>Here is a Javascript function that implements the soundex algorithm:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">soundex</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">str</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Fold the input string to lower case and split it into its constituent letters.  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">letters</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">str</span>.<span style="color:#a6e22e">toLowerCase</span>().<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#39;&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Take off the first letter.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">first_letter</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">letters</span>.<span style="color:#a6e22e">shift</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Here are the soundex codes for each letter. 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// Letters that sound similar have the same soundex code. 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// Vowels and &#39;h&#39;, &#39;w&#39; and &#39;y&#39; are ignored.     
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">soundex_letter_codes</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">a</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">e</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">h</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">o</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">u</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">w</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">b</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">f</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">p</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">v</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">c</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">g</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">j</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">k</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">q</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">s</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">z</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">d</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3</span>, <span style="color:#a6e22e">t</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">l</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">m</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span>, <span style="color:#a6e22e">n</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">r</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Convert the string to its soundex value.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// The soundex value of the string consists of the first letter followed by 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// the soundex code of subsequent letters.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// If two or more letters with the same soundex code are adjacent 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// only retain one of them.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">soundex_value</span> <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// Take the first letter of the word ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#a6e22e">first_letter</span> <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// ... and append the soundex code of each subsequent letter ...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#a6e22e">letters</span>.<span style="color:#a6e22e">map</span>(<span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">letter</span>) { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">soundex_letter_codes</span>[<span style="color:#a6e22e">letter</span>] })
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// ... but if two or more letters with the same soundex code are adjacent,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     <span style="color:#75715e">// only retain the first.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            .<span style="color:#a6e22e">filter</span>(<span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">letter_soundex_value</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">a</span>) {
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">return</span> ((<span style="color:#a6e22e">i</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">?</span> 
+</span></span><span style="display:flex;"><span>                 <span style="color:#a6e22e">letter_soundex_value</span> <span style="color:#f92672">!==</span> <span style="color:#a6e22e">soundex_letter_codes</span>[<span style="color:#a6e22e">first_letter</span>] <span style="color:#f92672">:</span> 
+</span></span><span style="display:flex;"><span>                 <span style="color:#a6e22e">letter_soundex_value</span> <span style="color:#f92672">!==</span> <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                );
+</span></span><span style="display:flex;"><span>     }).<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39;&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Make the soundex value four characters long 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// by truncating it or padding it with zeros. 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// Fold it to upper case.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">soundex_value</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">soundex_value</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;000&#39;</span>).<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>).<span style="color:#a6e22e">toUpperCase</span>(); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Return the soundex value.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">soundex_value</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>You can call the <code>soundex</code> function in the Map function of a view. For example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">soundex</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>), <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>In the example the soundex representation of the <code>name</code> field is indexed.</p>
+<p>You can of course index the soundex representation of whatever field you choose simply by passing the field as the parameter of the <code>soundex</code> function.</p>
+<p><code>&quot;Smith&quot;</code> has the soundex value <code>S530</code>. So here is an example of using the view to find documents that have a name that sounds like <code>&quot;Smith&quot;</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>acurl <span style="color:#e6db74">&#34;https://</span>$ACCOUNTNAME<span style="color:#e6db74">.cloudant.com/</span>$DATABASE<span style="color:#e6db74">/_design/</span>$DDOC<span style="color:#e6db74">/_view/find_name_by_soundex?key=\&#34;S530\&#34;&amp;include_docs=true&#34;</span>
+</span></span></code></pre></div><p>That request returns not only documents with the name <code>&quot;Smith&quot;</code> but also documents with similar names such as <code>&quot;Smythe&quot;</code> or <code>&quot;Schmidt&quot;</code>.</p>
+<hr>
+<p>Here is the entire view Map function with comments removed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">soundex</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">str</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">letters</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">str</span>.<span style="color:#a6e22e">toLowerCase</span>().<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#39;&#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">first_letter</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">letters</span>.<span style="color:#a6e22e">shift</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">soundex_letter_codes</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">a</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">e</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">h</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">o</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">u</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">w</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#a6e22e">y</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">b</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">f</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">p</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">v</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">c</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">g</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">j</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">k</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">q</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">s</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">z</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">d</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3</span>, <span style="color:#a6e22e">t</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">l</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">m</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span>, <span style="color:#a6e22e">n</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">r</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">soundex_value</span> <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">first_letter</span> <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">letters</span>.<span style="color:#a6e22e">map</span>(<span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">letter</span>) { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">soundex_letter_codes</span>[<span style="color:#a6e22e">letter</span>] })
+</span></span><span style="display:flex;"><span>            .<span style="color:#a6e22e">filter</span>(<span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">letter_soundex_value</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">a</span>) {
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">return</span> ((<span style="color:#a6e22e">i</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">?</span> 
+</span></span><span style="display:flex;"><span>                 <span style="color:#a6e22e">letter_soundex_value</span> <span style="color:#f92672">!==</span> <span style="color:#a6e22e">soundex_letter_codes</span>[<span style="color:#a6e22e">first_letter</span>] <span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>                 <span style="color:#a6e22e">letter_soundex_value</span> <span style="color:#f92672">!==</span> <span style="color:#a6e22e">a</span>[<span style="color:#a6e22e">i</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>                );
+</span></span><span style="display:flex;"><span>     }).<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39;&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">soundex_value</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">soundex_value</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;000&#39;</span>).<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">4</span>).<span style="color:#a6e22e">toUpperCase</span>(); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">soundex_value</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">soundex</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>), <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><hr>
+<p>For how to use a different algorithm for fuzzy search with Cloudant, see <a href="https://blog.cloudant.com/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html">Fuzzy search using Double Metaphone</a></p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

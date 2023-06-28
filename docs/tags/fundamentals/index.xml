@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fundamentals on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/fundamentals/</link>
+    <description>Recent content in Fundamentals on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 06 Aug 2018 06:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/fundamentals/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cloudant Fundamentals 10/10</title>
+      <link>https://blog.cloudant.com/2018/08/06/Cloudant-Fundamentals-Aggregation.html</link>
+      <pubDate>Mon, 06 Aug 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/08/06/Cloudant-Fundamentals-Aggregation.html</guid>
+      <description>It&amp;rsquo;s been an emotional journey through Cloudant&amp;rsquo;s fundamentals but we&amp;rsquo;re nearly at the end. In this final post, we&amp;rsquo;ll discuss data aggregation: counting, summing and statistics.
+Cloudant Query which we used for part 8 and part 9 of this series does not have the ability to perform aggregations, only selection. i.e. you can do SELECT * FROM mydb WHERE actor=&#39;Al Pacino&#39; but not SELECT COUNT(*) FROM mydb WHERE actor=&#39;Al Pacino&#39;.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 9/10</title>
+      <link>https://blog.cloudant.com/2018/07/12/CloudantFundamentals-Indexing.html</link>
+      <pubDate>Thu, 12 Jul 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/07/12/CloudantFundamentals-Indexing.html</guid>
+      <description>In part 7 of this series, we saw a warning in the search results:
+&amp;ldquo;no matching index found, create an index to optimize query time&amp;rdquo;
+This is Cloudant&amp;rsquo;s polite way of saying that your query is expensive and the database is having to walk through the whole data set to calculate the answer. In small databases this is not a problem but in a production system, with the data growing all the time, an index is essential.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 8/10</title>
+      <link>https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</link>
+      <pubDate>Mon, 25 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html</guid>
+      <description>In the previous part of this series we discovered the _find endpoint which allows us to formulate queries in JSON and ask Cloudant to answer them.
+In this post, we&amp;rsquo;ll look to doing the same thing but using Node.js code. Again we&amp;rsquo;ll lean on the cloudant-quickstart library.
+Making queries Using the query we made last time, we can pass the selector directly to the query function of cloudant-quickstart object to get an array of matching documents back.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 7/10</title>
+      <link>https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html</link>
+      <pubDate>Mon, 18 Jun 2018 06:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html</guid>
+      <description>In previous posts we&amp;rsquo;ve looked add adding and retrieving documents from a Cloudant database by their key fields - the _id field. There&amp;rsquo;s a good chance that you want your database to be able to do more than that which is where querying comes in.
+Making a query A Cloudant Query allows questions to be asked of your Cloudant data, questions such as:
+get me all the documents where the dob field is less than 1970-01-01 get me all the documents where the dob field is less than 1970-01-01 and the actor field is Marlon Brando get the first fifty films staring Matthew Broderick in date order get the next 50 films matching the previous query Queries are expressed as JSON documents such as:</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 6/10</title>
+      <link>https://blog.cloudant.com/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</link>
+      <pubDate>Tue, 12 Jun 2018 08:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/12/Cloudant-Fundamentals-Programmatic-CRUD.html</guid>
+      <description>In the previous two posts we saw how how the command-line tool curl is all that is required to do basic read and write operations with Cloudant, and how two API calls can be used for bulk commands.
+In this post we&amp;rsquo;ll look at equivalent tasks using programmatic means.
+You don&amp;rsquo;t need a special library to work with Cloudant - just something capbable of making HTTP requests. The libraries do help, however, with authentication and parameter encoding.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 5/10</title>
+      <link>https://blog.cloudant.com/2018/06/04/Cloudant-Fundamentals-The-Bulk-API.html</link>
+      <pubDate>Mon, 04 Jun 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/06/04/Cloudant-Fundamentals-The-Bulk-API.html</guid>
+      <description>In the last blog post we saw how to do CRUD (Create/Read/Update/Delete) operations with the Cloudant database using the curl command line tool. In this post we&amp;rsquo;ll use just two API calls to achieve the same thing, but with the capability of working on multiple documents at the same time.
+If you have two or five or a hundred documents to add to Cloudant, then you need to look at bulk operations API.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 4/10</title>
+      <link>https://blog.cloudant.com/2018/05/29/Using-API-with-curl.html</link>
+      <pubDate>Tue, 29 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/29/Using-API-with-curl.html</guid>
+      <description>The curl command-line tool allows you to make HTTP requests from a terminal:
+$ curl &amp;#39;http://www.website.com/&amp;#39; &amp;lt;html&amp;gt; &amp;lt;h1&amp;gt;This is a web page&amp;lt;/h1&amp;gt; &amp;lt;/html&amp;gt; Cloudant&amp;rsquo;s API is entirely HTTP. You don&amp;rsquo;t need any special software drivers or to understand a bespoke protocol — it&amp;rsquo;s just web requests. You can access the database from a browser, a mobile app, any programming language or, in this case, from the command line.
+The first thing you&amp;rsquo;ll need is your Cloudant service&amp;rsquo;s URL.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 3/10</title>
+      <link>https://blog.cloudant.com/2018/05/22/Cloudant-Fundamentals-3.html</link>
+      <pubDate>Tue, 22 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/22/Cloudant-Fundamentals-3.html</guid>
+      <description>In part one of this series we looked at Cloudant JSON, and in part two we saw how an _id is made. In this part we&amp;rsquo;ll focus on the humble _rev token.
+When you first create a document, you don&amp;rsquo;t need to worry about the _rev token — it is generated for you and returned to you in the receipt.
+If we create a new document with a body of {&amp;quot;a&amp;quot;:1,&amp;quot;b&amp;quot;:2}, we get a reply from the database of:</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 2/10</title>
+      <link>https://blog.cloudant.com/2018/05/14/Cloudant-Fundamentals-2.html</link>
+      <pubDate>Mon, 14 May 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/05/14/Cloudant-Fundamentals-2.html</guid>
+      <description>Last time we looked at how to design a JSON document schema that models the data in your application. I didn&amp;rsquo;t mention a vital field: the document&amp;rsquo;s _id.
+Every Cloudant document has an _id - if you don&amp;rsquo;t supply one when you write a new document then Cloudant will generate one for you. Letting Cloudant make an _id for you is the easiest solution, but there are some cases where you might want to keep control of the _id field for yourself.</description>
+    </item>
+    
+    <item>
+      <title>Cloudant Fundamentals 1/10</title>
+      <link>https://blog.cloudant.com/2018/04/27/Cloudant-Fundamentals-1.html</link>
+      <pubDate>Fri, 27 Apr 2018 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2018/04/27/Cloudant-Fundamentals-1.html</guid>
+      <description>Cloudant is a JSON document store, based on Apache CouchDB, running as-a-service in the IBM Cloud. The form of JSON you store in the database is up to you. You don&amp;rsquo;t need to tell the database about the schema you&amp;rsquo;re using ahead of time.
+Here&amp;rsquo;s a typical document:
+{ &amp;#34;type&amp;#34;: &amp;#34;person&amp;#34;, &amp;#34;born&amp;#34;: &amp;#34;1743-04-13&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;Thomas Jefferson&amp;#34;, &amp;#34;potus&amp;#34;: 3, &amp;#34;diedInOffice&amp;#34;: false, &amp;#34;address&amp;#34;: { &amp;#34;street&amp;#34;: &amp;#34;931 Thomas Jefferson Pkwy&amp;#34;, &amp;#34;town&amp;#34;: &amp;#34;Charlottesville&amp;#34;, &amp;#34;state&amp;#34;: &amp;#34;Virginia&amp;#34;, &amp;#34;stateCode&amp;#34;: &amp;#34;VA&amp;#34;, &amp;#34;zip&amp;#34;: &amp;#34;22902&amp;#34; }, &amp;#34;description&amp;#34;: &amp;#34;Thomas Jefferson (April 13 [O.</description>
+    </item>
+    
+  </channel>
+</rss>

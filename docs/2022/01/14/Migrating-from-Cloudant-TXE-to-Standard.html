@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Migrating from TXE</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Migrating from TXE">
+    <meta property="og:url" content="https://blog.cloudant.com/2022/01/14/Migrating-from-Cloudant-TXE-to-Standard.html" />
+    <meta property="og:description" content="Switching from TXE to Standard" />
+    <meta property="article:published_time" content="2022-01-14 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/julia-craice-faCwTallTC0-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Migrating from TXE" />
+    <meta name="twitter:description" content="Switching from TXE to Standard" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Migrating from TXE">
+    <meta itemprop="description" content="Switching from TXE to Standard">
+    <meta itemprop="image" content="/img/julia-craice-faCwTallTC0-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Migrating from TXE</a></h1>
+  
+  <div class="postmeta">Jan 14, 2022 | Glynn Bird | 
+
+<span class="tag">Migration</span>
+
+<span class="tag">TXE</span>
+
+</div>
+  
+  <p>In this blog post we&rsquo;ll show how data stored in a Cloudant on Transaction Engine (TXE) instance can be easily migrated to Cloudant Standard. There are few differences betweeen the two offerrings, so we&rsquo;ll explore ways to avoid any pitfalls along the way.</p>
+<p>There isn&rsquo;t a way of converting an existing account from TXE to Standard, so the first step is to provision a new Cloudant Standard account.</p>
+<p><img src="/img/julia-craice-faCwTallTC0-unsplash.jpg" alt="migration"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/faCwTallTC0">Julia Craice on Unsplash</a></p>
+</blockquote>
+<h2 id="create-a-new-cloudant-standard-account"><a href="#create-a-new-cloudant-standard-account">Create a new Cloudant Standard account</a></h2>
+<p>In the IBM Cloud Dashboard, locate the <a href="https://cloud.ibm.com/catalog/services/cloudant">Cloudant service</a> and complete the form to create a new Cloudant Standard service:</p>
+<ul>
+<li>Choose &ldquo;Standard&rdquo; as the plan.</li>
+<li>Pick the same region as your Cloudant TXE service.</li>
+</ul>
+<blockquote>
+<p>Note Cloudant Standard offers two authentication mechanisms: IAM only, or IAM and Legacy Credentials. TXE only has IAM.</p>
+</blockquote>
+<h2 id="create-new-empty-databases"><a href="#create-new-empty-databases">Create new empty databases</a></h2>
+<p>For each of your databases that needs to be copied over, in the new Cloudant Standard dashboard choose &ldquo;Create Database&rdquo; and enter the name of the database to create a new, empty target database.</p>
+<blockquote>
+<p>Note Cloudant Standard has two types of databases: partitioned and non-partitioned. As all of your TXE databases will be non-partitioned, choose the &ldquo;non-partitioned&rdquo; option.</p>
+</blockquote>
+<p>We will also need a <code>_replicator</code> database in the Cloudant Standard instance which will handle the replication jobs. Follow the same steps to create a new, empty <code>_replicator</code> database.</p>
+<h2 id="replicating-the-data"><a href="#replicating-the-data">Replicating the data</a></h2>
+<p>Cloudant&rsquo;s replication capabilities can be used to copy the data from the source (Cloudant TXE) to the target (Standard) and it is recommend to use the Standard account to mediate the replication - i.e. we will be sending our replication document to the Standard account and it will &ldquo;pull&rdquo; the data from TXE.</p>
+<p><img src="/img/migratingtxe1.png" alt="replication plan"></p>
+<p>You&rsquo;ll need a replication document for each of the TXE databases that are to be copied over. Generate the JSON ahead of time and then add a document for each database to the Cloudant Standard account&rsquo;s <code>_replicator</code> database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;txe_to_standard_orders&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;url&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://txe.cloudant.com/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;auth&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;iam&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;api_key&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;abc123&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;url&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://standard.cloudant.com/orders&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;auth&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;iam&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;api_key&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;def456&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;continuous&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Note:</p>
+<ul>
+<li>The <code>_id</code> is a recognisable name so that you can tell one replication job from another.</li>
+<li>The source object contains the URL of the source TXE database and includes an <code>auth</code> object which contains an IAM API key that gives at least <code>Reader</code> and <code>Checkpointer</code> roles against the source.</li>
+<li>The target object contains the URL of the target Standard database and includes an <code>auth</code> object which contains an IAM API key that gives at least <code>Writer</code> roles against the target.</li>
+<li>The <code>continuous</code> flag means that the replication will job will run forever, until the <code>_replicator</code> document is deleted. This will allow a smooth transition from TXE to Standard - your app traffic can be switched over without any disruption.</li>
+</ul>
+<p>Replication jobs use up the read allocation of the source Cloudant service (TXE) and the write allocation of the target Cloudant service (Standard), so it is advisable to <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-capacity">increase the capacity of your source and target services</a> during the data copying process.</p>
+<p>Once the replication jobs are set up, the <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-advanced-replication">replication jobs can be monitored</a> using the <a href="https://cloud.ibm.com/apidocs/cloudant#getschedulerdocs">_scheduler/docs</a> and <a href="https://cloud.ibm.com/apidocs/cloudant?code=node#getschedulerjobs">_scheduler/jobs</a> endpoints.</p>
+<p>Also bear in mind that once data is copied to the new target databases, any secondary indexes will build. You should monitor the <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-active-tasks">_active_tasks</a> endpoint to ensure that index building is complete before switching traffic to the new Cloudant service.</p>
+<blockquote>
+<p>Note if you have a large number of databases, it is advisable to copy databases over in small batches. Copying databases one at a time makes it easier to monitor.</p>
+</blockquote>
+<h2 id="differences-between-txe-and-standard"><a href="#differences-between-txe-and-standard">Differences between TXE and Standard</a></h2>
+<p>Before we switch application traffic over to the new Cloudant Standard URL, we need to do some checks to make sure everything is in order. Here are some pitfalls that should be avoided.</p>
+<h3 id="javascript-versions"><a href="#javascript-versions">JavaScript versions</a></h3>
+<p>Cloudant TXE allows newer (ES6) JavaScript syntax than Cloudant Standard, so it&rsquo;s worth querying each of your secondary indexes to make sure they&rsquo;re returning the data you are expecting. If you are seeing errors, then simplify your JavaScript code: <code>var</code> instead of <code>const</code>/<code>let</code>, simple <code>for</code> loops and conditional statements.</p>
+<blockquote>
+<p>Note that if you modify an index definition, then the secondary index will need to rebuild again.</p>
+</blockquote>
+<h3 id="other-differences"><a href="#other-differences">Other differences</a></h3>
+<ul>
+<li>Cloudant TXE has its own Pagination API, where as Cloudant Standard has a different set of <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-pagination-and-bookmarks">parameters for each query method</a>.</li>
+<li>The two products have different <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-feature-comparison#pricing-feature-compare">pricing models</a> so the billing for the same apps running on each would likely be different.</li>
+<li>There are <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-feature-comparison">service limit</a> differences between the two products. Cloudant Standard is more permissive, so this is unlikely to cause problems.</li>
+<li>Cloudant TXE&rsquo;s changes feed is linearized where as Cloudant Standard&rsquo;s guarantees to give you each change at least once - so duplicates are possible.</li>
+<li>Cloudant TXE does not create in-region conflicts, but they are possible with Cloudant Standard, especially if a document is modified over and over in short time window. See <a href="https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html">Best &amp; Worst Practice</a> for Cloudant Standard.</li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

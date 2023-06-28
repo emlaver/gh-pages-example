@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Time-series Data Storage</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Time-series Data Storage">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html" />
+    <meta property="og:description" content="Storing and querying time-series data in Cloudant." />
+    <meta property="article:published_time" content="2019-04-08 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/sonja-langford-357-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Time-series Data Storage" />
+    <meta name="twitter:description" content="Storing and querying time-series data in Cloudant." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Time-series Data Storage">
+    <meta itemprop="description" content="Storing and querying time-series data in Cloudant.">
+    <meta itemprop="image" content="/img/sonja-langford-357-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Time-series Data Storage</a></h1>
+  
+  <div class="postmeta">Apr 8, 2019 | Glynn Bird | 
+
+<span class="tag">Time-series</span>
+
+<span class="tag">Partitioned Databases</span>
+
+</div>
+  
+  <p>Time-series data is simply the recording of data points in time order such as:</p>
+<ul>
+<li>Internet of Things (IoT) installations where sensors report readings periodically.</li>
+<li>Monitoring user-interface interactions from a website to get a sense of which part of the page your users are interested in.</li>
+<li>Storing the logs from a distributed computer system for diagnostics.</li>
+<li>Recording the sales of products from a store.</li>
+</ul>
+<p>In this post we&rsquo;ll examine options for storing time-series data in Cloudant.</p>
+<p><img src="/img/sonja-langford-357-unsplash.jpg" alt="clock"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/eIkbSc3SDtI">Sonja Langford on Unsplash</a></p>
+</blockquote>
+<h2 id="the-ever-growing-data-set"><a href="#the-ever-growing-data-set">The ever-growing data set</a></h2>
+<p>It&rsquo;s tempting to create a single, ever-growing Cloudant database to store your time-series data but it&rsquo;s worth taking time to think about how much data you&rsquo;ll be storing and to estimate the data size growth.</p>
+<p>Let&rsquo;s say we&rsquo;re storing IoT data in documents like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;e30bff4b286dd88c1cc178b7dbacaded&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-8a10be69dc1e81531fee2c9ca2688508&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;reading&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;device&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;GE5521965B&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;reading&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">25.3</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;units&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;celcius&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-03-29T09:28:31.229Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>At approximately 200 bytes per reading, each sensor would generate 6GB of raw data per year. Bear in mind that Cloudant stores data in triplicate and additional storage will be required for any secondary indexes you define. With only fifty or so sensors, your application could easily generate a terabyte of data per year.</p>
+<p>In a lot of applications the most recent data, say the last year&rsquo;s, is of the most interest and older data can be archived to slower and cheaper storage methods such as <a href="https://www.ibm.com/uk-en/cloud/object-storage">IBM Cloud Object Storage</a>. Keeping your time-series store scalable and cost effective can become striking a balance between fast, primary data in a database and slower, cheaper data access in archive storage.</p>
+<p>Putting all of our data in a single, ever-growing Cloudant database is impractical because:</p>
+<ul>
+<li>large monolithic Cloudant databases will become progressively less efficient unless <em>resharded</em> to keep the shard sizes optimal.</li>
+<li>mass deletion of individual Cloudant documents is a non-starter for archival of old data. A <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#delete">Cloudant deletion</a> leaves a <em>tombstone</em> document behind - a document recording the last <code>_id</code>/<code>_rev</code> pair to ensure that the document remains deleted after replication.</li>
+</ul>
+<p>A common work-around is to adopt the &ldquo;timeboxed database&rdquo; pattern, as outlined in the next section.</p>
+<h2 id="the-timeboxed-database-pattern"><a href="#the-timeboxed-database-pattern">The timeboxed database pattern</a></h2>
+<p>This pattern is pretty straightforward.</p>
+<ol>
+<li>Create a database per time-period (e.g month).</li>
+<li>Always write new data into <em>this month&rsquo;s</em> database.</li>
+<li>Ahead of time, create a new empty database ready for next month&rsquo;s data. Don&rsquo;t forget to create any <a href="https://console.bluemix.net/docs/services/Cloudant/api/design_documents.html#design-documents">Design Documents</a> needed to service queries in the new database.</li>
+</ol>
+<p><img src="/img/timeseries1.png" alt="ts1"></p>
+<p>This month&rsquo;s data can be queried from the <em>current</em> database. Historical data can be queried by directing requests to the older databases that cover the time-range you are interested in.</p>
+<p><img src="/img/timeseries2.png" alt="ts2"></p>
+<p>To remove unwanted data, simply delete older monthly databases that are no longer needed. Deleting a whole database recovers all the data occupied by the database (JSON documents and associated indexes) cleanly and quickly.</p>
+<p><img src="/img/timeseries3.png" alt="ts3"></p>
+<p>This <em>write only</em> approach combined with the deletion of older data by removing databases plays to Cloudant strengths.</p>
+<h2 id="storing-timedate-in-a-time-series-database"><a href="#storing-timedate-in-a-time-series-database">Storing time/date in a time-series database</a></h2>
+<p>The choice of time and date format in your JSON document is important because JSON has no native date/time data type. This is explained in more detail <a href="https://blog.cloudant.com/2018/05/24/Date-formats.html">here</a> but the gist is:</p>
+<ul>
+<li>use ISO-8601 format (&ldquo;2019-03-29T10:36:03.510Z&rdquo;) to store time-sortable, human &amp; machine readable time stamps.</li>
+<li>use &ldquo;milliseconds since 1970&rdquo; format for easy date/time arithmetic.</li>
+<li>use component day/month/year/hour/minute/second/millisecond/timezone pieces if you need to query by the pieces e.g. find events that occur when &ldquo;hour == 18&rdquo;.</li>
+<li>you can use more than one of the above.</li>
+</ul>
+<h2 id="time-sortable-ids"><a href="#time-sortable-ids">Time-sortable ids</a></h2>
+<p>If we&rsquo;re using 32 characters to store a &ldquo;random&rdquo; <code>_id</code> field, then it would be handy if it sorted in chronological order in a time-series database. This technique is outlined <a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">here</a>.</p>
+<p>In brief, the front of the <code>_id</code> is a time-sortable string and rest is random data. The <code>_id</code> field then sorts in approximate date/time order (to a precision of one second).</p>
+<p><img src="/img/kuuid.png" alt="An example time-sortable _id value"></p>
+<h2 id="using-timeboxed-databases-that-are-also-partitioned"><a href="#using-timeboxed-databases-that-are-also-partitioned">Using timeboxed databases that are also partitioned</a></h2>
+<p>Depending on your use-case, it may also be useful to make your timeboxed databases <em>partitioned</em> too, that is generated with the <code>?partitioned=true</code> flag to enable Cloudant&rsquo;s new <a href="/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases</a> feature.</p>
+<p>The choice of <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#what-makes-a-good-partition-key-">partition key</a> is beyond the scope of this post, but in a IoT application a <em>device id</em> may be a good choice, as long as there are many devices generating data at a similar rate.</p>
+<p>Here&rsquo;s an example document that uses the full gamut of Cloudant time-series tricks: monthly databases, time-ordered ids and partitioned databases:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;GE5521965B:001h9p4Z0XeJzT0372TQ0hk2q83CLdqg&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;reading&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;device&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;GE5521965B&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;reading&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">25.3</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;units&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;celcius&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-03-29T10:49:30.980Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>the <code>_id</code> field has a partition key of the reading&rsquo;s device id and a document key which is time-sortable, so the documents in a partition sort in date/time order.</li>
+<li>the <code>timestamp</code> field is stored in ISO-8601 which is time-sortable, readable and parsable by MapReduce functions.</li>
+<li>documents are are only ever written. Cloudant loves write-only design patterns.</li>
+</ul>
+<p>Queries for a single timebox <em>and</em> a single device (e.g. &ldquo;get me the latest 50 readings for device X&rdquo;) can be directed at a single partition and will use only a fraction of the resources of a global query.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>// Fetch the <span style="color:#ae81ff">50</span> latest readings <span style="color:#66d9ef">for</span> device GE5521965B
+</span></span><span style="display:flex;"><span>// As the data is partitioned by device id, we can direct the query to a single partition.
+</span></span><span style="display:flex;"><span>// The data within the partition is in date/time order so the last <span style="color:#ae81ff">50</span> records are the
+</span></span><span style="display:flex;"><span>// ones we are interested in. descending<span style="color:#f92672">=</span>true reverses the order.
+</span></span><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/logs_2019_03/_partition/GE5521965B/_all_docs?limit=50&amp;descending=true&amp;include_docs=true&#34;</span>
+</span></span></code></pre></div><h2 id="aggregating-time-series-data-with-mapreduce"><a href="#aggregating-time-series-data-with-mapreduce">Aggregating time-series data with MapReduce</a></h2>
+<p>A very common use-case for a time-series database is to produce aggregations of the recorded data grouped by time. <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">Cloudant&rsquo;s MapReduce</a> allows the generation of materialized views of data by grouped, complex keys.</p>
+<p>Cloudant supports the following reducers:</p>
+<ul>
+<li><code>_count</code> - row count, optionally grouped by keys.</li>
+<li><code>_sum</code> - the sum of numeric values, optionally grouped by keys.</li>
+<li><code>_stats</code> - totals and counts required for mean, variance and standard deviation calculation, optionally grouped by keys.</li>
+<li><code>_approx_count_distinct</code> - an approximate count of distinct keys.</li>
+</ul>
+<p>Before we can reduce any data we need to generate the keys and values in the MapReduce index using a JavaScript function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// convert timestamp to JavaScript Date object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">timestamp</span>)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// calculate time components
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">year</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getFullYear</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">month</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getMonth</span>() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">day</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getDate</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">hour</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getHours</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">minute</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getMinutes</span>()
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">year</span>,<span style="color:#a6e22e">month</span>,<span style="color:#a6e22e">day</span>,<span style="color:#a6e22e">hour</span>,<span style="color:#a6e22e">minute</span>], <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">reading</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This JavaScript function is encoded into a Design Document and saved in the database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_design/aggregate&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;views&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;byYMDHM&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;reduce&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_stats&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;map&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;function(doc) {\n\n  // convert timestamp to JavaScript Date object\n  var d = new Date(doc.timestamp)\n  \n  // calculate time components\n  var year = d.getFullYear()\n  var month = d.getMonth() + 1\n  var day = d.getDate()\n  var hour = d.getHours()\n  var minute = d.getMinutes()\n  \n  emit([year,month,day,hour,minute], doc.reading);\n}&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;language&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;javascript&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;options&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;partitioned&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>the <code>_id</code> of the Design Document always starts with &ldquo;_design/&rdquo; and this identifier is used to query the view later.</li>
+<li>the <code>views</code> object contains one entry per MapReduce view. The name (&ldquo;byYMDHM&rdquo;) is used to query the view later.</li>
+<li>the <code>map</code> function is the JavaScript function as a JSON-encoded string.</li>
+<li>the <code>reduce</code> string is the name of the built-in reducer.</li>
+<li>the <code>language</code> is &ldquo;javascript&rdquo; by default.</li>
+<li>the <code>options.partitioned</code> flag being <code>false</code> ensures that a <em>global</em> view is calculated in this <em>partitioned</em> database. If omitted, the view would only be queryable on a <em>per partition</em> basis.</li>
+</ul>
+<p>Once the Design Document is saved in the database, the view builds asynchronously - for a small database it will appear that the view is ready &ldquo;immediately&rdquo;, but for larger datasets it may take some time before the view is ready to query.</p>
+<p>The view is queried using the design document name and view name used earlier:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/logs_2019_03/_design/aggregate/_view/byYMDHM?group_level=3&#34;</span>
+</span></span></code></pre></div><ul>
+<li><code>group_level</code> - is used to define how many elements of an array-based key are grouped together e.g. when emitting <code>[year,month,day,hour,minute]</code> as the key, a <code>group_level=3</code> means &ldquo;group by year, month &amp; day&rdquo;.</li>
+<li><code>starkey</code>/<code>endkey</code> - can be used to limited the return data to keys between the supplied keys.</li>
+<li><code>reduce</code> (true/false) - can be used to &ldquo;switch off&rdquo; the reducer step at query-time</li>
+<li>See <a href="https://cloud.ibm.com/docs/services/Cloudant/api?topic=cloudant-using-views#using-views">Using Views</a> in the Cloudant documentation for more details</li>
+</ul>
+<p>Note that when using monthly timeboxed databases, you may not need to emit the <code>year</code> and <code>month</code> values as all documents would emit the same first two keys, although it does help when combining aggregated results from multiple databases.</p>
+<h2 id="out-of-the-box-time-series-solutions"><a href="#out-of-the-box-time-series-solutions">Out-of-the box time-series solutions</a></h2>
+<p>If you don&rsquo;t want to build your own time-series solution, then the <a href="https://www.ibm.com/uk-en/internet-of-things">Watson Internet Of Things</a> platform can run the whole thing as-a-service including device registration, data storage, analytics, monitoring and archival.</p>
+<h2 id="further-reading"><a href="#further-reading">Further reading</a></h2>
+<ul>
+<li><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-overview#overview">Cloudant documentation</a></li>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases Introduction</a></li>
+<li><a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">Time-sortable ids</a></li>
+<li><a href="https://blog.cloudant.com/2018/05/24/Date-formats.html">Date formats in Cloudant</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

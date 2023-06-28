@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sizing on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/sizing/</link>
+    <description>Recent content in Sizing on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 05 Mar 2019 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/sizing/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Partitioned Databases - Sizing</title>
+      <link>https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html</link>
+      <pubDate>Tue, 05 Mar 2019 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html</guid>
+      <description>This is the fourth part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and Part Three may also be of interest.
+Choosing a partition key for a partitioned Cloudant databases is about selecting an attribute that has:
+Many values - lots of small partitions are better than a few large ones. No hot spots - avoid designing a system that makes one partition handle a high proportion of the workload.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Query</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  <link rel="alternate" type="application/rss+xml" href="https://blog.cloudant.com/tags/query/index.xml" title="Cloudant blog" />
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+     <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Case-sensitivity in queries">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2019/11/08/Case-sensitivity-in-queries.html" class="u-url">Case-sensitivity in queries</a></h3>
+  
+  <img src="/img/amador-loureiro-BVyNlchWqzs-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2019/11/08/Case-sensitivity-in-queries.html" class="u-url">Making Cloudant query, search and MapReduce case sensitive or case-insensitive</a></p>
+  
+  
+  <p>Nov 8, 2019 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Query</span>
+
+<span class="tag">Search</span>
+
+<span class="tag">MapReduce</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2019/11/08/Case-sensitivity-in-queries.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Design Docs For Life">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html" class="u-url">Design Docs For Life</a></h3>
+  
+  <img src="/img/kelly-sikkema-o2TRWThve_I-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html" class="u-url">All about Cloudant Design Documents.</a></p>
+  
+  
+  <p>Aug 16, 2019 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Design Docs</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Replicating from a Query">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html" class="u-url">Replicating from a Query</a></h3>
+  
+  <img src="/img/cosmin-gurau-1618906-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html" class="u-url">Taking a subset of data offline and writing your own replicator.</a></p>
+  
+  
+  <p>Jun 21, 2019 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Replication</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Paging with Bookmarks">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html" class="u-url">Paging with Bookmarks</a></h3>
+  
+  <img src="/img/erol-ahmed-1450791-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html" class="u-url">Using bookmarks to page through results sets.</a></p>
+  
+  
+  <p>May 31, 2019 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Search</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2019/05/31/Paging-with-Cloudant-Bookmarks.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Optimal Cloudant Indexing">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html" class="u-url">Optimal Cloudant Indexing</a></h3>
+  
+  <img src="/img/edgar-chaparro-1421246-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html" class="u-url">Getting away with fewer indexes</a></p>
+  
+  
+  <p>May 10, 2019 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Indexing</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Partitioned Databases - Data Design">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html" class="u-url">Partitioned Databases - Data Design</a></h3>
+  
+  <img src="/img/toa-heftiba-239004-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html" class="u-url">Designing your data for a partitioned database, including indexing and querying</a></p>
+  
+  
+  <p>Mar 5, 2019 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Partitioned Databases</span>
+
+<span class="tag">Indexing</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Cloudant Fundamentals 8/10">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html" class="u-url">Cloudant Fundamentals 8/10</a></h3>
+  
+  <img src="/img/fancycrave-584270-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html" class="u-url">Querying in Node.js</a></p>
+  
+  
+  <p>Jun 25, 2018 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Fundamentals</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2018/06/25/Cloudant-Fundamentals-Querying-in-Nodejs.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Cloudant Fundamentals 7/10">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html" class="u-url">Cloudant Fundamentals 7/10</a></h3>
+  
+  <img src="/img/blake-cheek-627418-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html" class="u-url">Querying</a></p>
+  
+  
+  <p>Jun 18, 2018 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">Fundamentals</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2018/06/18/Cloudant-Fundamentals-Querying.html"> Read </bx-btn></p>
+</div>
+  <div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="Querying Cloudant with SQL">
+  <h3 class="boxtitle"><a href="https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html" class="u-url">Querying Cloudant with SQL</a></h3>
+  
+  <img src="/img/h-e-n-g-s-t-r-e-a-m-508476-unsplash.jpg.thumb.jpg" />
+  
+  
+  <p class="boxdescr"><a href="https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html" class="u-url">Converting SQL to Cloudant Query JSON</a></p>
+  
+  
+  <p>Jul 18, 2017 | Glynn Bird</p>
+  
+  <p>
+
+<span class="tag">SQL</span>
+
+<span class="tag">Query</span>
+
+</p>
+  <p></p><bx-btn href="https://blog.cloudant.com/2017/07/18/Querying-Cloudant-with-SQL.html"> Read </bx-btn></p>
+</div>
+ 
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

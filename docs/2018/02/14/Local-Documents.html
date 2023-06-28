@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Local documents</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Local documents">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/02/14/Local-Documents.html" />
+    <meta property="og:description" content="When you need to leave a bit of config behind" />
+    <meta property="article:published_time" content="2018-02-13 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/jerry-kiesewetter-flamingo.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Local documents" />
+    <meta name="twitter:description" content="When you need to leave a bit of config behind" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Local documents">
+    <meta itemprop="description" content="When you need to leave a bit of config behind">
+    <meta itemprop="image" content="/img/jerry-kiesewetter-flamingo.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Local documents</a></h1>
+  
+  <div class="postmeta">Feb 13, 2018 | Glynn Bird | 
+
+<span class="tag">Local</span>
+
+</div>
+  
+  <p>The Apache CouchDB™ family has a JSON document database for every application:</p>
+<ul>
+<li><a href="http://couchdb.apache.org/">Apache CouchDB</a> can be installed on your own desktop or servers in single node or clustered installations</li>
+<li><a href="https://www.ibm.com/cloud/cloudant">IBM Cloudant</a> is a hosted version of CouchDB running on IBM&rsquo;s cloud</li>
+<li><a href="https://pouchdb.com/">PouchDB</a> can be installed in <a href="https://medium.com/ibm-watson-data-lab/pouchdb-the-swiss-army-knife-of-databases-c5429f3db21f">many flavours</a> but is commonly used as an in-browser database, to store client-side data with or without network connectivity</li>
+</ul>
+<p>All three members of the family can sync data between each other to create hybrid, multi-homed applications where data lives on a mobile device, or in the cloud, or both.</p>
+<p>The act of replicating a database moves JSON documents from the source database to the target, but some documents are left behind. These are <em>local documents</em>.</p>
+<p><img src="/img/jerry-kiesewetter-flamingo.jpg" alt="A lone flamingo ornament in the sand."></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/QdlZY4ofH4c">Jerry Kiesewetter</a> on <a href="https://unsplash.com/">Unsplash</a>.</p>
+</blockquote>
+<h2 id="what-are-couchdb-local-documents"><a href="#what-are-couchdb-local-documents">What are CouchDB local documents?</a></h2>
+<p>CouchDB local documents are JSON documents whose <code>_id</code> value starts with <code>_local/</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_local/config&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;code&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;red&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;defcon&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2018-02-10&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="what-are-local-couchdb-documents-used-for"><a href="#what-are-local-couchdb-documents-used-for">What are local CouchDB documents used for?</a></h2>
+<p>If you are replicating data between two members of the CouchDB family (e.g., between your PouchDB-powered web app and hosted Cloudant), you may need to store some configuration on the client side that is:</p>
+<ul>
+<li>never to be replicated</li>
+<li>not counted in queries, views or aggregations</li>
+</ul>
+<p>I use local documents for storing configuration or other application state that is to remain on the machine it was created on. It saves you from the work of creating a separate client-side database just to store a tiny amount of configuration data.</p>
+<p>The CouchDB replicator uses local documents to keep track of where it got to by writing state in local documents to the source and target database.</p>
+<h2 id="crud-operations-for-couchdb-local-documents"><a href="#crud-operations-for-couchdb-local-documents">CRUD operations for CouchDB local documents</a></h2>
+<p>Local documents are created in a similar way to normal JSON documents by using an HTTP POST:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://username:password@host.cloudant.com/mydatabase&#34;</span>
+</span></span><span style="display:flex;"><span>HEAD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Content-type: application/json&#34;</span>
+</span></span><span style="display:flex;"><span>DOC<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{&#34;_id&#34;:&#34;_local/config&#34;,&#34;code&#34;:&#34;red&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span>curl -X POST -H <span style="color:#e6db74">&#34;</span>$HEAD<span style="color:#e6db74">&#34;</span> -d <span style="color:#e6db74">&#34;</span>$DOC<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;ok&#34;:true,&#34;id&#34;:&#34;_local/config&#34;,&#34;rev&#34;:&#34;0-1&#34;}</span>
+</span></span></code></pre></div><p>Or HTTP PUT:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># note that the document _id is now in the URL</span>
+</span></span><span style="display:flex;"><span>URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://username:password@host.cloudant.com/mydatabase/_local/config&#34;</span>
+</span></span><span style="display:flex;"><span>HEAD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Content-type: application/json&#34;</span>
+</span></span><span style="display:flex;"><span>DOC<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{&#34;code&#34;:&#34;red&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span>curl -X PUT -H <span style="color:#e6db74">&#34;</span>$HEAD<span style="color:#e6db74">&#34;</span> -d <span style="color:#e6db74">&#34;</span>$DOC<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;ok&#34;:true,&#34;id&#34;:&#34;_local/config&#34;,&#34;rev&#34;:&#34;0-1&#34;}</span>
+</span></span></code></pre></div><p>Or in JavaScript using PouchDB:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;_local/config&#34;</span>,<span style="color:#e6db74">&#34;code&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;red&#34;</span>};
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">doc</span>).<span style="color:#a6e22e">then</span>(...);
+</span></span></code></pre></div><p>One important difference between local documents and regular documents is that you don&rsquo;t need to supply a <code>_rev</code> token when updating or deleting a local document. As local documents are never going to be replicated, the <code>_rev</code> token is not used and is fixed at a value &ldquo;0-1&rdquo; and can effectively be ignored.</p>
+<p>Updating a local document is a case of simply repeating the POST or PUT with a new document (note the lack of <code>_rev</code> token):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>DOC<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{&#34;code&#34;:&#34;orange&#34;}&#39;</span>
+</span></span><span style="display:flex;"><span>curl -X PUT -H <span style="color:#e6db74">&#34;</span>$HEAD<span style="color:#e6db74">&#34;</span> -d <span style="color:#e6db74">&#34;</span>$DOC<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><p>Deleting a document requires a HTTP DELETE (note the lack of <code>_rev</code> token):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X DELETE <span style="color:#e6db74">&#34;https://username:password@host.cloudant.com/mydatabase/_local/config&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;ok&#34;:true,&#34;id&#34;:&#34;_local/config2&#34;,&#34;rev&#34;:&#34;0-0&#34;}</span>
+</span></span></code></pre></div><p>That&rsquo;s all for this quick tip on <code>_local/</code> documents in the CouchDB ecosystem. Hopefully it comes in handy for your next replication job!</p>
+<hr>
+<p><em>Apache®, <a href="http://couchdb.apache.org/">Apache CouchDB™, CouchDB™</a>, and the red couch logo are either registered trademarks or trademarks of the <a href="http://www.apache.org/">Apache Software Foundation</a> in the United States and/or other countries.</em></p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/cloudant-couchdb-pouchdb-local-documents-b8cef869f9bd" target="_new">https://medium.com/ibm-watson-data-lab/cloudant-couchdb-pouchdb-local-documents-b8cef869f9bd</a>
+
+
+
+</body>
+</html>
+

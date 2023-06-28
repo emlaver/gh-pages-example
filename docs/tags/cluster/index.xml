@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cluster on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/cluster/</link>
+    <description>Recent content in Cluster on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 31 Jan 2016 09:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/cluster/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding Indexing</title>
+      <link>https://blog.cloudant.com/2016/01/31/Understanding-Cloudant-Indexing.html</link>
+      <pubDate>Sun, 31 Jan 2016 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2016/01/31/Understanding-Cloudant-Indexing.html</guid>
+      <description>While less convoluted than the read and write behaviour in a cluster, the behaviour of indexing in a clustered CouchDB or Cloudant environment merits a discussion. Understanding how indexing and querying works in a cluster will help avoid confusing situations where queries to a view index on Cloudant will produce different results because the indexes contain different data.
+tl;dr: Writing indexing functions (map/reduce in views, index for search indexes and so on) which can return different values for the same input document will cause the indexes on shard replicas to differ, meaning they could return different values for the same query even when data doesn&amp;rsquo;t change.</description>
+    </item>
+    
+    <item>
+      <title>Understanding Read/Write</title>
+      <link>https://blog.cloudant.com/2015/10/19/Read-Write-Behaviour-in-a-cluster.html</link>
+      <pubDate>Mon, 19 Oct 2015 09:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2015/10/19/Read-Write-Behaviour-in-a-cluster.html</guid>
+      <description>CouchDB 2.0 has clustering code contributed by Cloudant, which was inspired by Amazon&amp;rsquo;s Dynamo paper.
+When using CouchDB in a cluster, databases are sharded and replicated. This means that a single database is split into, say, 24 shards and each shard is stored on more than one node (replica). A shard contains a specific portion of the documents in the database. A consistent hashing technique is used to allocate documents to shards.</description>
+    </item>
+    
+  </channel>
+</rss>

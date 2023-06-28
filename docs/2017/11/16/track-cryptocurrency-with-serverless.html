@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Tracking cryptocurrencies</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Tracking cryptocurrencies">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/11/16/track-cryptocurrency-with-serverless.html" />
+    <meta property="og:description" content="Using Cloud Functions and Cloudant" />
+    <meta property="article:published_time" content="2017-11-16 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/thought-catalog-580700-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Tracking cryptocurrencies" />
+    <meta name="twitter:description" content="Using Cloud Functions and Cloudant" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Tracking cryptocurrencies">
+    <meta itemprop="description" content="Using Cloud Functions and Cloudant">
+    <meta itemprop="image" content="/img/thought-catalog-580700-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Tracking cryptocurrencies</a></h1>
+  
+  <div class="postmeta">Nov 16, 2017 | Glynn Bird | 
+
+<span class="tag">Serverless</span>
+
+</div>
+  
+  <h1 id="tracking-your-cryptocurrency-portfolio-with-serverless-functions--cloudant"><a href="#tracking-your-cryptocurrency-portfolio-with-serverless-functions--cloudant">Tracking your cryptocurrency portfolio with serverless functions &amp; Cloudant</a></h1>
+<blockquote>
+<p>Monitor the value of your bitcoin hoard with serverless Cloud Functions writing data to Cloudant</p>
+</blockquote>
+<p>The value of crypto-currencies can vary greatly over time. If you&rsquo;re lucky, some coins bought for a handful of dollars a few years ago can be worth thousands of dollars now.</p>
+<p><img src="/img/bitcoin_price.png" alt="bitcoin price"></p>
+<p>There are many websites and apps that can help you monitor your portfolio, but what&rsquo;s the fun in using a ready-made solution when you can build your own?!</p>
+<h2 id="crypto-pricing-api"><a href="#crypto-pricing-api">Crypto pricing API</a></h2>
+<p>We can use an API from <a href="https://www.cryptocompare.com/api/">CryptoCompare</a> to get the latest price of Bitcoin and Ether, two popular coins, in US dollars. We can call the API passing the symbols <code>BTC</code>, <code>ETH</code> and <code>USD</code> as parameters. For example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH&amp;tsyms=USD&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;BTC&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;USD&#34;</span>: 6166.19
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ETH&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;USD&#34;</span>: 308.09
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>For a single currency, we can use an even simpler call:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;https://min-api.cryptocompare.com/data/price?fsym=BTC&amp;tsyms=USD&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;USD&#34;</span>: 6165.54
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="retrieving-the-data-every-minute"><a href="#retrieving-the-data-every-minute">Retrieving the data every minute</a></h2>
+<p>We can write a script to fetch this data every minute, writing a document to a Cloudant database each time.</p>
+<p>The Node.js script to do this is very simple:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">request</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;request&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">readBitcoinPrice</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Promise(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">req</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC&amp;tsyms=USD&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">json</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">request</span>(<span style="color:#a6e22e">req</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">err</span>,<span style="color:#a6e22e">r</span>,<span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">err</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">reject</span>(<span style="color:#a6e22e">err</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">data</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">args</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">readBitcoinPrice</span>().<span style="color:#a6e22e">then</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">data</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">obj</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">getTime</span>().<span style="color:#a6e22e">toString</span>(),
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">btcinusd</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">BTC</span>.<span style="color:#a6e22e">USD</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">args</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">url</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudant</span>({<span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">url</span>, <span style="color:#a6e22e">plugin</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;promises&#39;</span>});
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#e6db74">&#39;bitcoin&#39;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">obj</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> { <span style="color:#a6e22e">ok</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> }
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">main</span>;
+</span></span></code></pre></div><p>The <code>main</code> function expects the Cloudant URL to be supplied as the <code>url</code> key in its <code>args</code> parameter. It calls the API and creates a JSON document which is written to Cloudant:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1509444081742&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;btcinusd&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">6165.54</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>_id</code> is the unique key for each Cloudant document. Here, it is actually a timestamp (the number of milliseconds since 1970) which will be unique and in time order for our &ldquo;once per minute&rdquo; polling of the API.</p>
+<p>All we need now is to call the &ldquo;main&rdquo; function every minute.</p>
+<h2 id="going-serverless"><a href="#going-serverless">Going serverless</a></h2>
+<p>We have a number of options here:</p>
+<ul>
+<li>We could write a Node.js script that is on 24/7 and use a JavaScript <code>setInterval</code> timer to call the <code>main</code> function every 60000 milliseconds.</li>
+<li>We leave the script doing a single execution as it does now and call it every minute using <a href="http://www.adminschoice.com/crontab-quick-reference">cron</a> — a task scheduler found on most Unix-like systems.</li>
+<li>We could push our script to IBM Cloud Functions, IBM&rsquo;s serverless platform, and instruct <em>it</em> to run it for us every minute.</li>
+</ul>
+<p>We put the URL of our Cloudant service in the environment variable  <code>CLOUDANT_URL</code> and run a series of commands to deploy our Node.js file to IBM Cloud Functions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># deploy to OpenWhisk</span>
+</span></span><span style="display:flex;"><span>wsk package update blockchain --param url <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>wsk action update blockchain/bitcoin bitcoin.js
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># run every minute</span>
+</span></span><span style="display:flex;"><span>wsk trigger create every-minute --feed /whisk.system/alarms/alarm --param cron <span style="color:#e6db74">&#34;* * * * *&#34;</span>
+</span></span><span style="display:flex;"><span>wsk rule update every-minute-rule every-minute blockchain/bitcoin
+</span></span><span style="display:flex;"><span>wsk rule enable every-minute-rule
+</span></span></code></pre></div><p>The first two commands deploy the code, the last three trigger the code to be run every minute using the <a href="https://console.bluemix.net/docs/openwhisk/openwhisk_alarms.html#openwhisk_catalog_alarm_fire">alarm package</a>.</p>
+<p>Once deployed, we should see the documents appearing in our Cloudant <code>bitcoin</code> database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1509448502820&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-e96f50965801b81f2cf19fc2d2ad637b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;btcinusd&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">6200.42</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="querying-the-data"><a href="#querying-the-data">Querying the data</a></h2>
+<p>Once we&rsquo;ve left our data collection script running for a while, we can query the data using Cloudant&rsquo;s API. Our data is already sorted in time order because we used a timestamp as the key <code>_id</code> field.</p>
+<p>We can therefore get the first 2 hours of data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_all_docs?limit=120&#34;</span>
+</span></span></code></pre></div><p>The most recent hour of data:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_all_docs?limit=60&amp;descending=true&#34;</span>
+</span></span></code></pre></div><p>The most recent data point:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_all_docs?limit=1&amp;descending=true&#34;</span>
+</span></span></code></pre></div><h2 id="aggregating-the-data"><a href="#aggregating-the-data">Aggregating the data</a></h2>
+<p>Cloudant&rsquo;s <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce</a> system allows custom indexes to be created by supplying a JavaScript function which is executed over each document in a database.</p>
+<p>We can use a function like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ts</span> <span style="color:#f92672">=</span> parseInt(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_id</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#a6e22e">ts</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getUTCFullYear</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">m</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getUTCMonth</span>() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getUTCDate</span>(); 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">h</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getUTCHours</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">min</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getUTCMinutes</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">y</span>, <span style="color:#a6e22e">m</span>, <span style="color:#a6e22e">d</span>, <span style="color:#a6e22e">h</span>, <span style="color:#a6e22e">min</span>], <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">btcinusd</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here&rsquo;s what it does:</p>
+<ul>
+<li>turn the <code>_id</code> field into an integer</li>
+<li>parse it into a JavaScript Date object</li>
+<li>extract the year, month, day, hour, and minute</li>
+<li><code>emit</code> a key/value pair where the key is the array <code>[year, month, day, hour, minute]</code> and the value is the bitcoin price</li>
+</ul>
+<p><img src="/img/bitcoin-mr.png" alt="bitcoin map reduce"></p>
+<p>Combined with the built-in <code>_stats</code> reducer, we can use this index to create hierarchical aggregations of the bitcoin price:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_design/query/_view/bydate?group_level=2&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rows&#34;</span>: <span style="color:#f92672">[{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#f92672">[</span>2017, 8<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sum&#34;</span>: 88808847.69999999,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;count&#34;</span>: 20770,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;min&#34;</span>: 3613.28,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max&#34;</span>: 4764.44,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sumsqr&#34;</span>: 380636509418.7472
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#f92672">[</span>2017, 9<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sum&#34;</span>: 175506096.85000002,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;count&#34;</span>: 42849,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;min&#34;</span>: 2982.94,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max&#34;</span>: 4974.69,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sumsqr&#34;</span>: 724630560624.3647
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#f92672">[</span>2017, 10<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sum&#34;</span>: 233471117.30000004,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;count&#34;</span>: 44238,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;min&#34;</span>: 4143.9,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max&#34;</span>: 6294.59,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;sumsqr&#34;</span>: 1251129781142.4658
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>The above query asks for all of the data grouped by year and month. Notice how the <code>_stats</code> reducer gives us a sum/count/sumsqr (which we can use to calculate mean, variance, and standard deviation) and the maximum and minmum value per month. The <code>group_level</code> parameter indicates how many levels into the key we wish to aggregate. For example:</p>
+<ul>
+<li><code>group_level=1</code> - year</li>
+<li><code>group_level=2</code> - year/month</li>
+<li><code>group_level=3</code> - year/month/day</li>
+<li><code>group_level=4</code> - year/month/day/hour</li>
+</ul>
+<p>We can also specify a <code>startkey</code> and <code>endkey</code> to limit range of data we want to report on:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_design/query/_view/bydate?group_level=3&amp;startkey=[2017,10,1]&amp;endkey=[2017,11,1]&#34;</span>
+</span></span></code></pre></div><p>The above command asks for year/month/day data for the month of October 2017.</p>
+<h2 id="whats-next"><a href="#whats-next">What&rsquo;s next?</a></h2>
+<p>We could do more than just record the data. We could calculate <a href="https://www.npmjs.com/package/technicalindicators">technical indicators</a> and use them to predict whether the market is heading upwards or downwards. We could send emails or alerts when certain market conidtions prevail. We could write an algorithm that decides when it&rsquo;s a good time to buy or sell and call a third-party API to actually make crypto-currency trades.</p>
+<p>I&rsquo;m not that brave, so I wrote a trading simulator that allows you to simulate crypto-currency trading using the last 2 hours of bitcoin data. You start with $5000 of cash and $5000 of bitcoin. Trade as many times as you like and see if you end up with more than $10000 at the end of the game.</p>
+<p><img src="/img/bitcoin-trader.png" alt="trader"></p>
+<p>Try it for yourself: <a href="https://glynnbird.github.io/markettrader/public/index.html">https://glynnbird.github.io/markettrader/public/index.html</a></p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/tracking-your-cryptocurrency-portfolio-with-serverless-functions-a4e7264a6161" target="_new">https://medium.com/ibm-watson-data-lab/tracking-your-cryptocurrency-portfolio-with-serverless-functions-a4e7264a6161</a>
+
+
+
+</body>
+</html>
+

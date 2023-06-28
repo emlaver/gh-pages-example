@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Changes on Cloudant blog</title>
+    <link>https://blog.cloudant.com/tags/changes/</link>
+    <description>Recent content in Changes on Cloudant blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 11 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.cloudant.com/tags/changes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Getting Cloudant Support</title>
+      <link>https://blog.cloudant.com/2022/03/11/Getting-Cloudant-Support.html</link>
+      <pubDate>Fri, 11 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/03/11/Getting-Cloudant-Support.html</guid>
+      <description>Support is available for your paid IBM Cloudant Standard accounts but not for free, Lite accounts. This blog post shows how to raise a support ticket.
+Photo by Matthew Waring on Unsplash
+Note that you may still raise a support ticket against free IBM Cloud accounts pertaining to the subjects of account management, billing and IAM, just not support cases about specific Cloudant services.
+Creating an IBM Cloud account If you haven&amp;rsquo;t done so already, create an IBM Cloud account at https://cloud.</description>
+    </item>
+    
+    <item>
+      <title>Using the Changes Feed</title>
+      <link>https://blog.cloudant.com/2022/01/21/Using-the-Cloudant-changes-feed.html</link>
+      <pubDate>Fri, 21 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.cloudant.com/2022/01/21/Using-the-Cloudant-changes-feed.html</guid>
+      <description>A Cloudant database&amp;rsquo;s changes feed&amp;rsquo;s primary use-case is to power the replication of data from a source to a target database. The Cloudant replicator is built to handle the changes feed and performs the necessary checks to ensure data is copied accurately to its destination.
+There is a raw changes feed API that can be used to consume a single database&amp;rsquo;s changes but it must be used with care.
+The _changes API endpoint can be used in several ways and can output data in a variety of formats, but this article will focus on best practice and how to avoid some pitfalls when developing against the Changes API.</description>
+    </item>
+    
+  </channel>
+</rss>

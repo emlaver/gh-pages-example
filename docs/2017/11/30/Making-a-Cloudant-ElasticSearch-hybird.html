@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Elasticsearch hybrid</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  
+
+  <link rel="icon" href="/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.114.1">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Elasticsearch hybrid">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/11/30/Making-a-Cloudant-ElasticSearch-hybird.html" />
+    <meta property="og:description" content="Moving Cloudant data to ES" />
+    <meta property="article:published_time" content="2017-11-30 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/joshua-coleman-655076-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Elasticsearch hybrid" />
+    <meta name="twitter:description" content="Moving Cloudant data to ES" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Elasticsearch hybrid">
+    <meta itemprop="description" content="Moving Cloudant data to ES">
+    <meta itemprop="image" content="/img/joshua-coleman-655076-unsplash.jpg">
+  
+
+
+
+
+   
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}    
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name"><a href="" class="u-url">Elasticsearch hybrid</a></h1>
+  
+  <div class="postmeta">Nov 30, 2017 | Glynn Bird | 
+
+<span class="tag">ElasticSearch</span>
+
+<span class="tag">Serverless</span>
+
+</div>
+  
+  <p>On the face of it, IBM Cloudant and Elasticsearch seem to be very similar products. They both:</p>
+<ul>
+<li>Store JSON documents without you needing to define a schema up-front.</li>
+<li>Have an HTTP API.</li>
+<li>&ldquo;Shard&rdquo; each collection into pieces and store multiple copies across a distributed cluster.</li>
+<li>Can be used to perform &ldquo;free text&rdquo; search, i.e., query which documents best match a supplied string.</li>
+</ul>
+<p>Cloudant is a resilient database that guarantees that data is stored on disk on multiple nodes when you write your data. Elasticsearch is not a database as such — it prioritises speed over resiliance and is designed to be used as a secondary index rather than as your primary source of truth.</p>
+<p>In some cases, it may be desirable to take a hybrid approach:</p>
+<ul>
+<li>Store your primary data in Cloudant, directing all Create/Read/Update/Delete (CRUD!) requests to this database.</li>
+<li>Store a copy of the data in Elasticsearch and use it to handle all free-text search queries.</li>
+</ul>
+<p>Such a setup needs a means of moving data from Cloudant to Elasticsearch as it changes. In this article, we&rsquo;ll see how to automatically keep the data in sync using a &ldquo;serverless&rdquo; function.</p>
+<p><img src="/img/cloudant-es-bridge.png" alt="schematic"></p>
+<h2 id="cloudant-to-elasticsearch-bridge"><a href="#cloudant-to-elasticsearch-bridge">Cloudant-to-Elasticsearch bridge</a></h2>
+<p>The Cloudant database has a <a href="https://console.bluemix.net/docs/services/Cloudant/api/database.html#get-changes">changes feed</a>, an HTTP stream that spools out each add/update/delete that happens to the dataset. By consuming that feed, we can trigger other actions as each change arrives, in this case, writing to an Elasticsearch index. The <a href="https://console.bluemix.net/openwhisk/">IBM Cloud Functions</a> platform can be configured to listen to the Cloudant changes feed on your behalf, and execute custom code on each change. As IBM Cloud Functions is a &ldquo;serverless&rdquo; platform, you don&rsquo;t pay for any fixed computing power to run the actions. You simply pay for the number of invocations of your code, which is proportional to the rate of change of your data.</p>
+<p>I&rsquo;ve written a script to set up the serverless infrastructure. Clone the code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone https://github.com/ibm-watson-data-lab/cloudant-es-bridge
+</span></span><span style="display:flex;"><span>cd cloudant-es-bridge
+</span></span></code></pre></div><p>All it needs is our Cloudant and Elasticsearch authentication credentials entered as commandline environment variables. (Read the project&rsquo;s <a href="https://github.com/ibm-watson-data-lab/cloudant-es-bridge">README</a> to see how to sign up for Cloudant, Elasticsearch, and IBM Cloud Functions.)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export CLOUDANT_HOST<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;HOST.cloudant.com&#34;</span>
+</span></span><span style="display:flex;"><span>export CLOUDANT_USERNAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CLOUDANTUSERNAME&#34;</span>
+</span></span><span style="display:flex;"><span>export CLOUDANT_PASSWORD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CLOUDANTPASSWORD&#34;</span>
+</span></span><span style="display:flex;"><span>export CLOUDANT_DB<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;esbridge&#34;</span>
+</span></span><span style="display:flex;"><span>export ELASTIC_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://ESUSERNAME:ESPASSWORD@HOST.composedb.com:PORT/INDEX/TYPE&#34;</span>
+</span></span></code></pre></div><p>Then run the deployment script (which assumes you have the <a href="https://console.bluemix.net/openwhisk/learn/cli">bx wsk</a> tool installed and configured on your machine):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>./deploy.sh
+</span></span></code></pre></div><p>This script performs the following tasks:</p>
+<ul>
+<li>Creates a serverless package with all the configuration you supplied.</li>
+<li>Creates a serverless &ldquo;action&rdquo; inside that package.</li>
+<li>Creates a Cloudant connection with your configuration.</li>
+<li>Creates a trigger that fires on your Cloudant database&rsquo;s changes feed.</li>
+<li>Creates a rule that fires your action when the trigger fires.</li>
+</ul>
+<p>The upshot is that every time you create, modify or delete a document in Cloudant, the equivalent action happens in your Elasticsearch cluster!</p>
+<p>Try creating documents in your Cloudant dashboard, and then check that they appear in the Compose dashboard&rsquo;s &ldquo;Browser&rdquo; feature.</p>
+<p>The data can then be queried with the Elasticsearch API:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$ELASTIC_URL<span style="color:#e6db74">/_search?q=aimee&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;took&#34;</span>: 110,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;timed_out&#34;</span>: false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;hits&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;total&#34;</span>: 1,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;max_score&#34;</span>: 0.2824934,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;hits&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;_index&#34;</span>: <span style="color:#e6db74">&#34;myesindex&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;_type&#34;</span>: <span style="color:#e6db74">&#34;default&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;5be1886e8ff5f340947b907ce2ac9e9d&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;_score&#34;</span>: 0.2824934,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;_source&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;firstname&#34;</span>: <span style="color:#e6db74">&#34;Aimee&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;lastname&#34;</span>: <span style="color:#e6db74">&#34;Mann&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;singer songwriter&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;timestamp&#34;</span>: <span style="color:#ae81ff">241</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="do-i-need-separate-cloudant--elasticsearch"><a href="#do-i-need-separate-cloudant--elasticsearch">Do I need separate Cloudant &amp; Elasticsearch?</a></h2>
+<p>Whether you use Cloudant on its own, or pick Cloudant for storage and Elasticsearch for search, depends on your application and how it&rsquo;s used.</p>
+<p>If your application relies heavily on search, then you may want to direct the search requests to an Elasticsearch cluster that contains a copy of your searchable data. This would allow you to scale your search capability separately to your storage engine.</p>
+<p>If search is an occasional or secondary activity in your app, or if you prefer the convenience of fewer moving parts, then you may wish to use Cloudant&rsquo;s built-in <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#search">free-text search</a>. While not as fully-featured as Elasticsearch, it can easily handle free-text searches, range queries, and faceting as it is built on the same Lucene library that powers Elasticsearch.</p>
+<h2 id="open-source-ftw"><a href="#open-source-ftw">Open-Source ftw</a></h2>
+<p>If you want to build on this utility, the code is <a href="https://github.com/ibm-watson-data-lab/cloudant-es-bridge">on GitHub</a>. It&rsquo;s free and open-sourced via the Apache-2.0 license. You may want to modify the <code>onchange.js</code> action to alter the document before it&rsquo;s written to Elasticsearch. You may also need to deploy multiple changes feed listeners for multiple data sources. It&rsquo;s up to you.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/making-a-cloudant-elasticsearch-hybrid-6bf9610f4456" target="_new">https://medium.com/ibm-watson-data-lab/making-a-cloudant-elasticsearch-hybrid-6bf9610f4456</a>
+
+
+
+</body>
+</html>
+
