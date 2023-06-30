@@ -61,31 +61,6 @@ Cloudant has recently published a number of improvements that make replication e
     </item>
     
     <item>
-      <title>Another blog post</title>
-      <link>https://emlaver.github.io/gh-pages-example/an/other/custom-url.html</link>
-      <pubDate>Thu, 02 Feb 2023 09:00:00 +0000</pubDate>
-      
-      <guid>https://emlaver.github.io/gh-pages-example/an/other/custom-url.html</guid>
-      <description>In quam voluptatem et laudantium enim sed expedita asperiores ut fugit nulla ad animi suscipit et voluptatem velit! Sit quasi velit aut magnam explicabo ut omnis earum non iure suscipit.
-Est excepturi laborum ut esse nemo et debitis tempora. Et consequatur cupiditate cum odit voluptate quo unde pariatur et nihil eius quo nobis sint et sunt laudantium qui eligendi inventore.
-Italic bold
-Image:
-Photo by Kelly Sikkema on Unsplash
-Sub heading 2 An unordered list:</description>
-    </item>
-    
-    <item>
-      <title>Just testing</title>
-      <link>https://emlaver.github.io/gh-pages-example/some/custom-url.html</link>
-      <pubDate>Wed, 01 Feb 2023 09:00:00 +0000</pubDate>
-      
-      <guid>https://emlaver.github.io/gh-pages-example/some/custom-url.html</guid>
-      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Italic bold</description>
-    </item>
-    
-    <item>
       <title>CouchApp function deprecation</title>
       <link>https://emlaver.github.io/gh-pages-example/2022/08/16/Show-list-rewrite-udpate-functions-deprecated.html</link>
       <pubDate>Tue, 16 Aug 2022 00:00:00 +0000</pubDate>
