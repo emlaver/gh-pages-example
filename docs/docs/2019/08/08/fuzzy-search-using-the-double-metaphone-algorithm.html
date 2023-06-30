@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Fuzzy search using Double Metaphone</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Fuzzy search using Double Metaphone">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html" />
+    <meta property="og:description" content="Using the Double Metaphone algorithm to find words that sound alike." />
+    <meta property="article:published_time" content="2019-08-08 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/john-salvino-Fp7MCwU0etE-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Fuzzy search using Double Metaphone" />
+    <meta name="twitter:description" content="Using the Double Metaphone algorithm to find words that sound alike." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Fuzzy search using Double Metaphone">
+    <meta itemprop="description" content="Using the Double Metaphone algorithm to find words that sound alike.">
+    <meta itemprop="image" content="/img/john-salvino-Fp7MCwU0etE-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Fuzzy search using Double Metaphone</h1>
+  
+  <div class="postmeta">Aug 8, 2019 | Brian Wilkins | 
+
+  
+  <bx-tag>Double Metaphone</bx-tag>
+  
+  <bx-tag>views</bx-tag>
+  
+
+
+  </div>
+  
+  <h2 id="introduction"style="display:inline">Introduction</h2><a class="stealth" href="#introduction">🔗</a><br>
+<p>In an earlier <a href="https://blog.cloudant.com/2018/12/12/soundex-view.html">article</a> I explained how to do a fuzzy search for documents that contain words that sound like some other given word.
+The technique I described there uses a view that implements the Soundex algorithm. The aim of the Soundex algorithm is to encode words alike that sound alike so that they can be matched despite minor differences in spelling.
+Soundex was invented before the invention of the electronic computer and is fairly simple.</p>
+<p>A more sophisticated algorithm with a similar purpose is <a href="http://www.drdobbs.com/the-double-metaphone-search-algorithm/184401251?pgno=2">Double Metaphone</a>.
+Double Metaphone aims to yield more true matches and fewer false matches. It aims to work for non-English words as well as English words. For any given word it returns up to two different encodings. For example, for <code>Wagner</code> it returns <code>FKNR</code> for the German pronunciation in which <em>W</em> is pronounced as the <em>v</em> in <em>vodka</em>, and returns <code>AKNR</code> for the Anglicized pronunciation in which <em>W</em> is pronounced as the <em>w</em> in <em>water</em>.</p>
+<p>An implementation of the Double Metaphone algorithm in JavaScript is <a href="https://github.com/words/double-metaphone/blob/master/index.js">here</a>.
+It is a function called <code>doubleMetaphone</code>. It returns an array of two strings, each string being an encoding that represents approximately the pronunciaton of the input string.
+With a few minor changes the function can be used in a Cloudant <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-views-mapreduce">view</a> or <a href="https://cloud.ibm.com/docs/services/Cloudant/offerings?topic=cloudant-search">search index</a>.</p>
+<h2 id="implementing-the-double-metaphone-algorithm-as-a-view"style="display:inline">Implementing the Double Metaphone algorithm as a view</h2><a class="stealth" href="#implementing-the-double-metaphone-algorithm-as-a-view">🔗</a><br>
+<p>To turn the <a href="https://github.com/words/double-metaphone/blob/master/index.js">implementation of Double Metaphone</a> into a Cloudant view Map function that emits values returned by the <code>doubleMetaphone</code> function, I removed the line:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doubleMetaphone</span>
+</span></span></code></pre></div><p>and appended these lines:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doubleMetaphone</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>)[<span style="color:#ae81ff">0</span>], <span style="color:#ae81ff">1</span>);   
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doubleMetaphone</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>)[<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>See the complete <a href="https://gist.github.com/brianewilkins/034c203fb29a7e0c7539f6a1ed248949">Cloudant view Map function</a>.</p>
+<h2 id="implementing-the-double-metaphone-algorithm-as-a-search-index"style="display:inline">Implementing the Double Metaphone algorithm as a Search index</h2><a class="stealth" href="#implementing-the-double-metaphone-algorithm-as-a-search-index">🔗</a><br>
+<p>To turn the <a href="https://github.com/words/double-metaphone/blob/master/index.js">implementation of Double Metaphone</a> into a Cloudant Search index of values returned by the <code>doubleMetaphone</code> function I removed the line:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doubleMetaphone</span>
+</span></span></code></pre></div><p>and appended these lines:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;encoding&#34;</span>, <span style="color:#a6e22e">doubleMetaphone</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>)[<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;encoding&#34;</span>, <span style="color:#a6e22e">doubleMetaphone</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>)[<span style="color:#ae81ff">1</span>]);   
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>See the complete <a href="https://gist.github.com/brianewilkins/0638608ceb248773b6fc456d50e5a37c">Cloudant Search index function</a>. The Cloudant Search index must use the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search#analyzers">Keyword analyzer</a> so that is input is not tokenized.</p>
+<h2 id="trying-it-out"style="display:inline">Trying it out</h2><a class="stealth" href="#trying-it-out">🔗</a><br>
+<p>Now let&rsquo;s see how well it does at finding names that are similar to <code>Smith</code>.</p>
+<p>In the following steps I use the following conventions:</p>
+<ul>
+<li><code>$USER</code> stands for your Cloudant user name;</li>
+<li><code>$PASS</code> stands for password of user $USERNAME;</li>
+<li><code>$ACCOUNT</code> stands for the name of your Cloudant account;</li>
+<li><code>$DB</code> stands for the name of your database.</li>
+</ul>
+<h3 id="writing-some-test-documents"style="display:inline">Writing some test documents</h3><a class="stealth" href="#writing-some-test-documents">🔗</a><br>
+<p>Write some documents that contain a <code>name</code>:</p>
+<pre tabindex="0"><code class="language-curl" data-lang="curl"># Smith
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Smith&#34;}&#39;
+
+# Names like Smith
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Smythe&#34;}&#39;
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Smyth&#34;}&#39;
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Smit&#34;}&#39;
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Schmidt&#34;}&#39;
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Schmitt&#34;}&#39;
+
+# Names unlike Smith
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Jones&#34;}&#39;
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Taylor&#34;}&#39;
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Martinez&#34;}&#39;
+curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;: &#34;Wang&#34;}&#39;
+</code></pre><h3 id="creating-the-view-and-search-index"style="display:inline">Creating the view and search index</h3><a class="stealth" href="#creating-the-view-and-search-index">🔗</a><br>
+<p>The design document <code>_design/doubleMetaphone</code> which contains the <code>doubleMetaphone</code> view and search index is <a href="https://gist.github.com/brianewilkins/6f145b801da0726b77d10e0bc782dfb4">ddoc.txt</a>.
+Write it to the database:</p>
+<pre tabindex="0"><code class="language-curl" data-lang="curl">curl -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB -H &#34;Content-Type: application/json&#34; -d @ddoc.txt
+</code></pre><h3 id="querying-the-view-to-find-the-double-metaphone-encoding-of-a-name"style="display:inline">Querying the view to find the Double Metaphone encoding of a name</h3><a class="stealth" href="#querying-the-view-to-find-the-double-metaphone-encoding-of-a-name">🔗</a><br>
+<p>By querying the view you can find the two Double Metaphone encodings of each name. The Double Metaphone encodings of the name <code>Smith</code> are <code>SM0</code> and <code>XMT</code>.</p>
+<pre><code>$ curl -s -u $USER:$PASS https://$ACCOUNT.cloudant.com/$DB/_design/doubleMetaphone/_view/doubleMetaphone?include_docs=true | jq '.rows[] | select(.doc.name==&quot;Smith&quot;) | .key'
+&quot;SM0&quot;
+&quot;XMT&quot;
+</code></pre>
+<h3 id="querying-the-view-to-find-similar-sounding-names"style="display:inline">Querying the view to find similar sounding names</h3><a class="stealth" href="#querying-the-view-to-find-similar-sounding-names">🔗</a><br>
+<p>Now find which names in the database share a Double Metaphone encoding (<code>SM0</code> or <code>XMT</code>) with <code>Smith</code>.</p>
+<p>The view request below returns each name that that shares a Double Metaphone encoding with <code>Smith</code>. A name appears twice in the result if both its Double Metaphone encodings match a Double Metaphone encoding of <code>Smith</code>.</p>
+<pre><code>$ curl -s -u $USER:$PASS -X POST https://$ACCOUNT.cloudant.com/$DB/_design/doubleMetaphone/_view/doubleMetaphone?include_docs=true -H &quot;Content-Type: application/json&quot; -d '{&quot;keys&quot;:[&quot;SM0&quot;,&quot;XMT&quot;]}' | jq '.rows[] | {&quot;Name&quot;: .doc.name, &quot;Encoding&quot;: .key}'
+{
+  &quot;Name&quot;: &quot;Smith&quot;,
+  &quot;Encoding&quot;: &quot;SM0&quot;
+}
+{
+  &quot;Name&quot;: &quot;Smyth&quot;,
+  &quot;Encoding&quot;: &quot;SM0&quot;
+}
+{
+  &quot;Name&quot;: &quot;Smythe&quot;,
+  &quot;Encoding&quot;: &quot;SM0&quot;
+}
+{
+  &quot;Name&quot;: &quot;Schmitt&quot;,
+  &quot;Encoding&quot;: &quot;XMT&quot;
+}
+{
+  &quot;Name&quot;: &quot;Smith&quot;,
+  &quot;Encoding&quot;: &quot;XMT&quot;
+}
+{
+  &quot;Name&quot;: &quot;Smyth&quot;,
+  &quot;Encoding&quot;: &quot;XMT&quot;
+}
+{
+  &quot;Name&quot;: &quot;Schmidt&quot;,
+  &quot;Encoding&quot;: &quot;XMT&quot;
+}
+{
+  &quot;Name&quot;: &quot;Smythe&quot;,
+  &quot;Encoding&quot;: &quot;XMT&quot;
+}
+{
+  &quot;Name&quot;: &quot;Smit&quot;,
+  &quot;Encoding&quot;: &quot;XMT&quot;
+}
+</code></pre>
+<p>The names <code>Smith</code>, <code>Smyth</code> and <code>Smythe</code> all have as Double Metaphone encodings both <code>SM0</code> and <code>XMT</code>, so they match <code>Smith</code>.</p>
+<p>Because the names <code>Schmidt</code>, <code>Schmitt</code> and <code>Smit</code> have the Double Metaphone encoding <code>XMT</code>, they match <code>Smith</code> too.</p>
+<h3 id="querying-the-search-index-to-find-similar-sounding-names"style="display:inline">Querying the search index to find similar sounding names</h3><a class="stealth" href="#querying-the-search-index-to-find-similar-sounding-names">🔗</a><br>
+<p>This search request returns all the names in the database that are like (share a Double Metaphone encoding with) <code>Smith</code>.</p>
+<pre><code>$ curl -s -u $USER:$PASS &quot;https://$ACCOUNT.cloudant.com/$DB/_design/doubleMetaphone/_search/doubleMetaphone?q=encoding:(SM0%20OR%20XMT)&amp;include_docs=true&quot; | jq .rows[].doc.name
+&quot;Smyth&quot;
+&quot;Smythe&quot;
+&quot;Smith&quot;
+&quot;Schmidt&quot;
+&quot;Schmitt&quot;
+&quot;Smit&quot;
+</code></pre>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
+<p>The Double Metaphone algorithm has identified all the names in the database that are like <code>Smith</code>.</p>
+<p>It won&rsquo;t always find all words that sound similar to a given word though.
+Out of twenty-eight <a href="https://gist.github.com/brianewilkins/e14c4519c85ba751ef67257fc6dec34a">widely differing alternative spellings</a> of the name of the Russian composer <code>Tchaikovsky</code>, ten have a Double Metaphone encoding that matches <code>Tchaikovsky</code>.
+So it&rsquo;s not perfect. As it is a somewhat subjective judgment which words are similar enough to count as a match, and spellings of the same name can vary a lot, it is hard to see how it could ever be.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

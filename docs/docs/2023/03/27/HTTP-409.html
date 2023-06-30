@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>HTTP 409</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="HTTP 409">
+    <meta property="og:url" content="https://blog.cloudant.com/2023/03/27/HTTP-409.html" />
+    <meta property="og:description" content="When is a conflict a conflict?" />
+    <meta property="article:published_time" content="2023-03-27 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/jan-huber-4OhFZSAT3sw-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="HTTP 409" />
+    <meta name="twitter:description" content="When is a conflict a conflict?" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="HTTP 409">
+    <meta itemprop="description" content="When is a conflict a conflict?">
+    <meta itemprop="image" content="/img/jan-huber-4OhFZSAT3sw-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">HTTP 409</h1>
+  
+  <div class="postmeta">Mar 27, 2023 | Glynn Bird | 
+
+  
+  <bx-tag>HTTP</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Cloudant&rsquo;s HTTP API will return a variety of HTTP response codes in reply to API requests. One that causes a good deal of confusion is <code>409 - Document update conflict</code>.</p>
+<blockquote>
+<p>tl;dr - a <code>409 - Document update conflict</code> response doesn&rsquo;t mean that Cloudant created a conflict, in fact it avoided creating a conflict.</p>
+</blockquote>
+<p>In this blog post we&rsquo;ll explore what a 409 response means and how to prevent 409s happening in your application.</p>
+<p><img src="https://blog.cloudant.com/img/jan-huber-4OhFZSAT3sw-unsplash.jpg" alt="tree"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/4OhFZSAT3sw">Jan Huber on Unsplash</a></p>
+</blockquote>
+<h2 id="what-dodes-the-http-409-response-mean"style="display:inline">What dodes the HTTP 409 response mean?</h2><a class="stealth" href="#what-dodes-the-http-409-response-mean">🔗</a><br>
+<p>The <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-409-conflict">HTTP RFC</a> states:</p>
+<blockquote>
+<p>The 409 (Conflict) status code indicates that the request could not be completed due to a conflict with the current state of the target resource.</p>
+</blockquote>
+<p>This can come about in Cloudant because:</p>
+<ol>
+<li>A document with a supplied <code>_id</code> is being created and a document with that <code>_id</code> already exists.</li>
+<li>or, a document is being modified or deleted and the supplied revision has already been superceded.</li>
+</ol>
+<p>Let&rsquo;s explore those scenarios by example:</p>
+<h3 id="the-document-_id-field-must-be-unique"style="display:inline">The document _id field must be unique</h3><a class="stealth" href="#the-document-_id-field-must-be-unique">🔗</a><br>
+<p>Cloudant documents can be created without a document <code>_id</code> and Cloudant will generate a unique <code>_id</code> for you:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a document with Cloudant-generated _id field</span>
+</span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;name&#34;:&#34;Sue&#34;}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;ok&#34;:true,&#34;id&#34;:&#34;524d6ff148950d4d1554946e7e91036e&#34;,&#34;rev&#34;:&#34;1-877206fdfc192b2a566b6eac4eaa4205&#34;}</span>
+</span></span></code></pre></div><p>As the <code>_id</code> field is auto-generated, I can repeat this operation over and over again without any errors.</p>
+<p>If I supply my own document <code>_id</code> then I am responsible for it being unique. The following operation will work the first time:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a document with client-generated _id field</span>
+</span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;_id&#34;:&#34;myid&#34;,&#34;name&#34;:&#34;Sue&#34;}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;ok&#34;:true,&#34;id&#34;:&#34;myid&#34;,&#34;rev&#34;:&#34;1-877206fdfc192b2a566b6eac4eaa4205&#34;}</span>
+</span></span></code></pre></div><p>but if the request is repeated, it will garner an HTTP 409 response:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>HTTP/2 <span style="color:#ae81ff">409</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#e6db74">&#34;conflict&#34;</span>,<span style="color:#e6db74">&#34;reason&#34;</span>:<span style="color:#e6db74">&#34;Document update conflict.&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>The fix? If you want to supply your own <code>_id</code> field when creating documents, then you are responsible for their uniqueness. See this blog post on <a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">creating time-sortable ids</a>.</p>
+</blockquote>
+<h3 id="a-document-revision-cant-be-superceded-more-than-once"style="display:inline">A document revision can&rsquo;t be superceded more than once</h3><a class="stealth" href="#a-document-revision-cant-be-superceded-more-than-once">🔗</a><br>
+<p>If we create a document it will take a <code>1-xxx</code> revision (stored as the <code>_rev</code> attribute in the document). When the document is later updated, the <code>1-xxx</code> revision will become <code>2-yyy</code> where the alpha-numeric sequence after the <code>-</code> represents a hash of the document&rsquo;s content.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a the first revision of a document</span>
+</span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;_id&#34;:&#34;mynewdoc&#34;,&#34;name&#34;:&#34;Sue&#34;}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;ok&#34;:true,&#34;id&#34;:&#34;mynewdoc&#34;,&#34;rev&#34;:&#34;1-877206fdfc192b2a566b6eac4eaa4205&#34;}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># modify the first revision to become rev 2-yyy</span>
+</span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;_id&#34;:&#34;mynewdoc&#34;,&#34;_rev&#34;:&#34;1-877206fdfc192b2a566b6eac4eaa4205&#34;,&#34;name&#34;:&#34;Susan&#34;}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;ok&#34;:true,&#34;id&#34;:&#34;mynewdoc&#34;,&#34;rev&#34;:&#34;2-9d949e7391749205c5acfba683eab819&#34;}</span>
+</span></span></code></pre></div><p>Notice:</p>
+<ul>
+<li>When creating the first revision of a document, a <code>_rev</code> token is not supplied.</li>
+<li>If a create/update/delete operation is successful, the resultant value of <code>_rev</code> is returned in the response as &ldquo;rev&rdquo;.</li>
+<li>When modifying a document, the <code>_rev</code> token <em>must</em> be supplied, in this case the rev of the first document revision.</li>
+</ul>
+<p>If we try to modify revision <code>1</code> again, we will hit a HTTP 409:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># attempt to modify rev 1 again</span>
+</span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;_id&#34;:&#34;mynewdoc&#34;,&#34;_rev&#34;:&#34;1-877206fdfc192b2a566b6eac4eaa4205&#34;,&#34;name&#34;:&#34;Susan&#34;}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/mydb&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;error&#34;:&#34;conflict&#34;,&#34;reason&#34;:&#34;Document update conflict.&#34;}</span>
+</span></span></code></pre></div><p>This is Cloudant preventing the same revision being modified more than once. Cloudant knows that &ldquo;revision 1&rdquo; has already been superceded by &ldquo;revision 2&rdquo;, so no further attempts to modify revision 1 will succeed.</p>
+<blockquote>
+<p>The fix? Supply the &ldquo;rev&rdquo; of the document revision that is to be changed. If that &ldquo;rev&rdquo; has already been superceded, then Cloudant will not accept the change and will return an HTTP 409. A work around is to fetch the document again, to see the current state of the database and then resubmit your request with a different &ldquo;rev&rdquo;.</p>
+</blockquote>
+<p>Note that design patterns which require a document to be modified quickly (multiple times a second) are not a good fit for Cloudant as they can result in conflicts - see next section on document conflicts.</p>
+<h2 id="conflicts"style="display:inline">Conflicts</h2><a class="stealth" href="#conflicts">🔗</a><br>
+<p>A conflict is a branch in the revision tree. In other words, instead of a document&rsquo;s revision proceeding linearly with revision 1, 2, 3, 4, there are circumstances where there are multiple revisions of same document revision number.</p>
+<p>In the diagram below, on the left we can see an unconflicted revision tree where each new revision supercedes the last. On the right, there is a branch in the revision tree after the second document revision.</p>
+<p><img src="https://blog.cloudant.com/img/409-1.png" alt="document revision trees"></p>
+<p>In the previous section we said that Cloudant will not accept a change to a document where the document revision has already been superceded, so how do conficts occur? There are two possible ways:</p>
+<ol>
+<li>Replication: Cloudant allows data to be replicated to other Cloudant databases, or to Apache CouchDB databases or to mobile applications running PouchDB. When there are multiple copies of data that are connected asynchronously (or perhaps only connected occasionally), it is possible that a document can be modified in two different ways and when the two conficted changes are replicated, both revisions are retained. This is intentional and allows application developers to be assured that conflicting data is not discarded - it can subsequently be repaired by deleting an unwanted revision, merging the conflicted revisions or implementing the <em>conflict revision</em> strategy that best suits the application.</li>
+<li>Fast writes: Cloudant is a distributed database with three copies of each document on separate database nodes. It is possible when updating a document over and over in a short time window that a conflicting write can be accepted by the database (as opposed to being denied with a 409). These spurious conflicts can be eliminated by avoiding design patterns that a require a single document to be modifed very quickly.</li>
+</ol>
+<p>Read more about <a href="https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html">Conflicts</a> and <a href="https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html">how to repair a database with conflicts</a> elsewhere in the Cloudant Blog (although spurious conflicts are best avoided in the first place).</p>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
+<p>If an application gets an HTTP 409 response saying &ldquo;409 - Document update conflict&rdquo;, it doesn&rsquo;t mean that Cloudant has <em>created</em> a document conflict. On the contrary, it means that Cloudant refused to accept the request to <em>avoid creating a conflict</em>.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

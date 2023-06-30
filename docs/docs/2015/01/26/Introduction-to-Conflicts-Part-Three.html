@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Introduction to Conflicts - 3/3</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Introduction to Conflicts - 3/3">
+    <meta property="og:url" content="https://blog.cloudant.com/2015/01/26/Introduction-to-Conflicts-Part-Three.html" />
+    <meta property="og:description" content="Avoiding document conflicts through design." />
+    <meta property="article:published_time" content="2015-01-26 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/jean-wimmerlin-535180-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Introduction to Conflicts - 3/3" />
+    <meta name="twitter:description" content="Avoiding document conflicts through design." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Introduction to Conflicts - 3/3">
+    <meta itemprop="description" content="Avoiding document conflicts through design.">
+    <meta itemprop="image" content="/img/jean-wimmerlin-535180-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Introduction to Conflicts - 3/3</h1>
+  
+  <div class="postmeta">Jan 26, 2015 | Glynn Bird | 
+
+  
+  <bx-tag>Conflicts</bx-tag>
+  
+
+
+  </div>
+  
+  <p>In <a href="'2015/01/12/Introduction-to-Conflicts-Part-One.html'">Parts One</a> and <a href="'2015/01/20/Introduction-to-Conflicts-Part-Two.html'">Two</a> of this series, we looked at:</p>
+<ul>
+<li>what are document conflicts in Cloudant?</li>
+<li>how do they arise?</li>
+<li>what does a conflict look like?</li>
+<li>the consequences of conflicts</li>
+<li>how to detect conflicts singly and in bulk</li>
+<li>how to resolve conflicts</li>
+</ul>
+<p>If your application replicates data between Cloudant and mobile device and the data is allowed to be modified (like an email inbox), then conflicts will arise in your application when the two replicas are combined, and the resolution of those conflicts is your application&rsquo;s responsibility.</p>
+<p>Some Cloudant users are surprised to find conflicts arising in their application even when they are not replicating to and from a remote database. It is this manifestation of conflicts that we will be addressing in this post.</p>
+<p>But first, we should answer the question &ldquo;what is a 409&rdquo;?</p>
+<p><img src="https://blog.cloudant.com/img/jean-wimmerlin-535180-unsplash.jpg" alt="fox"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/e1daGOrmkIk">jean wimmerlin on Unsplash</a></p>
+</blockquote>
+<h2 id="im-getting-a-http-409-error-when-i-try-to-write-a-document"style="display:inline">I&rsquo;m Getting A HTTP 409 Error When I Try To Write A Document</h2><a class="stealth" href="#im-getting-a-http-409-error-when-i-try-to-write-a-document">🔗</a><br>
+<p>Imagine your application pulls a document from a Cloudant database (say revision 1), makes a change to the document and posts the new document back to Cloudant, but Cloudant replies back with a HTTP 409 status code and the message</p>
+<pre tabindex="0"><code>{&#34;error&#34;:&#34;conflict&#34;,&#34;reason&#34;:&#34;Document update conflict.&#34;}
+</code></pre><p>This means that the document (id + revision) you are trying to edit has already been updated and your change has been rejected. This isn&rsquo;t a conflict as such (the conflict is not stored in the database), it is Cloudant preventing a conflicting revision from happening in the first place by indicating to you that you are trying to modify an old version of the document.</p>
+<p>This set of circumstances is visualised in the diagram below:</p>
+<p><img src="https://blog.cloudant.com/img/Conflicts-Part-Three-Preventing-conflicts.png" alt="one"></p>
+<p>In the time it has taken Rita to fetch the document and post a new revision, Sue has beaten her to it and posted her own change first. In order for Rita to commit her change, she needs to:</p>
+<ul>
+<li>pull the document again, to get the latest revision (revision 2)</li>
+<li>apply the change to the document (assuming it doesn&rsquo;t clash with Sue&rsquo;s change)</li>
+<li>write a third revision of the document</li>
+</ul>
+<p>If this is happening frequently, or indeed if you find you&rsquo;re modifying the same document over and over, then you may want to consider a different approach.</p>
+<h2 id="preventing-conflicts-by-design"style="display:inline">Preventing Conflicts By Design</h2><a class="stealth" href="#preventing-conflicts-by-design">🔗</a><br>
+<p>If your application is the recording of website events in a Cloudant database, it is tempting to design a schema like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;website&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://mydomain.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;impressions&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">70252</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;visitors&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1556</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;avg_page_delivery_time&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0.52</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As each page view occurs, you increment the &ldquo;impressions&rdquo; element of the document. This is a bad way to store data in Cloudant because:</p>
+<ul>
+<li>every write requires the client to read the document before it can be updated</li>
+<li>with even a moderate amount of traffic, 409s will start to occur as reads and writes overlap each other</li>
+<li>conflicts will be created and stored because different Cloudant nodes will accept a revision before data is synced between nodes</li>
+</ul>
+<p>A better way to store such data is to store one document per event:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2014-11-01 23:59:02 UTC&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;website&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://mydomain.com&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;event_type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;impression&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;delivery_time&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0.3</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We can then create a design document to create materialized views of data. e.g.</p>
+<ul>
+<li>page impression counts grouped hierarchically by year/month/day/hour etc</li>
+<li>average/min/max page delivery times by time</li>
+<li>total traffic breakdown by site and time</li>
+</ul>
+<p>Storing the events is simplified because data is only ever written to the database meaning that document conflicts can never occur. This write-only design pattern is used widely with Cloudant e.g.</p>
+<ul>
+<li>a blogging platform, instead of having one document per post (a document which is updated every time the post is modified), could have a document for each version of the post. Not only does this avoid conflicts, it gives a persistent revision history for each post. (Although Cloudant maintains revision tokens for each document change, document revisions cannot be relied on to provide rollback or a full revision history)</li>
+<li>a cache framework, instead of having one document per cache key (which is updated as the key&rsquo;s value changes), could have one document for each version of the key. A timestamp in the document would allow the latest key/value pair to be extracted.</li>
+</ul>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
+<p>Cloudant is a distributed database built to store data at a massive scale, whether through volume of data or concurrent user count. To be able to scale out horizontally, Cloudant imposes no locking of documents between nodes. Each shard of the database acts independently of each other, allowing your service to be always-available and able to survive a network partition.</p>
+<p>A by-product of this is that when disconnected nodes finally communicate, a document may have been modified in a different way on separate nodes. A conflict is stored in the document, with a copy of each competing revision and the application is able resolve the conflict with no data loss.</p>
+<p>Mobile applications need this flexibility because if a mobile phone had to connect to the internet for every operation then it would not be able to function offline, in a tunnel or with flaky reception. Cloudant&rsquo;s conflict storage mechanism allows you to build intelligent mobile applications, collecting data offline and syncing with the cloud when an internet connection is available.</p>
+<p>In some cases, document conflicts can be avoided altogether by adopting a write-only design pattern and using Cloudant Query or Map/Reduce views to aggregate the data on a massive scale.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-three/" target="_new">https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-three/</a>
+
+
+
+</body>
+</html>
+

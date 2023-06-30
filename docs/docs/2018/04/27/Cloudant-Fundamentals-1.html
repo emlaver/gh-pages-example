@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Cloudant Fundamentals 1/10</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Cloudant Fundamentals 1/10">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/04/27/Cloudant-Fundamentals-1.html" />
+    <meta property="og:description" content="The Document" />
+    <meta property="article:published_time" content="2018-04-27 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/kristina-tripkovic.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Cloudant Fundamentals 1/10" />
+    <meta name="twitter:description" content="The Document" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Cloudant Fundamentals 1/10">
+    <meta itemprop="description" content="The Document">
+    <meta itemprop="image" content="/img/kristina-tripkovic.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Cloudant Fundamentals 1/10</h1>
+  
+  <div class="postmeta">Apr 27, 2018 | Glynn Bird | 
+
+  
+  <bx-tag>Fundamentals</bx-tag>
+  
+
+
+  </div>
+  
+  <p><a href="https://www.ibm.com/cloud/cloudant">Cloudant</a> is a JSON document store, based on <a href="http://couchdb.apache.org/">Apache CouchDB</a>, running as-a-service in the IBM Cloud. The form of JSON you store in the database is up to you. You don&rsquo;t need to tell the database about the <em>schema</em> you&rsquo;re using ahead of time.</p>
+<p>Here&rsquo;s a typical document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;person&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;born&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1743-04-13&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Thomas Jefferson&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;potus&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;diedInOffice&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;street&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;931 Thomas Jefferson Pkwy&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;town&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Charlottesville&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;state&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Virginia&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;stateCode&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;VA&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;zip&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;22902&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Thomas Jefferson (April 13 [O.S. April 2] 1743 – July 4, 1826) was an American Founding Father who was the principal author of the Declaration of Independence and later served as the third President of the United States from 1801 to 1809. Previously, he was elected the second Vice President of the United States, serving under John Adams from 1797 to 1801. A proponent of democracy, republicanism, and individual rights motivating American colonists to break from Great Britain and form a new nation, he produced formative documents and decisions at both the state and national level. He was a land owner and farmer.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;offices&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;Governor of Virginia&#34;</span>,<span style="color:#e6db74">&#34;Secretary of State&#34;</span>, <span style="color:#e6db74">&#34;Vice President&#34;</span>]
+</span></span><span style="display:flex;"><span>}  
+</span></span></code></pre></div><p>JSON allows you to represent your data through key/value pairs that are:</p>
+<ul>
+<li>strings</li>
+<li>numbers</li>
+<li>booleans</li>
+<li>objects</li>
+<li>arrays of any of the above</li>
+</ul>
+<p>Cloudant doesn&rsquo;t restrict you on how detailed or &ldquo;nested&rdquo; your objects are (other database services restrict you to top-level key/values, for instance), so you can have arrays of objects that contain arrays of objects, if that is what you need.</p>
+<p><img src="https://blog.cloudant.com/img/kristina-tripkovic.jpg" alt="Citrus and apples, in the same bag"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/fvC5KxA5mPw?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Kristina Tripkovic</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a>.</p>
+</blockquote>
+<h2 id="rules-of-thumb"style="display:inline">Rules of thumb</h2><a class="stealth" href="#rules-of-thumb">🔗</a><br>
+<h3 id="avoid-thinking-in-joins"style="display:inline">Avoid thinking in joins</h3><a class="stealth" href="#avoid-thinking-in-joins">🔗</a><br>
+<p>Cloudant doesn&rsquo;t do joins like a relational database, so the JSON objects tend to be denormalised (i.e., contain repetitions of data held elsewhere)ok . Don&rsquo;t try to  model your data in a relational way and join it yourself in your app.</p>
+<h3 id="size-matters"style="display:inline">Size matters</h3><a class="stealth" href="#size-matters">🔗</a><br>
+<p>Cloudant will refuse to store documents over 1MB in size, but you shouldn&rsquo;t be going anywhere near that hard limit. The example document above is less than 1KB.</p>
+<h3 id="schemaless-doesnt-mean-schema-free"style="display:inline">Schemaless doesn&rsquo;t mean schema-free</h3><a class="stealth" href="#schemaless-doesnt-mean-schema-free">🔗</a><br>
+<p>Although Cloudant won&rsquo;t object if you use a different schema for each document in your database, that&rsquo;s probably not what you want. One of the first things I do when creating a new project is design the schema, in other words sketch the JSON that represents the objects I&rsquo;m going to save and the data types of each key. I don&rsquo;t have to tell <em>Cloudant</em> what the schema is, but that doesn&rsquo;t mean I shouldn&rsquo;t give careful consideration to my data model before I jump into the code.</p>
+<p>Unlike other databases, Cloudant doesn&rsquo;t enforce data types or mandatory fields or permitted ranges of values, but it&rsquo;s likely that you still want to do that in your app.</p>
+<h3 id="multiple-object-types-in-the-same-database"style="display:inline">Multiple object types in the same database</h3><a class="stealth" href="#multiple-object-types-in-the-same-database">🔗</a><br>
+<p>One widely used pattern that is odd to folks coming from a relational background is storing different object types in the same database. You could have blog posts and authors in the same Cloudant database using their own separate schema. One convention is to use the <code>type</code> field to indicate which flavour of object it is.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;post&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Thought Leadership for Beginners&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;How to think yourself to success.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;url&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://myblog.com/2018-04-02-thougt-leadership.html&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;data&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2018-04-02&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;author&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;John Doe&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;author&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;John Doe&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;url&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://myblog.com/&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;registered&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2005-09-18&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;john.doe@myspace.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;confirmed&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="write-only-document-patterns"style="display:inline">Write-only document patterns</h3><a class="stealth" href="#write-only-document-patterns">🔗</a><br>
+<p>Cloudant allows documents to be updated, but not on a field-by-field basis. For example, your e-commerce site can&rsquo;t do:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">UPDATE</span> stock <span style="color:#66d9ef">SET</span> stock_level <span style="color:#f92672">=</span> stock_level  <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">WHERE</span> product_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;45&#39;</span>
+</span></span></code></pre></div><p>Your app would have to fetch the whole document and write the whole, modified document back to the database.</p>
+<p>Think about whether you can adopt a &ldquo;write only&rdquo; approach. For the e-commerce example, a database could contain:</p>
+<ul>
+<li>a document every time inventory is received into the warehouse</li>
+<li>a document every time an item is sold</li>
+</ul>
+<p>The sum of the stock levels could then be calculated for each product by aggregating the documents. Using this technique you are only ever <em>writing</em> documents, not updating an existing document over and over.</p>
+<p>If you&rsquo;re interested in data modelling, then be sure to read <a href="https://console.bluemix.net/docs/services/Cloudant/guides/model_data.html#my-top-5-tips-for-modelling-your-data-to-scale">this guide</a> from the Cloudant documentation and watch Joan Touzet&rsquo;s excellent talk <a href="https://www.youtube.com/watch?v=BKQ9kXKoHS8">10 Common Misconceptions about CouchDB</a>.</p>
+<h2 id="next-time"style="display:inline">Next time</h2><a class="stealth" href="#next-time">🔗</a><br>
+<p>Next time we&rsquo;ll look at a vital component of a Cloudant document: the <code>_id</code> field.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-the-document-855c5ab92051" target="_new">https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-the-document-855c5ab92051</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Searching Jekyll Sites</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Searching Jekyll Sites">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/08/10/Adding-Search-to-a-Static-Jekyll-site.html" />
+    <meta property="og:description" content="Adding seach facility to a static website" />
+    <meta property="article:published_time" content="2018-08-10 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/atom0.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Searching Jekyll Sites" />
+    <meta name="twitter:description" content="Adding seach facility to a static website" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Searching Jekyll Sites">
+    <meta itemprop="description" content="Adding seach facility to a static website">
+    <meta itemprop="image" content="/img/atom0.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Searching Jekyll Sites</h1>
+  
+  <div class="postmeta">Aug 10, 2018 | Glynn Bird | 
+
+  
+  <bx-tag>Search</bx-tag>
+  
+  <bx-tag>Static</bx-tag>
+  
+
+
+  </div>
+  
+  <p>I&rsquo;m a big fan of <a href="https://jekyllrb.com/">Jekyll</a> for building static websites. If you&rsquo;re not familiar with Jekyll, it takes a collection of configuration, templates and source files (I write my posts in <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>) and transforms them into static HTML files that can be delivered to the world by any web server. Jekyll is built into <a href="https://pages.github.com/">GitHub Pages</a> so that you can host the source files for your website or blog in a Git repository and have the resultant static web site served out by GitHub Pages without having to manage any server infrastructure yourself. As of May 2018, <a href="https://blog.github.com/2018-05-01-github-pages-custom-domains-https/">GitHub Pages now supports HTTPS on your custom domains</a>.</p>
+<p>Static sites are fast and easy to manage but without any dynamic server-side components, they may leave your users without features they expect, such as <em>search</em>. In a Wordpress-style blog, the content is served out from a MySQL database and site search is powered by querying that data set.</p>
+<p><img src="https://blog.cloudant.com/img/atom0.jpg" alt="search"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/QBvtgLdmTbQ">Clem Onojeghuo on Unsplash</a></p>
+</blockquote>
+<p>On a static site, how can you allow your users to search the titles, tags and content of your blog if the data doesn&rsquo;t reside in a database and there&rsquo;s no server-side layer that can render dynamic pages? Here&rsquo;s how it can be done:</p>
+<p><img src="https://blog.cloudant.com/img/atom00.png" alt="search"></p>
+<ol>
+<li>Create a static website with Jekyll and serve it out on GitHub Pages, or another static site hosting service.</li>
+<li>Write some code to poll the site&rsquo;s Atom feed. A serverless platform like IBM Cloud Functions can be used to run the code periodically.</li>
+<li>Write the Atom Feed meta data into an IBM Cloudant database that has a free-text search index configured.</li>
+<li>Query the Cloudant database directly from the web page whenever a search is to be performed.</li>
+</ol>
+<p>Let&rsquo;s dive into the detail.</p>
+<h2 id="building-a-blog-with-jekyll"style="display:inline">Building a blog with Jekyll</h2><a class="stealth" href="#building-a-blog-with-jekyll">🔗</a><br>
+<p>There are plenty of guides that show you <a href="https://www.smashingmagazine.com/2014/08/build-blog-jekyll-github-pages/">how to build a Jekyll-powered blog on GitHub Pages</a> or follow the Jekyll documentation&rsquo;s <a href="https://jekyllrb.com/docs/quickstart/">Quick Start Guide</a>.</p>
+<p>Once your blog is setup, make sure it has an Atom feed published at the <code>/feed.xml</code> endpoint. This is powered by the <a href="https://github.com/jekyll/jekyll-feed">jekyll-feed</a> plugin.</p>
+<h2 id="schema-design"style="display:inline">Schema design</h2><a class="stealth" href="#schema-design">🔗</a><br>
+<p>In order to add a search tool to your static blog we&rsquo;re first going to need a database of blog post meta data. Using <a href="https://www.ibm.com/cloud/cloudant">Cloudant</a> as the database, we can store one JSON document per blog post like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3d8d5d582576d35c984ba7b328190f72&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-57b755340a3b760b5cef4f3018f0d9fb&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;title&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Cloudant replication with couchreplicate&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;One of Apache CouchDB™’s killer features is replication...&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2018-02-22T09:00:00.000Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;link&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://myblog.com/2018/02/22/Cloudant-Replication-with-couchreplicate.html&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;author&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn Bird&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;image&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://myblog.com/assets/img/replication-screenshot.png&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;tags&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Replication&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;CLI&#34;</span>
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>All of this data can be gleaned from the blog&rsquo;s <code>feed.xml</code> Atom feed with two exceptions:</p>
+<ul>
+<li>the <a href="https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-the-id-f6c7c88fbc75">_id field</a> needs to be unique - we can use a hash of the URL of the blog post.</li>
+<li>the <a href="https://medium.com/ibm-watson-data-lab/cloudant-fundamentals-the-rev-token-fb0fc19a3145">_rev field</a> is generated by the database and indicates the revision of the document.</li>
+</ul>
+<p>First <a href="https://console.bluemix.net/catalog/services/cloudant-nosql-db">sign up</a> for a Cloudant service and log into the dashboard. Create a new database called <code>blog</code>.</p>
+<p><img src="https://blog.cloudant.com/img/atom1.png" alt="create database"></p>
+<p>In that database we need to define a <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#search">Cloudant Search</a> index to answer free-text queries. Choose <em>New Search Index</em> from the menu next to &ldquo;Design Documents&rdquo;:</p>
+<p><img src="https://blog.cloudant.com/img/atom2.png" alt="create database"></p>
+<p>Then we can define an index by creating a JavaScript function that is executed for every document in the database, calling <code>index</code> for every value that is to be searchable:</p>
+<p><img src="https://blog.cloudant.com/img/atom3.png" alt="create database"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;title&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">title</span>, { <span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>});
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;tags&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">tags</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#34; &#34;</span>));
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;description&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">description</span>, {<span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>});
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;date&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span>, {<span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>});
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;image&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">image</span>, {<span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">index</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>});
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;link&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">link</span>, {<span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">index</span><span style="color:#f92672">:</span><span style="color:#66d9ef">false</span>});
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The index function takes three parameters:</p>
+<ol>
+<li>The name of field to be stored in the index e.g. <code>&quot;title&quot;</code>.</li>
+<li>The value to be indexed e.g. <code>doc.title</code>.</li>
+<li>An options object. When <code>store</code> is set to true, a copy of the value is stored unaltered in the index for retrieval at query-time. When <code>index</code> is set to <code>false</code> the value is not indexed for search, but <em>is</em> reproduced in the search results.</li>
+</ol>
+<h2 id="cors-and-effect"style="display:inline">CORS and effect</h2><a class="stealth" href="#cors-and-effect">🔗</a><br>
+<p>If we want to be able to query our Cloudant database directly from a web page, we need to make two further tweaks to the Cloudant configuration.</p>
+<p>Firstly we must enable CORS (Cross-Origin Resource Sharing) in the Cloudant dashboard:</p>
+<p><img src="https://blog.cloudant.com/img/atom4.png" alt="create database"></p>
+<p>Enabling CORS instructs Cloudant to output the HTTP headers that will allow an in-page web request (sometimes called an AJAX request) to proceed without an error. By default, the rules-of-the-road for the web wouldn&rsquo;t allow a web page to fetch JSON from a different domain name, and CORS is the work-around.</p>
+<p>Secondly, we need to make the database readable. You can either make the database <em>world readable</em> (grant <code>_reader</code> access to everyone) or create an API Key that grants <code>_reader</code> access to our database of blog post meta data. Both options are accessible from the &ldquo;Permissions&rdquo; panel in the Cloudant dashboard:</p>
+<p><img src="https://blog.cloudant.com/img/atom5.png" alt="create database"></p>
+<p>Now our database is created and set up, we need a script to poll the blog&rsquo;s Atom feed, convert it to JSON and write it to the Cloudant database.</p>
+<h2 id="atom-feed-poller"style="display:inline">Atom feed poller</h2><a class="stealth" href="#atom-feed-poller">🔗</a><br>
+<p>We can write a simple Node.js script to fetch the Atom feed using a handful of npm modules:</p>
+<ul>
+<li><a href="https://www.npmjs.com/package/@cloudant/cloudant">@cloudant/cloudant</a> - to interface with the Cloudant database.</li>
+<li><a href="https://www.npmjs.com/package/request">request</a> to fetch the Atom XML,</li>
+<li><a href="https://www.npmjs.com/package/feedparser">feedparser</a> to parse the Atom XML.</li>
+<li><a href="https://www.npmjs.com/package/striptags">striptags</a> to remove HTML tags from the content.</li>
+</ul>
+<p>The code itself then becomes pretty simple:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">FeedParser</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;feedparser&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">request</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;request&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">striptags</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;striptags&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">crypto</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;crypto&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@cloudant/cloudant&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// create an MD5 hash of the supplied string
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">md5</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">string</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">crypto</span>.<span style="color:#a6e22e">createHash</span>(<span style="color:#e6db74">&#39;md5&#39;</span>).<span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">string</span>).<span style="color:#a6e22e">digest</span>(<span style="color:#e6db74">&#39;hex&#39;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// poll an RSS feed, return an array of items
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">poll</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">url</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Promise((<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">req</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">request</span>(<span style="color:#a6e22e">url</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">feedparser</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">FeedParser</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">items</span> <span style="color:#f92672">=</span> []     
+</span></span><span style="display:flex;"><span>     
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;error&#39;</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">error</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// handle any request errors
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    });
+</span></span><span style="display:flex;"><span>     
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;response&#39;</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">res</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">stream</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>; <span style="color:#75715e">// `this` is `req`, which is a stream
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">statusCode</span> <span style="color:#f92672">!==</span> <span style="color:#ae81ff">200</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">emit</span>(<span style="color:#e6db74">&#39;error&#39;</span>, <span style="color:#66d9ef">new</span> Error(<span style="color:#e6db74">&#39;Bad status code&#39;</span>))
+</span></span><span style="display:flex;"><span>      } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">stream</span>.<span style="color:#a6e22e">pipe</span>(<span style="color:#a6e22e">feedparser</span>);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>     
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">feedparser</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;error&#39;</span>, <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">error</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">reject</span>(<span style="color:#a6e22e">error</span>)
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>     
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">feedparser</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;readable&#39;</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// This is where the action is!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">stream</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span> <span style="color:#75715e">// `this` is `feedparser`, which is a stream
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">item</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">while</span> (<span style="color:#a6e22e">item</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">stream</span>.<span style="color:#a6e22e">read</span>()) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">items</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">item</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">feedparser</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;end&#39;</span>, <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">newitems</span> <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">items</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">item</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">items</span>[<span style="color:#a6e22e">i</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">newitem</span> <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">_id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">md5</span>(<span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">link</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">title</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">title</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">description</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">striptags</span>(<span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">description</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">date</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">link</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">link</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">author</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">author</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">image</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">image</span>.<span style="color:#a6e22e">url</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitem</span>.<span style="color:#a6e22e">tags</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">categories</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">newitems</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">newitem</span>)
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">newitems</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">opts</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">poll</span>(<span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">BLOGURL</span>).<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">items</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudant</span>({<span style="color:#a6e22e">account</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">ACCOUNT</span>, <span style="color:#a6e22e">password</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">PASSWORD</span>, <span style="color:#a6e22e">plugins</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;promises&#39;</span>]}).<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">opts</span>.<span style="color:#a6e22e">DBNAME</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">bulk</span>({<span style="color:#a6e22e">docs</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">items</span>})
+</span></span><span style="display:flex;"><span>  })
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">main</span>
+</span></span></code></pre></div><p>The <code>main</code> function is passed an object with the following attributes:</p>
+<ul>
+<li><code>BLOGURL</code> - the URL of the blog&rsquo;s Atom feed.</li>
+<li><code>ACCOUNT</code> - the admin username of the Cloudant service.</li>
+<li><code>PASSWORD</code> - the admin password of the Cloudant service.</li>
+<li><code>DBNAME</code> - the name of the Cloudant database to write to.</li>
+</ul>
+<p>We can deploy this code to <a href="https://console.bluemix.net/openwhisk/">IBM Cloud Functions</a> using the <code>bx wsk</code> tool (substituting your Cloudant account, password and blog URL):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a package called cloudantblog containing the config</span>
+</span></span><span style="display:flex;"><span>bx wsk package update cloudantblog <span style="color:#ae81ff">\ </span>
+</span></span><span style="display:flex;"><span>  --param ACCOUNT <span style="color:#e6db74">&#34;myaccount&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --param PASSWORD <span style="color:#e6db74">&#34;mypassword&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --param DBNAME <span style="color:#e6db74">&#34;blog&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --param BLOGURL <span style="color:#e6db74">&#34;http://myblog.com/feed.xml&#34;</span> 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># add an action into the package</span>
+</span></span><span style="display:flex;"><span>zip -r poll.zip index.js node_modules
+</span></span><span style="display:flex;"><span>bx wsk action update cloudantblog/poll --kind nodejs:8 poll.zip
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># run periodically - every fifteen minutes</span>
+</span></span><span style="display:flex;"><span>bx wsk trigger create cloudantblog_trigger --feed /whisk.system/alarms/alarm --param cron <span style="color:#e6db74">&#34;*/15 * * * *&#34;</span>
+</span></span><span style="display:flex;"><span>bx wsk rule update cloudantblog_rule cloudantblog_trigger cloudantblog/poll
+</span></span></code></pre></div><p>IBM Cloud Functions now has your polling code and is invoking it every 15 minutes. The script fetches your blog&rsquo;s Atom feed turns it into JSON ready to be inserterd into the Cloudant database and then writes all the records in a single bulk request. It manages to deduplicate the listings because it uses a hash of the document&rsquo;s URL as the document id - Cloudant won&rsquo;t accept two documents with the same <code>_id</code> so duplicates are rejected.</p>
+<h2 id="performing-searches"style="display:inline">Performing searches</h2><a class="stealth" href="#performing-searches">🔗</a><br>
+<p>Our database should contain some documents. Let&rsquo;s see them by querying our database&rsquo;s <a href="https://console.bluemix.net/docs/services/Cloudant/api/database.html#get-documents">_all_docs</a> endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export COUCH_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://USER:PASS@HOST.cloudant.com/blog&#34;</span>
+</span></span><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/_all_docs?include_docs=true&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {&#34;rows&#34;:[...])</span>
+</span></span></code></pre></div><p>You should see a handful of documents.</p>
+<p>Now we can query the search index we created earlier:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/_design/search/_search/search?q=*:*&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;total_rows&#34;</span>: 10,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;bookmark&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rows&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;4281157a51e3f0c16fea1596fa10713e&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;order&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>        1,
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;fields&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;image&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:4000/assets/img/kristina-tripkovic.jpg&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;date&#34;</span>: <span style="color:#e6db74">&#34;2018-04-27T08:00:00.000Z&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;link&#34;</span>: <span style="color:#e6db74">&#34;http://localhost:4000/2018/04/27/Cloudant-Fundamentals-1.html&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Cloudant Fundamentals 1/10&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>The the <code>q=*:*</code> matches every indexed record. The array of <code>rows</code> returned contains a <code>fields</code> object containing each item indexed with <code>store: true</code> during the indexing process.</p>
+<p>Imagine we wish to answer a user query for documents matching the search phrase &ldquo;red apples&rdquo;, then we can construct a Cloudant Search query to look for &ldquo;red apples&rdquo; in the description field:</p>
+<pre tabindex="0"><code>description:&#39;red apples&#39;
+</code></pre><p>A better search for this use-case is this:</p>
+<pre tabindex="0"><code>title:&#39;red apples&#39;^100 OR tags:&#39;red apples&#39;^10 OR description:&#39;red apples&#39;
+</code></pre><p>The above query matches the <code>title</code>, <code>tags</code> or <code>description</code> fields against the query string, but attaches greater weight to title matches, than tags or description matches. This use of the <code>^</code> operator weights the search results to bring more relevant documents to the top of the results.</p>
+<p>We can send this query to Cloudant using <code>curl</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/_design/search/_search/search?q=title:&#39;red+apples&#39;^100+OR+tags:&#39;red+apples&#39;^10+OR+description:&#39;red+apples&#39;&#34;</span>
+</span></span></code></pre></div><h2 id="querying-from-the-front-end"style="display:inline">Querying from the front end</h2><a class="stealth" href="#querying-from-the-front-end">🔗</a><br>
+<p>The final piece of the puzzle is making the search request from inside a web page. Here there are myriad options:</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest">XMLHttpRequest</a></li>
+<li><a href="http://api.jquery.com/jquery.ajax/">jQuery.ajax()</a></li>
+<li><a href="https://visionmedia.github.io/superagent/">SuperAgent</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">Fetch</a></li>
+</ul>
+<p>Let&rsquo;s use <code>fetch</code> because it&rsquo;s new and shiny and it couldn&rsquo;t be easier:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// search string looking for &#39;red apples&#39; in title/tags/description
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://myhost.cloudant.com/blog/_design/search/_search/search?q=title:&#39;red+apples&#39;^100+OR+tags:&#39;red+apples&#39;^10+OR+description:&#39;red+apples&#39;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// fetch the url
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">url</span>).<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">response</span>) =&gt; { 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">json</span>() 
+</span></span><span style="display:flex;"><span>}).<span style="color:#a6e22e">then</span>((<span style="color:#a6e22e">json</span>) =&gt; {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">json</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// {&#34;total_rows&#34;:10,&#34;bookmark&#34;:&#34;xxx&#34;,&#34;rows&#34;:[...]}
+</span></span></span></code></pre></div><p>All that remains is to loop over the returned JSON&rsquo;s <code>rows</code> attribute to pick out and render the data. How you do that depends on your front-end stack. I like the way <a href="https://vuejs.org/">Vue.js</a> manages the plumbing between your JavaScript &ldquo;model&rdquo; and your HTML &ldquo;view&rdquo;. There are thousand other ways of building a dynamic page using other frameworks (React, Angular, Ember et al) or none:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// build search results HTML
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">html</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">rows</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">json</span>.<span style="color:#a6e22e">rows</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">fields</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">html</span> <span style="color:#f92672">+=</span> <span style="color:#e6db74">`&lt;p&gt;&lt;a href=&#34;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">link</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;&gt;</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">title</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&lt;/a&gt;&lt;/p&gt;`</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// update the web page
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#39;content&#39;</span>).<span style="color:#a6e22e">innerHTML</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">html</span>
+</span></span></code></pre></div><h2 id="example"style="display:inline">Example</h2><a class="stealth" href="#example">🔗</a><br>
+<p>The Cloudant blog is an example of this technology in action. It is a Jekyll-powered static website whose Atom feed is being polled by an IBM Cloud Functions action and whose search facility is powered by a Cloudant database containing the post&rsquo;s meta data.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/adding-cloudant-search-to-your-static-jekyll-blog-5ad76b32a902" target="_new">https://medium.com/@glynn_bird/adding-cloudant-search-to-your-static-jekyll-blog-5ad76b32a902</a>
+
+
+
+</body>
+</html>
+

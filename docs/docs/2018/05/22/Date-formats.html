@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Date formats</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Date formats">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/05/22/Date-formats.html" />
+    <meta property="og:description" content="Storing date &amp; time in JSON" />
+    <meta property="article:published_time" content="2018-05-24 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/dateformat.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Date formats" />
+    <meta name="twitter:description" content="Storing date &amp; time in JSON" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Date formats">
+    <meta itemprop="description" content="Storing date &amp; time in JSON">
+    <meta itemprop="image" content="/img/dateformat.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Date formats</h1>
+  
+  <div class="postmeta">May 24, 2018 | Glynn Bird | 
+
+  
+  <bx-tag>Date</bx-tag>
+  
+
+
+  </div>
+  
+  <p><a href="http://couchdb.apache.org/">Apache CouchDB</a> and IBM Cloudant are JSON document stores and as such don&rsquo;t have a native <em>date</em> type - only the data primitives allowed in the JSON specification.</p>
+<p>Before discussing date storage formats, we should first tackle the issue of timezones. Timezones are <a href="https://www.youtube.com/watch?v=cGXp34c_o48&amp;feature=youtu.be&amp;t=12s">utterly baffling</a> so best practice is to store dates in the <strong>UTC timezone</strong> in the database even if your data originated from many places across the globe. Storing data in the same univeral timezone in the database means all the dates and times in our date store are in the same &ldquo;units&rdquo;. There&rsquo;s nothing stopping your front end app converting these dates into a format according to the locale of each of your users. Using UTC also neatly sidesteps the issue of Daylight Savings Time!</p>
+<p>As to storage formats, there are three options in common use.</p>
+<h2 id="1-store-date-as-a-single-iso-8601-string"style="display:inline">1. Store date as a single ISO-8601 string</h2><a class="stealth" href="#1-store-date-as-a-single-iso-8601-string">🔗</a><br>
+<p>There&rsquo;s an <a href="https://www.iso.org/iso-8601-date-and-time-format.html">international standard</a> for storing date and time as a human and machine readable string:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;datetime&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2018-05-02T15:02:40.628Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>In JavaScript you can create this format with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">toISOString</span>()
+</span></span></code></pre></div><p>It consists of:</p>
+<ul>
+<li>year, month and day separated by hyphens.</li>
+<li>a &ldquo;T&rdquo; character to separate the date and time elements.</li>
+<li>hour, minute and second (to microsecond precision) separated by colons.</li>
+<li>UTC timezone indicated by <code>Z</code>, which refers to the military timezone <a href="https://en.wikipedia.org/wiki/List_of_military_time_zones">Zulu</a>.</li>
+</ul>
+<p>This is a good general-purpose format that is compact, sorts in date/time order and can be returned to a date object in the constructor of the JavaScript <em>Date</em> object e.g when manipulating dates in a <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce view</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">datetime</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">month</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getMonth</span>() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 0 - 11
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">year</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getFullYear</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">month</span>], <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>which when packaged into a <a href="https://console.bluemix.net/docs/services/Cloudant/api/design_documents.html#design-documents">Design Document</a> with a built-in reducer can be queried with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/_design/mydesigndoc/_view/myview?group=true&#34;</span>
+</span></span></code></pre></div><p>This produces time-ordered, hierarchical, grouped aggregations of your data.</p>
+<p>What is less obvious is that if you had chosen to store the data in different format, such as <code>2018-05-02 15:02:40</code>, then the call to <code>new Date(doc.datetime)</code> would have failed. This is due to the older version of the SpiderMonkey JavaScript engine used by CouchDB &amp; Cloudant being unable to parse this unrecognised date format.</p>
+<h2 id="2-store-date-as-a-timestamp"style="display:inline">2. Store date as a timestamp</h2><a class="stealth" href="#2-store-date-as-a-timestamp">🔗</a><br>
+<p>Instead of storing your date and time as a string, you could opt to store an integer timestamp instead - specifically, the number of milliseconds since 1 January 1970 00:00:00 UTC.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1525273360628</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Although this is not as human-readable as the ISO-8601 string, it is still machine-readable, sorts in date &amp; time order and can be easily converted back into a <em>Date</em> object in a map function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">timestamp</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">month</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getMonth</span>() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 0 - 11
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">year</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">d</span>.<span style="color:#a6e22e">getFullYear</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">month</span>], <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This format is not really suitable for storing dates before 1970 (although negative timestamps do work!) but it may be useful for simple date arithmetic as one timestamp can be subtracted from another to calculate the time difference.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// calculate days since presidential inauguration
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#e6db74">&#39;2017-01-20T17:00:00.000Z&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">diff</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">getTime</span>() <span style="color:#f92672">-</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">days</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">diff</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">1000</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span><span style="color:#f92672">*</span><span style="color:#ae81ff">24</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 467.9
+</span></span></span></code></pre></div><h2 id="3-store-date-and-time-components-in-separate-fields"style="display:inline">3. Store date and time components in separate fields</h2><a class="stealth" href="#3-store-date-and-time-components-in-separate-fields">🔗</a><br>
+<p>The third option is to store each date and time component separately:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;year&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2018</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;month&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;day&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;hour&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">15</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;minute&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;second&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">40</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;millsecond&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">628</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This is more verbose than the previous two solutions but has the advantage that the data is ready for querying and indexing without any pre-processing. This is particularly important when using <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#query">Cloudant Query</a> - MapReduce views are commonly used to pre-process data before it is <em>emitted</em> into the index but there is no such facility when using Cloudant Query. For Cloudant Query, the data <em>has</em> to be in the document and in the correct format.</p>
+<p>Create an index with the <code>/db/_index</code> endpoint or through the dashboard:</p>
+<p><img src="https://blog.cloudant.com/img/date1.png" alt="date ui"></p>
+<p>and query the index using the <code>/db/_find</code> endpoint or again, using the dashboard:</p>
+<p><img src="https://blog.cloudant.com/img/date2.png" alt="date ui"></p>
+<p>If the data were stored in ISO-8601 format, it would not be possible to index or query a single component (e.g. the year) on its own using Cloudant Query.</p>
+<h2 id="date--time-gotchas"style="display:inline">Date &amp; time gotchas</h2><a class="stealth" href="#date--time-gotchas">🔗</a><br>
+<ul>
+<li>Remember that the JavaScript <code>Date.getMonth()</code> and <code>Date.setMonth()</code> functions use number 0-11 to represent months January to December.</li>
+<li>When extracting data from a Javascript <em>Date</em> object, remember it&rsquo;s <code>getDate()</code>, <code>getMonth()+1</code> and <code>getFullYear()</code>, not the function names you might expect!</li>
+<li>The JavaScript engine used in the MapReduce engine can&rsquo;t parse many date formats in its constructor. It can deal with ISO-8601 format and milliseconds  since 1970, and that&rsquo;s about it.</li>
+<li>If you use string manipulation to split up a date you may be run into this conundrum in your map function</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// split up the date 2018-08-09
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">bits</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#39;-&#39;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">year</span> <span style="color:#f92672">=</span> parseInt(<span style="color:#a6e22e">bits</span>[<span style="color:#ae81ff">0</span>]);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">month</span> <span style="color:#f92672">=</span> parseInt(<span style="color:#a6e22e">bits</span>[<span style="color:#ae81ff">1</span>]);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">day</span> <span style="color:#f92672">=</span> parseInt(<span style="color:#a6e22e">bits</span>[<span style="color:#ae81ff">2</span>]);
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">month</span>, <span style="color:#a6e22e">day</span>], <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">temperature</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>In the above code we&rsquo;ve elected to store only the date as a string. We&rsquo;re splitting the string by the <code>-</code> character, turning the year/month/day pieces into integers and using them to create a hierarchical index. What&rsquo;s the problem with this approach?</p>
+<p>Take the date <code>2018-08-09</code> (9th of August). In this case the data calculated would be:</p>
+<ul>
+<li>year - 2018</li>
+<li>month - 0</li>
+<li>day - 1</li>
+</ul>
+<p>Why? Because the indexer&rsquo;s SpiderMonkey JavaScript engine interprets the leading zero on <code>08</code> and <code>09</code> to indicate that you wish the date to be parsed as <a href="https://en.wikipedia.org/wiki/Octal">Octal</a> numbers! It can be remedied with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">month</span> <span style="color:#f92672">=</span> parseInt(<span style="color:#a6e22e">bits</span>[<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">day</span> <span style="color:#f92672">=</span> parseInt(<span style="color:#a6e22e">bits</span>[<span style="color:#ae81ff">2</span>], <span style="color:#ae81ff">10</span>);
+</span></span></code></pre></div><p>This indicates that your strings are in decimal.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/date-formats-for-apache-couchdb-and-cloudant-1c017b7b878b" target="_new">https://medium.com/@glynn_bird/date-formats-for-apache-couchdb-and-cloudant-1c017b7b878b</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Search</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Search</h1>
+  
+  <p><label for="search">Search</label>
+<input type="text" name="search" id="searchcontrol" placeholder="e.g. MapReduce" onkeyup="search()" /></p>
+<p id="instructions">
+e.g. MapReduce or title:HTTP
+</p>
+<div id="searchresults"></div>
+<!-- Load the Lunr library-->
+<script src="https://unpkg.com/lunr/lunr.js"></script>
+<!-- Load the content to index -->
+<script src="https://blog.cloudant.com/js/searchcontent.js"></script>
+<script>
+
+  // put in placeholder searchContent if it's not there
+  searchContent = searchContent || []
+  
+  // remove anything but alphanumeric characters
+  const sanitise = function(str) {
+    return str.replace(/[^a-zA-Z0-9 \-:]/g, '')
+  }
+
+  // find url in array of search content
+  const locate = function (url) {
+    for(s of searchContent) {
+      if (s.url === url) {
+        return s
+      }
+    }
+    return null
+  }
+
+  // create a new search index
+  var idx = lunr(function () {
+    // index the following fields, favouring title, tags & description before blog content
+    this.ref('url')
+    this.field('title', { boost: 10 })
+    this.field('description', { boost: 2})
+    this.field('tags', { boost: 5 })
+    this.field('content', { boost: 1 })
+  
+    searchContent.forEach(function (doc) {
+      this.add(doc)
+    }, this)
+  })
+
+  // perform a search
+  const search = function() {
+    document.getElementById('searchresults').innerHTML = ''
+    let term = sanitise(document.getElementById('searchcontrol').value)
+    if (!term) {
+      document.getElementById('instructions').style.display = 'block'
+      window.location.hash = ''
+      return
+    }
+    document.getElementById('instructions').style.display = 'none'
+    const results = idx.search(term)
+    let inner = ''
+
+    // output list item HTML into searchresults div
+    for(r of results) {
+      const rec = locate(r.ref)
+      inner += `<div class="searchres"><h3><a href="${rec.url}">${rec.title}</a></h3><p class="searchdesc">${rec.description}</p><p class="searchurl"><a href="${rec.url}">${rec.url}</a></p></div>\n`
+    }
+    document.getElementById('searchresults').innerHTML = inner
+    window.location.hash=encodeURIComponent(term)
+  }
+
+  if (window.location.hash) {
+    let v = decodeURIComponent(window.location.hash).replace(/^#/,'')
+    document.getElementById('searchcontrol').value = decodeURIComponent(v)
+    search()
+  }
+
+</script>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Partitioned Databases - Sizing</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Partitioned Databases - Sizing">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html" />
+    <meta property="og:description" content="Calculating the size of each partition in a partitioned database." />
+    <meta property="article:published_time" content="2019-03-05 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/annie-spratt-96526-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Partitioned Databases - Sizing" />
+    <meta name="twitter:description" content="Calculating the size of each partition in a partitioned database." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Partitioned Databases - Sizing">
+    <meta itemprop="description" content="Calculating the size of each partition in a partitioned database.">
+    <meta itemprop="image" content="/img/annie-spratt-96526-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Partitioned Databases - Sizing</h1>
+  
+  <div class="postmeta">Mar 5, 2019 | Glynn Bird | 
+
+  
+  <bx-tag>Partitioned</bx-tag>
+  
+  <bx-tag>Sizing</bx-tag>
+  
+
+
+  </div>
+  
+  <blockquote>
+<p>This is the fourth part of a series of posts on Partitioned Databases in Cloudant. <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Part One</a>, <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Part Two</a> and [Part Three][3] may also be of interest.</p>
+</blockquote>
+<p>Choosing a partition key for a partitioned Cloudant databases is about selecting an attribute that has:</p>
+<ul>
+<li>Many values - lots of small partitions are better than a few large ones.</li>
+<li>No hot spots - avoid designing a system that makes one partition handle a high proportion of the workload. If the work is evenly distributed around the partitions, the database will perform more smoothly.</li>
+<li>Repeating - If each partition key is unique, there will be one document per partition. To get the best out of partitioned databases, there should be multiple documents per partition - documents that logically belong together.</li>
+</ul>
+<p>We don&rsquo;t want a single partition to get too big (bigger than a handful of GB) or to have to handle a disproportionate amount of the database&rsquo;s workload.</p>
+<p><img src="https://blog.cloudant.com/img/annie-spratt-96526-unsplash.jpg" alt="cake"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/oudLkxglHuM">Annie Spratt on Unsplash</a></p>
+</blockquote>
+<p>Although there are no API calls that can deliver a league table of the largest partitions in your database, it&rsquo;s simple enough to generate a <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce view</a> to estimate the size of each partition. Here&rsquo;s how.</p>
+<h2 id="creating-a-mapreduce-view-to-estimate-partition-size"style="display:inline">Creating a MapReduce view to estimate partition size</h2><a class="stealth" href="#creating-a-mapreduce-view-to-estimate-partition-size">🔗</a><br>
+<p>MapReduce views are defined as JavaScript functions that are executed for each document in the database. We want to extract the <em>partition key</em> from each document&rsquo;s <code>_id</code> field and use that as the view&rsquo;s key.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// extract the document _id&#39;s partition key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_id</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">partition_key</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">id</span>.<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">id</span>.<span style="color:#a6e22e">indexOf</span>(<span style="color:#e6db74">&#39;:&#39;</span>))
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// calculate size of document
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">docsize</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">doc</span>).<span style="color:#a6e22e">length</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// create view where the key is the partition_key and the value is the document size
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">partition_key</span>, <span style="color:#a6e22e">docsize</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The view can be defined by pasting the JavaScript into the Cloudant dashboard (Design Documents <code>+</code> New View):</p>
+<p><img src="https://blog.cloudant.com/img/partitionsize1.png" alt="create view"></p>
+<p>If we choose the <code>_sum</code> reducer, we get the sum of the document sizes by partition (not including conflicts or attachments) - if we choose the <code>_count</code> reducer we get the number of documents per partition.</p>
+<h2 id="querying-the-view"style="display:inline">Querying the view</h2><a class="stealth" href="#querying-the-view">🔗</a><br>
+<p>The MapReduce view can be queried with <code>group_level=1</code> to generate totals/counts by the view&rsquo;s key (the partition key):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;$URL/$DB/_design/partitions/_view/partitions?group_level=1&#39;</span>
+</span></span></code></pre></div><p><img src="https://blog.cloudant.com/img/partitionsize2.png" alt="query view"></p>
+<p>To sort the data set we can pipe this data into <a href="https://stedolan.github.io/jq/manual/#sort,sort_by(path_expression)">jq</a> and sort the array by <code>value</code> (to get the biggest or fullest partitions last in the list):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;$URL/$DB/_design/partitions/_view/partitions?group_level=1&#39;</span>| jq <span style="color:#e6db74">&#39;.rows | sort_by(.value)&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;user649&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">18370</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;user278&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">18977</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;user245&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">19048</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  ...
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;user489&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">45121</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;user755&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">46365</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;user970&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;value&#34;</span>: <span style="color:#ae81ff">46513</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><h2 id="top-ten-partition-count"style="display:inline">Top ten partition count</h2><a class="stealth" href="#top-ten-partition-count">🔗</a><br>
+<p>To produce a &ldquo;top ten&rdquo; list of partitions by document count, we&rsquo;re going to need a custom &ldquo;reduce&rdquo; function.</p>
+<h3 id="map"style="display:inline">Map</h3><a class="stealth" href="#map">🔗</a><br>
+<p>Our map function  simply emits a value of &ldquo;1&rdquo; for each document against a key of the document&rsquo;s <em>partition key</em>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">partition</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_id</span>.<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_id</span>.<span style="color:#a6e22e">indexOf</span>(<span style="color:#e6db74">&#39;:&#39;</span>))
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">partition</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="reduce"style="display:inline">Reduce</h3><a class="stealth" href="#reduce">🔗</a><br>
+<p>The custom reducer (written by <a href="https://twitter.com/kocolosk">Adam Kocoloski</a>) pushes responsibility for the secondary aggregation of the list of partition document counts to the database by employing a second &ldquo;reduction&rdquo; phase. This is neat in terms of the form of the returned data but custom-reducers are difficult to write, debug and maintain and are not to be recommended for general use in Cloudant as they lead to poor database performance.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">keys</span>, <span style="color:#a6e22e">values</span>, <span style="color:#a6e22e">rereduce</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">topTenPlusBoundaryKeys</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">partitions</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// preserve boundary keys because we may not have the correct count for them yet
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// not that it matters, but the array is reversed so these labels are correct
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">first</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">partitions</span>.<span style="color:#a6e22e">pop</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">last</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">partitions</span>.<span style="color:#a6e22e">shift</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// sort the remaining entries by value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">partitions</span>.<span style="color:#a6e22e">sort</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">p1</span>, <span style="color:#a6e22e">p2</span>) { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p2</span>.<span style="color:#a6e22e">count</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">p1</span>.<span style="color:#a6e22e">count</span>; });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// return the top ten partitions, plus the boundary partitions, all sorted
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">topTen</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">partitions</span>.<span style="color:#a6e22e">slice</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">first</span>) { <span style="color:#a6e22e">topTen</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">first</span>) };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">last</span>) { <span style="color:#a6e22e">topTen</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">last</span>) };
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">topTen</span>.<span style="color:#a6e22e">sort</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">p1</span>, <span style="color:#a6e22e">p2</span>) { <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">p2</span>.<span style="color:#a6e22e">count</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">p1</span>.<span style="color:#a6e22e">count</span>; });
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">topTen</span>;
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">rereduce</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// account for boundary keys by summing over each partition
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">totals</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">values</span>.<span style="color:#a6e22e">reduce</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">acc</span>, <span style="color:#a6e22e">currentVals</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">currentVals</span>.<span style="color:#a6e22e">forEach</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">elem</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">acc</span>[<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">partition</span>]) {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">acc</span>[<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">partition</span>] <span style="color:#f92672">+=</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">count</span>;
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">acc</span>[<span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">partition</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">elem</span>.<span style="color:#a6e22e">count</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      });
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">acc</span>;
+</span></span><span style="display:flex;"><span>    }, {});
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// convert back into an Array with expected structure
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">reduced</span> <span style="color:#f92672">=</span> [];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">elem</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">totals</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">reduced</span>.<span style="color:#a6e22e">push</span>({<span style="color:#a6e22e">partition</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">elem</span>, <span style="color:#a6e22e">count</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">totals</span>[<span style="color:#a6e22e">elem</span>]})
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// sort in reverse order just to stay consistent with rereduce=false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// again, all that&#39;s required is to find the boundary keys
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">reduced</span>.<span style="color:#a6e22e">sort</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">p1</span>, <span style="color:#a6e22e">p2</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">p2</span>.<span style="color:#a6e22e">partition</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">p1</span>.<span style="color:#a6e22e">partition</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">p1</span>.<span style="color:#a6e22e">partition</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">p2</span>.<span style="color:#a6e22e">partition</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">topTenPlusBoundaryKeys</span>(<span style="color:#a6e22e">reduced</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// compute the number of index entries per partition
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">reduced</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">keys</span>.<span style="color:#a6e22e">reduce</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">output</span>, <span style="color:#a6e22e">currentKey</span>, <span style="color:#a6e22e">index</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">currentKey</span>[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#a6e22e">output</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">partition</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">output</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">count</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">values</span>[<span style="color:#a6e22e">index</span>]
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">output</span>.<span style="color:#a6e22e">unshift</span>({<span style="color:#a6e22e">partition</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">currentKey</span>[<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">count</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">values</span>[<span style="color:#a6e22e">index</span>]})
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">output</span>;
+</span></span><span style="display:flex;"><span>    }, [{<span style="color:#a6e22e">partition</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">keys</span>[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>], <span style="color:#a6e22e">count</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>}]);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">topTenPlusBoundaryKeys</span>(<span style="color:#a6e22e">reduced</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="querying-the-top-ten-view"style="display:inline">Querying the top-ten view</h3><a class="stealth" href="#querying-the-top-ten-view">🔗</a><br>
+<p>Query the view without any parameters produces a list of the partitions with the most documents.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;$URL/$DB/_design/partitions/_view/topten&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;rows&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;key&#34;</span>:null,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user970&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:73<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user755&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:73<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user489&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:71<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user396&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:71<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user12&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:71<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user816&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:70<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user113&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:70<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user9&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:69<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user815&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:69<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user662&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:69<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user1&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:50<span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;partition&#34;</span>:<span style="color:#e6db74">&#34;user999&#34;</span>,<span style="color:#e6db74">&#34;count&#34;</span>:44<span style="color:#f92672">}]}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><h2 id="further-information"style="display:inline">Further information</h2><a class="stealth" href="#further-information">🔗</a><br>
+<ul>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
+<li>[Partitioned databases - Data Migration][3]</li>
+<li>[Partitioned databases - Partition sizing][4]</li>
+<li>[Partitioned databases - Cloudant Documentation][5]</li>
+</ul>
+<p>[3]: {{ ref &ldquo;2019-03-05-Partition-Databases-Data-Migration.md&rdquo; &gt;}}
+[4]: {{ ref &ldquo;2019-03-05-Partition-Databases-Sizing.md&rdquo; &gt;}}
+[5]: <a href="https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases">https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases</a></p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

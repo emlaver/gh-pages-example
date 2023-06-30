@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Design Docs For Life</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Design Docs For Life">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/08/16/Design-Docs-For-Life.html" />
+    <meta property="og:description" content="All about Cloudant Design Documents." />
+    <meta property="article:published_time" content="2019-08-16 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/kelly-sikkema-o2TRWThve_I-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Design Docs For Life" />
+    <meta name="twitter:description" content="All about Cloudant Design Documents." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Design Docs For Life">
+    <meta itemprop="description" content="All about Cloudant Design Documents.">
+    <meta itemprop="image" content="/img/kelly-sikkema-o2TRWThve_I-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Design Docs For Life</h1>
+  
+  <div class="postmeta">Aug 16, 2019 | Glynn Bird | 
+
+  
+  <bx-tag>Design Docs</bx-tag>
+  
+  <bx-tag>Query</bx-tag>
+  
+
+
+  </div>
+  
+  <p>A Design Document is a special Cloudant document whose <code>_id</code> field begins with <code>_design/</code> e.g. <code>_design/search</code>. It stores meta data about a secondary index or indexes: the name of the index, which fields are to be indexed etc. Design documents are created in one of two ways:</p>
+<ol>
+<li>You create and update them manually as you would for any normal Cloudant document. This method is required for <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-views-mapreduce">MapReduce</a> views, <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search">Cloudant Search</a> and <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-cloudant-nosql-db-geospatial">Geospatial</a> indexes.</li>
+<li>They are created for you when you instruct the database to create a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">Cloudant Query</a> index using the <code>POST /db/_index</code> endpoint. Such design documents are not intended for you to maintain - they merely record state for the Cloudant Query service.</li>
+</ol>
+<p>As a side note, a Design Document can also contain definitions for <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-design-documents#list-functions">List</a>, <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-design-documents#show-functions">Show</a>, <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-design-documents#update-handlers">Update</a> and <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-design-documents#filter-functions">Filter</a> functions, none of which we&rsquo;ll look at in this post.</p>
+<p><img src="https://blog.cloudant.com/img/kelly-sikkema-o2TRWThve_I-unsplash.jpg" alt="design docs"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/o2TRWThve_I">Kelly Sikkema on Unsplash</a></p>
+</blockquote>
+<h2 id="view-building"style="display:inline">View building</h2><a class="stealth" href="#view-building">🔗</a><br>
+<p>When a Design Document is created, whether by hand or via Cloudant Query, Cloudant asynchronously begins to build the index. Indexing requires Cloudant to trawl through each document in the database in turn to build the index - in fact, as a Cloudant database is split into many (sixteen by default) pieces called <em>shards</em> the index builds independently on each shard copy. If the database document count is significant, it may take some time to finish the indexing process.</p>
+<p>You can query a view before the index has finished building, but you will not get a response until indexing is complete. You can check on the progress of an indexing job by querying the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-active-tasks">_active_tasks</a> endpoint.</p>
+<h2 id="design-document-tips"style="display:inline">Design Document Tips</h2><a class="stealth" href="#design-document-tips">🔗</a><br>
+<h3 id="cloudant-query-indexes-can-be-more-efficient-than-mapreduce"style="display:inline">Cloudant Query indexes can be more efficient than MapReduce</h3><a class="stealth" href="#cloudant-query-indexes-can-be-more-efficient-than-mapreduce">🔗</a><br>
+<p>The MapReduce engine requires Cloudant to execute your JavaScript map function using a JavaScript engine where as Cloudant Query work stays within the Erlang space of Cloudant&rsquo;s core. As a result, Cloudant Queries are more efficient to build than their MapReduce equivalents.</p>
+<h3 id="store-data-in-a-index-friendly-way"style="display:inline">Store data in a index-friendly way</h3><a class="stealth" href="#store-data-in-a-index-friendly-way">🔗</a><br>
+<p>Cloudant Query doesn&rsquo;t give you the opportunity to modify the data prior to indexing (as can be achieved in a JavaScript map function) so it is important to store data in the form that is suitable for querying. With only a handful of indexed fields, many of your application access patterns can be <a href="https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html">queried optimally</a>.</p>
+<h3 id="partial-indexes-are-smaller"style="display:inline">Partial Indexes are smaller</h3><a class="stealth" href="#partial-indexes-are-smaller">🔗</a><br>
+<p>If you only need to index a sub-set of a database with Cloudant Query then a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#creating-a-partial-index">partial index</a> can make the index smaller and more efficient by applying a filter <em>selector</em> at indexing time. A similar effect is achieved with an <code>if</code> statement in a MapReduce or Search index:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// we only want totals of paid orders
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;order&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">status</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;paid&#39;</span>) {
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// build in index of order value by date, but only for paid-for orders
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">total</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>A small index requires fewer computing resources to manage so should be faster to query.</p>
+<h3 id="use-meaningful-names"style="display:inline">Use meaningful names</h3><a class="stealth" href="#use-meaningful-names">🔗</a><br>
+<p>After using Cloudant for a while, you might find yourself staring at an index definition and wondering what it is for, who created it and whether it is still needed. Having a good naming convention is important in most software projects, and this applies to design document management too. Here are some ideas:</p>
+<ul>
+<li>Keep global indexes and partitioned indexes separate e.g. <code>global/orderValueByDate</code>, <code>partitioned/userOrdersByTime</code>.</li>
+<li>Ensure that the name of the index reflects the access pattern it is built to service e.g. <code>eventsByType</code>, <code>salesByYearMonthDay</code>, <code>booksByAuthor</code>.</li>
+<li>Add comments into JavaScript view and search index definitions to explain non-obvious code and which part of your application uses the index.</li>
+<li>You may wish to <em>version</em> your view names to allow a smooth migration from one version of your code to another <code>e.g. salesReport/productCountByDatev5</code>.</li>
+</ul>
+<h3 id="partitioned-indexes-are-faster"style="display:inline">Partitioned indexes are faster</h3><a class="stealth" href="#partitioned-indexes-are-faster">🔗</a><br>
+<p>If your data can be moulded into a <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned Database</a> model, then queries that are directed to a single partition will execute faster and be charged less per query than their global equivalents.</p>
+<h3 id="specify-use_index"style="display:inline">Specify use_index</h3><a class="stealth" href="#specify-use_index">🔗</a><br>
+<p>When querying using Cloudant Query, supply <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#finding-documents-by-using-an-index">use_index</a> when you know which index you intend Cloudant to use to answer your query.</p>
+<h3 id="use-the-explain-api"style="display:inline">Use the &ldquo;explain&rdquo; API</h3><a class="stealth" href="#use-the-explain-api">🔗</a><br>
+<p>Learn how to use the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#explain-plans">explain API</a> which describes which index would be used to answer an individual query.</p>
+<h2 id="automated-testing-for-javascript"style="display:inline">Automated testing for JavaScript</h2><a class="stealth" href="#automated-testing-for-javascript">🔗</a><br>
+<p>JavaScript map functions are <em>just code</em> and are as susceptible to bugs and typos as any other source code. It&rsquo;s worth running your map functions through an automated test suite, to ensure that your code is emitting the correct keys and values in all circumstances. Here&rsquo;s an example test suite for a map function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">map</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;./designdocs/global.js&#39;</span>).<span style="color:#a6e22e">views</span>.<span style="color:#a6e22e">byDeviceId</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">emittedValues</span> <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">emit</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emittedValues</span>.<span style="color:#a6e22e">push</span>({<span style="color:#a6e22e">key</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">value</span>})
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">index</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emittedValues</span>.<span style="color:#a6e22e">push</span>({<span style="color:#a6e22e">key</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">value</span>})
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">reset</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emittedValues</span> <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">test</span>(<span style="color:#e6db74">&#39;Ensure nothing is emitted for person documents&#39;</span>, <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;123&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_rev</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;1-2324&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;person&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">x</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">reset</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">doc</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">expect</span>(<span style="color:#a6e22e">emittedValues</span>.<span style="color:#a6e22e">length</span>).<span style="color:#a6e22e">toEqual</span>(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">test</span>(<span style="color:#e6db74">&#39;Ensure order date and value is emitted for paid order documents&#39;</span>, <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;123&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_rev</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;1-2324&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;order&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2018-02-42&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">total</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">56.22</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;paid&#39;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">reset</span>()
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">map</span>(<span style="color:#a6e22e">doc</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">expect</span>(<span style="color:#a6e22e">emittedValues</span>).<span style="color:#a6e22e">toEqual</span>([<span style="color:#e6db74">&#39;2018-02-42&#39;</span>, <span style="color:#ae81ff">56.22</span>])
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The above code uses the <a href="https://jestjs.io/">Jest</a> testing framework and exercises our map function to ensure that it behaves correctly with the right stimulus. Dummy &ldquo;emit&rdquo;/&ldquo;index&rdquo; functions collect the emitted keys and values where they can be checked by your test code.</p>
+<p>Note: Automated testing can help catch syntax errors and logical edge cases, but exactly reproduce how Cloudant&rsquo;s JavaScript engine will execute your map functions, your test suite would have to use the same version of SpiderMonkey JavaScript engine.</p>
+<h2 id="lifecycle-management-for-design-documents"style="display:inline">Lifecycle management for Design Documents</h2><a class="stealth" href="#lifecycle-management-for-design-documents">🔗</a><br>
+<p>Understanding the lifecycle of indexes is important when it comes to your application&rsquo;s configuration management.</p>
+<ol>
+<li>CREATE - When a Design Document that contains index definitions is first saved, the process of building the index begins. Each copy of each shard of the database builds the index independently and in parallel. The index is not usable until all the processes are complete.</li>
+<li>UPDATE - When a Design Document that alters one or more MapReduce indexes is updated, <strong>all of the MapReduce indexes in the same document are invalidated</strong> and become unusable until they are rebuilt, The same rule <em>does not</em> apply to Cloudant Search indexes - only changed indexes are invalidated.</li>
+<li>DELETE - When a Design Document is deleted, the indexes are invalidated and the disk space occupied by its indexes will be recovered in due course.</li>
+</ol>
+<p>There are some subtleties too:</p>
+<ul>
+<li>Two indexes that have an identical definition but are defined in different design documents will be shared. Two indexes are deemed to be identical if the hash of their definitions are the same, including whitespace in JavaScript functions. A shared index is only actually deleted when all of its defining design documents are removed.</li>
+<li>If a Design Document is modified to remove a single index definition, any other MapReduce definitions (that aren&rsquo;t defined elsewhere) will be invalidated. Be careful that in tidying up unwanted indexes you don&rsquo;t temporarily invalidate other indexes.</li>
+<li>As Cloudant Search indexes are updated independently, it makes sense to have all of your Cloudant Search definitions in a single design document.</li>
+<li>Design Documents have the same create/update/delete semantics as normal Cloudant documents: they are updated and deleted with a known revision token and may become conflicted if modified differently on disconnected copies.</li>
+<li>When replicating databases to another Cloudant cluster, the design documents will be replicated too and will begin building on the target side. If design documents are not required at the target side, they can be filtered out with a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-design-documents#the-_selector-filter">Cloudant Query selector</a>.</li>
+</ul>
+<p>The above semantics can used to ensure an orderly transition from one version of an index to another.</p>
+<h2 id="design-document-change-control"style="display:inline">Design Document change control</h2><a class="stealth" href="#design-document-change-control">🔗</a><br>
+<p>With a large data set and significant index build times, care must be taken when deploying new versions of design documents if the the views are to be available at all times. Taking advantage of the subtle behaviour of design documents and their indexes, the following algorithm can be implemented to avoid downtime for the indexes defined by design document &ldquo;ddoc&rdquo;:</p>
+<ol>
+<li>Copy old design document to <code>ddoc_OLD</code>.</li>
+<li>Save new design document to <code>ddoc_NEW</code>.</li>
+<li>Trigger the view/search to make sure it builds.</li>
+<li>Poll the view to see if it has finished building.</li>
+<li>Copy <code>ddoc_NEW</code> to the <code>ddoc</code>.</li>
+<li>Delete <code>ddoc_NEW</code></li>
+<li>Delete <code>ddoc_OLD</code></li>
+</ol>
+<p>This relatively convoluted series of steps has been implemented into a command-line tool <a href="https://www.npmjs.com/package/couchmigrate">couchmigrate</a> which performs the design document dance on your behalf.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

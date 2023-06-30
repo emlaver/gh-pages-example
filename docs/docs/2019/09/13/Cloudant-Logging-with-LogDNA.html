@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Logging with LogDNA</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Logging with LogDNA">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/09/13/Cloudant-Logging-with-LogDNA.html" />
+    <meta property="og:description" content="Analyse your IBM Cloudant logs with LogDNA" />
+    <meta property="article:published_time" content="2019-09-16 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/par-parsson-yuMpfx-C0A8-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Logging with LogDNA" />
+    <meta name="twitter:description" content="Analyse your IBM Cloudant logs with LogDNA" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Logging with LogDNA">
+    <meta itemprop="description" content="Analyse your IBM Cloudant logs with LogDNA">
+    <meta itemprop="image" content="/img/par-parsson-yuMpfx-C0A8-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Logging with LogDNA</h1>
+  
+  <div class="postmeta">Sep 16, 2019 | Glynn Bird | 
+
+  
+  <bx-tag>Logging</bx-tag>
+  
+  <bx-tag>Analysis</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Cloudant is now rolling out customer-facing logging for its Cloudant services. In this post we&rsquo;ll explore how to set it up and how it can help you keep tabs on your Cloudant service.</p>
+<blockquote>
+<p>Note: The IBM Cloud Log Analysis service is available in the following IBM Cloud regions: <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-log-analysis-integration">https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-log-analysis-integration</a>.</p>
+</blockquote>
+<p><img src="https://blog.cloudant.com/img/par-parsson-yuMpfx-C0A8-unsplash.jpg" alt="logging"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/yuMpfx-C0A8">Pär Pärsson on Unsplash</a></p>
+</blockquote>
+<h2 id="setting-up-logging"style="display:inline">Setting up logging</h2><a class="stealth" href="#setting-up-logging">🔗</a><br>
+<p>Firstly we need to setup an <em>IBM Log Analysis with LogDNA</em> service in the IBM Cloud - choose the service from the Developer Tools section of the catalog:</p>
+<p><img src="https://blog.cloudant.com/img/logdna1.png" alt="logdna1"></p>
+<p>Configure the service in the same <em>region</em> as your Cloudant service (e.g. Dallas) and choose and appropriate resource group:</p>
+<p><img src="https://blog.cloudant.com/img/logdna2.png" alt="logdna2"></p>
+<p>Once provisioned, choose the &ldquo;Configure Platform Services&rdquo; button to direct your IBM Cloud platform logs to your LogDNA service:</p>
+<p><img src="https://blog.cloudant.com/img/logdna3.png" alt="logdna3"></p>
+<p>That&rsquo;s it! Click the View LogDNA button to see a live stream of your logs:</p>
+<p><img src="https://blog.cloudant.com/img/logdna4.png" alt="logdna3"></p>
+<p>You should see all of your API calls listed in the live stream, with a short delay as the data makes its way to LogDNA,</p>
+<h2 id="logging-data-structure"style="display:inline">Logging data structure</h2><a class="stealth" href="#logging-data-structure">🔗</a><br>
+<p>The data is logged as a JSON object containing everything you need to know about the request and how it was handled:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;accountName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;mycloudantaccount&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;httpMethod&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;GET&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;httpRequest&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;/cities/_all_docs?limit=10&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;responseSizeBytes&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1221</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;clientIp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;94.194.94.13&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;clientPort&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">63072</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;statusCode&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">200</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;terminationState&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;----&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;dbName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cities&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;dbRequest&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_all_docs&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userAgent&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;curl/7.54.0&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;sslVersion&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;TLSv1.2&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;requestClass&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;query&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;parsedQueryString&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;limit&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rawQueryString&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;limit=10&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;timings&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;connect&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">142</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;request&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;response&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;transfer&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;meta&#34;</span><span style="color:#f92672">:</span> {},
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;logSourceCRN&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;crn:v1:bluemix:public:cloudantnosqldb:us-south:a/someid::&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;saveServiceCopy&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>In the free version of LogDNA, only the live stream of data can be viewed, with optional filtering by source. In the paid plans, the JSON data is parsed and is retained for a period of time, with optional archiving on IBM Cloud Object Storage.</p>
+<p>With the data parsed, it&rsquo;s easy to compose queries, alerts and graphs based on the data you see in the object above. You may wish to keep an eye on</p>
+<ul>
+<li>the response timing of query requests on a particular database.</li>
+<li>the count of the occurrence of HTTP 429 responses, indicated you have exceed your provisioned throughput.</li>
+<li>the range of IP addresses that are accessing your Cloudant service.</li>
+<li>the number of requests hitting each of your databases.</li>
+<li>the version TLS being used by your client code to access client. Do you have traffic originating from an out-of-date source?</li>
+<li>values of <code>bytesRead</code> that are very high. Do some of your requests return lots of data?</li>
+</ul>
+<p>The <a href="https://docs.logdna.com/docs">LogDNA documentation</a> shows how you can explore the incoming stream of data, creating named views which can be retrieved later. Saved views can be combined to create visual dashboards to give you an at-a-glance view of your Cloudant traffic.</p>
+<h2 id="example-graphs"style="display:inline">Example graphs</h2><a class="stealth" href="#example-graphs">🔗</a><br>
+<p>Request counts by HTTP request code, grouped into successes (statusCode &lt; 300) and failures (statusCode &gt;= 400):</p>
+<p><img src="https://blog.cloudant.com/img/logdna5.png" alt="logdna5"></p>
+<p>Request counts by request &ldquo;class&rdquo; i.e. whether IBM considers the request a read, write or query for billing purposes:</p>
+<p><img src="https://blog.cloudant.com/img/logdna6.png" alt="logdna6"></p>
+<p>Request counts by HTTP method (get or post in this case):</p>
+<p><img src="https://blog.cloudant.com/img/logdna7.png" alt="logdna7"></p>
+<p>95th percentile response times broken out by each of the timing metrics:</p>
+<p><img src="https://blog.cloudant.com/img/logdna8.png" alt="logdna8"></p>
+<h2 id="creating-a-graph---step-by-step"style="display:inline">Creating a graph - step by step</h2><a class="stealth" href="#creating-a-graph---step-by-step">🔗</a><br>
+<p>Log into your Log Analysis with LogDNA service, choose &ldquo;Boards&rdquo; from the left-hand menu and click &ldquo;New Board&rdquo;:</p>
+<p><img src="https://blog.cloudant.com/img/logdnasbs1.png" alt="logdnasbs1"></p>
+<p>Then click &ldquo;Add Graph&rdquo;:</p>
+<p><img src="https://blog.cloudant.com/img/logdnasbs2.png" alt="logdnasbs2"></p>
+<p>LogDNA then needs to know which field in the JSON you wish to plot:</p>
+<p><img src="https://blog.cloudant.com/img/logdnasbs3.png" alt="logdnasbs3"></p>
+<p>Enter <code>statusCode</code>, the <code>&lt;</code> operator and 300. This will only show status codes of 299 and below, indicating success:</p>
+<p><img src="https://blog.cloudant.com/img/logdnasbs4.png" alt="logdnasbs4"></p>
+<p>You should now see a plot of the counts of successful API calls against time. To add a second plot, click &ldquo;Add Plot&rdquo;:</p>
+<p><img src="https://blog.cloudant.com/img/logdnasbs5.png" alt="logdnasbs5"></p>
+<p>This time choose <code>statusCode</code> <code>&gt;=</code> <code>300</code> to plot the errors.</p>
+<p><img src="https://blog.cloudant.com/img/logdnasbs6.png" alt="logdnasbs5"></p>
+<p>The graph will change to add a second plot showing the error counts alongside the success counts.</p>
+<p><img src="https://blog.cloudant.com/img/logdnasbs7.png" alt="logdnasbs5"></p>
+<p>Repeat this process to add further graphs on metrics that interest you.</p>
+<h2 id="timing-metrics"style="display:inline">Timing metrics</h2><a class="stealth" href="#timing-metrics">🔗</a><br>
+<p>The logged JSON contains an object with the timings of each part of the request:</p>
+<pre tabindex="0"><code>&#34;timings&#34;: {
+  &#34;connect&#34;: 142,
+  &#34;request&#34;: 0,
+  &#34;response&#34;: 10,
+  &#34;transfer&#34;: 1
+}
+</code></pre><ul>
+<li><code>connect</code> - the time it took for your HTTP client to make the initial HTTPS connection (the handshakes required to negotiate a secure connection between client and server). Programmatic API calls using the official Cloudant libraries will re-use existing connections, eliminating this connection delay.</li>
+<li><code>request</code> - the time taken to receive the request data. For bulk uploads, this may be significant, especially from clients with limited uplink bandwidth.</li>
+<li><code>response</code> - the time taken for the database to do its work.</li>
+<li><code>transfer</code> - the time taken for the response to be transferred to the client.</li>
+</ul>
+<h2 id="further-information"style="display:inline">Further information</h2><a class="stealth" href="#further-information">🔗</a><br>
+<ul>
+<li><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-audit-logging">Cloudant Log Analysis Documentation</a></li>
+<li><a href="https://docs.logdna.com/docs">LogDNA Documentation</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://www.ibm.com/cloud/blog/announcements/cloudant-logging-with-logdna" target="_new">https://www.ibm.com/cloud/blog/announcements/cloudant-logging-with-logdna</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>couchbackup</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="couchbackup">
+    <meta property="og:url" content="https://blog.cloudant.com/2016/03/22/Simple-CouchDB-Cloudant-backup.html" />
+    <meta property="og:description" content="For command-line backup" />
+    <meta property="article:published_time" content="2016-03-22 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/dominik-scythe-414905-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="couchbackup" />
+    <meta name="twitter:description" content="For command-line backup" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="couchbackup">
+    <meta itemprop="description" content="For command-line backup">
+    <meta itemprop="image" content="/img/dominik-scythe-414905-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">couchbackup</h1>
+  
+  <div class="postmeta">Mar 22, 2016 | Glynn Bird | 
+
+  
+  <bx-tag>Backup</bx-tag>
+  
+
+
+  </div>
+  
+  <p>How do you back up an Apache CouchDB™ or Cloudant database? One solution is to use CouchDB&rsquo;s built-in replication API. Let&rsquo;s say we have a Cloudant database called  <strong>mydata</strong> that we need to back up.</p>
+<p>In CouchDB 1.x, backing up an entire database was as simple as locating the database&rsquo;s <code>.couch</code> file and copying it somewhere else. With its 2.x release, CouchDB and the Cloudant database shard the data, splitting a single database into pieces and distributing the data across multiple servers. So backing up a database is no longer as simple as copying a single file.</p>
+<p>Then how do you back up? This blog post presents 3 options:</p>
+<ul>
+<li>back up to a text file</li>
+<li>replicate via the command-line</li>
+<li>replicate via the Cloudant dashboard</li>
+</ul>
+<h2 id="back-up-to-a-text-file"style="display:inline">Back up to a text file</h2><a class="stealth" href="#back-up-to-a-text-file">🔗</a><br>
+<p>Cloudant has a RESTful HTTP API, so it is easy to create your own tools to interact with the service. I created a command-line tool called <a href="https://www.npmjs.com/package/@cloudant/couchbackup">couchbackup</a>, which you can use to spool an entire database (either CouchDB or Cloudant) to a text file.</p>
+<p><img src="https://blog.cloudant.com/img/couchbackup.gif" alt="couchbackup"></p>
+<p>To install the tool:</p>
+<p>You must have <a href="https://nodejs.org/en/">Node.js</a> installed, together with its &ldquo;npm&rdquo; package manager. Then follow these steps:</p>
+<ol>
+<li>Run:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; npm install -g @cloudant/couchbackup
+</span></span></code></pre></div><ol start="2">
+<li>
+<p>Define an environment variable which holds the path of either:</p>
+<ul>
+<li>your remote Cloudant database:</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; export COUCH_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://myusername:mypassword@myhost.cloudant.com&#34;</span>
+</span></span></code></pre></div><ul>
+<li>or local CouchDB instance:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; export COUCH_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://localhost:5984&#34;</span>
+</span></span></code></pre></div><ol start="3">
+<li>Back up individual databases to their own text files:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; couchbackup --db mydb &gt; mydb.txt
+</span></span></code></pre></div><ol start="4">
+<li>If you want to restore data from a backup into an <em>empty</em> database, then use the tool <code>couchrestore</code> which was also installed with <code>couchbackup</code>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; cat mydb.txt | couchrestore --db mydb
+</span></span></code></pre></div><ol start="5">
+<li>To increase the speed of the restore operation you can perform multiple write operations in parallel:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; cat mydb.txt | couchrestore --db mydb --parallelism <span style="color:#ae81ff">5</span>
+</span></span></code></pre></div><h2 id="replication-via-the-command-line"style="display:inline">Replication via the command-line</h2><a class="stealth" href="#replication-via-the-command-line">🔗</a><br>
+<p>Another option is to <strong>replicate</strong> the database to another Cloudant account or to another CouchDB service by issuing an API call to set off a replication task that copies data from the source database to the target database.</p>
+<p>Start replication by adding a document into the <code>_replicator</code> database; a  document that lists the source and target database, including authentication credentials. You can achieve all of this from the command-line using a single <code>curl</code> command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; export SOURCE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://myusername:mypassword@myhost.cloudant.com&#34;</span>
+</span></span><span style="display:flex;"><span>&gt; export TARGET<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://myotherusername:myotherpassword@myotherhost.cloudant.com&#34;</span>
+</span></span><span style="display:flex;"><span>&gt; export JSON<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{\&#34;source\&#34;:\&#34;</span>$SOURCE<span style="color:#e6db74">/mydata\&#34;,\&#34;target\&#34;:\&#34;</span>$TARGET<span style="color:#e6db74">/mydata\&#34;}&#34;</span>
+</span></span><span style="display:flex;"><span>&gt; curl -X PUT -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -d <span style="color:#e6db74">&#34;</span>$JSON<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$SOURCE<span style="color:#e6db74">/_replicator&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0b05156eefc1feca97e48cd6bd000380&#34;</span>,<span style="color:#e6db74">&#34;_rev&#34;</span>:<span style="color:#e6db74">&#34;1-a301b0fbfa8840f3ca936876729e37cc&#34;</span><span style="color:#f92672">}</span> 
+</span></span></code></pre></div><p>The API returns with a JSON object containing the id of a document, which you can fetch to monitor the status of the replication job:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl <span style="color:#e6db74">&#34;</span>$SOURCE<span style="color:#e6db74">/_replicator/0b05156eefc1feca97e48cd6bd000380&#34;</span>
+</span></span></code></pre></div><p>If you have Apache CouchDB installed locally and you intend to back up data from a Cloudant cluster, then instruct your local CouchDB installation to perform the replication. Why your local machine?  Because it has visibility to the Cloudant service, but not vice-versa.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; export SOURCE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://myusername:mypassword@myhost.cloudant.com&#34;</span>
+</span></span><span style="display:flex;"><span>&gt; export TARGET<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://localhost:5984&#34;</span>
+</span></span><span style="display:flex;"><span>&gt; export JSON<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{\&#34;source\&#34;:\&#34;</span>$SOURCE<span style="color:#e6db74">/mydata\&#34;,\&#34;target\&#34;:\&#34;</span>$TARGET<span style="color:#e6db74">/mydata\&#34;}&#34;</span>
+</span></span><span style="display:flex;"><span>&gt; curl -X PUT -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -d <span style="color:#e6db74">&#34;</span>$JSON<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$TARGET<span style="color:#e6db74">/_replicator&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0b05156eefc1feca97e48cd6bd001976&#34;</span>,<span style="color:#e6db74">&#34;_rev&#34;</span>:<span style="color:#e6db74">&#34;1-ac15e7843682715ccb712fac41169cf5&#34;</span><span style="color:#f92672">}</span> 
+</span></span></code></pre></div><h2 id="replication-via-the-cloudant-dashboard"style="display:inline">Replication via the Cloudant dashboard</h2><a class="stealth" href="#replication-via-the-cloudant-dashboard">🔗</a><br>
+<p>You can also start and monitor a replication using the web-based user interface of the Cloudant dashboard.</p>
+<ol>
+<li>On the left, choose the <strong>Replication</strong> tab,</li>
+<li>Click <strong>New Replication</strong></li>
+<li>Complete the form and click <strong>Replicate</strong>.</li>
+</ol>
+<p>In the above example, we are replicating a database that lives in the current user&rsquo;s Cloudant account (the &ldquo;My Databases&rdquo; tab in the Source Database section) to another Cloudant account (the &ldquo;Remote Database&rdquo; tab in the Target Database section). But we could also be in the target account. Use the same form to perform replications between all combinations of local and remote sources and targets.</p>
+<h2 id="the-difference-between-replication-and-couchbackup"style="display:inline">The difference between replication and couchbackup</h2><a class="stealth" href="#the-difference-between-replication-and-couchbackup">🔗</a><br>
+<p>CouchDB/Cloudant replication is a sophisticated sync protocol that ensures all data from the source database is transferred to the target. If the target database already contains some documents, then clashing revisions are stored as <a href="https://cloudant.com/blog/introduction-to-document-conflicts-part-one/">document conflicts</a>. In addition, deleted documents from the source database are also transferred to the target database.</p>
+<p><code>couchbackup</code> simply iterates through the <code>/db/_all_docs</code> endpoint fetching the &ldquo;winning revisions&rdquo; of documents from the source database. Unlike replication, it ignores deleted documents and conflicts from the source database. During the restoration of backed up data, it also assumes that the target database is empty; no conflicting revisions are created. The result of a <code>couchrestore</code> operation is a collection of &ldquo;first revisions&rdquo; that matches the winning revisions of the source database.</p>
+<blockquote>
+<p>&ldquo;Apache&rdquo;, &ldquo;CouchDB&rdquo;, &ldquo;Apache CouchDB&rdquo;, and the CouchDB logo are trademarks or registered trademarks of The Apache Software Foundation. All other brands and trademarks are the property of their respective owners.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://developer.ibm.com/clouddataservices/2016/03/22/simple-couchdb-and-cloudant-backup/" target="_new">https://developer.ibm.com/clouddataservices/2016/03/22/simple-couchdb-and-cloudant-backup/</a>
+
+
+
+</body>
+</html>
+

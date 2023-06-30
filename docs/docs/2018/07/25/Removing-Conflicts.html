@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Conflicts</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Conflicts">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html" />
+    <meta property="og:description" content="How to deal with conflicts in Cloudant documents" />
+    <meta property="article:published_time" content="2018-07-25 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/paul-bergmeir-97704-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Conflicts" />
+    <meta name="twitter:description" content="How to deal with conflicts in Cloudant documents" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Conflicts">
+    <meta itemprop="description" content="How to deal with conflicts in Cloudant documents">
+    <meta itemprop="image" content="/img/paul-bergmeir-97704-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Conflicts</h1>
+  
+  <div class="postmeta">Jul 25, 2018 | Glynn Bird | 
+
+  
+  <bx-tag>Conflicts</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Conflicts occur in Cloudant and Apache CouchDB databases when the same document is written to in different ways in separate copies of the database. This can occur when there is:</p>
+<ul>
+<li>a mobile app and a server-side replica and the data is replicated between them.</li>
+<li>two databases that are replicated together.</li>
+<li>a single, multi-node database that receives mulitple writes to the same document at the same time. Although the database will try to prevent conflicts happening in this circumstance by returning an <code>HTTP 409</code> response, conflicts may still arise in some circumstancces.</li>
+</ul>
+<p>Conflicts are not an error condition - they are symptom of the database ensuring that you don&rsquo;t lose data when the same document is modified in different ways by different actors. Sometimes conflicts occur by accident - perhaps some automated process updating the database more frequently than normal. Ideally your code should adopt a design pattern that reduces or eliminates the chance of conflicts occurring, but if conflicts arise your code will need to have an algorithm to fix them.</p>
+<p><img src="https://blog.cloudant.com/img/paul-bergmeir-97704-unsplash.jpg" alt="conflict"></p>
+<p>Conflicted documents can be a headache for the performance of the database, even if you make the effort to resolve conflicts as you find them. In some cases, documents can have hundreds or thousands of conflicted revisions. As the database has to keep the bodies of the conflicted documents and revision histories for conflicted branches, conflicted documents eat up storage and make the revision tree costly to navigate when updating or deleting revisions.</p>
+<h2 id="detecting-conflicts"style="display:inline">Detecting conflicts</h2><a class="stealth" href="#detecting-conflicts">🔗</a><br>
+<p>You can see if a document is conflicted by fetching the document with <code>?conflicts=true</code> appended to the URL:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl http://localhost:5984/mydb/mydoc?conflicts<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;_id&#34;</span>:<span style="color:#e6db74">&#34;mydoc&#34;</span>,<span style="color:#e6db74">&#34;_rev&#34;</span>:<span style="color:#e6db74">&#34;1-99&#34;</span>,<span style="color:#e6db74">&#34;a&#34;</span>:98,<span style="color:#e6db74">&#34;_conflicts&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;1-98&#34;</span>,<span style="color:#e6db74">&#34;1-97&#34;</span>,<span style="color:#e6db74">&#34;1-96&#34;</span>,<span style="color:#e6db74">&#34;1-95&#34;</span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>Another API option is to use <code>?meta=true</code> which returns further metadata about your document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;c956ef1ed08dd48b48ea4b9809665b4f&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2-8a759d1f5a1537bcf775ab7bc947b377&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_revs_info&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2-8a759d1f5a1537bcf775ab7bc947b377&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;available&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-25f9b97d75a648d1fcd23f0a73d2776e&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;available&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_deleted_conflicts&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;3-f76e0de0cabef8da918d5b747493631a&#34;</span>
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="resolving-conflicts-by-hand"style="display:inline">Resolving conflicts by hand</h2><a class="stealth" href="#resolving-conflicts-by-hand">🔗</a><br>
+<p>In the first example, the document has a winning revision <code>1-99</code> and four other revisions that are non-winning. If I delete the conflicting revisions the document returns to its normal state.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X DELETE http://localhost:5984/mydb/mydoc?rev<span style="color:#f92672">=</span>1-98
+</span></span><span style="display:flex;"><span>curl -X DELETE http://localhost:5984/mydb/mydoc?rev<span style="color:#f92672">=</span>1-97
+</span></span><span style="display:flex;"><span>curl -X DELETE http://localhost:5984/mydb/mydoc?rev<span style="color:#f92672">=</span>1-96
+</span></span><span style="display:flex;"><span>curl -X DELETE http://localhost:5984/mydb/mydoc?rev<span style="color:#f92672">=</span>1-95
+</span></span></code></pre></div><p>I don&rsquo;t <em>have to</em> delete the conflicted revisions - I could instead have chosen to retain revision <code>1-96</code>. Simply deleting the winning revision and the other conflicts would promote <code>1-96</code> to be the winner. I can even delete ALL of the revisions and propose a new winner (perhaps a merge of all the conflicted documents). The resolution of a conflict is simply deleting the revisions you don&rsquo;t want and optional creation of a new winner. The <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-documents#updating-documents-in-bulk">_bulk_docs</a> endpoint can be used to make several modifications to a single document in a single API call.</p>
+<p>This is simple enough when there are only a handful of conflicts but if there are hundreds or thousands, some tooling would help.</p>
+<h2 id="resolving-conflicts-with-couchdeconflict"style="display:inline">Resolving conflicts with couchdeconflict</h2><a class="stealth" href="#resolving-conflicts-with-couchdeconflict">🔗</a><br>
+<p>I wrote a <a href="https://www.npmjs.com/package/couchdeconflict">simple command-line utility to help clean up CouchDB/Cloudant documents that have become conflicted</a>. It is installed with</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm install -g couchdeconflict
+</span></span></code></pre></div><p>and run by specifying the URL of the document to work on:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; couchdeconflict -u http://localhost:5984/mydb/mydoc
+</span></span><span style="display:flex;"><span>options: <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://localhost:5984/mydb/mydoc&#34;</span>,<span style="color:#e6db74">&#34;keep&#34;</span>:null,<span style="color:#e6db74">&#34;batch&#34;</span>:100<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>Fetching document
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">217</span> conflicts
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[==================================================]</span> 100% 217/217           
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">217</span> conflicts deleted
+</span></span></code></pre></div><p>By default, the pre-existing winning revision is retained and the conflicted revisions are deleted. You can nominate a new winning revision with the <code>--keep</code> parameter:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; couchdeconflict --url http://localhost:5984/mydb/mydoc  --keep 1-111
+</span></span><span style="display:flex;"><span>couchdeconflict
+</span></span><span style="display:flex;"><span>---------------
+</span></span><span style="display:flex;"><span>options: <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://###:###@localhost:5984/mydb/mydoc&#34;</span>,<span style="color:#e6db74">&#34;keep&#34;</span>:<span style="color:#e6db74">&#34;1-111&#34;</span>,<span style="color:#e6db74">&#34;batch&#34;</span>:100<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>Fetching document
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">217</span> conflicts
+</span></span><span style="display:flex;"><span>Keeping revision 1-111
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">[==================================================]</span> 100% 217/217           
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">217</span> conflicts deleted
+</span></span></code></pre></div><p>If you&rsquo;re worried about what this utility is going to do to your database, you can do a dummy run with the <code>--dryrun</code> parameter:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; couchdeconflict --url http://localhost:5984/mydb/mydoc  --keep 1-111 --dryrun
+</span></span></code></pre></div><h2 id="detecting-conflicts-with-a-view"style="display:inline">Detecting conflicts with a view</h2><a class="stealth" href="#detecting-conflicts-with-a-view">🔗</a><br>
+<p>We can keep an eye on a database&rsquo;s conflicts by creating a MapReduce view:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">numConflicts</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_conflicts</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_conflicts</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">numDeletedConflicts</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_deleted_conflicts</span> <span style="color:#f92672">?</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">_deleted_conflicts</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">numConflicts</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">numDeletedConflicts</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">emit</span>(<span style="color:#66d9ef">null</span>, [<span style="color:#a6e22e">numConflicts</span>, <span style="color:#a6e22e">numDeletedConflicts</span>])
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The above map function emits an array containing the number of conflicts and the number of deleted conflicts which can be totalised by the  the <code>_sum</code> reducer to show totals of unresolved conflicts and deleted conflicts for the whole database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">GET</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">db</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_design</span><span style="color:#f92672">/</span><span style="color:#a6e22e">conflict</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_view</span><span style="color:#f92672">/</span><span style="color:#a6e22e">sum</span><span style="color:#f92672">?</span><span style="color:#a6e22e">reduce</span><span style="color:#f92672">=</span><span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rows&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We can then switch off the reducer to identify which document ids are affected:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">GET</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">db</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_design</span><span style="color:#f92672">/</span><span style="color:#a6e22e">conflict</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_view</span><span style="color:#f92672">/</span><span style="color:#a6e22e">sum</span><span style="color:#f92672">?</span><span style="color:#a6e22e">reduce</span><span style="color:#f92672">=</span><span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;total_rows&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;offset&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rows&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8b48ea4b9809665b4fc956ef1ed08dd4&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;c956ef1ed08dd48b48ea4b9809665b4f&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If a document is regularly picking up conflicts or a document has too many deleted conflicts (say over five hundred) then some remedial action is required to cut off the source of conflicts to avoid future performance problems.</p>
+<h2 id="further-reading"style="display:inline">Further reading</h2><a class="stealth" href="#further-reading">🔗</a><br>
+<p>If you want to explore this subject further, here&rsquo;s some links:</p>
+<ul>
+<li><a href="https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-one/">Three part blog series on conflicts</a></li>
+<li><a href="http://docs.couchdb.org/en/2.1.1/replication/conflicts.html?highlight=conflict">CouchDB docs</a></li>
+<li><a href="https://dx13.co.uk/articles/2017/1/1/the-tree-behind-cloudants-documents-and-how-to-use-it.html">The tree behind Cloudant&rsquo;s documents</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

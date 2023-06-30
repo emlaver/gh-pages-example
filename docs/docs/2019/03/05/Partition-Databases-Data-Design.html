@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Partitioned Databases - Data Design</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Partitioned Databases - Data Design">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html" />
+    <meta property="og:description" content="Designing your data for a partitioned database, including indexing and querying" />
+    <meta property="article:published_time" content="2019-03-05 07:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/toa-heftiba-239004-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Partitioned Databases - Data Design" />
+    <meta name="twitter:description" content="Designing your data for a partitioned database, including indexing and querying" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Partitioned Databases - Data Design">
+    <meta itemprop="description" content="Designing your data for a partitioned database, including indexing and querying">
+    <meta itemprop="image" content="/img/toa-heftiba-239004-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Partitioned Databases - Data Design</h1>
+  
+  <div class="postmeta">Mar 5, 2019 | Glynn Bird | 
+
+  
+  <bx-tag>Partitioned</bx-tag>
+  
+  <bx-tag>Indexing</bx-tag>
+  
+
+
+  </div>
+  
+  <blockquote>
+<p>This is the second part of a series of posts on Partitioned Databases in Cloudant. <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Part One</a>, [Part Three][3] and [Part Four][4] may also be of interest.</p>
+</blockquote>
+<p>Modelling data with a JSON document store is very different from modelling data in a relational database system. Generations of computer scientists have been taught how to <a href="https://en.wikipedia.org/wiki/Database_normalization">normalize data</a> into tables, that is organising data into their own collections so that information is not repeated and relationships between collections are modelled with foreign keys.</p>
+<p>Organising data in a &ldquo;NoSQL&rdquo; database like Cloudant makes &ldquo;joins&rdquo; prohibitively expensive and as a result the data design may involve the repetition of data. As with any data modelling exercise, there should be careful consideration of how the data is to be consumed - it is these &ldquo;access patterns&rdquo; that, together with database&rsquo;s best practise documentation, will influence how data is represented in the JSON documents.</p>
+<p>Let&rsquo;s imagine we are building an e-commerce store with the Cloudant service. To do so we are going to use three Cloudant databases to store the following objects:</p>
+<ul>
+<li><code>users</code> - a <em>user</em> is a registered user of the site with their contact details, delivery addresses and payment methods.</li>
+<li><code>products</code> - a <em>product</em> is a sellable product on our e-commerce store.</li>
+<li><code>orders</code> - an <em>order</em> represents the sale of one or more products to a user, together with how they paid and information from the courier to indicate dispatch and delivery.</li>
+</ul>
+<p>We are going to design our data with the following goals:</p>
+<ul>
+<li>Favouring small documents that tend to be added or removed (not updated over and over).</li>
+<li>Leveraging Cloudant&rsquo;s <em>partitioned databases</em> feature where possible - two-part <code>_id</code> fields group documents that logically belong together on the same database shard.</li>
+<li>Although there are relationships within the databases (i.e. an order represents a <em>user</em> buying one or more <em>products</em>), data is allowed to be duplicated where it makes sense to prevent the application having to make multiple round trips to the database to populate a web page.</li>
+</ul>
+<p><img src="https://blog.cloudant.com/img/toa-heftiba-239004-unsplash.jpg" alt="cake"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/5-MNAjL81Iw">Toa Heftiba on Unsplash</a></p>
+</blockquote>
+<h2 id="the-products-database"style="display:inline">The products database</h2><a class="stealth" href="#the-products-database">🔗</a><br>
+<p>The <em>products</em> database contains one document per sellable product. Products are categorised into a taxonomy of categories e.g. &ldquo;Home &gt; Kitchen &gt; Small Appliances&rdquo;, a hierarchy which is surfaced in the website as a clickable menu of category names.</p>
+<p>Each product has a simple list of attributes, some of which are searchable (e.g. keywords) others (e.g. image) are used to render the front-end web page or mobile app.</p>
+<p>The document&rsquo;s _id contains:</p>
+<ul>
+<li>The product&rsquo;s place in the taxonomy joined by &ldquo;#&rdquo; characters e.g. Home#Kitchen#Small Appliances. This forms the partition key, so products in the same category are stored together.</li>
+<li>A &ldquo;:&rdquo; to indicate the divide between the partition key and the document key.</li>
+<li>The document&rsquo;s <em>productid</em> following the colon.</li>
+</ul>
+<p>A sample document looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Home#Kitchen#Small Appliances:1000042&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;product&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;taxonomy&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;Home&#34;</span>,<span style="color:#e6db74">&#34;Kitchen&#34;</span>,<span style="color:#e6db74">&#34;Small Appliances&#34;</span>],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;keywords&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;Salter&#34;</span>,<span style="color:#e6db74">&#34;Scales&#34;</span>,<span style="color:#e6db74">&#34;Weight&#34;</span>,<span style="color:#e6db74">&#34;Digital&#34;</span>,<span style="color:#e6db74">&#34;Kitchen&#34;</span>],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;productid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1000042&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;brand&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Salter&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Digital Kitchen Scales&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;description&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Slim Colourful Design Electronic Cooking Appliance for Home / Kitchen, Weigh up to 5kg + Aquatronic for Liquids ml + fl. oz. 15Yr Guarantee - Green&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;colours&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;red&#34;</span>,<span style="color:#e6db74">&#34;green&#34;</span>,<span style="color:#e6db74">&#34;black&#34;</span>,<span style="color:#e6db74">&#34;blue&#34;</span>],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;price&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">14.99</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;delivery&#34;</span>; <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;image&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;assets/img/0gmsnghhew.jpg&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="users-database"style="display:inline">Users database</h2><a class="stealth" href="#users-database">🔗</a><br>
+<p>The <em>users</em> database stores details about the registered users of our store. We store:</p>
+<ul>
+<li>1 core document per user.</li>
+<li>1 additional document for each user&rsquo;s delivery addresses.</li>
+</ul>
+<p>The document&rsquo;s <code>_id</code> fields are organised so that for a known <code>userid</code> (i.e. if a user is logged in and we know their <code>userid</code>), we can fetch everything we need to know about that user in one Cloudant Query because the data resides in the same partition. If we need to store other data about the user in the future e.g. payment methods, user preferences etc, further documents can be added following the same pattern.</p>
+<p>Here&rsquo;s some example documents:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622:auth&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Bob Smith&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bob.smith@aol.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;password&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1f6b5d0e151388786d3820cded9408e2&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;salt&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;43614d9b1dec23da34a5b6f4eb71fb59&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;active&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;email_verified&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622:delivery1&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;userdelivery&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;home&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;19 Front Street, Darlington, DL5 1TY&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;default&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622:delivery2&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;userdelivery&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;work&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;22 Central Tower, Newcastle, NE1 4JD&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;default&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="orders-database"style="display:inline">Orders database</h2><a class="stealth" href="#orders-database">🔗</a><br>
+<p>An order consists of a number of documents written to the database when a shopping basket of items is paid for:</p>
+<ul>
+<li>1 core &ldquo;order&rdquo; document containing meta data.</li>
+<li>a number of &ldquo;orderlineitem&rdquo; - one per item in the basket.</li>
+<li>1 &ldquo;payment&rdquo; document containing details of how the payment was made.</li>
+<li>1 dispatch document indicating which courier is deliverying the items.</li>
+<li>1 delivery document to indicate the arrival of the items.</li>
+</ul>
+<p>As all of the documents reside in the same partition and can be fetched with a single query directed to the order&rsquo;s partition. In most cases, data is only written to Cloudant - the same document is not updated over and over as the order progresses.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555:order&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;user&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Bob Smith&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;orderid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;basket&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;Salter - Digital Kitchen Scales&#34;</span>, <span style="color:#e6db74">&#34;Kenwood - Stand Mixer&#34;</span>],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;total&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;214.98&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;deliveryAddress&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;19 Front Street, Darlington, DL5 1TY&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-01-28T10:44:22.000Z&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555:item1&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orderlineitem&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;orderid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;productid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1000042&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Salter - Digital Kitchen Scales&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;quantity&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;unitPrice&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">14.99</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;delivery&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555:item2&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orderlineitem&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;orderid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;productid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;88752&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Kenwood - Stand Mixer&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;quantity&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;unitPrice&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">199.99</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;delivery&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555:payment&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orderpayment&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;orderid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;paid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;true&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;provider&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;PayPal&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;provider_ref&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;PayPal161619885998772&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-01-28T10:45:27.000Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;total&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;214.98&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555:dispatch&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orderdispatch&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;orderid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;dispatched&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;true&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-01-28T16:02:00.000Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;courier&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;UPS&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;courierid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;15125425151261289&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555:delivery&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orderdelivery&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;orderid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order555&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;delivered&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;true&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;courier&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;UPS&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;courierid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;15125425151261289&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="querying-the-partitions"style="display:inline">Querying the partitions</h2><a class="stealth" href="#querying-the-partitions">🔗</a><br>
+<p>The database already indexes each document&rsquo;s <code>_id</code> field and with <em>partitioned databases</em>, documents belonging to the same partition reside on the same shard, making querying data in a single partition very efficient. We&rsquo;ve made use of partitions to keep:</p>
+<ul>
+<li>products belonging to the same category in a partition per category.</li>
+<li>orders and the supplemental order data stored in a partition per order,</li>
+<li>users and other user meta data is stored in a partition per user.</li>
+</ul>
+<p>Here&rsquo;s how we can use Cloudant Query to fetch documents from these partitions.</p>
+<h3 id="fetch-products-belonging-a-category"style="display:inline">Fetch products belonging a category</h3><a class="stealth" href="#fetch-products-belonging-a-category">🔗</a><br>
+<p>To fetch the first one hundred products from the <code>Home#Kitchen#Small Appliances</code> category, we can simply send a blank <em>selector</em> to the partition&rsquo;s <code>_find</code> endpoint:</p>
+<pre tabindex="0"><code>POST /products/_partition/Home%23Kitchen%23Small%20Appliances/_find
+{
+  &#34;selector&#34;: {},
+  &#34;limit&#34;: 100
+}
+</code></pre><p>Alternatively, the <code>_all_docs</code> endpoint can be used to fetch all the data from a partition</p>
+<pre tabindex="0"><code>GET /products/_partition/Home%23Kitchen%23Small%20Appliances/_all_docs
+</code></pre><h3 id="searching-within-a-known-category"style="display:inline">Searching within a known category</h3><a class="stealth" href="#searching-within-a-known-category">🔗</a><br>
+<p>If we know the product category (perhaps the user has navigated to the &ldquo;Home#Kitchen#Small Appliances&rdquo; page), we can search for products within that partition by first defining a partitioned index and then querying it. A query aimed at a single partition and serviced by a pre-defined index constitutes best practice for a Cloudant database.</p>
+<p>We can define a partial Cloudant Search index with a JavaScript function</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;product&#39;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">words</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">taxonomy</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">keywords</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">brand</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">description</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">colours</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39; &#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#39;default&#39;</span>, <span style="color:#a6e22e">words</span>, { <span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">index</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> });
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Queries can be directed to a single partition with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl $URL/products/_partition/Home%23Kitchen%23Small%20Appliances/_design/mydesigndoc/_search/mysearchindex?q<span style="color:#f92672">=</span>salter+scales+red
+</span></span></code></pre></div><p>Note that an index defined on a partitioned database is itself partitioned by default, although this behaviour can be overridden by supplying a <code>partitioned: false</code> flag at query-time to create a <em>global index</em>.</p>
+<h3 id="fetch-order-data"style="display:inline">Fetch order data</h3><a class="stealth" href="#fetch-order-data">🔗</a><br>
+<p>Similarly, all of an order&rsquo;s details can be fetched by pulling all of the data from the order&rsquo;s partition:</p>
+<pre tabindex="0"><code>GET /orders/_partition/order555/_all_docs
+</code></pre><p>If we only need the line items from the order we can be more specific:</p>
+<pre tabindex="0"><code>POST /products/_partition/order555/_find
+{
+  &#34;selector&#34;: {
+    &#34;type&#34;: &#34;orderlineitem&#34;
+  },
+  &#34;limit&#34;: 100
+}
+</code></pre><p>If we only need the top-level meta data we can be even more selective: in fact, we don&rsquo;t even need to perform a query - we can simply fetch the document by its <code>_id</code>:</p>
+<pre tabindex="0"><code>GET /orders/order555:order
+</code></pre><h3 id="fetch-user-data"style="display:inline">Fetch user data</h3><a class="stealth" href="#fetch-user-data">🔗</a><br>
+<p>The same technique can be used for the users database:</p>
+<pre tabindex="0"><code>GET /users/_partition/user19952622/_all_docs
+</code></pre><p>or we could fetch a user&rsquo;s default postal address with this query:</p>
+<pre tabindex="0"><code>POST /users/_partition/user19952622/_find
+{
+  &#34;selector&#34;: {
+    &#34;type&#34;: &#34;userdelivery&#34;,
+    &#34;default&#34;: &#34;true&#34;
+  },
+  &#34;fields&#34;: [&#34;address&#34;]
+}
+</code></pre><h2 id="querying-the-whole-data-set---indexing"style="display:inline">Querying the whole data set - Indexing</h2><a class="stealth" href="#querying-the-whole-data-set---indexing">🔗</a><br>
+<p>In addition to the default primary index, we can define secondary indicies to instruct the database to create additional data structures, ordering the documents by different attributes. The secondary indicies can service additional access patterns we need for our application. Here&rsquo;s some examples:</p>
+<ul>
+<li>Product Search - a user needs to be able to perform a free-text search for products across all categories or within a single category.</li>
+<li>Orders by Customer - in the customer&rsquo;s dashboard they need to be able to view their order history.</li>
+<li>Orders by Time - for reporting purposes, the business needs to be able to extract all of the orders made between two dates.</li>
+<li>Sales Report - a total of paid-for orders needs to generated by year, year/month or year/month/day.</li>
+<li>Authentication - for authentication we need to pull back the &ldquo;auth&rdquo; document for a user of a known email address.</li>
+</ul>
+<p>Let&rsquo;s dive into the detail of how we would achieve each of these use-cases using different features of Cloudant.</p>
+<h3 id="indexing---product-search"style="display:inline">Indexing - Product Search</h3><a class="stealth" href="#indexing---product-search">🔗</a><br>
+<p>In order to allow the user to search products with a string of words e.g. &ldquo;Salter Scales Red&rdquo; or &ldquo;Digital Aquatronic&rdquo;, we need to index each document&rsquo;s searchable words and employ a &ldquo;free text&rdquo; search engine. Cloudant has a free text search engine built in in the form of its <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#search">Cloudant Search</a> API. An index is defined with a JavaScript index definition function inside a design document. The function calls <code>index</code> to instruct the database to index selected data items. Here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;product&#39;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">words</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">taxonomy</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">keywords</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39; &#39;</span>) <span style="color:#f92672">+</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">brand</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">name</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">description</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">colours</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39; &#39;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#39;default&#39;</span>, <span style="color:#a6e22e">words</span>, { <span style="color:#a6e22e">store</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>, <span style="color:#a6e22e">index</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> });
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>In this case we are concatenating all the strings we want to be searchable and indexing them as the <code>default</code> text index, which provides a general-purpose search facility. We can query the index with a simple HTTP API call:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl $URL/_design/mydesigndoc/_search/mysearchindex?q<span style="color:#f92672">=</span>salter+scales+red
+</span></span></code></pre></div><p>With a little extra work we could:</p>
+<ul>
+<li>Index strings separately which would allow searches to restricted to certain fields e.g. searching only product names. See <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#index-functions">here</a>.</li>
+<li>Indicate that we wish the database to count repeated strings in the result set or to group the price into multiple price brackets using <em>faceting</em>. See <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#faceting">here</a>.</li>
+<li>Query the data by weighting some fields more than others e.g. matches to the product name are worth more than matches to the product description. See <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#query-syntax">here</a>.</li>
+</ul>
+<p>Note that in order to create an index that spans all the partitions, we need to supply <code>partitioned: false</code> in the design document that defines the index. See <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#creating-a-global-view-index">documentation</a></p>
+<h3 id="indexing---orders-by-customer"style="display:inline">Indexing - Orders by Customer</h3><a class="stealth" href="#indexing---orders-by-customer">🔗</a><br>
+<p>In our website&rsquo;s dashboard, we need to display a single user&rsquo;s order history. To service this access pattern, the <em>orders</em> database needs a <em>global</em> secondary index on the <code>userid</code> and <code>date</code> fields.</p>
+<p>To create an index that only works on documents where <code>type=&quot;order&quot;</code> and is indexed by <code>userid</code> and <code>date</code> we POST the following JSON to the <code>/orders/_index</code> endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;index&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;partial_filter_selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order&#34;</span>
+</span></span><span style="display:flex;"><span>     },
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;fields&#34;</span><span style="color:#f92672">:</span> [ <span style="color:#e6db74">&#34;userid&#34;</span>, <span style="color:#e6db74">&#34;date&#34;</span> ]
+</span></span><span style="display:flex;"><span>   },
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;ddoc&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orders-by-customer-index&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;json&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;partitioned&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>The <code>partial_filter_selector</code> is the query that is performed at index-time to determine whether a document belongs in the the index. Only the top-level order summary documents get past this filter.</li>
+<li>The <code>fields</code> array is a list of documents fields to be indexed.</li>
+<li>The <code>ddoc</code> is our reference for this index. It determines which design document the index definition will be stored in and allows us to select the use of this index at query-time.</li>
+<li>The <code>type</code> specifies whether we want a &ldquo;json&rdquo; index powered by Cloudant&rsquo;s MapReduce engine or a &ldquo;text&rdquo; index powered by Cloudant Search.</li>
+</ul>
+<p>We can then query the index by posting JSON to the <code>/orders/_find</code> endpoint:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;userid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user19952622&#34;</span>
+</span></span><span style="display:flex;"><span>   },
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;use_index&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orders-by-customer-index&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="indexing---orders-by-time"style="display:inline">Indexing - Orders by Time</h3><a class="stealth" href="#indexing---orders-by-time">🔗</a><br>
+<p>In order to get all orders ordered by time, we need to create another <em>global</em> Cloudant Query index, again only including the core order documents and ordering by the <code>date</code> field:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;index&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;partial_filter_selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order&#34;</span>
+</span></span><span style="display:flex;"><span>     },
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;fields&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;date&#34;</span> ]
+</span></span><span style="display:flex;"><span>   },
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;ddoc&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orders-by-date&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;json&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;partitioned&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We can then query the index by posting JSON to the <code>/orders/_find</code> endpoint, in this case to find orders occuring after in January 2019:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;date&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>         <span style="color:#e6db74">&#34;$gte&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-01-01&#34;</span>,
+</span></span><span style="display:flex;"><span>         <span style="color:#e6db74">&#34;$lt&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-01-02&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>   },
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;use_index&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orders-by-date&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="indexing---sales-report"style="display:inline">Indexing - Sales Report</h3><a class="stealth" href="#indexing---sales-report">🔗</a><br>
+<p>Performing aggregations for reporting purposes requires the use of Cloudant&rsquo;s MapReduce feature. A JavaScript function, embedded in a design document, is called by Cloudant for every document in the database. The function emits the keys/value pairs that define the ordering and grouping of the data and which fields are to be aggregated. Here&rsquo;s an example function that emits orders by year/month/day:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;order&#34;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// turn the date string into a Date object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// extract the date parts
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">year</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getFullYear</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">month</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getMonth</span>() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">// months go 0-11
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">day</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getDate</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// emit the key and value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">year</span>,<span style="color:#a6e22e">month</span>,<span style="color:#a6e22e">day</span>], <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">total</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>By choosing the <code>_sum</code> reducer, we instruct Cloudant to totalise the emitted value (<code>doc.total</code>). The MapReduce query engine allows data to be grouped by year/month/day, year/month, year or to group all the data to produce a grand total. In addition, the data can be filtered between <code>startkey</code> and <code>endkey</code> key values and the reducer can be switched off at query-time to just extract data between two dates.</p>
+<p>Note that in order to create an index that spans all the partitions, we need to supply <code>partitioned: false</code> in the design document that defines the index. See <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#creating-a-global-view-index">documentation</a></p>
+<h3 id="indexing---authentication"style="display:inline">Indexing - Authentication</h3><a class="stealth" href="#indexing---authentication">🔗</a><br>
+<p>When a user is logging in, we can&rsquo;t do partitioned query on our <code>users</code> database because we don&rsquo;t yet know the user&rsquo;s <code>userid</code>. We have to create a secondary index on the user&rsquo;s email address and select a user record by the email field. We can reduce the index size by using a <code>partial_filter_selector</code> to only include the main user records that are active and have been verified:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;index&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;partial_filter_selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user&#34;</span>,
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;active&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>       <span style="color:#e6db74">&#34;email_verified&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>     },
+</span></span><span style="display:flex;"><span>     <span style="color:#e6db74">&#34;fields&#34;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;email&#34;</span> ]
+</span></span><span style="display:flex;"><span>   },
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;ddoc&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;users-by-email&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;json&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;partitioned&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>To find a document matching a supplied email address we can use the following query, only asking for the fields we need:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;user&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;active&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;email_verified&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;joe@aol.com&#34;</span>
+</span></span><span style="display:flex;"><span>   },
+</span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;use_index&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;users-by-email&#34;</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">fields</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;userid&#34;</span>, <span style="color:#e6db74">&#34;password&#34;</span>, <span style="color:#e6db74">&#34;salt&#34;</span>]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="summary"style="display:inline">Summary</h2><a class="stealth" href="#summary">🔗</a><br>
+<p>The Cloudant partial databases feature provides a step change in query performance for data designs that use the <code>_id</code> field to store a partition key and a document key. Careful data design can ensure that data that belongs together, and that you application expects to query in isolation, is stored in its own partition. Queries directed at a single partition only use fraction of the computing resource of a &ldquo;whole database&rdquo; query, resulting in faster performance and lower per-query pricing.</p>
+<p>Other use-cases and access patterns can be serviced by secondary indexes that span <em>all</em> the partitions.</p>
+<h2 id="further-reading"style="display:inline">Further reading</h2><a class="stealth" href="#further-reading">🔗</a><br>
+<ul>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
+<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
+<li>[Partitioned databases - Data Migration][3]</li>
+<li>[Partitioned databases - Partition sizing][4]</li>
+<li>[Partitioned databases - Cloudant Documentation][5]</li>
+</ul>
+<p>[3]: {{ ref &ldquo;2019-03-05-Partition-Databases-Data-Migration.md&rdquo; &gt;}}
+[4]: {{ ref &ldquo;2019-03-05-Partition-Databases-Sizing.md&rdquo; &gt;}}
+[5]: <a href="https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases">https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases</a></p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

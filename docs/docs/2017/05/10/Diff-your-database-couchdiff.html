@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>couchdiff</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="couchdiff">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/05/10/Diff-your-database-couchdiff.html" />
+    <meta property="og:description" content="Compare two databases on the command line" />
+    <meta property="article:published_time" content="2017-05-10 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/hermes-rivera-265380-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="couchdiff" />
+    <meta name="twitter:description" content="Compare two databases on the command line" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="couchdiff">
+    <meta itemprop="description" content="Compare two databases on the command line">
+    <meta itemprop="image" content="/img/hermes-rivera-265380-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">couchdiff</h1>
+  
+  <div class="postmeta">May 10, 2017 | Glynn Bird | 
+
+  
+  <bx-tag>CLI</bx-tag>
+  
+
+
+  </div>
+  
+  <p>The Unix <code>diff</code> command-line utility has been around since the 1970s. It compares two text files line by line and tells you the differences between them.</p>
+<p><img src="https://blog.cloudant.com/img/hermes-rivera-265380-unsplash.jpg" alt="diff"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/OX_en7CXMj4">Hermes Rivera</a> on Unsplash</p>
+</blockquote>
+<p>If I <code>diff</code> two files <a href="https://gist.github.com/glynnbird/03ea265a3a670e8b514512e36fd63582">a.txt</a> and <a href="https://gist.github.com/glynnbird/c0705e06d633cdbc40b680b2d8e69c96">b.txt</a> containing versions of the same poem I can find the differences between them with the command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ diff a.txt b.txt
+</span></span><span style="display:flex;"><span>2c2
+</span></span><span style="display:flex;"><span>&lt; T.S. Eliot 1888-1965
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt; T.S. Eliot
+</span></span><span style="display:flex;"><span>6a7
+</span></span><span style="display:flex;"><span>&gt; Sprouting despondently at area gates.	
+</span></span><span style="display:flex;"><span>13,14d13
+</span></span><span style="display:flex;"><span>&lt; 
+</span></span><span style="display:flex;"><span>&lt; From Prufrock, and other observations <span style="color:#f92672">(</span>The Egoist, Ltd, 1917<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Lines starting with <code>&lt;</code> means &ldquo;this line needs removing&rdquo; and lines starting with <code>&gt;</code> means &ldquo;this line needs adding&rdquo;. The other lines specify where in the file the changes would need to be made - this machine-readble data allows one file to be &ldquo;patched&rdquo; to match another.</p>
+<p>We can also output the same data in a so-called &ldquo;unified&rdquo; format by passing a <code>-u</code> parameter:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ diff -u a.txt b.txt
+</span></span><span style="display:flex;"><span>--- a.txt	2017-04-25 14:03:12.000000000 +0100
+</span></span><span style="display:flex;"><span>+++ b.txt	2017-04-25 13:56:20.000000000 +0100
+</span></span><span style="display:flex;"><span>@@ -1,14 +1,13 @@
+</span></span><span style="display:flex;"><span> Morning at the Window
+</span></span><span style="display:flex;"><span>-T.S. Eliot 1888-1965
+</span></span><span style="display:flex;"><span>+T.S. Eliot
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> They are rattling breakfast plates in basement kitchens,
+</span></span><span style="display:flex;"><span> And along the trampled edges of the street
+</span></span><span style="display:flex;"><span> I am aware of the damp souls of housemaids
+</span></span><span style="display:flex;"><span>+Sprouting despondently at area gates.	
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span> The brown waves of fog toss up to me	        
+</span></span><span style="display:flex;"><span> Twisted faces from the bottom of the street,
+</span></span><span style="display:flex;"><span> And tear from a passer-by with muddy skirts
+</span></span><span style="display:flex;"><span> An aimless smile that hovers in the air
+</span></span><span style="display:flex;"><span> And vanishes along the level of the roofs.
+</span></span><span style="display:flex;"><span>-
+</span></span><span style="display:flex;"><span>-From Prufrock, and other observations <span style="color:#f92672">(</span>The Egoist, Ltd, 1917<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>This format uses &lsquo;-&rsquo; and &lsquo;+&rsquo; in place of &lsquo;&lt;&rsquo; and &lsquo;&gt;&rsquo; and provides a few lines of context around each change making it a little easier to digest.</p>
+<h2 id="diffing-a-database"style="display:inline">Diffing a database</h2><a class="stealth" href="#diffing-a-database">🔗</a><br>
+<p>Let&rsquo;s say we have two databases instead of two text files - in this case two Apache CouchDB or Cloudant databases. How can we tell if documents in each database are identical, and if they&rsquo;re not, which ones differ?</p>
+<p>I&rsquo;ve written a command-line tool to do just that: <a href="https://www.npmjs.com/package/couchdiff">couchdiff</a>.</p>
+<p>It is installed using the <code>npm</code> command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm install -g couchdiff
+</span></span></code></pre></div><p>and can then be used just like <code>diff</code>, except that it expects two <em>URLs</em> instead of two file paths e.g.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ couchdiff http://localhost:5984/mydb1 http://localhost:5984/mydb2
+</span></span><span style="display:flex;"><span>spooling changes...
+</span></span><span style="display:flex;"><span>sorting...
+</span></span><span style="display:flex;"><span>calculating difference...
+</span></span><span style="display:flex;"><span>2c2
+</span></span><span style="display:flex;"><span>&lt; 1000543/1-3256046064953e2f0fdb376211fe78ab
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt; 1000543/2-7d93e4800a6479d8045d192577cff4f7
+</span></span></code></pre></div><p>In this case, the two databases are identical except for document id <code>1000543</code> which is at a later revision in the second database.</p>
+<p>The URLs can point to local CouchDB datbases or remote Cloudant databases, or both:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ couchdiff http://localhost:5984/mydb1 https://USER:PASS@myhost.cloudant.com/mydb2
+</span></span><span style="display:flex;"><span>spooling changes...
+</span></span><span style="display:flex;"><span>sorting...
+</span></span><span style="display:flex;"><span>calculating difference...
+</span></span></code></pre></div><p>Like <code>diff</code>, <code>couchdiff</code> also accepts a <code>-u</code> parameter to output the data in &ldquo;unified format&rdquo;.</p>
+<h2 id="how-does-couchdiff-work"style="display:inline">How does couchdiff work?</h2><a class="stealth" href="#how-does-couchdiff-work">🔗</a><br>
+<p>The couchdiff utility:</p>
+<ol>
+<li>Gets the <a href="https://console.ng.bluemix.net/docs/services/Cloudant/api/database.html#get-changes">changes feed</a> for each of the databases and writes the document id and revision token to a temporary file - one file for each database.</li>
+<li>The temporary files are sorted using the <code>sort</code> command-line tool. This ensures that both files are in &ldquo;id order&rdquo;.</li>
+<li>The two files are &ldquo;diffed&rdquo; using the <code>diff</code> utility, which is the output you see. If the databases are identical there will be no output.</li>
+</ol>
+<p>You need both <code>sort</code> and <code>diff</code> to be installed on your machine for this to work. A Mac and most Linux distributions would have them pre-installed.</p>
+<h2 id="what-about-conflicts"style="display:inline">What about conflicts?</h2><a class="stealth" href="#what-about-conflicts">🔗</a><br>
+<p>Conflicted documents are ignored by <code>couchdiff</code> by default but by adding the <code>--conflicts</code> parameter brings them into play. With</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ couchdiff --conflicts http://localhost:5984/mydb1 http://localhost:5984/mydb2
+</span></span><span style="display:flex;"><span>2c2
+</span></span><span style="display:flex;"><span>&lt; mydoc/2-4c740c74de23b6e55214996ab0eda9a3
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt; mydoc/2-7942b2ce39cc4dd85f1809c1756a40c9
+</span></span></code></pre></div><p>both databases will be compared <em>including</em> any variance in conflicted revisions.</p>
+<h2 id="what-about-attachments"style="display:inline">What about attachments?</h2><a class="stealth" href="#what-about-attachments">🔗</a><br>
+<p>The <code>couchdiff</code> tool doesn&rsquo;t the examine the bodies of binary attachments explicitly but as the document bodies contain a digest of each attachment, it will be able to detect differences in attachments.</p>
+<h2 id="other-command-line-tools"style="display:inline">Other command-line tools</h2><a class="stealth" href="#other-command-line-tools">🔗</a><br>
+<p>If you need to access your CouchDB or Cloudant database from the command-line then there are other tools you can use</p>
+<ul>
+<li><a href="https://www.npmjs.com/package/couchimport">couchimport</a> - import data to your JSON document store from CSV/TSV files and vice versa</li>
+<li><a href="https://www.npmjs.com/package/couchshell">couchshell</a> - interact with your databases as if they were a file system</li>
+<li><a href="https://www.npmjs.com/package/couchbackup">couchbackup</a> - backup your database to a text and restore just as easily</li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/diff-your-databases-with-couchdiff-f69943f9dc97" target="_new">https://medium.com/ibm-watson-data-lab/diff-your-databases-with-couchdiff-f69943f9dc97</a>
+
+
+
+</body>
+</html>
+

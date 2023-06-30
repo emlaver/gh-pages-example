@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Replication Efficiency Improvements</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Replication Efficiency Improvements">
+    <meta property="og:url" content="https://blog.cloudant.com/2023/02/08/Replication-efficiency-improvements.html" />
+    <meta property="og:description" content="How to make replication go faster" />
+    <meta property="article:published_time" content="2023-02-08 00:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/vince-fleming-Vmr8bGURExo-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Replication Efficiency Improvements" />
+    <meta name="twitter:description" content="How to make replication go faster" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Replication Efficiency Improvements">
+    <meta itemprop="description" content="How to make replication go faster">
+    <meta itemprop="image" content="/img/vince-fleming-Vmr8bGURExo-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Replication Efficiency Improvements</h1>
+  
+  <div class="postmeta">Feb 8, 2023 | Nick Vatamaniuc | 
+
+  
+  <bx-tag>Replication</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Cloudant&rsquo;s replication is a rock-solid protocol that allows a database&rsquo;s changes to be easily synced to a different database. This feature is used widely to create multi-region Cloudant <a href="https://blog.cloudant.com/2017/11/07/Cloudant-replication-topologies.html">topologies</a>, allowing dependent applications to survive a regional Cloud outage.</p>
+<p>Cloudant has recently published a number of improvements that make replication even better than before - in our internal benchmarks we have seen replications speeds of 3x the previous version. Some of these features have been switched <em>off</em> by default, but may become the default behaviour in future releases.</p>
+<p>In this blog post we&rsquo;ll explore what has changed and how the new optional features can be switched on in your replications.</p>
+<p><img src="https://blog.cloudant.com/img/vince-fleming-Vmr8bGURExo-unsplash.jpg" alt="replication"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/Vmr8bGURExo">Vince Fleming on Unsplash</a></p>
+</blockquote>
+<p>Before we get to that, it is instructive to understand how Cloudant&rsquo;s replication works.</p>
+<h2 id="how-does-replication-work"style="display:inline">How does Replication work?</h2><a class="stealth" href="#how-does-replication-work">🔗</a><br>
+<p>Replication consists of three actors:</p>
+<ul>
+<li>The <em>source</em>. The Cloudant database containing the data that is to be written to the target.</li>
+<li>The <em>target</em>. The Cloudant database where data from the source is to be written.</li>
+<li>The <em>mediator</em>. The Cloudant instance that performs the administration of the replication process. This can be either the <em>source</em> or <em>target</em> instance, or in some cases, an entirely different Cloudant instance.</li>
+</ul>
+<p>Replication data logically flows in one direction only: from the <em>source</em> to the <em>target</em> - changes that occur on the <em>source</em> are carefully grafted on to data that exists in the <em>target</em> database. (If two way &ldquo;sync&rdquo; is required, then two replications are needed - one for data flowing from A-&gt;B, the other for B-&gt;A).</p>
+<p>Replications are started by writing a document to the <code>_replicator</code> database on the <em>mediator</em> (remember that the <em>mediator</em> may also be either the <em>source</em> or <em>target</em> Cloudant service). In this case we&rsquo;re replicating a database <code>a</code> on one Cloudant instance to database <code>b</code> on another:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;a_to_b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://myfirstaccount.cloudant.com/a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://mysecondaccount.cloudant.com/b&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>Note that this simplified <code>_replicator</code> document omits any authentication credentials which would be necessary for the replication to proceed. The replication document has a number of <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-advanced-replication">optional configuration parameters</a> but <code>source</code> and <code>target</code> are the key mandatory options.</p>
+</blockquote>
+<p>Once the document is written to the Cloudant <em>mediator</em> instance&rsquo;s <code>_replicator</code> database, that Cloudant service will begin a series of repeating steps:</p>
+<ol>
+<li>A batch of changes is read from the <em>source</em> instance. This uses the Cloudant <a href="https://cloud.ibm.com/apidocs/cloudant#postchanges-changes">Changes Feed</a> API call which provides a list of document revisions that have occurred since the last <em>checkpoint</em> (see step 5).</li>
+<li>The <em>target</em> database is then queried to see if it already has the changes from step 1. This uses batched calls to the Cloudant <a href="https://cloud.ibm.com/apidocs/cloudant#postrevsdiff">_revs_diff</a> API call, which given a list of document revisions will reply with a list of revisions the target <em>doesn&rsquo;t have</em>. This is an optimisation to avoid having to send data to the <em>target</em> that it already has.</li>
+<li>The revisions required to be sent to the <em>target</em> from Step 2, are fetched from the <em>source</em> using the Cloudant <a href="https://cloud.ibm.com/apidocs/cloudant#getdocument">Document Fetch</a> API call - one invocation for each document revision required.</li>
+<li>Batches of document revisions from Step 3 are written to the <em>target</em> database using the Cloudant <a href="https://cloud.ibm.com/apidocs/cloudant#postbulkdocs">Bulk Write</a> API. The document revisions written could be freshly inserted documents, updates to existing documents, conflicted documents or document deletions.</li>
+<li>The state of the progress of the replication job is written to the <em>source</em> and <em>target</em> databases as local &ldquo;checkpoint&rdquo; documents which allow a stopped replication to resume from where it left off.</li>
+</ol>
+<p>Steps 1 through 5 are repeated until there are no more changes for &ldquo;one-shot&rdquo; replications, or forever for &ldquo;continuous&rdquo; replications.</p>
+<p>Read more about Cloudant Replication in our <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-guide">documentation</a>.</p>
+<h2 id="optimisation-1-skipping-_revs_diff"style="display:inline">Optimisation 1: Skipping <code>_revs_diff</code></h2><a class="stealth" href="#optimisation-1-skipping-_revs_diff">🔗</a><br>
+<p>As discussed in the previous section, the <code>_revs_diff</code> step is there to prevent data that already exists on the <em>target</em> being re-sent from <em>source</em>. But what if the <em>target</em> is empty, as it would be at the start of fresh replication to a new database? The <code>_revs_diff</code> step would be a waste of time, eating up valuable database read operations from the <em>target</em>.</p>
+<p>Cloudant now intelligentlly decides whether to perform the <code>_revs_diff</code> step, learning from the responses to previous <code>_revs_diff</code> requests. If it detects that the target seems to need most of the revisions being sent, then it will send them without bothering with the <code>_revs_diff</code> step in most cases.</p>
+<p>No user action is required to unlock this optimisation - Cloudant will automatically use fewer <code>_revs_diff</code> requests when the <em>target</em> appears to have few of the changes that the <em>source</em> is sending. As a result, replications to empty of sparse <em>targets</em> will proceed more quickly.</p>
+<h2 id="optimisation-2-make-_revs_diff-faster"style="display:inline">Optimisation 2: Make <code>_revs_diff</code> faster</h2><a class="stealth" href="#optimisation-2-make-_revs_diff-faster">🔗</a><br>
+<p>Even though some replications may use fewer <code>_revs_diff</code> API calls, the API call itself has been tweaked so that, if called, it runs much faster than before.</p>
+<p>No user action is required to unlock this optimisation - it just goes faster!</p>
+<h2 id="optimisation-3-using-_bulk_get"style="display:inline">Optimisation 3: Using <code>_bulk_get</code></h2><a class="stealth" href="#optimisation-3-using-_bulk_get">🔗</a><br>
+<p>Instead of using <code>GET /&lt;sourcedb&gt;/&lt;docid&gt;</code> to fetch each document revision for Step 3, the Cloudant Replicator can be configured to use the <a href="https://cloud.ibm.com/apidocs/cloudant#postbulkget">POST /&lt;sourcedb&gt;/_bulk_get</a> endpoint instead, to fetch batches of documents in bulk.</p>
+<p>Using fewer bulk requests in place of many more individual document fetches means that the <em>source</em> Cloudant instance is doing less work, so replications can proceed more quickly.</p>
+<p>This feature can be enabled by adding <code>&quot;use_bulk_get&quot;: true</code> to your replication document e.g.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;a_to_b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://myfirstaccount.cloudant.com/a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://mysecondaccount.cloudant.com/b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;use_bulk_get&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>A word of warning on this feature: although it uses the same number of Cloudant &ldquo;reads&rdquo; as fetching the documents individually, the bulk API consumes those reads in a single <em>second</em> - so read consumption may be more &ldquo;peaky&rdquo;. Take care that your <em>source</em> Cloudant service has enough <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-ibm-cloud-public#provisioned-throughput-capacity">capacity</a> to avoid exhausting the read allocation required by other API clients.</p>
+</blockquote>
+<h2 id="optimisation-4-make-_bulk_get-faster"style="display:inline">Optimisation 4: Make <code>_bulk_get</code> faster</h2><a class="stealth" href="#optimisation-4-make-_bulk_get-faster">🔗</a><br>
+<p>The <code>_bulk_get</code> API call has been made more efficient so that bulk fetches of documents put less strain on the Cloudant service.</p>
+<p>No user action is required to unlock this optimisation - it just goes faster!</p>
+<h2 id="optimisation-5-winning-revisions-only"style="display:inline">Optimisation 5: Winning revisions only</h2><a class="stealth" href="#optimisation-5-winning-revisions-only">🔗</a><br>
+<p>Sometimes replication is used to repair a <em>source</em> database that contains conflicted documents. The <em>source</em> database can be replicated to a new <em>target</em> but only the winning revisions are retained (leaving behind any conflicts).</p>
+<p>This is achieved with the <code>&quot;winning_revs_only&quot;: true</code> flag:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;a_to_b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://myfirstaccount.cloudant.com/a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://mysecondaccount.cloudant.com/b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;use_bulk_get&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;winning_revs_only&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>See <a href="https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html">Repairing A Database With Conflicts</a></p>
+<blockquote>
+<p>Note the <code>winning_revs_only</code> flag should only be used for one-off replications for the purposes of conflict repair. It is not suitable for general-purpose replication tasks.</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>Note that Cloudant is built on <a href="https://couchdb.apache.org/">Apache CouchDB</a> and the features described in this blog post were published in Apache CouchDB 3.3.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Optimising Cloudant for Serverless</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Optimising Cloudant for Serverless">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/06/14/Optimising-Cloudant-for-Serverless.html" />
+    <meta property="og:description" content="Reusing your connection to Cloudant" />
+    <meta property="article:published_time" content="2018-06-14 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/michael-mroczek-191461-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Optimising Cloudant for Serverless" />
+    <meta name="twitter:description" content="Reusing your connection to Cloudant" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Optimising Cloudant for Serverless">
+    <meta itemprop="description" content="Reusing your connection to Cloudant">
+    <meta itemprop="image" content="/img/michael-mroczek-191461-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Optimising Cloudant for Serverless</h1>
+  
+  <div class="postmeta">Jun 14, 2018 | Glynn Bird | 
+
+  
+  <bx-tag>Serverless</bx-tag>
+  
+
+
+  </div>
+  
+  <p>IBM Cloudant is a great fit for serverless applications - build a JSON document in the schema of your choice and post it to a Cloudant database using the HTTP API. Both <a href="https://www.ibm.com/cloud/functions">IBM Cloud Functions</a> and <a href="https://www.ibm.com/uk-en/marketplace/database-management">IBM Cloudant</a> can scale to deal with your application&rsquo;s workload without you worrying about operating systems, machine reboots, queues, networking etc.</p>
+<p>Building a serverless application makes you think differently about how to optimise for performance:</p>
+<ul>
+<li>each incoming event is handled separately, so you cannot minimise HTTP requests to the database by bundling multiple requests into a single <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#bulk-operations">bulk operation</a>.</li>
+<li>slow performance of your action results in increased bills because you pay per millisecond of execution time.</li>
+<li>without using the <a href="https://www.ibm.com/blogs/bluemix/2017/10/serverless-composition-ibm-cloud-functions/">Composer</a> tooling to allow state to be retained between actions in sequences, each action starts with no state other than the incoming data and any parameters that were configured at deploy-time.</li>
+</ul>
+<p>Let&rsquo;s take a look at a very simple Cloud Function that writes some data to Cloudant.</p>
+<h2 id="how-cloud-functions-talks-to-cloudant"style="display:inline">How Cloud Functions talks to Cloudant</h2><a class="stealth" href="#how-cloud-functions-talks-to-cloudant">🔗</a><br>
+<p>We&rsquo;ll use a Node.js runtime with the latest version of the official <a href="https://www.npmjs.com/package/@cloudant/cloudant">Cloudant Node.js library</a>.</p>
+<p>In a blank directory we can create a new npm project:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm init
+</span></span></code></pre></div><p>and install the library</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm install --save @cloudant/cloudant
+</span></span></code></pre></div><p>Then we write our own code into a <code>index.js</code> file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// this is our Cloud Function
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">args</span>) { 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// configure the @cloudant/cloudant library
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">opts</span> <span style="color:#f92672">=</span> {<span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">url</span>, <span style="color:#a6e22e">plugins</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;cookieauth&#39;</span>, <span style="color:#e6db74">&#39;promises&#39;</span>]};
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@cloudant/cloudant&#39;</span>)(<span style="color:#a6e22e">opts</span>);  
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudant</span>.<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">dbname</span>);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// write a new document to the database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">timestamp</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">getTime</span>(),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">num</span><span style="color:#f92672">:</span> Math.<span style="color:#a6e22e">random</span>()
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">doc</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">main</span>;
+</span></span></code></pre></div><p>The above Node.js action simply writes a document to Cloudant when it is invoked. It is deployed with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># zip up our action and dependencies</span>
+</span></span><span style="display:flex;"><span>zip -r action.zip index.js node_modules
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># upload the zip file to IBM Cloud Functions</span>
+</span></span><span style="display:flex;"><span>bx wsk action update justtesting action.zip <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --kind nodejs:8 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --param url <span style="color:#e6db74">&#34;https://USER:PASS@HOST.cloudant.com&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --param dbname justtesting
+</span></span></code></pre></div><p>The credentials of your Cloudant service and database name are baked-in to the action as parameters - you&rsquo;ll need to replace <code>&quot;https://USER:PASS@HOST.cloudant.com&quot;</code> with your own Cloudant service&rsquo;s admin credentials if you want to run this yourself.</p>
+<p>The action is invoked from the command-line with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>bx wsk action invoke --blocking justtesting
+</span></span></code></pre></div><p>The Cloudant library translates your call to <code>db.insert</code> into an HTTP POST passing a new JSON object to Cloudant. You should see the <code>id</code> and <code>rev</code> of the newly created document output in the terminal.</p>
+<h2 id="whats-happening-under-the-hood"style="display:inline">What&rsquo;s happening under the hood?</h2><a class="stealth" href="#whats-happening-under-the-hood">🔗</a><br>
+<p>When our action is invoked the Cloudant library is initialized and has some work to do:</p>
+<ul>
+<li>do a DNS lookup to translate your Cloudant hostname into an IP address.</li>
+<li>make a secure HTTPS connection to the Cloudant service which involves performing a <a href="https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_7.1.0/com.ibm.mq.doc/sy10660_.htm">TLS handshake</a></li>
+<li>authenticating against the Cloudant service by exchanging your <code>username</code> &amp; <code>password</code> for a <a href="https://console.bluemix.net/docs/services/Cloudant/api/authentication.html#cookie-authentication">session cookie</a>.</li>
+</ul>
+<p>The library handles all of this for us but nevertheless, it is an overhead. Our action is making <em>two</em> HTTP requests in series for each invocation of the cloud function.</p>
+<p>You should be concerned about this because <em>you</em> are being charged for the execution time of each invocation!</p>
+<h2 id="re-using-the-connection"style="display:inline">Re-using the connection</h2><a class="stealth" href="#re-using-the-connection">🔗</a><br>
+<p>To avoid making an authentication request each time your action is invoked, we can make use of some inside knowledge of how Cloud Functions works. When you deploy your action, the Cloud Functionsplatform turns your code into a <em>container</em>. The platform re-uses the same container again and again when invocations happen often, retaining the code&rsquo;s global variable space. We can use this to our advantage to reuse the Cloudant connection.</p>
+<p>If we store our Cloudant object in a <em>global</em> variable (as opposed to the local variable we are using now), our second and subsequent invocations will be able to re-use its data, which includes the authentication cookie. Our code now looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// global Cloudant database object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// this is our Cloud Function
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">args</span>) { 
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// if db isn&#39;t set we need to set up the library
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">db</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">opts</span> <span style="color:#f92672">=</span> {<span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">url</span>, <span style="color:#a6e22e">plugins</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;cookieauth&#39;</span>,<span style="color:#e6db74">&#39;promises&#39;</span>]};
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@cloudant/cloudant&#39;</span>)(<span style="color:#a6e22e">opts</span>);  
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudant</span>.<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">args</span>.<span style="color:#a6e22e">dbname</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// write a new document to the database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">timestamp</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Date().<span style="color:#a6e22e">getTime</span>(),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">num</span><span style="color:#f92672">:</span> Math.<span style="color:#a6e22e">random</span>()
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">doc</span>);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">main</span>;
+</span></span></code></pre></div><ul>
+<li>there is a global variable called <code>db</code> which is to hold the Cloudant library object</li>
+<li>when the <code>main</code> function is called for the first time, the <code>db</code> object is created with the Cloudant configuration. An <code>if</code> statement ensures that the <code>db</code> object is only created once.</li>
+<li>on the first write to the database, the Cloudant library will first exchange its credentials for a cookie, storing it in the <code>db</code> object.</li>
+<li>subsequent invocations that reuse the same container will re-use the cookie inside <code>db</code>, and if consequitive innvocations are close enough in time, they will also reuse the same <em>HTTP</em> connection, because the socket is <a href="https://en.wikipedia.org/wiki/Keepalive">kept alive</a>.</li>
+</ul>
+<p>The sample principle can be applied to code using the <a href="https://github.com/cloudant/nodejs-cloudant#the-plugins">iam</a> plugin, IBM Cloud&rsquo;s Identity and Access Management system for authentication.</p>
+<h2 id="i-thought-global-variables-were-bad"style="display:inline">I thought global variables were bad?</h2><a class="stealth" href="#i-thought-global-variables-were-bad">🔗</a><br>
+<p>They are in general, but in this case they allow state to be retained between invocations of our Cloud Function, making our application faster and saving us money!</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/optimising-cloudant-for-serverless-7ddafe33c8cd" target="_new">https://medium.com/@glynn_bird/optimising-cloudant-for-serverless-7ddafe33c8cd</a>
+
+
+
+</body>
+</html>
+

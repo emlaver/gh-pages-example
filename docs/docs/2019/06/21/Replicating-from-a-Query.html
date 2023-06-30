@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Replicating from a Query</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Replicating from a Query">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/06/21/Replicating-from-a-Query.html" />
+    <meta property="og:description" content="Taking a subset of data offline and writing your own replicator." />
+    <meta property="article:published_time" content="2019-06-21 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/cosmin-gurau-1618906-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Replicating from a Query" />
+    <meta name="twitter:description" content="Taking a subset of data offline and writing your own replicator." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Replicating from a Query">
+    <meta itemprop="description" content="Taking a subset of data offline and writing your own replicator.">
+    <meta itemprop="image" content="/img/cosmin-gurau-1618906-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Replicating from a Query</h1>
+  
+  <div class="postmeta">Jun 21, 2019 | Glynn Bird | 
+
+  
+  <bx-tag>Replication</bx-tag>
+  
+  <bx-tag>Query</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Cloudant and CouchDB&rsquo;s replication protocol allows documents to be copied from a <em>source</em> database to a <em>target</em> database with the minimum of fuss. This unlocks a wealth of use-cases:</p>
+<ul>
+<li>Multiple copies of a database across geographies to allow for disaster recovery, or to be used in a high-availability configuration.</li>
+<li>Data being replicated from a cloud-based primary to an on-premise backup.</li>
+<li>Mobile devices taking a copy of data, taking if offline and modifying it before replicating it back to the original source database.</li>
+</ul>
+<p>The first two use-cases usually require <em>the whole source database</em> to be replicated, but the third use-case is different and is an example of what I call <em>the roving engineer problem</em>.</p>
+<p><img src="https://blog.cloudant.com/img/cosmin-gurau-1618906-unsplash.jpg" alt="van"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/i30E515-f-k">Cosmin Gurau on Unsplash</a></p>
+</blockquote>
+<h2 id="the-roving-engineer-problem"style="display:inline">The roving engineer problem</h2><a class="stealth" href="#the-roving-engineer-problem">🔗</a><br>
+<p>Let&rsquo;s say our company installs electric vehicle charging points. We have hundreds of mobile engineers and a database of all of our company&rsquo;s appointments stored in Cloudant - one document per appointment:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;appointment&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;booked&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">address</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">street</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;25 Front Street&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">town</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Pleasantville&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">state</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;CA&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">zip</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;152422&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">model</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;KwikCharge 550S&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">customer</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Tom Pickering&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-06-30&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">engineer</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;501&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We want to replicate each engineer&rsquo;s appointment documents to their mobile device so that they can take them with them (sometimes into remote areas without cellular coverage). During the installation, the engineers will add more fields to the document to record the serial number of the device they installed, the time they arrived &amp; left etc. Mobile apps built with <a href="https://pouchdb.com/">PouchDB</a> allow Cloudant documents to reside inside a web browser (or embedded in a browser inside a <a href="https://cordova.apache.org/">Apache Cordova</a> container). PouchDB speaks the same replication protocol as Cloudant, so moving data about is a breeze.</p>
+<p><img src="https://blog.cloudant.com/img/roving1.png" alt="roving1"></p>
+<p>At the end of the day, or at any time when the engineer&rsquo;s mobile is connected, they can sync back the data to the Cloudant service.</p>
+<p>Let&rsquo;s look at the ways this design pattern can be achieved.</p>
+<h2 id="option-1-filtered-replication"style="display:inline">Option 1: Filtered replication</h2><a class="stealth" href="#option-1-filtered-replication">🔗</a><br>
+<p>A Cloudant replication between source and target databases can be <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-advanced-replication#filtered-replication">filtered</a>, that is a JavaScript function decides whether each document makes it through to the target or is rejected. This can, in theory, be used to implement the roving engineer problem. We create a filter function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>, <span style="color:#a6e22e">req</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// ensure this is an appointment that has been booked
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// and is assigned to our engineer (passed in at replication-time)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;appointment&#39;</span> <span style="color:#f92672">&amp;&amp;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">status</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;booked&#39;</span> <span style="color:#f92672">&amp;&amp;</span> 
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">engineer</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">query</span>.<span style="color:#a6e22e">engineer</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We can then trigger a replication from PouchDB, specifying that we wish to filter the documents with our engineer&rsquo;s id.</p>
+<p>This would work, but it&rsquo;s slow. The first replication would ask Cloudant to trawl through every document in the database to find the handful of documents that pass the filter function&rsquo;s test. Subsequent replication&rsquo;s could be faster, because they wouldn&rsquo;t have to start from the beginning of the source database&rsquo;s changes feed, but the process would still have to sift through every engineer&rsquo;s documents in search of those pertaining to one engineer.</p>
+<h2 id="option-2-one-database-per-user"style="display:inline">Option 2: One database per user</h2><a class="stealth" href="#option-2-one-database-per-user">🔗</a><br>
+<p>The <em>one database per user</em> pattern is common in CouchDB/Cloudant circles because it allows a clean replication target/source that only contains one user&rsquo;s documents.</p>
+<p><img src="https://blog.cloudant.com/img/roving2.png" alt="roving2"></p>
+<p>This is much better than filtering the replication from one large database but does have some drawbacks:</p>
+<ul>
+<li>The server-side databases gets bigger and bigger with each day. In this use-case only the new or recent documents are of interest to the mobile client, but replication is going to bring <em>all</em> the documents down to the mobile database.</li>
+<li>With application data split out into hundreds of separate databases, it is difficult to query the data as a whole. One solution is to replicate the small databases into a large central database which can then be used for reporting.</li>
+</ul>
+<h2 id="option-3-replicating-from-a-query"style="display:inline">Option 3: Replicating from a query</h2><a class="stealth" href="#option-3-replicating-from-a-query">🔗</a><br>
+<p>Ideally, we&rsquo;d like to keep a single server-side database to make reporting easy but we also want to keep the data size small on the mobile side. Starting with a blank mobile-side database every day we would like to replicate only the data that is of interest to one user in restricted time-window. Effectively, we would like to copy data based on a query and push the matching records to the clean, mobile database. This isn&rsquo;t a built-in feature of Cloudant but is easily achievable with a few steps:</p>
+<ol>
+<li>Perform the query to get the list of document ids to copy. In our case, it&rsquo;s going to be a handful of documents. Note that the query should be <a href="https://blog.cloudant.com/2018/07/12/CloudantFundamentals-Indexing.html">backed by a suitable index</a> to keep performance snappy.</li>
+<li>Fetch the document bodies <em>including the replication history</em> matching the document ids from step 1.</li>
+<li>Write the documents to the mobile-side database, retaining the replication history</li>
+</ol>
+<p><img src="https://blog.cloudant.com/img/roving3.png" alt="roving2"></p>
+<p>Here&rsquo;s how this achieved with client-side JavaScript:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// clean out the client-side database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">DBNAME</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;apointments&#39;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PouchDB</span>(<span style="color:#a6e22e">DBNAME</span>)
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">destroy</span>()
+</span></span><span style="display:flex;"><span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PouchDB</span>(<span style="color:#a6e22e">DBNAME</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// remote database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cloudantDB</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PouchDB</span>(<span style="color:#e6db74">&#39;https://user:pass@host/dbname&#39;</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// perform the query on the server-side database
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#75715e">// Find documents which are appointments that have been booked
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#75715e">// for our engineer id and that are in the future.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">q</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">selector</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;appointment&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;booked&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">engineer</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;501&#39;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;$gte&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2019-06-13&#39;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>   },
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">fields</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;_id&#39;</span>]
+</span></span><span style="display:flex;"><span> }
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">data</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">cloudantDB</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">q</span>)
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// swap _id for id
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">docs</span>.<span style="color:#a6e22e">map</span>((<span style="color:#a6e22e">obj</span>) =&gt; { <span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">_id</span>; <span style="color:#66d9ef">delete</span> <span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">_id</span> })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// fetch the document bodies with revision history
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">bulkGetData</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">cloudantDB</span>.<span style="color:#a6e22e">bulkGet</span>({<span style="color:#a6e22e">docs</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">docs</span>, <span style="color:#a6e22e">revs</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>})
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">docs</span> <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">bulkGetData</span>.<span style="color:#a6e22e">results</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">docs</span>.<span style="color:#a6e22e">push</span>(<span style="color:#a6e22e">bulkGetData</span>.<span style="color:#a6e22e">results</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">docs</span>[<span style="color:#ae81ff">0</span>].<span style="color:#a6e22e">ok</span>)
+</span></span><span style="display:flex;"><span> }
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">// write to local PouchDB
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">response</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">bulkDocs</span>(<span style="color:#a6e22e">docs</span>, {<span style="color:#a6e22e">new_edits</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>})
+</span></span></code></pre></div><p>Much of this algorithm is formatting the output of one API call so that it&rsquo;s suitable for the input of another but there&rsquo;s a few import points:</p>
+<ul>
+<li><code>bulkGet</code> fetches a list of documents at once by their <code>_id</code> while also returning the documents&rsquo; revision histories, which is important if you are writing your own replicator.</li>
+<li><code>bulkDocs</code> writes documents in bulk with the <code>new_edits: true</code> flag that specifies that no new revision tokens are to be generated - each document&rsquo;s revision tree is grafted on the local database&rsquo;s existing revision tree.</li>
+</ul>
+<p>PouchDB replication uses <code>bulkGet</code>/<code>bulkDocs</code> in its internal implementation, the difference between our custom replicator and standard replication is that ours is triggered from a smaller subset of data - the output of the <code>find</code> query operation.</p>
+<p>In our use-case, the data set being &ldquo;replicated&rdquo; is small (a handful of documents). If your use-case requires larger volumes of documents to be copied, then you&rsquo;ll need to repeat the bulkGet/bulkDocs step, in batches of, say, a hundred documents at a time, paging through repeated query result sets.</p>
+<h2 id="closing-the-loop"style="display:inline">Closing the loop</h2><a class="stealth" href="#closing-the-loop">🔗</a><br>
+<p>Whichever option we pick to copy data to our mobile device, our engineers now have their documents in PouchDB and can take them to their remote site to do their installation work. They can modify the appointment documents to add data they collect on site, creating new revisions of the documents in PouchDB as they do so. When the engineer is ready to upload their work, a simple <a href="https://pouchdb.com/api.html#replication">db.replicate.to(cloudantDB)</a> call is all that is required to push those revisions to Cloudant.</p>
+<p>If there&rsquo;s a possibility that an server-side appointment document could have been modified while the engineer was out and about, then it&rsquo;s essential to check for and repair <a href="https://blog.cloudant.com/2015/01/12/Introduction-to-Conflicts-Part-One.html">document conflicts</a>. When two documents are modified in different ways by disconnected replicas of a database, Cloudant doesn&rsquo;t discard data on sync, it keeps the clashing versions as <em>conflicts</em> in its revision tree. It is your application&rsquo;s responsibility to detect and tidy up conflicts.</p>
+<p>If you want to avoid conflicts altogether, then the next section shows you how.</p>
+<h2 id="avoiding-conflicts-during-replication"style="display:inline">Avoiding conflicts during replication</h2><a class="stealth" href="#avoiding-conflicts-during-replication">🔗</a><br>
+<p>Conflicts can be avoided altogether by keeping data separate:</p>
+<ul>
+<li>The appointment documents, which are generated server-side when an installation job is requested contain the meta data about the job. Ensure that only the server-side process can modify these documents.</li>
+<li>The engineer-generated data should be stored in new, separate documents to store the data collected on site. The documents can reference the original appointment, but the original appointment document remains untouched.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;installation&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">appointmend_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;31VHCIFR4SCKFTMV&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">engineer_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;501&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">arrived</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-06-30 10:30:00&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">left</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-06-30 11:56:00&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">model</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;KwikCharge 550S&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">serial</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;885527727725772&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">notes</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Installed to the left of garage.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">tested</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">current</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">13</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">car</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Nissan Leaf&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>By keeping the appointment data separate from the installation data, that is the data generated server-side from the data generated when on-site, we can completely avoid the possibility of conflicts and the necessity of having to detect and repair them.</p>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
+<p>The <em>roving engineering problem</em> can be solved a number of ways with Cloudant, but a great solution is writing your own &ldquo;Replication from a Query&rdquo; algorithm so that only the documents you need are copied to a clean mobile database.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/replicating-from-a-query-with-couchdb-dd3ffc5c4b31" target="_new">https://medium.com/@glynn_bird/replicating-from-a-query-with-couchdb-dd3ffc5c4b31</a>
+
+
+
+</body>
+</html>
+

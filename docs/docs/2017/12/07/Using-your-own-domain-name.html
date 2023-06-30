@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Using your own domain</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Using your own domain">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/12/07/Using-your-own-domain-name.html" />
+    <meta property="og:description" content="Using Cloud Functions as a proxy" />
+    <meta property="article:published_time" content="2017-12-07 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/finn-hackshaw-131930-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Using your own domain" />
+    <meta name="twitter:description" content="Using Cloud Functions as a proxy" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Using your own domain">
+    <meta itemprop="description" content="Using Cloud Functions as a proxy">
+    <meta itemprop="image" content="/img/finn-hackshaw-131930-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Using your own domain</h1>
+  
+  <div class="postmeta">Dec 7, 2017 | Glynn Bird | 
+
+  
+  <bx-tag>Domain</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Until recently, Cloudant allowed you to bring your own domain name through its &ldquo;virtual hosts&rdquo; functionality. This feature is now being removed for security reasons.</p>
+<p>If you still want to be able to access the Cloudant API through your own domain name, you can do it by creating a <em>serverless proxy</em> that is hosted on <a href="https://www.ibm.com/cloud/functions">IBM Cloud Functions</a>, IBM&rsquo;s serverless platform.</p>
+<p><img src="https://blog.cloudant.com/img/serverless-proxy1.png" alt="schematic"></p>
+<p>A number of serverless &ldquo;actions&rdquo; are deployed—one per API call you need to proxy. They are served out by the IBM Cloud Functions API Gateway, which provides authentication and rate-limiting of your service. Finally, you can configure the API gateway to use <em>your</em> domain name and to perform the SSL termination so that your API is served out securely.</p>
+<h2 id="prequisites"style="display:inline">Prequisites</h2><a class="stealth" href="#prequisites">🔗</a><br>
+<p>First we need the source code. You&rsquo;ll need the <code>git</code> tool and to be familiar with command-line tools:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone https://github.com/ibm-watson-data-lab/serverless-proxy.git
+</span></span><span style="display:flex;"><span>cd serverless-proxy
+</span></span></code></pre></div><p>If you haven&rsquo;t done so already, <a href="https://bluemix.net">sign up for an IBM Cloud account</a> (formerly branded as &ldquo;Bluemix&rdquo;). Follow the <a href="https://console.ng.bluemix.net/openwhisk/getting-started">Getting Started with IBM Cloud Functions guide</a> to download the <code>bx wsk</code> tool and configure it for your account.</p>
+<p>If you don&rsquo;t already have a Cloudant account, in your IBM Cloud dashboard create a Cloudant service and make a note of its URL. In the Cloudant dashboard, create a new empty database (say, &lsquo;mydb&rsquo;). This is the database we will be using in our proxy deployment.</p>
+<h2 id="installation"style="display:inline">Installation</h2><a class="stealth" href="#installation">🔗</a><br>
+<p>Before we deploy our code, we need to define the following:</p>
+<ul>
+<li>the URL of the Cloudant service we are using</li>
+<li>the name of the database we are working with</li>
+</ul>
+<p>These two pieces of information need to be stored in environment variables like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export COUCH_HOST<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://USERNAME:PASSWORD@HOST.cloudant.com&#34;</span>
+</span></span><span style="display:flex;"><span>export COUCH_DATABASE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;mydb&#34;</span>
+</span></span></code></pre></div><p>Now we can run the deployment script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>./deploy.sh
+</span></span></code></pre></div><p>This will configure a number of serverless actions—one for each Cloudant endpoint that is supported. It also configures the IBM Cloud Functions <a href="https://console.bluemix.net/docs/apis/management/index.html#index">API Gateway</a> to map API calls to those actions. We end up with a set of Cloudant-like API calls hosted on IBM Cloud Functions.</p>
+<p>In the IBM Cloud Functions dashboard we can configure that API to:</p>
+<ul>
+<li>limit access to only those that have an API key</li>
+<li>only allow those who have an OAuth cookie</li>
+<li>rate-limit requests per user</li>
+</ul>
+<p>By default, however, the API is open, meaning that anyone who has access to this API can read, write, update, or delete Cloudant data.</p>
+<h2 id="secure-your-traffic"style="display:inline">Secure your traffic</h2><a class="stealth" href="#secure-your-traffic">🔗</a><br>
+<p>To use a custom domain, first you need a domain name. I created a subdomain: <code>mycloudant.glynnbird.com</code>. You need to configure the DNS for that domain name using the <a href="https://console.bluemix.net/docs/apis/management/manage_apis.html#custom_domains">instructions here</a>.</p>
+<p>Then we need a secure certificate for that domain name. Fortunately, thanks to the folks at <a href="https://letsencrypt.org/">Let&rsquo;s Encrypt</a>, secure certificates are now free. I found the simplest way to get one was to use the <a href="https://www.sslforfree.com">https://www.sslforfree.com</a> website and download the certifcate to a <code>mycert.crt</code> and the private key to <code>mykey.key</code> file.</p>
+<p>Configure your IBM Cloud account to accept your domain name and upload your certificate and private key using the <a href="https://console.bluemix.net/docs/apis/management/manage_apis.html#custom_domains">instructions here</a>.</p>
+<p>At this point, your API should be served out on your custom domain name using HTTPS.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/using-your-own-domain-name-with-cloudant-b63699db96bd" target="_new">https://medium.com/ibm-watson-data-lab/using-your-own-domain-name-with-cloudant-b63699db96bd</a>
+
+
+
+</body>
+</html>
+

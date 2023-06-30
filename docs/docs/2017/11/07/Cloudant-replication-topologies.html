@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Replication topologies</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Replication topologies">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/11/07/Cloudant-replication-topologies.html" />
+    <meta property="og:description" content="Designing for Cloudant failover" />
+    <meta property="article:published_time" content="2017-11-07 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/joanna-kosinska-483603-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Replication topologies" />
+    <meta name="twitter:description" content="Designing for Cloudant failover" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Replication topologies">
+    <meta itemprop="description" content="Designing for Cloudant failover">
+    <meta itemprop="image" content="/img/joanna-kosinska-483603-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Replication topologies</h1>
+  
+  <div class="postmeta">Nov 7, 2017 | Mike Rhodes | 
+
+  
+  <bx-tag>Architecture</bx-tag>
+  
+  <bx-tag>Replication</bx-tag>
+  
+
+
+  </div>
+  
+  <p><a href="https://console.bluemix.net/docs/services/Cloudant/guides/replication_guide.html#replication">Cloudant&rsquo;s (and CouchDB&rsquo;s) replication</a> feature allows you to keep databases in sync across countries and continents. However, sometimes it&rsquo;s not obvious how to use this basic pair-wise feature in order to create more complicated replication topologies, like three or more geographical replicas, and then how to do disaster recovery between them. Let&rsquo;s discuss these in turn.</p>
+<p>Throughout the following, it&rsquo;s important to remember that replication is an asynchronous, best-effort process in which a change is propagated to peers sometime after the client receives the response to its write request. This means that longer replication chains don&rsquo;t directly affect document write latency, but also that discrepancies between peers will exist for some small period of time (typically low single digit seconds maximum) after a write to one peer completes.</p>
+<h2 id="more-complicated-topologies"style="display:inline">More complicated topologies</h2><a class="stealth" href="#more-complicated-topologies">🔗</a><br>
+<p>Firstly it&rsquo;s important to understand that Cloudant&rsquo;s replication creates synchronised copies of databases between peers once a two-way replication is set up. Each replication flows changes only in one direction, which means that a two-way replication involves setting up two separate replications, one in each direction. Visualising this as a directed graph works well. Each node in the graph is a Cloudant database and the arrows are directed edges showing which way changes are flowing.</p>
+<p>Using this style, a basic two-peer setup between databases A and B looks like this:</p>
+<p><img src="https://blog.cloudant.com/img/top1.png" alt="topology 1"></p>
+<p>There are two arrows because to have synchronised peers a replication needs to be set up in each direction. After a very short time &ndash; milliseconds to seconds &ndash; peer A will know about any changes to B, and, similarly, B will know about any changes to A.</p>
+<p>These peers can then further replicate with other peers to support more complicated scenarios than a single pair of peers. The key point is that, by setting up replications, one is setting up a graph that changes traverse to get from one peer to another. In order for a change to get from peer A to peer Z, at least one directed link must exist between A and Z. This is the foundation piece to creating more complicated topologies because either A or B can now replicate the changes elsewhere.</p>
+<p>So A can propagate the changes from B to another database, C. In this scenario, A is the primary database and the others could be considered replicas.</p>
+<p><img src="https://blog.cloudant.com/img/top2.png" alt="topology 2"></p>
+<p>This obviously introduces a single point of failure. The replication process is smart enough that you can add a replication from B to C to this set, which means that A is no longer a single point of failure. In graph terms, it&rsquo;s safe to set up a cyclic graph.</p>
+<p><img src="https://blog.cloudant.com/img/top3.png" alt="topology 3"></p>
+<p>As more database replicas are added to the set, however, having a fully connected mesh starts to add undue load to each database, and it&rsquo;s not necessary as each peer is able to act as a &ldquo;stepping stone&rdquo; to push changes through the network.</p>
+<p>Here, a change at peer B is replicated to E via A then C:</p>
+<p><img src="https://blog.cloudant.com/img/top4.png" alt="topology 4"></p>
+<p>In the diagram I only have one stepping stone in each path for simplicity of diagramming, but one could add redundant steps to ensure at least two paths through the network for any given change.</p>
+<h2 id="using-one-way-replications-for-synchronisation-between-peers"style="display:inline">Using One-Way Replications for Synchronisation between Peers</h2><a class="stealth" href="#using-one-way-replications-for-synchronisation-between-peers">🔗</a><br>
+<p>Finally, it&rsquo;s worth revisiting the point that all we require for synchronisation is that there is a directed path for a change to follow from one peer to another. This means that two-way replications between peers are not strictly required. Instead, one alternative is to set up a circle topology:</p>
+<p><img src="https://blog.cloudant.com/img/top5.png" alt="topology 5"></p>
+<p>Here, there is still a path for changes to follow between any pair of nodes. Again, setting up redundant links to provide two paths may be useful. Using one-way replications in this way further allows you to decrease the load upon each peer database while still maintaining acceptable replication latency.</p>
+<h2 id="failing-over-between-databases"style="display:inline">Failing over between databases</h2><a class="stealth" href="#failing-over-between-databases">🔗</a><br>
+<p>After setting up the synchronised peers in whatever topology works for your needs, you&rsquo;re ready to set up failover between the database replicas.</p>
+<p>The important takeaway point in this section is that, while you might be tempted to manage failover elsewhere, the only way to reliably failover is from within the application itself. The reason for this is simple: the application is the only place you can be sure whether a given replica is contactable from the application.</p>
+<p>An application may be unable to contact a database peer for several reasons, such as:</p>
+<ul>
+<li>The database servers are actually offline.</li>
+<li>The application cannot route to the preferred database servers because of network disruption.</li>
+<li>There is very high latency suddenly introduced on the network path between the application and database clusters.</li>
+<li>The application&rsquo;s DNS cache is out of date so it&rsquo;s resolving the database location to the wrong IP address.</li>
+<li>Key database requests made by the application have a latency above a given threshold.</li>
+</ul>
+<p>The last condition is an example of how the application can use its own measurements to ensure failover happens before users become aware of the problem and how a failover strategy can benefit from being application performance-indicator aware.</p>
+<p>The only thing you care about is whether the application can reach the database; not whether, for example, the third-party health-checking service you might use can contact it, or your DNS provider.</p>
+<p>The basic steps are:</p>
+<ul>
+<li>Configure each application instance with a prioritised list of database peers.</li>
+<li>Use an approach like the circuit breaker pattern to guide failover.</li>
+<li>Progress down the prioritised list.</li>
+<li>Have a background task checking for recovery of higher priority peers, failing back when they are reliably available to the application again.</li>
+</ul>
+<p>This approach is simple to understand, not too complicated to implement and gives your application the best chance of surviving the most number of possible failure modes.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://dx13.co.uk/articles/2017/11/07/cloudant-replication-topologies-and-failover/" target="_new">https://dx13.co.uk/articles/2017/11/07/cloudant-replication-topologies-and-failover/</a>
+
+
+
+</body>
+</html>
+

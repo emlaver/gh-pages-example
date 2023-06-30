@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Piecemeal, Bulk or Batch</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Piecemeal, Bulk or Batch">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/07/25/Piecemeal-Bulk-or-Batch.html" />
+    <meta property="og:description" content="Cloudant write modes discussed" />
+    <meta property="article:published_time" content="2017-07-25 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/arshad-pooloo-345648-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Piecemeal, Bulk or Batch" />
+    <meta name="twitter:description" content="Cloudant write modes discussed" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Piecemeal, Bulk or Batch">
+    <meta itemprop="description" content="Cloudant write modes discussed">
+    <meta itemprop="image" content="/img/arshad-pooloo-345648-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Piecemeal, Bulk or Batch</h1>
+  
+  <div class="postmeta">Jul 25, 2017 | Glynn Bird | 
+
+  
+  <bx-tag>Serverless</bx-tag>
+  
+  <bx-tag>Replication</bx-tag>
+  
+
+
+  </div>
+  
+  <p>There are many different deployment models for CouchDB-style databases, but thankfully <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD operations</a> work the same across all of them. Apache CouchDB™ is a database, specifically a JSON document store, with an HTTP API. IBM Cloudant is Apache CouchDB with a few extra bells and whistles run as-a-service in pay-as-you go, dedicated and local configurations.</p>
+<p>In this article, I&rsquo;m going to explain your options for writing data using the CouchDB API, the different calls, and the tradeoffs therein. First, however, it will help to understand the basics of CouchDB as a distributed system, and what the database means when it says your writes are written.</p>
+<h2 id="couchdb-clusters-101"style="display:inline">CouchDB clusters 101</h2><a class="stealth" href="#couchdb-clusters-101">🔗</a><br>
+<p>A CouchDB cluster is a distributed system that exposes a single API—you treat your CouchDB cluster as a single data store, but behind the scenes your database is divided into <em>shards</em> and multiple copies of your documents are stored on separate machines.</p>
+<p><img src="https://blog.cloudant.com/img/couchdb_cluster_1.png" alt="diagram"></p>
+<p>The larger the number of nodes in the cluster, the greater the volume of data and the number of concurrent requests it can handle.</p>
+<p>When you write data to a CouchDB cluster (or a Cloudant service), by default, two or more copies of your document are persisted <strong>on disk</strong> (for example, on 2 or more machines in a 3-node cluster). Other database systems may give you the thumbs-up to your write requests <em>before</em> the data is written to disk as a speed optimisation—behaviour that risks data loss in the event of a node failure.</p>
+<p>Now that you know the basics of what&rsquo;s happening behind the scenes, I&rsquo;ll cover the API calls that allow you to write data to CouchDB and the options you have that trade-off storage guarantees and performance.</p>
+<h2 id="piecemeal-writes"style="display:inline">Piecemeal writes</h2><a class="stealth" href="#piecemeal-writes">🔗</a><br>
+<p>Writing data to CouchDB is simply an HTTP POST request:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -v -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;name&#34;: &#34;Mittens&#34;, &#34;type&#34;: &#34;cat&#34;}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/animals&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">201</span> Created
+</span></span><span style="display:flex;"><span>Cache-Control: must-revalidate
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">95</span>
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">02</span> Jun <span style="color:#ae81ff">2017</span> 06:33:08 GMT
+</span></span><span style="display:flex;"><span>Location: http://localhost:5984/animals/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd00044b&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-76558a77771fb4c1f81d4d91144dc83f&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Here, I POST a JSON document to my database, and the reply indicates the auto-generated <code>id</code> of the document that was created. The &ldquo;201&rdquo; response code indicates success and guarantees that the document was stored on a <a href="https://en.wikipedia.org/wiki/Quorum_(distributed_computing)">quorum of servers</a> in the cluster (at least 2 of 3, in this case).</p>
+<p><img src="https://blog.cloudant.com/img/couchdb_cluster_2.png" alt="diagram"></p>
+<p>This process is important for mission-critial data. It means that if the servers were abruptly powered off, your data would be safe on disk on mulitple machines.</p>
+<h2 id="bulk-writes"style="display:inline">Bulk writes</h2><a class="stealth" href="#bulk-writes">🔗</a><br>
+<p>If you have lots of data to write to the database, then a single bulk API request is more efficent than making several individual API calls. More efficicent in terms of fewer HTTP round trips, and more efficient for the database cluster too:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -v -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;docs&#34;: [{&#34;name&#34;: &#34;Snowy&#34;, &#34;type&#34;: &#34;cat&#34;},{&#34;name&#34;: &#34;Patch&#34;, &#34;type&#34;: &#34;dog&#34;}]}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/animals/_bulk_docs&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">201</span> Created
+</span></span><span style="display:flex;"><span>Cache-Control: must-revalidate
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">192</span>
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">02</span> Jun <span style="color:#ae81ff">2017</span> 06:44:45 GMT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd001d39&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-263fbfee100b3417c513b14f4dacd776&#34;</span><span style="color:#f92672">}</span>,<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd00202b&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-591fadc21c08df0ba8efa5c5912c1cfb&#34;</span><span style="color:#f92672">}]</span>
+</span></span></code></pre></div><p><img src="https://blog.cloudant.com/img/couchdb_cluster_3.png" alt="diagram"></p>
+<p>In this case I supply an object containing an array of documents and, in reply, I receive an array of objects. The body can contain inserts, updates, and deletes:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;docs&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    { <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Paws&#34;</span>, <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cat&#34;</span> },
+</span></span><span style="display:flex;"><span>    { <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd001d39&#34;</span>, <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-263fbfee100b3417c513b14f4dacd776&#34;</span>, <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Snowie&#34;</span>, <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;cat&#34;</span>},
+</span></span><span style="display:flex;"><span>    { <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd00202b&#34;</span>, <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-591fadc21c08df0ba8efa5c5912c1cfb&#34;</span>, <span style="color:#e6db74">&#34;_deleted&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>} 
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://blog.cloudant.com/img/couchdb_cluster_4.png" alt="diagram"></p>
+<p>Is there a limit to how many documents should be posted in a single bulk request? There isn&rsquo;t a limit <em>per se</em>, but 500 small documents is a reasonable rule of thumb.</p>
+<blockquote>
+<p>Note: The pay-as-you-go Cloudant plans limit the size of POST requests to 1MB.</p>
+</blockquote>
+<h2 id="batch-writes"style="display:inline">Batch writes</h2><a class="stealth" href="#batch-writes">🔗</a><br>
+<p>In some circumstances, it is not possible to combine writes into fewer bulk requests. If your application is running on a serverless platform such as <a href="http://openwhisk.org/">OpenWhisk</a>, then your code has no visibility into the other serverless actions that are performing similar requests concurrently.</p>
+<p>This is where <a href="http://docs.couchdb.org/en/2.0.0/api/database/common.html#api-doc-batch-writes">batch mode</a> may be of use. By supplying <code>?batch=ok</code> to a single write request, you are indicating to the server that you permit CouchDB to buffer the document in memory before writing it to disk in batches:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -v -X POST <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{&#34;name&#34;: &#34;Tiddles&#34;, &#34;type&#34;: &#34;cat&#34;}&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/animals?batch=ok&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">202</span> Accepted
+</span></span><span style="display:flex;"><span>Cache-Control: must-revalidate
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">52</span>
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">02</span> Jun <span style="color:#ae81ff">2017</span> 07:01:50 GMT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;7bff55e2a7f9fa3a999c1f76bd002cec&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>In this case, I get a &ldquo;202&rdquo; response, indicating that the document is accepted but not written to disk (yet). This behavoir is faster and more efficient than piecemeal &ldquo;write&rdquo; performance, but doesn&rsquo;t provide any persistance guarantees. Batch mode should not be used for writing critical data to the database but may be useful for some applications.</p>
+<h2 id="references"style="display:inline">References</h2><a class="stealth" href="#references">🔗</a><br>
+<p>If you want to read a more scholarly article on how CouchDB handles writes, then <a href="https://dx13.co.uk/articles/2015/10/19/couchdb-20s-read-and-write-behaviour-in-a-cluster.html">this blog by Mike Rhodes</a> is a great place to start.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/couchdb-writes-piecemeal-bulk-or-batch-8bf8ef9314e0" target="_new">https://medium.com/ibm-watson-data-lab/couchdb-writes-piecemeal-bulk-or-batch-8bf8ef9314e0</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Migrating a Cloudant Account</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Migrating a Cloudant Account">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/11/25/Migrating-a-Cloudant-Account.html" />
+    <meta property="og:description" content="Using replication to copy data from one account to another" />
+    <meta property="article:published_time" content="2020-11-25 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/lesly-derksen-kPvFE0ZOTz8-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Migrating a Cloudant Account" />
+    <meta name="twitter:description" content="Using replication to copy data from one account to another" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Migrating a Cloudant Account">
+    <meta itemprop="description" content="Using replication to copy data from one account to another">
+    <meta itemprop="image" content="/img/lesly-derksen-kPvFE0ZOTz8-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Migrating a Cloudant Account</h1>
+  
+  <div class="postmeta">Nov 25, 2020 | Glynn Bird | 
+
+  
+  <bx-tag>Replication</bx-tag>
+  
+  <bx-tag>Migration</bx-tag>
+  
+
+
+  </div>
+  
+  <p>There are several reasons why you&rsquo;d want to copy data from one Cloudant account to another:</p>
+<ol>
+<li>To copy data to a different region as you want to setup a cross-region database service (e.g. Dallas and Frankfurt).</li>
+<li>To move from self-hosted CouchDB service to a hosted Cloudant account.</li>
+<li>To migrate from a Cloudant dedicated service to a cloud-based, multi-tenant Cloudant service.</li>
+<li>To move from a Cloudant Standard account to Cloudant on Transaction Engine account.</li>
+</ol>
+<p>In this post we&rsquo;ll look at how to undertake such a move and some considerations you may want to take into account while you do so. We&rsquo;ll assume that we are migrating from one Cloudant account to new empty Cloudant account in a different region.</p>
+<p><img src="https://blog.cloudant.com/img/lesly-derksen-kPvFE0ZOTz8-unsplash.jpg" alt="migration"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/kPvFE0ZOTz8">Lesly Derksen on Unsplash</a></p>
+</blockquote>
+<h2 id="replication-primer"style="display:inline">Replication primer</h2><a class="stealth" href="#replication-primer">🔗</a><br>
+<h3 id="what-is-replication"style="display:inline">What is replication?</h3><a class="stealth" href="#what-is-replication">🔗</a><br>
+<p>Cloudant replication is a one-way data copy from a <em>source</em> database to a <em>target</em> database.</p>
+<p><img src="https://blog.cloudant.com/img/migration1.png" alt="mig1"></p>
+<p>The source and target can be on different Cloudant accounts which can exist in different regions across the world. The <em>mediator</em> of the replication job can be the source account, the target account or even a third Cloudant account. Best practice is to have the quietest Cloudant account be the mediator of the replication job - in this case the <em>target</em> account, as it is a new empty service should be configured to &ldquo;pull&rdquo; the data from the source database.</p>
+<h3 id="one-off-vs-continuous"style="display:inline">One off vs continuous</h3><a class="stealth" href="#one-off-vs-continuous">🔗</a><br>
+<p>Replication jobs can be a one-off operation (the default) or run <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api#continuous-replication">continuously</a>, spooling each change from source to target until the job is cancelled.</p>
+<h3 id="replication-speed"style="display:inline">Replication speed</h3><a class="stealth" href="#replication-speed">🔗</a><br>
+<p>Replication jobs can run at different speeds depending on the values <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-advanced-replication#performance-related-options">performance-related options</a> supplied during replication setup. You may wish to throttle the speed at which replication proceeds so as not to put too much load on a production service - it&rsquo;s important that your source account isn&rsquo;t swamped by reads leaving no capacity for other workloads or similarly, that the target account isn&rsquo;t swamped by writes. <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-ibm-cloud-public#consumption-of-read-and-write-operations-by-replication">This document</a> provides approximate documents/sec rates for different combinations of the performance parameters in practice.</p>
+<h3 id="many-databases"style="display:inline">Many databases</h3><a class="stealth" href="#many-databases">🔗</a><br>
+<p>A replication job only copies one database&rsquo;s data from source to target. If you need to migrate multiple databases, you&rsquo;ll need a replication job per database. For many databases, it&rsquo;s usually not advisable to have lots of replications running at once. The <a href="https://www.npmjs.com/package/couchreplicate">couchreplicate</a> tool allows many databases to be copied, with a configurable maximum number of replications running at any one time.</p>
+<p><img src="https://blog.cloudant.com/img/migration4.png" alt="mig1"></p>
+<h3 id="indexing"style="display:inline">Indexing</h3><a class="stealth" href="#indexing">🔗</a><br>
+<p>Replication only copies documents, not secondary index data. As index definitions arrive at the target (in <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-design-documents">Design Documents</a>), the process of indexing will begin and the indexes will build asynchronously. Make sure indexes have finished building before directing production traffic to the target service.</p>
+<p>Further reading:</p>
+<ul>
+<li><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-guide#what-is-replication">Replication Guide</a></li>
+<li><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-advanced-replication">Advanced Replication</a></li>
+</ul>
+<h2 id="filtering-documents"style="display:inline">Filtering documents</h2><a class="stealth" href="#filtering-documents">🔗</a><br>
+<p>Replicating to a new Cloudant service is a good opportunity to remove unwanted documents at the same time. Filtered replication involves supplying a Cloudant Query selector when creating a replication job - documents that meet the criteria of the selector will be replicated, everything else will be left behind.</p>
+<blockquote>
+<p>Note that unlike Cloudant Query, a replication filter selector does not require a matching secondary index. Each changed document is passed through the selector to see if it qualifies to be replicated.</p>
+</blockquote>
+<p>Filtered replication is useful for:</p>
+<ul>
+<li>Only replicating newer data. Supply a filter on a date field and only allow a data range through. Old data from the source can be archived to Cloud Object Storage.</li>
+<li>Removing deletions. Deleted Cloudant documents leave behind a &ldquo;tombstone&rdquo; document which can&rsquo;t be deleted. A replication filter can omit these tombstones leaving the target as a pristine data set containing only non-deleted documents. A database with fewer tombstones is cheaper to host and faster to index &amp; replicate.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api&amp;origin_team=T4NN71GAU#the-selector-field">Replication with a selector</a></li>
+<li><a href="https://blog.cloudant.com/2019/12/13/Filtered-Replication.html">Filtered Replication</a></li>
+</ul>
+<h2 id="database-sharding"style="display:inline">Database sharding</h2><a class="stealth" href="#database-sharding">🔗</a><br>
+<p>A Cloudant Standard database is broken into <code>q</code> shards, with three copies of each shard being stored around the cluster. Usually the default value of <code>q</code> is fine, but if you have a very large database or many very small databases, then a custom value is justified. In these circumstances creating the target database with the correct value of <code>q</code> is important before replicating data across.</p>
+<ul>
+<li>For most users, the default value of <code>q</code> is fine.</li>
+<li>Databases with only a few thousand documents can be created with a <code>q</code> value of <code>1</code> for a boost in query performance.</li>
+<li>Databases with more than 10GB of data per shard copy should seek the advice of the Cloudant Support team to see if a larger value of <code>q</code> would help their use-case. There are complex trade-offs to consider when operating with a larger value of <code>q</code> - a good rule of thumb is to avoid an ever-growing data set if possible.</li>
+</ul>
+<blockquote>
+<p>Note Cloudant on Transaction Engine automatically handles database sharding, so there&rsquo;s no need to worry about <code>q</code>.</p>
+</blockquote>
+<h2 id="live-switchover"style="display:inline">Live switchover</h2><a class="stealth" href="#live-switchover">🔗</a><br>
+<p>Careful use of replication can allow an application to move from one geography to another without downtime. <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api&amp;origin_team=T4NN71GAU#continuous-replication">Continuous replication</a> is set up to copy data from the source to the target forever.</p>
+<p>This allows application traffic to be directed to the source, the target or to both. When you&rsquo;re happy that the target is performing correctly, the replication can be deleted and the source service deleted.</p>
+<p>If you want to hedge your bets and allow for the possibility of switching back to the source then two replications can be setup to transfer data from source&ndash;&gt;target and target&ndash;&gt;source. If the switchover to the new target service doesn&rsquo;t work out, the source database will still be there and also be updated with any changes that were written to the target side.</p>
+<p><img src="https://blog.cloudant.com/img/migration2.png" alt="mig1"></p>
+<h2 id="advanced-filtering"style="display:inline">Advanced filtering</h2><a class="stealth" href="#advanced-filtering">🔗</a><br>
+<p>If your application relies on Cloudant deletions, and you also want to purge unwanted historical deletions during replication, how do you purge only the historical replications and keep any deletions that occur during the migration process as your application continues to delete documents? In short, this is the procedure to follow:</p>
+<ol>
+<li>Hit the source database&rsquo;s top-level endpoint e.g. <code>GET /&lt;dbname&gt;</code> and make a note of the <code>update_seq</code> field.</li>
+<li>Setup a one-off <a href="https://blog.cloudant.com/2019/12/13/Filtered-Replication.html">filtered replication</a> that omits all deleted documents. Wait until replication completes.</li>
+<li>Setup a continuous replication (without a filter) but with a value of <code>since_seq</code> equal to the sequence token fetched in Step 1. This will perform a top-up replication, taking any changes since we began the first replication including any deletions that occurred.</li>
+<li>When you&rsquo;re ready to move traffic to the new service, delete the replication from Step 3. The target database will only contain only non-deleted documents and any documents deleted since the migration process began.</li>
+</ol>
+<hr>
+<p>Let&rsquo;s take a worked example of migrating a database from <code>https://a.cloudant.com/source</code> to <code>https://b.cloudant.com/target</code>.</p>
+<h3 id="1-collect-a-sequence-token"style="display:inline">1. Collect a sequence token</h3><a class="stealth" href="#1-collect-a-sequence-token">🔗</a><br>
+<p>Hit the source database&rsquo;s top-level endpoint and make a note of the <code>update_seq</code> field:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl https://a.cloudant.com/source
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;update_seq&#34;</span>: <span style="color:#e6db74">&#34;23579-g1AAAARXeJzLYWBgEMhgTmHQSklKzi9KdUhJMjTQS8rVTU7WLS3WLc4vLcnQNTTUS87JL01JzCvRy0styQHqYcpjAZIMH4DUfyDISmJgYH0GMkcTbo4x8cY8gBjzHmzMMVRjzIg35gLEmPtgYxajGmNOvDEHIMacBxvzkPzA2QAxZz_YnH1kB84CiDHrwcb0kx04EyDGzAcbs4rswGmAGNMPNmYPOYGTVAAkk-phqeYRGQGTlAAyIh9mxGsyAiUpAGREPMyIU2QESJIDyAh_mBFJZAWGAcgMe6gZbEzkBIYCyAh9mBEM5ASGAMgIeZhPZpARGIkMSfww_UuzAAHjZeo&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;db_name&#34;</span>: <span style="color:#e6db74">&#34;source&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;purge_seq&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;sizes&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;file&#34;</span>: 11910996,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;external&#34;</span>: 2683923,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;active&#34;</span>: <span style="color:#ae81ff">6401972</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;props&#34;</span>: <span style="color:#f92672">{}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;doc_del_count&#34;</span>: 9,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;doc_count&#34;</span>: 23522,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;disk_format_version&#34;</span>: 8,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;compact_running&#34;</span>: false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;cluster&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;q&#34;</span>: 16,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;n&#34;</span>: 3,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;w&#34;</span>: 2,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;r&#34;</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;instance_start_time&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Make a note of the <code>update_seq</code> value e.g. <code>23579-g1AAA....</code></p>
+<h3 id="2-set-up-a-one-off-replication"style="display:inline">2. Set up a one-off replication</h3><a class="stealth" href="#2-set-up-a-one-off-replication">🔗</a><br>
+<p>Setup a one-off <a href="https://blog.cloudant.com/2019/12/13/Filtered-Replication.html">filtered replication</a> that omits all deleted documents. Wait until replication completes.</p>
+<p>In a file, we have our replication definition:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;atob_oneoff_filtered&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://a.cloudant.com/source&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://b.cloudant.com/target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;create_target&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;_deleted&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;$exists&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>which we post to the <code>_replicator</code> database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X POST -H<span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> -d@replication.json https://b.cloudant.com/_replicator
+</span></span></code></pre></div><p>then fetch the replication document to see its progress:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl https://b.cloudant.com/_replicator/atob_oneoff_filtered
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;atob_oneoff_filtered&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;2-5b71cc6f0447a4d072712b673a7e21b3&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;https://a.cloudant.com/source&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span>: <span style="color:#e6db74">&#34;https://b.cloudant.com/target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;create_target&#34;</span>: true,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;selector&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;_deleted&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;</span>$exists<span style="color:#e6db74">&#34;</span>: false
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;owner&#34;</span>: <span style="color:#e6db74">&#34;targetuser&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_replication_state&#34;</span>: <span style="color:#e6db74">&#34;triggered&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_replication_state_time&#34;</span>: <span style="color:#e6db74">&#34;2020-11-25T11:22:36Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_replication_id&#34;</span>: <span style="color:#e6db74">&#34;616db26cc57fda8bda8d623f5f86a79c+create_target&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Check the target database to see progress:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl https://b.cloudant.com/target
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;update_seq&#34;</span>: <span style="color:#e6db74">&#34;1588-ZIUQAboY_MAcQEgANIvT3YAJDIk8YM1p2YBAAUyYaU&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;db_name&#34;</span>: <span style="color:#e6db74">&#34;target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;purge_seq&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;sizes&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;file&#34;</span>: 2580116,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;external&#34;</span>: 187265,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;active&#34;</span>: <span style="color:#ae81ff">470068</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;props&#34;</span>: <span style="color:#f92672">{}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;doc_del_count&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;doc_count&#34;</span>: 1588,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;disk_format_version&#34;</span>: 8,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;compact_running&#34;</span>: false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;cluster&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;q&#34;</span>: 16,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;n&#34;</span>: 3,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;w&#34;</span>: 2,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;r&#34;</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;instance_start_time&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Eventually the replication will finish, when the replicator document shows a <code>_replication_state</code> of <code>completed</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;atob_oneoff_filtered&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-7e8e129401fc5d2be720b645fbd4b4c7&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span>: <span style="color:#e6db74">&#34;https://a.cloudant.com/source&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span>: <span style="color:#e6db74">&#34;https://b.cloudant.com/target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;create_target&#34;</span>: true,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;selector&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;_deleted&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;</span>$exists<span style="color:#e6db74">&#34;</span>: false
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;owner&#34;</span>: <span style="color:#e6db74">&#34;targetuser&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_replication_state&#34;</span>: <span style="color:#e6db74">&#34;completed&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_replication_state_time&#34;</span>: <span style="color:#e6db74">&#34;2020-11-25T11:42:38Z&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_replication_id&#34;</span>: <span style="color:#e6db74">&#34;616db26cc57fda8bda8d623f5f86a79c+create_target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_replication_stats&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;revisions_checked&#34;</span>: 23522,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;missing_revisions_found&#34;</span>: 23522,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;docs_read&#34;</span>: 23522,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;docs_written&#34;</span>: 23522,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;changes_pending&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;doc_write_failures&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;checkpointed_source_seq&#34;</span>: <span style="color:#e6db74">&#34;23531-7MQYilCGitmd1fAx-HgQ&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;start_time&#34;</span>: <span style="color:#e6db74">&#34;2020-11-25T11:22:36Z&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="3-perform-a-catchup-replication"style="display:inline">3. Perform a catchup replication</h3><a class="stealth" href="#3-perform-a-catchup-replication">🔗</a><br>
+<p>Next we want a set off a <em>continuous</em> replication to catch up changes since the sequence token we collected in step 1. Our new replication document looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;atob_continuous_catchup&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://a.cloudant.com/source&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://b.cloudant.com/target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;since_seq&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;23579-g1AAAARXeJzLYWBgEMhgTmHQSklKzi9KdUhJMjTQS8rVTU7WLS3WLc4vLcnQNTTUS87JL01JzCvRy0styQHqYcpjAZIMH4DUfyDISmJgYH0GMkcTbo4x8cY8gBjzHmzMMVRjzIg35gLEmPtgYxajGmNOvDEHIMacBxvzkPzA2QAxZz_YnH1kB84CiDHrwcb0kx04EyDGzAcbs4rswGmAGNMPNmYPOYGTVAAkk-phqeYRGQGTlAAyIh9mxGsyAiUpAGREPMyIU2QESJIDyAh_mBFJZAWGAcgMe6gZbEzkBIYCyAh9mBEM5ASGAMgIeZhPZpARGIkMSfww_UuzAAHjZeo&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;continuous&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>Note this replication does <em>not</em> have a filter - we want deletions that occurred after we started the migration to be replicated.</p>
+</blockquote>
+<p>We post this document to the <code>_replicator</code> database:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X POST -H<span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> -d@replication.json https://b.cloudant.com/_replicator
+</span></span></code></pre></div><p>This replication will run forever, or at least until we delete the replicator document.</p>
+<h3 id="4-switchover"style="display:inline">4. Switchover</h3><a class="stealth" href="#4-switchover">🔗</a><br>
+<p>When the catchup replication is up-to-date, we can direct traffic to our target service and when we&rsquo;re happy, we can delete the continuous replication we set up in step 3.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Repairing a database with conflicts</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Repairing a database with conflicts">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html" />
+    <meta property="og:description" content="Three ways to eliminate conflicts from a Cloudant database" />
+    <meta property="article:published_time" content="2020-11-26 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/jeshoots-com-VdOO4_HFTWM-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Repairing a database with conflicts" />
+    <meta name="twitter:description" content="Three ways to eliminate conflicts from a Cloudant database" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Repairing a database with conflicts">
+    <meta itemprop="description" content="Three ways to eliminate conflicts from a Cloudant database">
+    <meta itemprop="image" content="/img/jeshoots-com-VdOO4_HFTWM-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Repairing a database with conflicts</h1>
+  
+  <div class="postmeta">Nov 26, 2020 | Glynn Bird | 
+
+  
+  <bx-tag>Conflicts</bx-tag>
+  
+  <bx-tag>Replication</bx-tag>
+  
+
+
+  </div>
+  
+  <p><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-conflicts">Cloudant conflicts</a> occur when disconnected replicas of a database are updated in different ways at the same time. The replicas could be:</p>
+<ul>
+<li>Copies of a database hosted in different regions that are replicating continuously to each other, while both accepting writes.</li>
+<li>A mobile application going offline and replicating its updates to the cloud later, only to find that some of its changes clash with the cloud-based copy.</li>
+<li>Copies of the same database shard in a single-region cluster. If the same document is updated over and over in a short time window, conflicts can be unwittingly introduced.</li>
+</ul>
+<blockquote>
+<p>Note that Cloudant on Transaction Engine does not generate conflicts for in-region write, eliminating the third of the above bullet points.</p>
+</blockquote>
+<p>Cloudant conflicts can be <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-conflicts#how-to-resolve-conflicts">resolved</a> by deleting unwanted conflicted revisions and optionally writing a new revision (the choice of conflict resolution algorithm will vary between applications: merging the bodies of conflcting documents, being one example) but there are consequences for having a database that has conflicted documents because Cloudant retains information for each branch in the revision tree - the wider the revision tree, the more work is required to navigate it for update, retrieval and indexing operations.</p>
+<p>In short, highly conflicted documents are a performance drag <strong>even if your application has dilligently resolved conflicts as they arise</strong>.</p>
+<p><img src="https://blog.cloudant.com/img/jeshoots-com-VdOO4_HFTWM-unsplash.jpg" alt="pic"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/VdOO4_HFTWM">jeshoots.com on Unsplash</a></p>
+</blockquote>
+<p>This post describes three ways in which a database that contains problematic documents can be &ldquo;repaired&rdquo;, so as to not impact performance. They all involve creating a new copy of the data in a new, freshly-created database.</p>
+<h2 id="repairing-via-replication---winning_revs_only"style="display:inline">Repairing via replication - winning_revs_only</h2><a class="stealth" href="#repairing-via-replication---winning_revs_only">🔗</a><br>
+<p>From October 2022 onwards, we can replicate data from the conflicted source database to a new, empty database and only copy the winning revisions, leaving the conflicts behind. The trick is to use the <code>winning_revs_only: true</code> flag in the replication document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://a.cloudant.com/source&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://a.cloudant.com/target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;winning_revs_only&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This is the recommended technique for ridding a database from unwanted conflicts. Other methods are outlined in the rest of this post but this method is the best.</p>
+<blockquote>
+<p>Note: The <code>winning_revs_only</code> flag should only be used for the purposes of repairing conflicted databases and should be not used for other replication jobs.</p>
+</blockquote>
+<h2 id="repairing-via-replication---with-a-selector"style="display:inline">Repairing via replication - with a selector</h2><a class="stealth" href="#repairing-via-replication---with-a-selector">🔗</a><br>
+<blockquote>
+<p>Note: this technique has been superceded by the <code>winning_revs_only</code> approach.</p>
+</blockquote>
+<p>We can replicate data from the source database to a new empty database, with a replication filter that omits conflicted documents. A <code>selector</code> object is added to the replication document to set up the filter:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_conflicts&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;$exists&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The above selector reads as &ldquo;allow documents that <em>don&rsquo;t</em> have a <code>_conflicts</code> attribute to be replicated&rdquo;.</p>
+<p>The replication document in the <code>_replicator</code> database would look something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;source&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://a.cloudant.com/source&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;target&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;https://a.cloudant.com/target&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;_conflicts&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;$exists&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Replication makes light work of copying over documents <em>without</em> conflicts, but if you also need the winning revisions of the source database&rsquo;s <em>conflicted documents</em>, a separate script would have to be written. It would fetch the winning revision of each conflicted document and write them to the target database using <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-documents#bulk-operations">the bulk_docs API</a> with <code>new_edits=false</code> to retain the original document&rsquo;s revision token.</p>
+<p>To help identify conflicted documents a <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-conflicts#finding-conflicts">view can be created</a> in the source database.</p>
+<h2 id="repairing-conflicts-via-replication--vdu"style="display:inline">Repairing conflicts via replication &amp; VDU</h2><a class="stealth" href="#repairing-conflicts-via-replication--vdu">🔗</a><br>
+<blockquote>
+<p>Note: this technique has been superceded by the <code>winning_revs_only</code> approach.</p>
+</blockquote>
+<p>This technique can be used to repair conflicted documents by replicating everything to a new database but ensuring that the <em>conflicted documents</em> only keep the branch of changes that contains the winning revision - all of the conflicts will not make it to the target database. Here&rsquo;s how it works:</p>
+<ol>
+<li><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-conflicts#how-to-resolve-conflicts">Delete all of the conflicting revisions</a> in the source database.</li>
+<li>Create a new target database</li>
+<li>Create a new design document in the target database containing:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{ <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_design/validator&#34;</span>, <span style="color:#e6db74">&#34;validate_doc_update&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;function(newDoc, oldDoc, userCtx) { // any update to an existing doc is OK\n if(oldDoc) {\n return;\n }\n \n // reject tombstones for docs we don&#39;;t know about\n if(newDoc[\&#34;_deleted\&#34;]) {\n throw({forbidden : \&#34;We&#39;;re rejecting tombstones for unknown docs\&#34;});\n }\n}\n&#34;</span> }
+</span></span></code></pre></div><blockquote>
+<p>This is a &ldquo;VDU&rdquo; function - a special JavaScript function which is the gatekeeper for which writes are accepted by the database. It contains logic which will reject branches of a revision tree which end in a deleted document - the upshot of which leaves conflicted documents with only the winning branch retained.</p>
+</blockquote>
+<ol start="4">
+<li>Replicate data from the source database to the new target database. Use <code>continuous=true</code> if you would like the replication to run until it is no longer needed.</li>
+<li>Once complete and indexes are built, any applications using the source database can be pointed towards the target.</li>
+</ol>
+<h2 id="repairing-by-backup"style="display:inline">Repairing by backup</h2><a class="stealth" href="#repairing-by-backup">🔗</a><br>
+<blockquote>
+<p>Note: this technique has been superceded by the <code>winning_revs_only</code> approach.</p>
+</blockquote>
+<p>Another method is to backup the affected database to a file and to restore it to a new, freshly created database. The <a href="https://github.com/cloudant/couchbackup#what-is-shallow-mode">couchbackup tool has a &ldquo;shallow&rdquo; mode</a> which only copies over the winning revisions of each document it finds. Restoring only the winning revisions to the target has the effect of eliminating the conflict history.</p>
+<p>The procedure is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># backup the source database using shallow mode</span>
+</span></span><span style="display:flex;"><span>couchbackup --db source --mode shallow &gt; backup.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># restore to a new empty database</span>
+</span></span><span style="display:flex;"><span>curl -X PUT <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/target&#34;</span>
+</span></span><span style="display:flex;"><span>cat backup.txt | couchrestore --db target
+</span></span></code></pre></div><blockquote>
+<p>Note: couchbackup does not backup attachments, so this method may not be suitable for such databases.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>The Data Warehouse</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="The Data Warehouse">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/11/16/Cloudant-and-the-data-warehouse.html" />
+    <meta property="og:description" content="Exporting Cloudant data to a warehouse" />
+    <meta property="article:published_time" content="2018-11-16 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/samuel-zeller-118195-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="The Data Warehouse" />
+    <meta name="twitter:description" content="Exporting Cloudant data to a warehouse" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="The Data Warehouse">
+    <meta itemprop="description" content="Exporting Cloudant data to a warehouse">
+    <meta itemprop="image" content="/img/samuel-zeller-118195-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">The Data Warehouse</h1>
+  
+  <div class="postmeta">Nov 16, 2018 | Glynn Bird | 
+
+  
+  <bx-tag>SQL</bx-tag>
+  
+  <bx-tag>Warehouse</bx-tag>
+  
+
+
+  </div>
+  
+  <blockquote>
+<p>Addendum: Since publication of this blog, couchwarehouse has added support for MySQL and PostgreSQL as well as SQLite. This post is still valid, but bear in mind you now have a choice of target database types.</p>
+</blockquote>
+<p>One of Cloudant&rsquo;s best use-cases is as a rock-solid, always-on operational datastore. It is built for fault-tolerance, storing multiple copies of your data on separate servers so that a Cloudant cluster can withstand the loss of multiple nodes without loss of service.</p>
+<p>Let&rsquo;s take the example of an online shop that uses Cloudant to store its transactions. At the birth of the business its sales database is empty, but as time progresses and as the business becomes more successful, the database grows to a healthy size - perhaps hundreds of thousands or millions or documents. The management of the company will be asking questions of the database:</p>
+<ul>
+<li>How many sales did we make this week?</li>
+<li>What are the top ten products sold?</li>
+<li>What are the peak times for selling a particular type of product?</li>
+<li>How successful was our &ldquo;Halloween&rdquo; marketing campaign?</li>
+</ul>
+<p>Although Cloudant has built-in <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce</a> which can provide simple aggregations of data against pre-defined keys (e.g. sales by year/month/day), it will eventually fall short of a business analyst&rsquo;s expectations when faced with complex, ever changing queries or questions that relate the sales data to other data sets (such as marketing click-through data).</p>
+<blockquote>
+<p>If you need to ask ad-hoc questions of your data without affecting the performance of your operational dataset, then you need <strong>a Data Warehouse</strong>.</p>
+</blockquote>
+<p>Cloudant is your high-uptime operational data store, and a Data Warehouse is a query engine, which organises its data in a way that optimises for querying rather than uptime or data resilience. If you need to ensure that critical data is stored in multiple locations with a high availability (and a handful of fixed queries) you need Cloudant. If you need to run an ever-changing set of complex queries you <em>also</em> need a Data Warehouse.</p>
+<p><img src="https://blog.cloudant.com/img/samuel-zeller-118195-unsplash.jpg" alt="warehouse"></p>
+<blockquote>
+<p><a href="https://unsplash.com/photos/JuFcQxgCXwA">Photo by Samuel Zeller on Unsplash</a></p>
+</blockquote>
+<p>The most common scenario is you need <em>both</em>, with Cloudant data being fed to a data warehouse periodically. In this post we&rsquo;ll look at how we would write some code to copy and transform Cloudant data before writing it to relational database, allowing us to query using Structured Query Language (SQL).</p>
+<h2 id="what-do-the-cloudant-documents-look-like"style="display:inline">What do the Cloudant documents look like?</h2><a class="stealth" href="#what-do-the-cloudant-documents-look-like">🔗</a><br>
+<p>In our example, we are storing <em>one document per completed sale</em>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;001fgS954GN35e4NJPyK1W9aiE44m2xD&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">customerId</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;001edS7k4gJxqY1aXpni3gHuOy0WusLe&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">customerEmail</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bob@aol.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">saleDate</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2018-09-15&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">saleTime</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;10:56:22&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">paymentRef</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;PayPal584477238823&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">currency</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;GBP&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">basket</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">productId</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;A6624&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">productName</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Fender Road Worn 60&#39;s Jazzmaster&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">productVariant</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3-tone burst&#34;</span>
+</span></span><span style="display:flex;"><span>     },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">productId</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;B8852&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">productName</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Fender &#39;68 Custom Twin Reverb&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">productVariant</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">total</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2390</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">status</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;paid&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">dispatched</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">dispatchAddress</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">street</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;19 Front Street&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">town</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Middletown&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">zip</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;W1A 1AA&#34;</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">dispatchCourierRef</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Things to note:</p>
+<ul>
+<li>This document contains everything we need to know about a sale. There may be further supplemental information about the user/product/payment in other databases, but fetching <em>this</em> document gives us enough information to render an &ldquo;order summary&rdquo; web page or email. This is good practice in a NoSQL database - in a database without joins, we don&rsquo;t want to have to make several round-trips to the database to piece together all of the data we need.</li>
+<li>A document is created when the payment is confirmed.</li>
+<li>The document maybe updated later to indicate that the order has been dispatched and to back-fill the <code>dispatchCourierRef</code>.</li>
+<li>The document contains an array of products in the <code>basket</code> field which store one or more line items purchased.</li>
+</ul>
+<h2 id="how-can-i-generate-some-sample-data"style="display:inline">How can I generate some sample data?</h2><a class="stealth" href="#how-can-i-generate-some-sample-data">🔗</a><br>
+<p>Create a <code>template.json</code> file containing the outline of the document to create with placeholder tags where the data will be placed:</p>
+<pre tabindex="0"><code>{% raw %}
+{
+  &#34;_id&#34;: &#34;{{uuid}}&#34;,
+  &#34;customerId&#34;: &#34;{{uuid}}&#34;,
+  &#34;customerEmail&#34;: &#34;{{email}}&#34;,
+  &#34;saleDate&#34;: &#34;{{date 1999-01-01}}&#34;,
+  &#34;saleTime&#34;: &#34;{{time}}&#34;,
+  &#34;paymentRef&#34;: &#34;PayPal{{digits 16}}&#34;,
+  &#34;currency&#34;: &#34;{{currency}}&#34;,
+  &#34;basket&#34;: [
+    {
+      &#34;productId&#34;: &#34;A{{digits 3}}&#34;,
+      &#34;productName&#34;: &#34;{{words 3}}&#34;,
+      &#34;productVariant&#34;: &#34;{{words 6}}&#34;
+    },
+    {
+      &#34;productId&#34;: &#34;B{{digits 3}}&#34;,
+      &#34;productName&#34;: &#34;{{words 3}}&#34;,
+      &#34;productVariant&#34;: &#34;{{words 6}}&#34;
+    }
+  ],
+  &#34;total&#34;: {{price 100 2600}},
+  &#34;status&#34;: &#34;paid&#34;,
+  &#34;dispatched&#34;: {{boolean 95}},
+  &#34;dispatchAddress&#34;: {
+    &#34;street&#34;: &#34;{{street}}&#34;,
+    &#34;town&#34;: &#34;{{town}}&#34;,
+    &#34;zip&#34;: &#34;{{postcode}}&#34;
+  },
+  &#34;dispatchCourierRef&#34;: &#34;&#34;
+}
+{% endraw %}
+</code></pre><p>Then using the <a href="https://www.npmjs.com/package/datamaker">datamaker</a> command-line tool, create thousands of sample documents and pipe them into the <a href="https://www.npmjs.com/package/couchimport">couchimport</a> tool to write the documents to Cloudant:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ datamaker -t ./template.json -f json -i <span style="color:#ae81ff">10000</span> | couchimport --db mydatabase --type jsonl
+</span></span></code></pre></div><p>We can use a command of the above form to generate thousands, or millions of documents. Simply change the <code>-i</code> parameter to the number of documents you need.</p>
+<h2 id="how-can-i-get-cloudant-data-into-a-data-warehouse"style="display:inline">How can I get Cloudant data into a Data Warehouse?</h2><a class="stealth" href="#how-can-i-get-cloudant-data-into-a-data-warehouse">🔗</a><br>
+<p>A quick way of getting a queryable view of a Cloudant or CouchDB database is to use the <a href="https://www.npmjs.com/package/couchwarehouse">couchwarehouse</a> command-line tool. Once installed, creating a warehouse is simple from the command-line:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ couchwarehouse --url https://U:P@host.cloudant.com --db mystore
+</span></span></code></pre></div><p>The utility will attempt to discover the schema of your data, create a local <a href="https://www.sqlite.org/index.html">SQLite</a> database with a database table that matches your documents&rsquo; schema and begin populating the table from the Cloudant/CouchDB changes feed.</p>
+<p><img src="https://blog.cloudant.com/img/couchwarehouseschematic.png" alt="schematic"></p>
+<p>In another terminal, you can then run <code>sqlite3</code> and begin querying your data with SQL:</p>
+<pre tabindex="0"><code>$ sqlite3 couchwarehouse.sqlite
+
+sqlite&gt; SELECT customerEmail,dispatchAddress_town,status,total FROM mystore LIMIT 10;
+customerEmail                                  dispatchAddress_town  status      total     
+---------------------------------------------  --------------------  ----------  ----------
+bettye-poirier@.gunma.jp                       Coseley               paid        2553.02   
+myong-wilmoth@soliform.com                     Caernarfon            paid        2492.27   
+tracibuckner@yahoo.com                         Pembroke Dock         paid        824.66    
+moriah_beam@gmail.com                          Alnwick               paid        939.03    
+aleciabernier@philobotanic.com                 Eccleshall            paid        778.02    
+ashanti.purvis@samogonka.com                   Wakefield             paid        1392.98   
+karima.bunn-gomez@redpoll.com                  Brynmawr              paid        1214.42   
+guillermina-clarke@sialosyrinx.tuscany.it      Kingston upon Thames  paid        2408.66   
+mariah.houle@gmail.com                         Halesowen             paid        269.92    
+holli.colley@yahoo.com                         Blackburn             paid        144.65    
+sqlite&gt; 
+</code></pre><p>Having the data in a SQL database database allows you to have complete flexibility in your queries. You can:</p>
+<ul>
+<li>Query sub-sets of data on any field.</li>
+<li>Create aggregations, grouped by any combination of fields.</li>
+<li>Join data to other data sets e.g. secondary &ldquo;users&rdquo;, &ldquo;products&rdquo;, or &ldquo;postcodes&rdquo; tables created in a similar way.</li>
+</ul>
+<pre tabindex="0"><code>sqlite&gt; SELECT dispatchAddress_town as town, SUM(total) 
+               FROM mystore 
+               GROUP BY 1 
+               ORDER BY 2 
+               DESC LIMIT 10;
+               
+town        SUM(total)
+----------  ----------
+Newport     41067.81  
+Linlithgow  27923.21  
+North Berw  27328.37  
+Musselburg  24245.96  
+Dorchester  23587.35  
+Alton       22734.98  
+Swinton     22283.56  
+Westgate o  21819.46  
+Beaminster  21202.51  
+Audenshaw   20864.46
+</code></pre><p>As long as the <code>couchwarehouse</code> utility is running, new and modified data will continue to spool into your local copy of the database. If you restart <code>couchwarehouse</code> again later, it will continue from where it left off and soon have your data warehouse up-to-date.</p>
+<p>The <code>couchwarehouse</code> tool has a few other tricks up its sleeve</p>
+<h3 id="transforming-data-before-writing-to-the-data-warehouse"style="display:inline">Transforming data before writing to the data warehouse</h3><a class="stealth" href="#transforming-data-before-writing-to-the-data-warehouse">🔗</a><br>
+<p>You can optionally supply a JavaScript function using the <code>--transform</code> parameter which is used to transform each JSON document as it is consumed from the Cloudant changes feed. This is useful for type coercion, patching missing fields or enforcing default values.</p>
+<p>Let&rsquo;s say we want to simplify the <code>basket</code> array and turn it into a single string containing the product names. We would write a transformation function and write it to a file <code>transform.js</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">f</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">doc</span>) =&gt; {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// if there&#39;s a basket array
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">basket</span>) {
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// turn array of objects into array of product names
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">nameList</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">basket</span>.<span style="color:#a6e22e">map</span>((<span style="color:#a6e22e">v</span>) =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">v</span>.<span style="color:#a6e22e">productName</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// join names by comma and overwrite the array
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">basket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">nameList</span>.<span style="color:#a6e22e">join</span>(<span style="color:#e6db74">&#39;,&#39;</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// return the transformed document
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">doc</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// export the transformation function
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">f</span>
+</span></span></code></pre></div><p>Running <code>couchwarehouse</code> with a transform function is simple:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ couchwarehouse --db mystore --transform ./transform.js
+</span></span></code></pre></div><h3 id="splitting-multiple-document-types-into-their-own-databases"style="display:inline">Splitting multiple document types into their own databases</h3><a class="stealth" href="#splitting-multiple-document-types-into-their-own-databases">🔗</a><br>
+<p>Some Cloudant users store different document types in the same database e.g. customers, orders and products all together. Usually such documents have a &ldquo;type&rdquo; field which distinguishes each document&rsquo;s type.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;123&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;customer&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Bob Sessions&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bob.sessions100@aol.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;dob&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1924-02-05&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;pet&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;dog&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;456&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;product&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Fender Deluxe Reverb&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;supplier&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Fender Inc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rrp&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">999.99</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;789&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;customerId&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;123&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;customerEmail&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bob.sessions100@aol.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;saleDate&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2018-11-08&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;saleTime&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;09:24:22&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;currency&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;USD&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;basket&#34;</span><span style="color:#f92672">:</span> [ { <span style="color:#e6db74">&#34;productId&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;456&#34;</span>, <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Fender Deluxe Reverb&#34;</span>} ],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;total&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">999.99</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;paid&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;dispatched&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;dispatchAddress&#34;</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;street&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;8442 Whitsbury&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;town&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Ivybridge&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;zip&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;SP3 1TS&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Supplying the name of the &ldquo;type&rdquo; field to the <code>--split</code> parameter instructs <code>couchwarehouse</code> to create multiple tables - one for each document type e.g.</p>
+<pre tabindex="0"><code>$ couchwarehouse --db mystore --split type
+</code></pre><p>This will create multiple <em>tables</em> in SQLite, one per document type:</p>
+<ul>
+<li><code>mystore_user</code></li>
+<li><code>mystore_product</code></li>
+<li><code>mystore_order</code></li>
+</ul>
+<p><img src="https://blog.cloudant.com/img/couchwarehouse_split.png" alt="split"></p>
+<h2 id="whats-the-catch"style="display:inline">What&rsquo;s the catch?</h2><a class="stealth" href="#whats-the-catch">🔗</a><br>
+<ol>
+<li>This tool is only suitable if all of the documents in a database are uniform. Cloudant allows you to vary the schema over time, so you can have some documents with fields that others don&rsquo;t. The <em>couchwarehouse</em> tool assumes the first document it sees is representative of the rest.</li>
+<li>Cloudant databases can get &ldquo;big&rdquo;. You need enough space on your local machine to store all of your data.</li>
+<li>The <em>couchwarehouse</em> tool doesn&rsquo;t do anything special with embedded arrays. It stores the arrays as JSON text in the SQLite database, although the JSON text <em>can</em> be accessed at query-time using the <a href="https://www.sqlite.org/json1.html">SQLite JSON</a> extension e.g. <code>SELECT json_extract(basket,'$[0].productId') FROM mystore</code>.</li>
+<li>The bodies of conflicted documents are ignored. Only &ldquo;winning&rdquo; revisions make it to the warehouse.</li>
+</ol>
+<p>The <em>couchwarehouse</em> makes a fair guess at moving Cloudant data to a SQL database without any custom work. For anything more complicated, or to store data in a different database, you&rsquo;re going to need some custom code.</p>
+<h2 id="how-could-i-write-my-own-data-warehouse"style="display:inline">How could I write my own data warehouse?</h2><a class="stealth" href="#how-could-i-write-my-own-data-warehouse">🔗</a><br>
+<p>Data Warehouses, such as <a href="https://www.ibm.com/cloud/db2-warehouse-on-cloud">IBM Db2 Warehouse on Cloud</a> are based on traditional, table-based database engines. The data is arranged in tables with a fixed schema. To transfer data from Cloudant to a Data Warehouse we&rsquo;re going to need to:</p>
+<ul>
+<li>normalise the data - store data in different tables with references to data in other tables via keys.</li>
+<li>create a schema which models all or part of the JSON object.</li>
+</ul>
+<p>In this case I can see two tables being created:</p>
+<ul>
+<li><code>sales</code> - one row per completed sale</li>
+<li><code>sales_basket</code> - one row per item in the basket</li>
+</ul>
+<p>The first table, <code>sales</code>, will have the following schema with one row per sale:</p>
+<table>
+<thead>
+<tr>
+<th>field</th>
+<th>type</th>
+<th>cloudantPath</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>doc._id</td>
+</tr>
+<tr>
+<td>customerEmail</td>
+<td>string</td>
+<td>doc.customerEmail</td>
+</tr>
+<tr>
+<td>datetime</td>
+<td>Date</td>
+<td>doc.saleDate + &rsquo; &rsquo; + doc.SaleTime</td>
+</tr>
+<tr>
+<td>paymentRef</td>
+<td>string</td>
+<td>doc.paymentRef</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>string</td>
+<td>doc.currency</td>
+</tr>
+<tr>
+<td>total</td>
+<td>float</td>
+<td>doc.total</td>
+</tr>
+<tr>
+<td>status</td>
+<td>string</td>
+<td>doc.status</td>
+</tr>
+<tr>
+<td>dispatched</td>
+<td>boolean</td>
+<td>doc.dispatched</td>
+</tr>
+<tr>
+<td>dispatchStreet</td>
+<td>string</td>
+<td>doc.address.street</td>
+</tr>
+<tr>
+<td>dispatchTown</td>
+<td>string</td>
+<td>doc.address.town</td>
+</tr>
+<tr>
+<td>dispatchZip</td>
+<td>string</td>
+<td>doc.address.zip</td>
+</tr>
+<tr>
+<td>dispatchDate</td>
+<td>date</td>
+<td>doc.dispatchDate</td>
+</tr>
+<tr>
+<td>dispatchCourierRef</td>
+<td>string</td>
+<td>doc.dispatchCourierRef</td>
+</tr>
+</tbody>
+</table>
+<p>The second table, <code>sales_basket</code>, with one row per line-item:</p>
+<table>
+<thead>
+<tr>
+<th>field</th>
+<th>type</th>
+<th>cloudantPath</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int</td>
+<td></td>
+</tr>
+<tr>
+<td>salesId</td>
+<td>string</td>
+<td>doc._id</td>
+</tr>
+<tr>
+<td>productId</td>
+<td>string</td>
+<td>doc.basket[].productId</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>doc.basket[].productName</td>
+</tr>
+<tr>
+<td>variant</td>
+<td>string</td>
+<td>doc.basket[].productVariant</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>sales_basket.salesId</code> field is a <em>foreign key</em> corresponding to the respective entry in the <code>sales.id</code> field. There is said to be a &ldquo;one to many&rdquo; relationship between <em>sales</em> and <em>sales_basket</em>. For each Cloudant document we&rsquo;d have to make one write to the <code>sales</code> table and one or more writes to the <code>sales_basket</code> table (one per basket item).</p>
+<p>After creating the target database tables manually to match the schema of your source data, we would need to write some software, similar to <em>couchwarehouse</em>, that spools data from Cloudant to the SQL database tables. The software would have to:</p>
+<ul>
+<li>Listen to the <a href="https://console.bluemix.net/docs/services/Cloudant/api/database.html#get-changes">Cloudant changes feed</a> from the source database.</li>
+<li>Transform the incoming documents into &ldquo;INSERT INTO&hellip;&rdquo;  or &ldquo;REPLACE INTO&hellip;&rdquo; SQL statements that match the target tables.</li>
+<li>Transform date/time fields in Cloudant into native date/time fields in the database.</li>
+<li>Deal with changes that signify deleted documents ( <code>deleted: true</code> in the changes feed) would correspond to &ldquo;DELETE FROM &hellip;&rdquo; SQL queries in the table or joined tables.</li>
+<li>Ignore design documents - documents whose <code>_id</code> field starts with <code>_design/</code>.</li>
+<li>Keep track of the latest sequence token that Cloudant supplies with every change. When resuming the changes feed, Cloudant can be instructed to resume &ldquo;since&rdquo; your last known sequence token.</li>
+<li>Commit the INSERT/REPLACE/DELETE SQL statements to your database. Multiple writes that pertain to the same Cloudant document should be grouped into the same SQL &ldquo;transaction&rdquo;. For performance reasons, it is likely that you&rsquo;d want to write multiple documents&rsquo; SQL statements together in bulk.</li>
+<li>Manage schema changes - although the documents&rsquo; schemas in Cloudant can evolve over time, your data warehouse schema (and custom code) would have to be modified to cope with any changes.</li>
+</ul>
+<p>It&rsquo;s pretty tricky to get this right. What happens with null or missing fields? Can your code handle receiving data of the wrong data type? Can your code handle processing the same change again or in a different order (the Cloudant changes feed may provide changes <em>before</em> your supplied sequence token and makes no guarantee on the order you receive the changes)?. Can your code keep a reliable replica of the Cloudant data including foreign key relationships across multiple tables?</p>
+<p>If you can overcome this complexity and manage to get a copy of your Cloudant data in a data warehouse then you can use it to explore the data for analytics, data science and reporting purposes without affecting the load on your primary Cloudant database.</p>
+<p>I don&rsquo;t have a magic wand that can perform these actions - it&rsquo;s going to require custom code written with your application in mind. By all means, use the <a href="https://github.com/glynnbird/couchwarehouse">couchwarehouse</a> source code as inspiration, but it&rsquo;s going to require some custom work nonetheless.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/couchdb-and-the-data-warehouse-506b8ce81674" target="_new">https://medium.com/@glynn_bird/couchdb-and-the-data-warehouse-506b8ce81674</a>
+
+
+
+</body>
+</html>
+

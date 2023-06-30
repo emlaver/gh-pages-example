@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>PouchDB</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="PouchDB">
+    <meta property="og:url" content="https://blog.cloudant.com/2017/05/04/PouchDB-swiss-army-knife.html" />
+    <meta property="og:description" content="The Swiss Army Knife of databases" />
+    <meta property="article:published_time" content="2017-05-04 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/paul-felberbauer-672975-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="PouchDB" />
+    <meta name="twitter:description" content="The Swiss Army Knife of databases" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="PouchDB">
+    <meta itemprop="description" content="The Swiss Army Knife of databases">
+    <meta itemprop="image" content="/img/paul-felberbauer-672975-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">PouchDB</h1>
+  
+  <div class="postmeta">May 4, 2017 | Glynn Bird | 
+
+  
+  <bx-tag>PouchDB</bx-tag>
+  
+
+
+  </div>
+  
+  <p><a href="https://pouchdb.com/">PouchDB</a> is a database. It&rsquo;s a JSON document store to be precise, allowing you to create, read, update, delete and query your documents with a simple JavaScript API. It&rsquo;s most commonly used <em>in a browser</em>, to keep data on the client side. Storing data <em>within</em> the browser allows your web applications to keep working, even when the network connection is flaky or non-existant - this is called an <strong>offline first</strong> approach. Offline first brings 100% uptime to web applications together with performance gains, better user experience and powers the <em>Progressive Web App (PWA)</em> movement.</p>
+<p>PouchDB goes to great lengths to store data in a format that allows the client side to be disconnected from the server side, for both copies to be updated (even when updated in different ways) and for the data to <em>synced</em> without the loss of data. This is no mean feat - syncing data across a distributed systems is not a problem you want to tackle yourself and PouchDB solves it for you at a stroke.</p>
+<p>PouchDB stands on the shoulders of the <a href="http://couchdb.apache.org/">Apache CouchDB</a> project which defines the protocol and the storage mechanism that allows the seamless syncing of data between occasionally connected replicas. PouchDB to CouchDB, PouchDB to Cloudant, PouchDB to PouchDB - you decide.</p>
+<h2 id="pouchdb---the-in-browser-database"style="display:inline">PouchDB - the in-browser database</h2><a class="stealth" href="#pouchdb---the-in-browser-database">🔗</a><br>
+<p>Storing data in a web application couldn&rsquo;t be simpler. Get <a href="https://pouchdb.com/guides/setup-pouchdb.html">PouchDB into your web page&rsquo;s code</a> by which ever means you prefer and then write some JavaScript:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PouchDB</span>(<span style="color:#e6db74">&#39;mydb&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> { 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Glynn&#39;</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">team</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;blue&#39;</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2017-03-24&#39;</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">verified</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">put</span>(<span style="color:#a6e22e">doc</span>);
+</span></span></code></pre></div><p>Read documents back:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">allDocs</span>();
+</span></span></code></pre></div><p>or <a href="https://github.com/nolanlawson/pouchdb-find">run queries</a>, <a href="https://pouchdb.com/api.html#query_database">calculate aggregations</a> and <a href="https://pouchdb.com/api.html#overview">lots more</a>.</p>
+<h2 id="pouchdb---the-server-side-database"style="display:inline">PouchDB - the server-side database</h2><a class="stealth" href="#pouchdb---the-server-side-database">🔗</a><br>
+<p>You can also use PouchDB as the storage mechanism for your single-server, client-side Node.js application. Just <code>npm install pouchdb</code> and &ldquo;require&rdquo; the library into your code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">PouchDB</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;pouchdb&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PouchDB</span>(<span style="color:#e6db74">&#39;mydb&#39;</span>);
+</span></span></code></pre></div><p>and the rest of the code as the same as the client-side example.</p>
+<h2 id="pouchdb---the-client-library-for-couchdbcloudant"style="display:inline">PouchDB - the client library for CouchDB/Cloudant</h2><a class="stealth" href="#pouchdb---the-client-library-for-couchdbcloudant">🔗</a><br>
+<p>If you want to write client-side code that speaks to a remote CouchDB or Cloudant server, then you can use PouchDB as a client library:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">remotedb</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">PouchDB</span>(<span style="color:#e6db74">&#39;https://MYUSERNAME:MYPASSWORD@MYHOST.cloudant.com/mydb&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">remotedb</span>.<span style="color:#a6e22e">put</span>(<span style="color:#a6e22e">doc</span>);
+</span></span></code></pre></div><p>By providing a URL instead of database name, PouchDB makes API calls to the remote database, using the same code as if it were a local database.</p>
+<h2 id="pouchdb---that-syncing-feeling"style="display:inline">PouchDB - that syncing feeling</h2><a class="stealth" href="#pouchdb---that-syncing-feeling">🔗</a><br>
+<p>Syncing data from client to server side copies is also painless. On the client side:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">sync</span>(<span style="color:#a6e22e">remotedb</span>);
+</span></span></code></pre></div><p>That&rsquo;s it. Two-way sync from your in-browser database to a remote copy. See <a href="https://pouchdb.com/api.html#sync">the documentation</a> for more examples, one-way sync and receiving update notifications.</p>
+<h2 id="pouchdb---the-http-server"style="display:inline">PouchDB - the HTTP server</h2><a class="stealth" href="#pouchdb---the-http-server">🔗</a><br>
+<p>If you want to run PouchDB as if it were an Apache CouchDB service, with HTTP API, dashboard and all, then you&rsquo;re only a couple of commands away:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm install -g pouchdb-server
+</span></span><span style="display:flex;"><span>pouchdb-server
+</span></span></code></pre></div><p>Then visit http://127.0.0.1:5984/_utils/ in your browser to see the dashboard - apart from the colour scheme, you&rsquo;d be hard-pushed to notice the difference between this and full-fat CouchDB.</p>
+<p><img src="https://blog.cloudant.com/img/pouchdb-server.png" alt="pouchdb server"></p>
+<h2 id="pouchdb---the-app-data-layer"style="display:inline">PouchDB - the app data layer</h2><a class="stealth" href="#pouchdb---the-app-data-layer">🔗</a><br>
+<p>If you are building <a href="https://cordova.apache.org/">Apache Cordova</a>-based native mobile applications or <a href="https://electron.atom.io/">Electron</a>-based desktop apps, then PouchDB can be included in the project and used to provide the data storage API. Storing data with PouchDB unlocks your app&rsquo;s ability to sync its data to the server allowing your app to uncouple from the network and roam free, as apps were intended to do!</p>
+<h2 id="pouchdb---plug-in-for-extra-functionality"style="display:inline">PouchDB - plug in for extra functionality</h2><a class="stealth" href="#pouchdb---plug-in-for-extra-functionality">🔗</a><br>
+<p>By adding other plugins, PouchDB can be extended to perform <a href="https://github.com/natevw/PeerPouch">peer-to-peer sync</a>, <a href="https://www.npmjs.com/package/superlogin">social media authentication</a>, <a href="https://github.com/angular-pouchdb/angular-pouchdb">framework integration</a> and <a href="https://pouchdb.com/external.html">much more</a>.</p>
+<h2 id="pouchdb---wheres-the-catch"style="display:inline">PouchDB - where&rsquo;s the catch?</h2><a class="stealth" href="#pouchdb---wheres-the-catch">🔗</a><br>
+<p>How much does this cost? What are the licensing restrictions? Where do I enter my credit card details? PouchDB is a free, open-source project maintained by volunteers. You are free to use it in your own projects within the generous provisions of the <a href="https://github.com/pouchdb/pouchdb/blob/master/LICENSE">Apache-2.0</a> license, so what are you waiting for?</p>
+<h2 id="further-reading"style="display:inline">Further reading</h2><a class="stealth" href="#further-reading">🔗</a><br>
+<ul>
+<li><a href="https://medium.com/ibm-watson-data-lab/installing-web-apps-with-electron-7a8fa1b12744">Installing Web Apps with Electron</a></li>
+<li><a href="http://offlinefirst.org/">Offline First</a></li>
+<li><a href="https://medium.com/offline-camp/scaling-offline-first-with-envoy-ada42d130cfc">Scaling Offline First with Envoy</a></li>
+<li><a href="https://pouchdb.com/">PouchDB</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/ibm-watson-data-lab/pouchdb-the-swiss-army-knife-of-databases-c5429f3db21f" target="_new">https://medium.com/ibm-watson-data-lab/pouchdb-the-swiss-army-knife-of-databases-c5429f3db21f</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Improve and then improve some more</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Improve and then improve some more">
+    <meta property="og:url" content="https://blog.cloudant.com/2019/11/01/Improve-and-then-improve-some-more.html" />
+    <meta property="og:description" content="The journey our team took to move a modern CI using Jenkins Pipeline." />
+    <meta property="article:published_time" content="2019-11-01 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/abhishek-gaurav-JOfghGQXHnM-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Improve and then improve some more" />
+    <meta name="twitter:description" content="The journey our team took to move a modern CI using Jenkins Pipeline." />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Improve and then improve some more">
+    <meta itemprop="description" content="The journey our team took to move a modern CI using Jenkins Pipeline.">
+    <meta itemprop="image" content="/img/abhishek-gaurav-JOfghGQXHnM-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Improve and then improve some more</h1>
+  
+  <div class="postmeta">Nov 1, 2019 | Sheraz Rashid | 
+
+  
+  <bx-tag>CI</bx-tag>
+  
+  <bx-tag>CD</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Modern software development requires a constant feedback loop in which software component correctness and whole-stack integration success can be efficiently validated. This feedback loop is realized through automation and continuous integration (CI). Well-implemented CI is imperative &ndash; it increases transparency amongst developers for all aspects of the software development lifecycle (SLDC) by yielding the ability to rapidly build, test, and iterate on issues that might arise. Rapid iteration is the keystone of an agile workflow and is critical to business success, especially when you&rsquo;re a startup that gets acquired by a company like IBM. </p>
+<p>As a newcomer to IBM Cloudant&rsquo;s release engineering team the challenges of maintaining and extending our CI were apparent from the get-go. Cloudant&rsquo;s approach towards CI centered on the popular Jenkins CI platform which was configured by Chef. This had long been sufficient but our old workflow began to present some serious headaches. To keep configuration management tight we tracked Jenkins &ldquo;freestyle&rdquo; job definitions as XML ERB (Embedded RuBy) templates in our Chef assets repository. We found this aged rather poorly as XML templates began to bloat &ndash; tracking numerous build steps often with e.g. Bash scripts embedded in the XML. An example of this is shown below. Please note some sections of the template have been ommitted from this example for clarity.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;matrix-project</span> <span style="color:#a6e22e">plugin=</span><span style="color:#e6db74">&#34;matrix-project@1.4.1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;description&gt;</span>Builds the PAAS &amp;amp; LOCAL versions of DBNEXT<span style="color:#f92672">&lt;/description&gt;</span>
+</span></span><span style="display:flex;"><span>  ...many top-level XML tags removed for readability
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;axes&gt;</span>
+</span></span><span style="display:flex;"><span>    ...multiple Cloudant build variants by architecture, Platform-as-a-service and Cloudant Local options
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/axes&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;builders&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;hudson.tasks.Shell&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;command&gt;</span>
+</span></span><span style="display:flex;"><span># install pre-reqs
+</span></span><span style="display:flex;"><span>sudo apt-get -y install lsb-release
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># fetch erlang over private network
+</span></span><span style="display:flex;"><span>wget -q http://files.cloudant.net/private/erlang/releases/$(uname -m)/$(lsb_release -cs)/OTP-${ERLANG_VERSION}.tar.gz
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># install erlang
+</span></span><span style="display:flex;"><span>sudo tar zxf OTP-${ERLANG_VERSION}.tar.gz -P
+</span></span><span style="display:flex;"><span>export PATH=/opt/erlang/OTP-${ERLANG_VERSION}/bin:$PATH
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>if [ &#34;$type&#34; = &#34;paas&#34; ];
+</span></span><span style="display:flex;"><span>then
+</span></span><span style="display:flex;"><span>    NAME=dbcore
+</span></span><span style="display:flex;"><span>    PREFIX=/$NAME
+</span></span><span style="display:flex;"><span>else
+</span></span><span style="display:flex;"><span>    NAME=cloudant
+</span></span><span style="display:flex;"><span>    PREFIX=/opt/$NAME
+</span></span><span style="display:flex;"><span>fi
+</span></span><span style="display:flex;"><span>BRANCH=`echo $GIT_BRANCH| cut -d&#39;/&#39; -f 2`
+</span></span><span style="display:flex;"><span>./configure $type \
+</span></span><span style="display:flex;"><span>  --user $NAME \
+</span></span><span style="display:flex;"><span>  --prefix $PREFIX \
+</span></span><span style="display:flex;"><span>  --db-dir /srv/db \
+</span></span><span style="display:flex;"><span>  --view-dir /srv/view_index \
+</span></span><span style="display:flex;"><span>  --search-dir /srv/search_index \
+</span></span><span style="display:flex;"><span>  --geo-dir /srv/geo_index \
+</span></span><span style="display:flex;"><span>  --node-name $NAME \
+</span></span><span style="display:flex;"><span>  --extdeps
+</span></span><span style="display:flex;"><span>make ci || exit 1
+</span></span><span style="display:flex;"><span>if [ -z &amp;quot;$RELEASE_TAG&amp;quot; ]
+</span></span><span style="display:flex;"><span>then
+</span></span><span style="display:flex;"><span>    make BUILD_NUMBER=$BUILD_NUMBER BRANCH=-$BRANCH branch
+</span></span><span style="display:flex;"><span>    if [ $BRANCH = &amp;quot;master&amp;quot; ]
+</span></span><span style="display:flex;"><span>    then
+</span></span><span style="display:flex;"><span>        make BUILD_NUMBER=$BUILD_NUMBER BRANCH=-$BRANCH latest
+</span></span><span style="display:flex;"><span>    fi
+</span></span><span style="display:flex;"><span>else
+</span></span><span style="display:flex;"><span>    make RELEASE_TAG=$RELEASE_TAG BUILD_NUMBER=$BUILD_NUMBER BRANCH=-$BRANCH release
+</span></span><span style="display:flex;"><span>fi<span style="color:#f92672">&lt;/command&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/hudson.tasks.Shell&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/builders&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;publishers&gt;</span>
+</span></span><span style="display:flex;"><span>    ...many post-build publication strategies defined via XML
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;org.jenkins__ci.plugins.flexible__publish.FlexiblePublisher</span> <span style="color:#a6e22e">plugin=</span><span style="color:#e6db74">&#34;flexible-publish@0.14.1&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;publishers&gt;</span>
+</span></span><span style="display:flex;"><span>        ...other minor publishers
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;condition</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.jenkins_ci.plugins.run_condition.contributed.ShellCondition&#34;</span> <span style="color:#a6e22e">plugin=</span><span style="color:#e6db74">&#34;run-condition@1.0&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;command&gt;</span> #!/bin/sh
+</span></span><span style="display:flex;"><span>set -e
+</span></span><span style="display:flex;"><span>set +x
+</span></span><span style="display:flex;"><span>if [ -z &amp;quot;$type&amp;quot; ]
+</span></span><span style="display:flex;"><span>then
+</span></span><span style="display:flex;"><span>    AXIS_PATH=$JENKINS_HOME/jobs/dbnext/workspace/label
+</span></span><span style="display:flex;"><span>    JESSIE_PAAS_STATUS=`cat $AXIS_PATH/docker-local-jessie/type/paas/paas.status | awk &amp;apos;{print tolower($0)}&amp;apos;`
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    if [ &amp;quot;$JESSIE_PAAS_STATUS&amp;quot; = &amp;quot;success&amp;quot; ]
+</span></span><span style="display:flex;"><span>    then
+</span></span><span style="display:flex;"><span>      exit 0
+</span></span><span style="display:flex;"><span>    else
+</span></span><span style="display:flex;"><span>      echo &amp;quot;Paas build failed. Not triggering downstream jobs!&amp;quot;
+</span></span><span style="display:flex;"><span>      exit 1
+</span></span><span style="display:flex;"><span>    fi
+</span></span><span style="display:flex;"><span>fi<span style="color:#f92672">&lt;/command&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;/condition&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;publisherList&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;hudson.plugins.parameterizedtrigger.BuildTrigger</span> <span style="color:#a6e22e">plugin=</span><span style="color:#e6db74">&#34;parameterized-trigger@2.25&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">&lt;configs&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;hudson.plugins.parameterizedtrigger.BuildTriggerConfig&gt;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">&lt;configs&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;hudson.plugins.parameterizedtrigger.PredefinedBuildParameters&gt;</span>
+</span></span><span style="display:flex;"><span>                      <span style="color:#f92672">&lt;properties&gt;</span>UPSTREAM_BUILD_NUMBER=$BUILD_NUMBER
+</span></span><span style="display:flex;"><span>UPSTREAM_BUILD_BRANCH=$GIT_BRANCH
+</span></span><span style="display:flex;"><span>UPSTREAM_BUILD_COMMIT_SHA=$GIT_COMMIT
+</span></span><span style="display:flex;"><span>UPSTREAM_RELEASE_TAG=$RELEASE_TAG<span style="color:#f92672">&lt;/properties&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;/hudson.plugins.parameterizedtrigger.PredefinedBuildParameters&gt;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">&lt;/configs&gt;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">&lt;projects&gt;</span>test-cluster-dbnext-deploy<span style="color:#f92672">&lt;/projects&gt;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">&lt;condition&gt;</span>ALWAYS<span style="color:#f92672">&lt;/condition&gt;</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">&lt;triggerWithNoParameters&gt;</span>false<span style="color:#f92672">&lt;/triggerWithNoParameters&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;/hudson.plugins.parameterizedtrigger.BuildTriggerConfig&gt;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">&lt;/configs&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/hudson.plugins.parameterizedtrigger.BuildTrigger&gt;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&lt;/publisherList&gt;</span>
+</span></span><span style="display:flex;"><span>          ...more ConditionalPublisher settings
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher&gt;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&lt;/publishers&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/org.jenkins__ci.plugins.flexible__publish.FlexiblePublisher&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/publishers&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/matrix-project&gt;</span>
+</span></span></code></pre></div><p>Pretty isn&rsquo;t it? As development demands increased post-acquisition it was a real challenge to both maintain these mission-critical CI systems and extend them with new service verification needs. Our product was scaling up as we integrated with the IBM Cloud ecosystem and starting in 2017 the IBM Cloudant team set out to make major improvements to our integration approach.</p>
+<h2 id="enter-jenkins-pipeline"style="display:inline">Enter Jenkins Pipeline</h2><a class="stealth" href="#enter-jenkins-pipeline">🔗</a><br>
+<p>Our approach of tracking Jenkins job business logic in the Chef-rendered XML templates was cumbersome for new developers to learn and difficult to extend. Important components embedded in the XML files were not accessible for individual execution, testing, or static analysis. However, a new approach to Jenkins CI implementation had emerged in recent years, known as <a href="https://jenkins.io/doc/book/pipeline/">Jenkins Pipeline</a>.</p>
+<p>A different model had gained popularity in the past couple of years which expresses a project&rsquo;s build/test/deploy stages with assets tracked in the project&rsquo;s repo, using a Jenkins Pipeline. The cost to benefit ratio was paying itself back from the day it was introduced. Pipeline expresses the CI stages in a Domain Specific Language or DSL, which, being tracked in the repo, is much more natural for developers to maintain. Scripts can be included alongside the CI definition which will allow us to execute them individually, test them, etc. The same XML template, shown above, could be rendered using DSL (Groovy) like so. Please note the mapping between this example and that of the XML template is approximate as we have been since extending and updating our pipeline.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-groovy" data-lang="groovy"><span style="display:flex;"><span> stage<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Build - ${name} ${variant}&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        sh <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            export PATH=/opt/erlang/OTP-${erl_version()}/bin:$PATH
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            make compile&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        stage<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;EUnit Test Suite - ${name} ${variant}&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            sh <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                export PATH=/opt/erlang/OTP-${erl_version()}/bin:$PATH
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                make check&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        stage<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Dialyzer Type Check - ${name} ${variant}&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            sh <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                export PATH=/opt/erlang/OTP-${erl_version()}/bin:$PATH
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                make type-check&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        stage<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Elixir Tests - ${name} ${variant}&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            installElixir<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>            installHaproxy<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>            sh <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                export PATH=/usr/sbin:/usr/sbin/haproxy:/opt/erlang/OTP-${erl_version()}/bin:$PATH
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                python3 dev/run -n 1 -a adm:pass --no-eval elixir/run || true&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        junit <span style="color:#e6db74">&#34;src/**/.eunit/*.xml&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    stage<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Prepare build artifacts for persistence&#34;</span> <span style="color:#f92672">-</span> $<span style="color:#f92672">{</span>name<span style="color:#f92672">}</span> $<span style="color:#f92672">{</span>variant<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        // This is just a handy metadata file
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        def propspath = &#34;</span>rel<span style="color:#e6db74">/dbcore/</span>releases<span style="color:#e6db74">/${buildNumber}/</span>build<span style="color:#f92672">.</span><span style="color:#a6e22e">props</span><span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        def props = &#34;&#34;&#34;</span><span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span>            builder: $<span style="color:#f92672">{</span>name<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            variant: $<span style="color:#f92672">{</span>variant<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            sha: $<span style="color:#f92672">{</span>BUILD_COMMIT<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            branch: $<span style="color:#f92672">{</span>env<span style="color:#f92672">.</span><span style="color:#a6e22e">BRANCH_NAME</span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            erlang: $<span style="color:#f92672">{</span>erl_version<span style="color:#f92672">()}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;&#34;&#34;.stripIndent()
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        writeFile file: propspath, text: props
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if (env.BRANCH_NAME == &#34;master&#34;) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            sh &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>                export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">/opt/</span>erlang<span style="color:#e6db74">/OTP-${erl_version()}/</span>bin:$PATH
+</span></span><span style="display:flex;"><span>                make BUILD_NUMBER<span style="color:#f92672">=</span>$<span style="color:#f92672">{</span>buildNumber<span style="color:#f92672">}</span> BRANCH<span style="color:#f92672">=</span>$<span style="color:#f92672">{</span>env<span style="color:#f92672">.</span><span style="color:#a6e22e">BRANCH_NAME</span><span style="color:#f92672">}</span> branch
+</span></span><span style="display:flex;"><span>                make BUILD_NUMBER<span style="color:#f92672">=</span>$<span style="color:#f92672">{</span>buildNumber<span style="color:#f92672">}</span> BRANCH<span style="color:#f92672">=</span>$<span style="color:#f92672">{</span>env<span style="color:#f92672">.</span><span style="color:#a6e22e">BRANCH_NAME</span><span style="color:#f92672">}</span> latest<span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        } else {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            sh &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>            export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">/opt/</span>erlang<span style="color:#e6db74">/OTP-${erl_version()}/</span>bin:$PATH
+</span></span><span style="display:flex;"><span>            make BUILD_NUMBER<span style="color:#f92672">=</span>$<span style="color:#f92672">{</span>buildNumber<span style="color:#f92672">}</span> BRANCH<span style="color:#f92672">=</span>$<span style="color:#f92672">{</span>env<span style="color:#f92672">.</span><span style="color:#a6e22e">BRANCH_NAME</span><span style="color:#f92672">}</span> branch<span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        }
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    }
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    stage (&#34;</span>Triggering Fileserver Deploy <span style="color:#66d9ef">for</span> $<span style="color:#f92672">{</span>platform<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if (&#34;</span>$env<span style="color:#f92672">.</span><span style="color:#a6e22e">TRIGGER_DOWNSTREAM_JOB</span><span style="color:#e6db74">&#34;.toBoolean() || env.BRANCH_NAME == &#34;</span>master<span style="color:#e6db74">&#34;) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            build job: &#39;db-fileservers-deploy&#39;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                parameters: [
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    [$class: &#39;StringParameterValue&#39;, name: &#39;DB_BUILD_NUMBER&#39;, value: &#34;</span>$<span style="color:#f92672">{</span>buildNumber<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;],
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    [$class: &#39;StringParameterValue&#39;, name: &#39;BUILD_BRANCH&#39;, value: &#34;</span>$<span style="color:#f92672">{</span>env<span style="color:#f92672">.</span><span style="color:#a6e22e">BRANCH_NAME</span><span style="color:#f92672">}</span><span style="color:#e6db74">&#34;],
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    [$class: &#39;BooleanParameterValue&#39;, name: &#39;TRIGGER_DOWNSTREAM_JOB&#39;, value: false],
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    [$class: &#39;StringParameterValue&#39;, name: &#39;PLATFORM&#39;, value: &#34;</span>$<span style="color:#f92672">{</span>platform<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                ],
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                wait: true
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        } else {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            echo &#34;</span>Not triggering file server deploy jobs<span style="color:#f92672">.</span><span style="color:#960050;background-color:#1e0010">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>It&rsquo;s immediately clear that the Pipeline scripted language approach is natural for developers to use. Engineers don&rsquo;t have to maintain complex or error-prone XML templates. One of the greatest benefits of adopting the Pipeline DSL has been the buy-in our team received from the wider developer community in our organization. From the beginning our team members have been able to skill up on the Pipeline DSL and become immediately productive.</p>
+<p>Automation achieved with our new pipeline helped us to alleviate previously laborious manual testing. One example of this is shown by what we call the &ldquo;poker&rdquo; test. During this test our team would manually run a script that was developed to open and close databases as quickly as possible. While that script would run we would open a new shell and attempt to upgrade our database to a new release candidate version for testing. We would manually inspect all the results as this was all running in the background. </p>
+<h2 id="manual-steps"style="display:inline">Manual Steps</h2><a class="stealth" href="#manual-steps">🔗</a><br>
+<p>Run Poker Script &ndash;&gt; Upgrade Cluster &ndash;&gt; Verify Test Success</p>
+<p>With our pipeline we were able to encapsulate all of this testing logic into a Docker container and execute the testing steps via a Jenkins Groovy File as shown below. By encapsulating the test and upgrade tooling in Docker containers we were firstly able to simplify build system dependency management. Secondly we were able to easily use these resources from a Jenkins Groovy/Pipeline workflow as shown below.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-groovy" data-lang="groovy"><span style="display:flex;"><span><span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#39;Starting Rawhide execution...&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>env<span style="color:#f92672">.</span><span style="color:#a6e22e">USE_THOTH_RAWHIDE</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;true&#39;</span><span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        json_options_map <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;flags_list&#39;</span><span style="color:#f92672">:</span> <span style="color:#f92672">[</span><span style="color:#e6db74">&#39;--no-change-request&#39;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;--skip-prompts&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>env<span style="color:#f92672">.</span><span style="color:#a6e22e">RAWHIDE_HEALTH_CHECKS</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            json_options_map<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;-c&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> env<span style="color:#f92672">.</span><span style="color:#a6e22e">RAWHIDE_HEALTH_CHECKS_TIMEOUT</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            json_options_map<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;flags_list&#39;</span><span style="color:#f92672">].</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#39;--disable-health-checks&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            rawhide_result <span style="color:#f92672">=</span> send_request_to_thoth<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;upgrade&#39;</span><span style="color:#f92672">,</span> env<span style="color:#f92672">.</span><span style="color:#a6e22e">POKER_CLUSTER</span><span style="color:#f92672">,</span> env<span style="color:#f92672">.</span><span style="color:#a6e22e">POKER_UPGRADE_VERSION</span><span style="color:#f92672">,</span> json_options_map<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        docker<span style="color:#f92672">.</span><span style="color:#a6e22e">image</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#39;docker-registry-master.cloudant.com/rawhide&#39;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">inside</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;-v /home/jenkins:/home/jenkins&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;$env.RAWHIDE_HEALTH_CHECKS&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">toBoolean</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                rawhide_result <span style="color:#f92672">=</span> sh script: <span style="color:#e6db74">&#34;/bin/bash -c &#39;rawhide upgrade dbcore --internodal-health-check --skip-prompts --no-change-request -c $env.RAWHIDE_HEALTH_CHECKS_TIMEOUT $env.POKER_UPGRADE_VERSION $env.POKER_CLUSTER&#39;&#34;</span><span style="color:#f92672">,</span> returnStatus: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                echo <span style="color:#e6db74">&#39;Skipping preflight/post-upgrade health checks...&#39;</span>
+</span></span><span style="display:flex;"><span>                    rawhide_result <span style="color:#f92672">=</span> sh script: <span style="color:#e6db74">&#34;/bin/bash -c &#39;rawhide upgrade dbcore --disable-health-checks --skip-prompts --no-change-request $env.POKER_UPGRADE_VERSION $env.POKER_CLUSTER&#39;&#34;</span><span style="color:#f92672">,</span> returnStatus: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>You can see from the Jenkinsfile the syntax is developer friendly and follows a readable flow from running a script to reading out to a Docker registry for our images and upgrading our cluster.</p>
+<p>The parallel use of both Docker and Jenkins Pipeline is another valuable asset to our CI that cannot be overlooked. It has allowed us to containerize our CI assets such that our execution is cleaner and our assets are stored within images. Dockerization allows us to isolate the deployment complexities of tool dependencies within the image rather than the actual build machines. By using Docker volumes we are able to contain any tooling/configuration needed.</p>
+<p>So where do we go from here? The latest journey for our team is to move to a Tools-As-A-Service (TaaS) model and mirror our entire pipeline sequence. Effectively this will allow us to move to a hosted Jenkins service rather than maintainig our own instance. In addition to Jenkins, our IBM TaaS includes other IBM offerings such as UrbanCode Deploy for automating application deployments and Artifactory to serve as a repository manager. We hope in the next few months to be able to add further automation to our pipeline, some exciting updates would include automating our custom test report for management/stakeholders/other testers to easily consume our testing results and git tagging our builds.</p>
+<p>This journey thus far has led to us to a point that gives us confidence in our ability to validate whole-stack inegration and component correctness. Through our use of Jenkins Pipelines we&rsquo;ve been able to do just that with easy-to-read Jenkins DSL and our dockerization of assets and configuration. This is an approach that we encourage any enterprise to employ as part of their development life-cycle.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+

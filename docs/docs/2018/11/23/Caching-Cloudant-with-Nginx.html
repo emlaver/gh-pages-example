@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Caching with Nginx</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Caching with Nginx">
+    <meta property="og:url" content="https://blog.cloudant.com/2018/11/23/Caching-Cloudant-with-Nginx.html" />
+    <meta property="og:description" content="Caching Cloudant reads for faster performance" />
+    <meta property="article:published_time" content="2018-11-23 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/denise-johnson-426653-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Caching with Nginx" />
+    <meta name="twitter:description" content="Caching Cloudant reads for faster performance" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Caching with Nginx">
+    <meta itemprop="description" content="Caching Cloudant reads for faster performance">
+    <meta itemprop="image" content="/img/denise-johnson-426653-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Caching with Nginx</h1>
+  
+  <div class="postmeta">Nov 23, 2018 | Glynn Bird | 
+
+  
+  <bx-tag>Nginx</bx-tag>
+  
+  <bx-tag>Cache</bx-tag>
+  
+
+
+  </div>
+  
+  <p>Cloudant and its open-source sibling Apache CouchDB were were born on the web. Their HTTP/HTTPS API is not a bolt-on afterthought - it is <em>the</em> way of interacting with the database built in from the ground up. Let&rsquo;s take the use-case of Cloudant being used as a back-end database in a traditional client/server web app:</p>
+<p><img src="https://blog.cloudant.com/img/nginx_schematic_1.png" alt="schematic"></p>
+<p>Web users interact with a web page, sending HTTP requests to one of a number of application servers. The application, needing data to render the page will make an HTTP request to Cloudant to get fetch the data and then respond back in kind to the client.</p>
+<p>If the same request is being made to Cloudant over and over again in a short time frame, then Cloudant simply answers each request.  Under production loads and to avoid overworking the database, developers may choose to cache data <em>in their app</em> rather than make a round-trip to the database. This is suitable for:</p>
+<ul>
+<li>data that doesn&rsquo;t change very often e.g. a database of US zip codes</li>
+<li>slices of data that are accessed frequently but where it doesn&rsquo;t matter when the user sees a slightly stale version of the query. This is very application-dependent but let&rsquo;s imagine your e-commerce site is to have a list of three special offers on the front page. As the front page is accessed frequently, it makes little sense to query the database for every page render.</li>
+</ul>
+<p><img src="https://blog.cloudant.com/img/denise-johnson-426653-unsplash.jpg" alt="cache"></p>
+<blockquote>
+<p><a href="https://unsplash.com/photos/CQpN2IdkSdA">Photo by Denise Johnson on Unsplash</a></p>
+</blockquote>
+<p>There are many ways to implement a cache. In this article I&rsquo;ll show how a Nginx proxy can be created to cache HTTP requests to take some of the load off your Cloudant service and to get data to your app quickly.</p>
+<h2 id="what-is-nginx"style="display:inline">What is Nginx?</h2><a class="stealth" href="#what-is-nginx">🔗</a><br>
+<p><a href="https://www.nginx.com/">Nginx</a> is an open-source web server. At its simplest it can serve out a tree of static files over HTTP. It can also be configured as a &ldquo;reverse proxy&rdquo;, that is it can sit between a client and server and transparently route traffic between them, caching some of the content to allow a future repeat request to be serviced from the local cached data.</p>
+<p><img src="https://blog.cloudant.com/img/nginx_schematic_2.png" alt="reverse proxy schematic"></p>
+<p>In our application we&rsquo;ll be configuring Nginx as a reverse proxy and placing it between our application servers and Cloudant. Instead of our application connecting directly to Cloudant, it will instead connect to Nginx which will either return some cached content or make the Cloudant request and return that.</p>
+<p>Nginx can be installed in two places:</p>
+<ul>
+<li>on the same machine as your application code (your app will connect to port on &ldquo;localhost&rdquo;.</li>
+<li>or, on a separate machine your network and shared between multiple instances of your application server.</li>
+</ul>
+<p>The former approach is simpler, but the second allows multiple application servers so share the same cache pool.</p>
+<h2 id="installing-nginx"style="display:inline">Installing Nginx</h2><a class="stealth" href="#installing-nginx">🔗</a><br>
+<p>Follow the <a href="https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-plus/">installation instructions for your platform</a> - on my Mac I used <a href="https://brew.sh/">brew</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>brew install nginx
+</span></span></code></pre></div><h2 id="configuring-nginx"style="display:inline">Configuring Nginx</h2><a class="stealth" href="#configuring-nginx">🔗</a><br>
+<p>The configuration for Nginx belongs in a file called <code>nginx.conf</code>. We&rsquo;re going to leave the installed configuration <em>as is</em> and create a new one with the following content:</p>
+<pre tabindex="0"><code>error_log /usr/local/var/log/nginxerror.log;
+pid /usr/local/var/run/nginx.pid;
+
+events {
+}
+
+http {
+  
+  # define custom log format with cache HIT/MISS
+  log_format main &#39;$remote_addr - $upstream_cache_status  [$time_local]  $status &#39;
+    &#39;&#34;$request&#34; $body_bytes_sent &#34;$http_referer&#34; &#39;
+    &#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34;&#39;;
+  access_log /usr/local/var/log/nginx/access.log  main;
+
+  # define path where cached data is stored
+  proxy_cache_path /tmp/cache keys_zone=cloudant:10m;
+
+  server {
+
+    # listen on port 8080 (HTTP)
+    listen       8080;
+
+    # this server&#39;s root directory maps to Cloudant&#39;s root
+    location / {
+
+      # define Cloudant root
+      proxy_pass https://4268d9ec-250f-4d59-bcbd-fb47a14ef856-bluemix.cloudant.com;
+      
+      # pass through headers e.g. authentication 
+      proxy_pass_request_headers on;
+      
+      # cache data in the &#34;cloudant&#34; pool
+      proxy_cache cloudant;
+
+      # this is how the cache key is calculated
+      proxy_cache_key $host$uri$is_args$args$request_body;
+
+      # cached data from 200 requests is valid for 10 minutes
+      proxy_cache_valid 200 10m;
+
+      # even POST data is cached
+      proxy_cache_methods GET HEAD POST;
+ 
+      # add a header to show whether the data is a from cache or not
+      add_header X-Cache-Status $upstream_cache_status;
+    }
+  }
+}
+</code></pre><p>N.B Change the hostname to the hostname of <strong>your Cloudant service</strong> in the <code>proxy_pass</code> line of the configuration file.</p>
+<p>We can then run <code>nginx</code> with the command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ nginx -c $PWD/nginx.conf 
+</span></span></code></pre></div><p>and stop it with</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ nginx -s stop
+</span></span></code></pre></div><p>To monitor <code>nginx</code>&rsquo;s logs, simply tail the log file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ tail -f /usr/local/var/log/nginx/access.log
+</span></span></code></pre></div><h2 id="testing-the-nginx-proxy-with-curl"style="display:inline">Testing the nginx proxy with curl</h2><a class="stealth" href="#testing-the-nginx-proxy-with-curl">🔗</a><br>
+<p>I like to setup an environment variable containing the URL of my Cloudant service to save typing. In this case, the URL needs to be of the form:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ export COUCH_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://USERNAME:PASSWORD@localhost:8080&#34;</span>
+</span></span></code></pre></div><p>Notice that:</p>
+<ul>
+<li>We are using <code>http</code> not <code>https</code>. Nginx is serving out HTTP only - it will use HTTPS to communicate with Cloudant from there but uses HTTP to service its clients.</li>
+<li>We need to include our Cloudant username &amp; password in the URL. Nginx will pass on the authentication headers we supply.</li>
+<li>We use <code>localhost</code> on port 8080 as our hostname when we want to communicate with Cloudant via the proxy.</li>
+</ul>
+<p>Now we can test the connection by visiting the top of the Cloudant API service:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl $COUCH_URL/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;couchdb&#34;</span>:<span style="color:#e6db74">&#34;Welcome&#34;</span>,<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;2.1.1&#34;</span>,<span style="color:#e6db74">&#34;vendor&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;IBM Cloudant&#34;</span>,<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;7410&#34;</span>,<span style="color:#e6db74">&#34;variant&#34;</span>:<span style="color:#e6db74">&#34;paas&#34;</span><span style="color:#f92672">}</span>,<span style="color:#e6db74">&#34;features&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;geo&#34;</span>,<span style="color:#e6db74">&#34;scheduler&#34;</span>,<span style="color:#e6db74">&#34;iam&#34;</span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>It we repeat the request with the <code>-i</code> command-line switch, we can see whether the data is coming from Cloudant or via the cache by looking at the <code>X-Cache-Status</code> header:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -i $COUCH_URL
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>Server: nginx/1.15.6
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">16</span> Nov <span style="color:#ae81ff">2018</span> 10:07:44 GMT
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">144</span>
+</span></span><span style="display:flex;"><span>Connection: keep-alive
+</span></span><span style="display:flex;"><span>Cache-Control: must-revalidate
+</span></span><span style="display:flex;"><span>X-Couch-Request-ID: 6204aa106f
+</span></span><span style="display:flex;"><span>X-Frame-Options: DENY
+</span></span><span style="display:flex;"><span>Strict-Transport-Security: max-age<span style="color:#f92672">=</span><span style="color:#ae81ff">31536000</span>
+</span></span><span style="display:flex;"><span>X-Content-Type-Options: nosniff
+</span></span><span style="display:flex;"><span>X-Cloudant-Request-Class: unlimited
+</span></span><span style="display:flex;"><span>X-Cloudant-Backend: bm-cc-us-south-11
+</span></span><span style="display:flex;"><span>Via: 1.0 lb1.bm-cc-us-south-11 <span style="color:#f92672">(</span>Glum/1.66.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>X-Cache-Status: HIT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;couchdb&#34;</span>:<span style="color:#e6db74">&#34;Welcome&#34;</span>,<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;2.1.1&#34;</span>,<span style="color:#e6db74">&#34;vendor&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;IBM Cloudant&#34;</span>,<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;7410&#34;</span>,<span style="color:#e6db74">&#34;variant&#34;</span>:<span style="color:#e6db74">&#34;paas&#34;</span><span style="color:#f92672">}</span>,<span style="color:#e6db74">&#34;features&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;geo&#34;</span>,<span style="color:#e6db74">&#34;scheduler&#34;</span>,<span style="color:#e6db74">&#34;iam&#34;</span><span style="color:#f92672">]}</span>
+</span></span></code></pre></div><p>In the <code>nginx</code> logs, you should see &ldquo;HIT&rdquo; or &ldquo;MISS&rdquo; against each entry:</p>
+<pre tabindex="0"><code>127.0.0.1 - MISS  [16/Nov/2018:10:06:41 +0000]  200 &#34;GET / HTTP/1.1&#34; 144 &#34;-&#34; &#34;curl/7.54.0&#34; &#34;-&#34;
+127.0.0.1 - HIT  [16/Nov/2018:10:07:44 +0000]  200 &#34;GET / HTTP/1.1&#34; 144 &#34;-&#34; &#34;curl/7.54.0&#34; &#34;-&#34;
+</code></pre><p>The first fetch was a &ldquo;MISS&rdquo;, the second a &ldquo;HIT&rdquo;.</p>
+<p>Try fetching some data and repeating the request to get the cached version. We can use the <code>time</code> command to get an idea of how much the cache is speeding things up e.g.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ time curl -s $COUCH_URL/cities/_all_docs?limit<span style="color:#f92672">=</span><span style="color:#ae81ff">500</span> &gt; /dev/null
+</span></span><span style="display:flex;"><span>real	0m0.849s
+</span></span><span style="display:flex;"><span>user	0m0.007s
+</span></span><span style="display:flex;"><span>sys	0m0.007s
+</span></span><span style="display:flex;"><span>$ time curl -s $COUCH_URL/cities/_all_docs?limit<span style="color:#f92672">=</span><span style="color:#ae81ff">500</span> &gt; /dev/null
+</span></span><span style="display:flex;"><span>real	0m0.020s
+</span></span><span style="display:flex;"><span>user	0m0.007s
+</span></span><span style="display:flex;"><span>sys	0m0.006s
+</span></span></code></pre></div><p>The first request took 850ms, the second (cached) request took 20ms.</p>
+<h2 id="putting-cache-to-work-in-your-app"style="display:inline">Putting cache to work in your app</h2><a class="stealth" href="#putting-cache-to-work-in-your-app">🔗</a><br>
+<p>Using the Nginx-powered cache in your own app is as simple as feeding a different URL to the Cloudant library:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// setup Express
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">express</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;express&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">express</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// setup Cloudant library
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">Cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@cloudant/cloudant&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudantReadOnly</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">Cloudant</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">url</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">`http://</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">USERNAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">password</span><span style="color:#e6db74">}</span><span style="color:#e6db74">@localhost:8080`</span>, 
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">plugins</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;promises&#39;</span>
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudantWriteOnly</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">Cloudant</span>({
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">password</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">password</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">account</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">USERNAME</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">plugins</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;promises&#39;</span>
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// home page
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;/&#39;</span>, <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">res</span>) =&gt; {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// do search
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">db</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">cloudantReadOnly</span>.<span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">use</span>(<span style="color:#e6db74">&#39;mydb&#39;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">find</span>({<span style="color:#a6e22e">selector</span><span style="color:#f92672">:</span> {<span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;London&#34;</span>}})
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">send</span>(<span style="color:#a6e22e">doc</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">listen</span>(<span style="color:#ae81ff">3000</span>)
+</span></span></code></pre></div><p>The above code makes two Cloudant objects: one to handle read-only requests via the Nginx proxy, the other for writes that connects directly to Cloudant. The root path of this app performs a Cloudant query via the proxy, outputting the result.</p>
+<p>Running this app has the same performance profile as the <code>curl</code> tests: cached data is retrieved much faster than running a query on a Cloudant cluster on the other side of the world.</p>
+<p>It&rsquo;s worth bearing in mind that by caching repeated queries, Cloudant is handling fewer queries for you which will be reflected in provisioned throughput you need to buy in your Cloudant Lite and Standard plans provision. The &ldquo;query&rdquo; requests (<code>POST /db/_find</code>, <code>GET /db/_all_docs</code>, <code>GET /db/_search</code>, <code>GET /db/_design/...</code>) are the request types most-likely to eat up your Cloudant capacity. Caching queries helps to prevent maxing-out your Cloudant service and delivers better performance for your users.</p>
+<h2 id="when-to-use-caching"style="display:inline">When to use caching</h2><a class="stealth" href="#when-to-use-caching">🔗</a><br>
+<p>Employing caching is a trade-off between speed of returning the results against the freshness of data returned. If you know your data isn&rsquo;t changing frequently, then a generous cache window (say an hour or a day) may be used. If it&rsquo;s important that fresh data is surfaced to your users quickly, then a shorter window (say 5 or 10 minutes) may be better.</p>
+<p>Caching works well when handling &ldquo;peaky&rdquo; traffic: let&rsquo;s say a particular page on your site becomes popular because of the success of a marketing campaign. It&rsquo;s better in this case to cache the pertinent content and deliver the results quickly, rather than wasting your Cloudant database resources producing the same results over and over again.</p>
+<blockquote>
+<p>Caching can help take the load from your expensive primary data store by bring cheaper and faster resources to bear instead. Oh and cached data is returned faster.</p>
+</blockquote>
+<p>The <code>nginx</code> configuration caches all <code>GET</code> &amp; <code>HEAD</code> requests by default. I added <code>POST</code> to the <code>proxy_cache_methods</code> configuration to catch <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html">Cloudant Query</a> API calls which use the <code>POST /db/_find</code> method. This may have unintended consequences if you route writes through this proxy e.g. <code>POST /db/_bulk_docs</code> or <code>POST /db</code>. I would recommend only sending <em>read</em> requests through the proxy and any API calls that modify data should be sent directly to Cloudant.</p>
+<p><img src="https://blog.cloudant.com/img/nginx_schematic_3.png" alt="reverse proxy schematic"></p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://medium.com/@glynn_bird/caching-couchdb-requests-with-nginx-15dd1136e38f" target="_new">https://medium.com/@glynn_bird/caching-couchdb-requests-with-nginx-15dd1136e38f</a>
+
+
+
+</body>
+</html>
+

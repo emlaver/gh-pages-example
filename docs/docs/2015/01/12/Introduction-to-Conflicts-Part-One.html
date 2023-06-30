@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Introduction to Conflicts - 1/3</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Introduction to Conflicts - 1/3">
+    <meta property="og:url" content="https://blog.cloudant.com/2015/01/12/Introduction-to-Conflicts-Part-One.html" />
+    <meta property="og:description" content="Cloudant document conflicts - what are they?" />
+    <meta property="article:published_time" content="2015-01-12 09:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/frida-bredesen-317281-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Introduction to Conflicts - 1/3" />
+    <meta name="twitter:description" content="Cloudant document conflicts - what are they?" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Introduction to Conflicts - 1/3">
+    <meta itemprop="description" content="Cloudant document conflicts - what are they?">
+    <meta itemprop="image" content="/img/frida-bredesen-317281-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Introduction to Conflicts - 1/3</h1>
+  
+  <div class="postmeta">Jan 12, 2015 | Glynn Bird | 
+
+  
+  <bx-tag>Conflicts</bx-tag>
+  
+
+
+  </div>
+  
+  <p>This is the first of a three-part blog series on how to deal with conflicts in the IBM Cloudant JSON document store. This blog assumes you have a working knowledge of Cloudant&rsquo;s database, and its API.</p>
+<p>In part one, we introduce the concept of a document conflict, describe what it looks like, and explain what happens if conflicts are left unresolved. Later in this series, we show how to tidy up conflicts, and discuss how they can be avoided.</p>
+<p><img src="https://blog.cloudant.com/img/frida-bredesen-317281-unsplash.jpg" alt="conflict"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/76dgUcMupv4">Frida Bredesen on Unsplash</a></p>
+</blockquote>
+<h2 id="introduction"style="display:inline">Introduction</h2><a class="stealth" href="#introduction">🔗</a><br>
+<p>Cloudant allows data to be stored as JSON documents in a highly-resilient cluster of connected nodes. Cloudant&rsquo;s HTTP interface can be accessed natively through a web browser, through an interactive dashboard, or through programming languages for most platforms. Cloudant is a distributed system, with Replication at it&rsquo;s heart. It enables mobile developers to replicate their data to portable devices, and allows data to be replicated across the globe. The effect is similar to a content delivery network (CDN) for your data.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/CAP_theorem">Consistency, Availability and Partition tolerance (CAP)</a> theorem states that a distributed system can have only two of the three characteristics. In Cloudant, Consistency is sacrificed in favour of availability and partition tolerance. Specifically, Cloudant is an eventually consistent database, which means that no locking occurs when data is written. This characteristic enables the system to offer best-of-class uptime and scalability.</p>
+<p>In order to keep the service available at all times, Cloudant must allow the same document id to be altered on different nodes in the database. To reconcile the data, Cloudant maintains a revision history for every document in the database. This is a timeline of changes to the document; not the document body itself, only a history of the revision tokens:</p>
+<p><img src="https://blog.cloudant.com/img/Conflicts-Part-One-1.png" alt="one"></p>
+<p>In this example, document &ldquo;abc&rdquo; has had three revisions. The revision token is made up of a sequential number and a hash of the document content. For convenience, a shortened version of the hash appears in the diagram.</p>
+<p>One of the consequences of eventual consistency is that documents might enter a conflicted state if the <strong>same version of a document is modified in different ways on two disconnected nodes</strong>. An exception is where the change made on the two nodes is the same change, to the same revision of the document. In this case, no conflict is generated, because the hash remains the same.</p>
+<p><img src="https://blog.cloudant.com/img/Conflicts-Part-One-Introduction-to-Cloudant-and-documnet-conflicts-21.png" alt="two"></p>
+<p>In the above example there are two Cloudant databases (A and B) that are not connected. They both have the same document, with identical revision histories for revisions 1 and 2. At revision 3, the databases diverged. If we replicate database A to B, or alternatively replicate database B to A (in Cloudant, bi-directional replication is simply two separate replication processes in opposite directions), then the document enters a conflicted state:</p>
+<p><img src="https://blog.cloudant.com/img/Conflicts-Part-One-3.png" alt="three"></p>
+<h2 id="how-can-conflicts-arise-in-your-application"style="display:inline">How Can Conflicts Arise in Your Application?</h2><a class="stealth" href="#how-can-conflicts-arise-in-your-application">🔗</a><br>
+<p>The three scenarios below are essentially descriptions of the same thing, but with different application architectures:</p>
+<h3 id="mobile-apps"style="display:inline">Mobile apps</h3><a class="stealth" href="#mobile-apps">🔗</a><br>
+<p>Many Cloudant customers create one database for every one of their users. This architecture is especially suited to mobile app developers as it allows the app to continue to function offline and can sync its data to the cloud whenever it is connected. A document might become conflicted if it is modified on the app (via the phone) and on Cloudant itself (via a web dashboard, for example) and then the two copies are subsequently synced.</p>
+<h3 id="replication"style="display:inline">Replication</h3><a class="stealth" href="#replication">🔗</a><br>
+<p>A Cloudant customer might have two clusters hosted in separate geographic locations. The clusters are connected by continuous replication. If the same document is modified in each cluster while the inter-site connection is down, a conflict is recorded when the clusters are reconnected.</p>
+<h3 id="race-condition"style="display:inline">Race condition</h3><a class="stealth" href="#race-condition">🔗</a><br>
+<p>Even in a small Cloudant cluster, a conflict can arise if changes to the same document are sent to two nodes at the same time.</p>
+<h2 id="what-does-a-conflict-look-like"style="display:inline">What Does A Conflict Look Like?</h2><a class="stealth" href="#what-does-a-conflict-look-like">🔗</a><br>
+<p>Normally, when retrieving a single document, we would receive only the latest revision:</p>
+<pre tabindex="0"><code>GET /mydb/0f900fc85f2c5249759d9dd939b9c080 
+{
+  &#34;_id&#34;: &#34;0f900fc85f2c5249759d9dd939b9c080&#34;,
+  &#34;_rev&#34;: &#34;3-cb1624f72667f6f0378d628e0e065f24&#34;,
+  &#34;name&#34;: &#34;Glynn Bird&#34;,
+  &#34;age&#34;: 24
+ }
+</code></pre><p>If we additionally pass in the parameter ?conflicts=true, Cloudant will return the document and a list of conflicting revision tokens:</p>
+<pre tabindex="0"><code>GET /mydb/0f900fc85f2c5249759d9dd939b9c080?conflicts=true 
+{
+  &#34;_id&#34;: &#34;0f900fc85f2c5249759d9dd939b9c080&#34;,
+  &#34;_rev&#34;: &#34;3-cb1624f72667f6f0378d628e0e065f24&#34;,
+  &#34;name&#34;: &#34;Glynn Bird&#34;,
+  &#34;age&#34;: 24,
+  &#34;_conflicts&#34;: [
+    &#34;3-ba7697cffda8cdfdfc63267473ffaf7d&#34;
+  ]
+}
+</code></pre><p>If no _conflicts parameter is returned, then the document is conflict-free.</p>
+<h2 id="what-happens-if-i-ignore-conflicts-in-my-database"style="display:inline">What Happens If I Ignore Conflicts In My Database?</h2><a class="stealth" href="#what-happens-if-i-ignore-conflicts-in-my-database">🔗</a><br>
+<p>Cloudant continues to serve out the documents as before, but if a conflict occurs:</p>
+<ul>
+<li>Cloudant returns what it considers to be the &ldquo;winning&rdquo; revision while retaining the &ldquo;non-winning&rdquo; revisions internally. The algorithm that determines the winner is deterministic; different nodes with the same conflict scenario will return the same winner but the revision that Cloudant considers to be the winner may not be your idea of the winner. Your application should either resolve the conflicts as they arise to publish the document that your application needs, or should adopt a design pattern that avoids the generation of conflicts in the first place.</li>
+<li>the database&rsquo;s size is inflated because Cloudant keeps the bodies of unresolved conflicts in full.</li>
+<li>performance suffers if there are many conflicts in the same document.</li>
+</ul>
+<p>It is good practice, as an application developer, to deal with any conflicts that arise in your documents. The benefit is a reduction in data size, and an optimised performance.</p>
+<p>In <a href="https://blog.cloudant.com/2015/01/20/Introduction-to-Conflicts-Part-Two.html">Part Two</a> of this series, we&rsquo;ll return to this subject, and show how conflicts can be dealt with in your application.</p>
+
+</div>
+</div>
+</div>
+</main>
+
+Syndicated from: <a href="https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-one/" target="_new">https://developer.ibm.com/dwblog/2015/cloudant-document-conflicts-one/</a>
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Building a Store Finder</title>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#354F52">
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
+  
+
+  <link rel="icon" href="https://blog.cloudant.com/favicon.png">
+
+  
+
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/plex.css"/>
+<link rel="stylesheet"
+href="https://1.www.s81c.com/common/carbon-for-ibm-dotcom/tag/v1/canary/grid.css"/>
+
+<style>
+       
+bx-header~bx-side-nav{margin-top:3rem;height:calc(100% - 3rem)}
+.bx-hugo-carbon--ui-shell-content{
+  will-change:margin-left;transition:margin-left .11s cubic-bezier(0.2, 0, 1, 0.9);
+}
+#main-content {margin-top: 3rem;}
+
+@media(min-width: 66rem){
+
+  #main-content{margin-left:16rem}
+
+}
+html {margin:0; font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;}
+bx-side-nav {top:3rem; display: block; overflow: scroll;}
+bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
+</style>
+
+
+<link rel="stylesheet" type="text/css" href="https://blog.cloudant.com/css/main.css?i=000" media="all">
+
+
+
+ 
+
+
+
+
+ <meta name="generator" content="Hugo 0.115.0">
+
+  
+    
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Building a Store Finder">
+    <meta property="og:url" content="https://blog.cloudant.com/2020/05/01/Building-A-Store-Finder.html" />
+    <meta property="og:description" content="Sorting documents be distance from a point" />
+    <meta property="article:published_time" content="2020-05-01 06:00:00 &#43;0000 UTC" />
+    <meta property="og:site_name" content="Cloudant blog" />
+    <meta property="og:image" content="/img/sherzod-max-edZ_WxeUlWc-unsplash.jpg" />
+
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="Cloudant blog" />
+    <meta name="twitter:title" content="Building a Store Finder" />
+    <meta name="twitter:description" content="Sorting documents be distance from a point" />
+    <meta name="twitter:creator" content="Cloudant blog" />
+
+    
+    <meta itemprop="name" content="Building a Store Finder">
+    <meta itemprop="description" content="Sorting documents be distance from a point">
+    <meta itemprop="image" content="/img/sherzod-max-edZ_WxeUlWc-unsplash.jpg">
+  
+
+
+
+
+  
+  <style>
+@media (min-width: 66rem) {
+.container .bx--grid {
+  padding-left: calc(25% + 1.5rem);
+  padding-right: 2rem;
+}
+}
+    h3 {
+      margin-bottom: 1rem;
+    }
+  </style>
+  </head>
+<body class="">
+     
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
+<bx-header aria-label=" Cloudant blog" role="banner">
+  <bx-header-name href="https://blog.cloudant.com/" prefix=""> Cloudant blog</bx-header-name>
+  <bx-header-nav menu-bar-label=" Cloudant blog" role="navigation">
+    
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/">Home</bx-header-nav-item>
+          
+        
+          
+            <bx-header-nav-item active="" href="https://blog.cloudant.com/search.html">Search</bx-header-nav-item>
+          
+        
+    
+  </bx-header-nav>
+</bx-header>
+<div style="height:50px"></div>
+<main class="bx--content bx-hugo-carbon--ui-shell-content">
+  <div class="bx--grid">
+    <div class="bx--row">
+
+
+<div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
+  <h1 class="p-name">Building a Store Finder</h1>
+  
+  <div class="postmeta">May 1, 2020 | Glynn Bird | 
+
+  
+  <bx-tag>Search</bx-tag>
+  
+  <bx-tag>Geo</bx-tag>
+  
+
+
+  </div>
+  
+  <p>In this post we&rsquo;ll be creating a web-based <em>store finder</em> using Cloudant. A user visits your website and wants to know which of your branches is closest to their current location.</p>
+<p><img src="https://blog.cloudant.com/img/sherzod-max-edZ_WxeUlWc-unsplash.jpg" alt="shop"></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/photos/edZ_WxeUlWc">Sherzod Max on Unsplash</a></p>
+</blockquote>
+<p>To build this need a search index that can sort search results by distance but first, we need a database of branches.</p>
+<h2 id="data-preparation"style="display:inline">Data preparation</h2><a class="stealth" href="#data-preparation">🔗</a><br>
+<p>Let&rsquo;s say we have a list of branches that looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>130 Turves Road, Cheadle Hulme, Cheadle, Cheshire, SK8 6AW
+</span></span><span style="display:flex;"><span>2-8 High Street, Witney, Oxfordshire, OX28 6HA
+</span></span><span style="display:flex;"><span>34 Church Wk, Caterham, Surrey, CR3 6RT
+</span></span><span style="display:flex;"><span>49 Calverley Road, Tunbridge Wells, Kent, TN1 2UU
+</span></span><span style="display:flex;"><span>8 Pitsea Centre, Northlands Pavement, Pitsea, Basildon, Essex, SS13 3DU
+</span></span><span style="display:flex;"><span>36 The Broadway, London, E15 1NG
+</span></span><span style="display:flex;"><span>14-16 Station Road, West Drayton, Middlesex
+</span></span></code></pre></div><p>Our first task is to split the addresses into meaningful columns:</p>
+<table>
+<thead>
+<tr>
+<th>address1</th>
+<th>address2</th>
+<th>address3</th>
+<th>city</th>
+<th>county</th>
+<th>postcode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>130 Turves Road</td>
+<td>Cheadle Hulme</td>
+<td></td>
+<td>Cheadle</td>
+<td>Cheshire</td>
+<td>SK8 6AW</td>
+</tr>
+<tr>
+<td>2-8 High Street</td>
+<td></td>
+<td></td>
+<td>Witney</td>
+<td>Oxfordshire</td>
+<td>OX28 6HA</td>
+</tr>
+<tr>
+<td>34 Church Wk</td>
+<td></td>
+<td></td>
+<td>Caterham</td>
+<td>Surrey</td>
+<td>CR3 6RT</td>
+</tr>
+<tr>
+<td>49 Calverley Road</td>
+<td></td>
+<td></td>
+<td>Tunbridge Wells</td>
+<td>Kent</td>
+<td>TN1 2UU</td>
+</tr>
+<tr>
+<td>8 Pitsea Centre</td>
+<td>Northlands Pavement</td>
+<td>Pitsea</td>
+<td>Basildon</td>
+<td>Essex</td>
+<td>SS13 3DU</td>
+</tr>
+<tr>
+<td>36 The Broadway</td>
+<td></td>
+<td></td>
+<td>London</td>
+<td></td>
+<td>E15 1NG</td>
+</tr>
+<tr>
+<td>14-16 Station Road</td>
+<td></td>
+<td></td>
+<td>West Drayton</td>
+<td>Middlesex</td>
+<td>UB7 7BY</td>
+</tr>
+</tbody>
+</table>
+<p>Next we need to to be able to locate each of our addresses on a map, by calculating a latitude and longitude of each branch. In the UK, the <a href="https://geoportal.statistics.gov.uk/datasets/4f71f3e9806d4ff895996f832eb7aacf">Office for National Statistics</a> publishes a list of postcodes and their longitude/latitude so with with a suitable <a href="https://github.com/glynnbird/postcodelookup">tool</a>, we can lookup each branch&rsquo;s postcode and add additional columns for the positional data:</p>
+<table>
+<thead>
+<tr>
+<th>address1</th>
+<th>address2</th>
+<th>address3</th>
+<th>city</th>
+<th>county</th>
+<th>postcode</th>
+<th>longitude</th>
+<th>latitude</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>130 Turves Road</td>
+<td>Cheadle Hulme</td>
+<td></td>
+<td>Cheadle</td>
+<td>Cheshire</td>
+<td>SK8 6AW</td>
+<td>-2.206689</td>
+<td>53.373407</td>
+</tr>
+<tr>
+<td>2-8 High Street</td>
+<td></td>
+<td></td>
+<td>Witney</td>
+<td>Oxfordshire</td>
+<td>OX28 6HA</td>
+<td>-1.484964</td>
+<td>51.785435</td>
+</tr>
+<tr>
+<td>34 Church Wk</td>
+<td></td>
+<td></td>
+<td>Caterham</td>
+<td>Surrey</td>
+<td>CR3 6RT</td>
+<td>-0.077256</td>
+<td>51.281556</td>
+</tr>
+<tr>
+<td>49 Calverley Road</td>
+<td></td>
+<td></td>
+<td>Tunbridge Wells</td>
+<td>Kent</td>
+<td>TN1 2UU</td>
+<td>0.266187</td>
+<td>51.134097</td>
+</tr>
+<tr>
+<td>8 Pitsea Centre</td>
+<td>Northlands Pavement</td>
+<td>Pitsea</td>
+<td>Basildon</td>
+<td>Essex</td>
+<td>SS13 3DU</td>
+<td>0.504061</td>
+<td>51.566237</td>
+</tr>
+<tr>
+<td>36 The Broadway</td>
+<td></td>
+<td></td>
+<td>London</td>
+<td></td>
+<td>E15 1NG</td>
+<td>0.001901</td>
+<td>51.541677</td>
+</tr>
+<tr>
+<td>14-16 Station Road</td>
+<td></td>
+<td></td>
+<td>West Drayton</td>
+<td>Middlesex</td>
+<td>UB7 7BY</td>
+<td>-0.474192</td>
+<td>51.509073</td>
+</tr>
+</tbody>
+</table>
+<h2 id="importing-tabular-data-into-cloudant"style="display:inline">Importing tabular data into Cloudant</h2><a class="stealth" href="#importing-tabular-data-into-cloudant">🔗</a><br>
+<p>It&rsquo;s easy to import data in CSV (comma-separated values) or TSV (tab-separated values) into Cloudant. <a href="https://www.npmjs.com/package/couchimport">couchimport</a> allows data to be bulk imported into a Cloudant database from a variety of formats. If our data is in a text file called <code>branches.txt</code> with TAB characters separating the columns and the first row containing column headings, then <code>couchimport</code> can be used like so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># import the tabular data from &#34;branches.txt&#34; into Cloudant database &#34;branches&#34;</span>
+</span></span><span style="display:flex;"><span>cat branches.txt | couchimport --db branches
+</span></span></code></pre></div><p>The <code>couchimport</code> utility expects the Cloudant URL, including credentials, to be stored in an environment variable. See the <a href="https://www.npmjs.com/package/couchimport">README</a> for details.</p>
+<p>One subtlety of importing data from a text file, is that there is no sense of data type. If we want the latitude and longitude to be treated as numbers instead of strings, then we need to <em>transform</em>  the data on its way into Cloudant. Create a transform function like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">longitude</span> <span style="color:#f92672">=</span> parseFloat(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">longitude</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">latitude</span> <span style="color:#f92672">=</span> parseFloat(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">latitude</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">doc</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>and tell <code>couchimport</code> the path of the transform function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># import data while transforming longitude &amp; latitude into numbers</span>
+</span></span><span style="display:flex;"><span>cat branches.txt | couchimport --db branches --transform <span style="color:#e6db74">&#39;./transform.js&#39;</span>
+</span></span></code></pre></div><h2 id="creating-a-find-my-nearest-index"style="display:inline">Creating a &lsquo;find my nearest&rsquo; index</h2><a class="stealth" href="#creating-a-find-my-nearest-index">🔗</a><br>
+<p><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search#geographical-searches">Cloudant Search</a> has a mode which allows search results to be ordered by distance from a supplied point. First we need to create the index by uploading a JavaScript function that decides which attributes to index:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// index town, latitude &amp; longitude
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#39;town&#39;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">town</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#39;latitude&#39;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">latitude</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#39;longitude&#39;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">longitude</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>When we come to query the index we need to do two things:</p>
+<ol>
+<li>Supply a reasonable lat/long range around the centre point of our user&rsquo;s location. If we don&rsquo;t bound the query by a geographical area, Cloudant would have to use all the data in the database to get the result. The size of the region will depend on the density of your data - if you have branches on every street corner, a small area will suffice but a bigger geography will be needed for sparser data sets.</li>
+<li>Instruct Cloudant to sort the data by proximity to our centre point. Cloudant Search has a specific <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search#geographical-searches">sort parameter</a> which orders by distance from a point</li>
+</ol>
+<p>If the centre point of our search is lat=51.508056 &amp; long=-0.128056 (Trafalgar Square, London), then we could pick a region +-0.5° of latitude &amp; longitude, so our query in Lucene query language becomes:</p>
+<pre tabindex="0"><code>// find documents +-0.5° around our centre point
+latitude:[51.0080 TO 52.0080] AND longitude:[-0.628056 TO 0.371944]
+</code></pre><p>and our <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search#geographical-searches">sort parameter</a> is:</p>
+<pre tabindex="0"><code>// sort by distance from the supplied point with distance units of kilometres
+&#34;&lt;distance,longitude,latitude,-0.128056,51.508056,km&gt;&#34;
+</code></pre><p>The full URL, with special characters escaped correctly, becomes:</p>
+<pre tabindex="0"><code>https://mycloudant.service.com/branches/_design/find/_search/nearest?q=latitude%3A[51.0080%20TO%2052.0080]%20AND%20longitude%3A[-0.628056%20TO%200.371944]&amp;sort=%22%3Cdistance,longitude,latitude,-0.128056,51.508056,km%3E%22&amp;include_docs=true&amp;limit=10
+</code></pre><p>which with additional parameters <code>include_docs=true&amp;limit=10</code> returns the ten nearest branches to our chosen location.</p>
+<h2 id="putting-it-all-together"style="display:inline">Putting it all together</h2><a class="stealth" href="#putting-it-all-together">🔗</a><br>
+<p>It&rsquo;s relatively simple to get a user&rsquo;s location (with their permission) in a web application. <a href="https://developers.google.com/web/fundamentals/native-hardware/user-location">This tutorial</a> explains it in easy steps. For dedicated apps for <a href="https://developer.apple.com/documentation/corelocation/getting_the_user_s_location">Apple</a> and <a href="https://developer.android.com/training/location">Android</a> devices, the platform SDKs have their own location APIs.</p>
+<p>Here&rsquo;s a <a href="https://github.com/glynnbird/storefinder/blob/master/index.html">single-page web app</a> that:</p>
+<ul>
+<li>Asks permission of the user to get their location.</li>
+<li>Gets the browser&rsquo;s location.</li>
+<li>Creates a query from the browser to a Cloudant service, asking for stores around the browser&rsquo;s location.</li>
+<li>Presents the results as a list of stores.</li>
+</ul>
+<p>If you&rsquo;re in the UK, you can <a href="https://glynnbird.github.io/storefinder/">try it here</a>.</p>
+<p><img src="https://blog.cloudant.com/img/storefinderscreenshot.png" alt="screenshot"></p>
+<h2 id="extra-ideas"style="display:inline">Extra ideas</h2><a class="stealth" href="#extra-ideas">🔗</a><br>
+<p>To further improve the store finder it could also:</p>
+<ul>
+<li>Fall back to asking for the user&rsquo;s &ldquo;city&rdquo; and perform a fielded search for documents matching the supplied city, if the user declines to give us their latitude &amp; longitude.</li>
+<li>Present the results on a map.</li>
+<li>Allow multi-page result sets to be accessed with an &ldquo;infinite scroll&rdquo; mechanism (see the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search">bookmark</a> parameter).</li>
+<li>Provide links for directions, <a href="https://medium.com/@colinlord/opening-native-map-apps-from-the-mobile-browser-afd66fbbb8a4">detecting which mapping app</a> the user is likely to use.</li>
+<li>Add extra meta data: phone numbers, URLs, opening times, store features etc.</li>
+<li>Allow filtering of results by features e.g only show stores that are currently open</li>
+</ul>
+
+</div>
+</div>
+</div>
+</main>
+
+
+
+</body>
+</html>
+
