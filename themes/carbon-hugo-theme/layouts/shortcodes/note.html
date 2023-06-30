@@ -1,0 +1,6 @@
+{{ $title := .Get "title" }}
+{{ $subtitle := .Get "subtitle" }}
+
+<bx-inline-notification kind="info" style="min-width: 30rem; margin-bottom: .5rem" {{ with .Get "title"
+    }}title="{{ $title }}:" {{ else }}title="Note:" {{ end }} subtitle="{{ $subtitle }}">
+</bx-inline-notification>

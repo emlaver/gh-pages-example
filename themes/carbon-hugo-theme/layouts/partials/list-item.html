@@ -1,10 +1,14 @@
-<div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6  bx--col-xlg-4 bx--col-max-3" aria-labelledby="{{ .Title }}">
+<div class="card bx--col-sm-12 bx--col-md-12 bx--col-lg-6 bx--col-xlg-4 bx--col-max-3" aria-labelledby="{{ .Title }}">
   {{ $link := .Permalink }}
-  <h3 class="boxtitle"><a href="{{ $link }}" class="u-url">{{ .Title }}</a></h3>
+  <h3 class="menutitle">
+    <a href="{{ $link }}">
+      {{ .Title }}
+    </a>
+  </h3>
 
   {{ $image := resources.Get ( printf "%s" .Params.image ) }}
   {{ with $image }}
-  <a href="{{ $link }}" class="u-url">
+  <a href="{{ $link }}">
     <img src="{{ ( $image.Resize " 400x" ).RelPermalink }}" />
   </a>
   {{ end }}
@@ -13,13 +17,16 @@
   <p class="boxdescr"><a href="{{ $link }}" class="u-url">{{ .Description }}</a></p>
   {{ end }}
 
-  {{ if .Date }}
-  <p>{{ .Date | time.Format ":date_medium" }} | {{ .Params.author }}</p>
-  {{ end }}
-
   <p>{{ partial "tags.html" . }}</p>
 
-  <p>
-    <bx-btn href="{{ $link }}"> Read</bx-btn>
-  </p>
+  <div class="container">
+    {{ if .Date }}
+    <span class="left">
+      {{ .Date | time.Format ":date_medium" }}
+    </span>
+    {{ end }}
+    <span class="right">
+      <bx-btn href="{{ $link }}" style="text-align:center" size="sm">Read</bx-btn>
+    </span>
+  </div>
 </div>
