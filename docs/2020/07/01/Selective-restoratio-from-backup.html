@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Selective restoration from backup</a></h1>
+  <h1 class="p-name">Selective restoration from backup</h1>
   
   <div class="postmeta">Jul 1, 2020 | Debatosh Tripathy | 
 
-<bx-tag>Backup</bx-tag>
+  
+  <bx-tag>Backup</bx-tag>
+  
+  <bx-tag>Restore</bx-tag>
+  
 
-<bx-tag>Restore</bx-tag>
 
-</div>
+  </div>
   
   <p>As part of the disaster recovery process, the Cloudant NoSQL database offers the database backup and restore through the command-line utilities such as couchbackup &amp; couchrestore respectively.</p>
 <ul>
@@ -138,7 +142,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Note: The script could be reprogramed to insert the selective record/records back to the target database, instead of writing it to a file.</p>
 </blockquote>
-<h2 id="sample-nodejs-script"><a href="#sample-nodejs-script">Sample NodeJS Script</a></h2>
+<h2 id="sample-nodejs-script"style="display:inline">Sample NodeJS Script</h2><a class="stealth" href="#sample-nodejs-script">🔗</a><br>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">exec</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;child_process&#39;</span>).<span style="color:#a6e22e">exec</span>;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">fs</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;fs&#39;</span>);
@@ -176,22 +180,22 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></code></pre></div><blockquote>
 <p>Note: The above Node.js script uses shell script grep command instead of any available node module for searching text patterns because it is way faster compared to all and significantly reduces the search time for very very large database backup files.</p>
 </blockquote>
-<h2 id="how-does-the-script-work"><a href="#how-does-the-script-work">How does the script work?</a></h2>
+<h2 id="how-does-the-script-work"style="display:inline">How does the script work?</h2><a class="stealth" href="#how-does-the-script-work">🔗</a><br>
 <p>To demonstrate this example we&rsquo;ll need a database with some sample data in your account.</p>
-<h3 id="step-1"><a href="#step-1">Step 1</a></h3>
+<h3 id="step-1"style="display:inline">Step 1</h3><a class="stealth" href="#step-1">🔗</a><br>
 <p>Create a new database <code>mydb</code> and populate it with data.</p>
-<h3 id="step-2"><a href="#step-2">Step 2</a></h3>
+<h3 id="step-2"style="display:inline">Step 2</h3><a class="stealth" href="#step-2">🔗</a><br>
 <p>Login to shell(should have nodejs installed) and take a backup of the above-mentioned database using &ldquo;couchbackup&rdquo; command.</p>
 <p>e.g.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>couchbackup --url https://username:password@account-name.cloudant.com --db mydb &gt; /tmp/mydb.txt
-</span></span></code></pre></div><h3 id="step-3"><a href="#step-3">Step 3</a></h3>
+</span></span></code></pre></div><h3 id="step-3"style="display:inline">Step 3</h3><a class="stealth" href="#step-3">🔗</a><br>
 <p>Now to demonstrate the situation of accidental deletion of data, we can delete two documents movies-demo database randomly and the script could restore the missing documents. For example delete the documents having <code>_id</code> <em>&ldquo;70f6284d2a395396dbb3a60b4ce22805&rdquo;</em> and <em>&ldquo;70f6284d2a395396dbb3a60b4ce6aa97&rdquo;</em>.</p>
-<h3 id="step-4"><a href="#step-4">Step 4</a></h3>
+<h3 id="step-4"style="display:inline">Step 4</h3><a class="stealth" href="#step-4">🔗</a><br>
 <p>In the above Node.js script, change the <code>fileName</code> variable to <em>&ldquo;mydb.txt&rdquo;</em>, which is in this case is the name of the backup file and save it with name &ldquo;find-document.js&rdquo;</p>
-<h3 id="step-5"><a href="#step-5">Step 5</a></h3>
+<h3 id="step-5"style="display:inline">Step 5</h3><a class="stealth" href="#step-5">🔗</a><br>
 <p>Now let&rsquo;s try to get back the deleted documents using the below command. This would produce two files with the content of the deleted documents in JSON format.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>node find-document.js 70f6284d2a395396dbb3a60b4ce22805 70f6284d2a395396dbb3a60b4ce6aa97
-</span></span></code></pre></div><h3 id="step-6"><a href="#step-6">Step 6</a></h3>
+</span></span></code></pre></div><h3 id="step-6"style="display:inline">Step 6</h3><a class="stealth" href="#step-6">🔗</a><br>
 <p>Now we could copy the content of these two files and create the documents manually or using curl command in the mydb database. This script makes a difference and saves a lot of time when it comes to searching for records in backup files containing millions of records.</p>
 
 </div>

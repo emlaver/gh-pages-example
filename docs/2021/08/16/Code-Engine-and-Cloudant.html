@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Code Engine &amp; Cloudant</a></h1>
+  <h1 class="p-name">Code Engine &amp; Cloudant</h1>
   
   <div class="postmeta">Aug 16, 2021 | Daniel Mermelstein &amp; Glynn Bird | 
 
-<bx-tag>CodeEngine</bx-tag>
+  
+  <bx-tag>CodeEngine</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
 
-<bx-tag>Serverless</bx-tag>
 
-</div>
+  </div>
   
   <p>One of the great advantages of cloud infrastructure is that it offers the option of trying things out at zero or near-zero cost.</p>
 <p>You can spin up services, create applications and try them out. If they don’t work or don’t get traction, you simply deprovision the infrastructure and try something else. The barrier to innovation is thus significantly lowered.</p>
@@ -136,14 +140,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p>Both of these services have generous free tiers, which means you can use them at no cost to build prototypes or a proof-of-concept.</p>
 <p>So, let&rsquo;s jump right in. It should take you no more than an hour to read this post and complete the tutorial.</p>
-<h2 id="the-project-fruit-counter"><a href="#the-project-fruit-counter">The Project: Fruit Counter</a></h2>
+<h2 id="the-project-fruit-counter"style="display:inline">The Project: Fruit Counter</h2><a class="stealth" href="#the-project-fruit-counter">🔗</a><br>
 <p>Fruit counter is a web app that lets its visitors pick their favourite fruit from a list of options. Once they submit their choice, they can see the current running total of fruit favourites.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/amy-shamblen-h5yMpgOI5nI-unsplash.jpg" alt="fruit"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/h5yMpgOI5nI">Amy Shamblen on Unsplash</a></p>
 </blockquote>
 <p>The fruit preference data will be stored in Cloudant and the app will be deployed to the Internet using Code Engine.</p>
-<h2 id="prerequisites"><a href="#prerequisites">Prerequisites</a></h2>
+<h2 id="prerequisites"style="display:inline">Prerequisites</h2><a class="stealth" href="#prerequisites">🔗</a><br>
 <p>You will need the following:</p>
 <ul>
 <li>An IBM Cloud pay-as-you-go account.</li>
@@ -164,16 +168,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 </li>
 </ul>
-<h2 id="step-1-provision-a-cloudant-service-cloudantfruitcounter"><a href="#step-1-provision-a-cloudant-service-cloudantfruitcounter">Step 1: Provision a Cloudant service (CloudantFruitCounter)</a></h2>
+<h2 id="step-1-provision-a-cloudant-service-cloudantfruitcounter"style="display:inline">Step 1: Provision a Cloudant service (CloudantFruitCounter)</h2><a class="stealth" href="#step-1-provision-a-cloudant-service-cloudantfruitcounter">🔗</a><br>
 <p>You will need to create a Cloudant service instance and some credentials to access it from your application. To do that, <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-getting-started-with-cloudant">follow the steps described in this document</a>.</p>
 <p>In the Instance Name box, call your instance CloudantFruitCounter.</p>
 <p>Make a note of the apikey and url values of your service credentials. We will need those later.</p>
-<h2 id="step-2-create-the-cloudant-database-fruitcounter"><a href="#step-2-create-the-cloudant-database-fruitcounter">Step 2: Create the Cloudant database (fruitcounter)</a></h2>
+<h2 id="step-2-create-the-cloudant-database-fruitcounter"style="display:inline">Step 2: Create the Cloudant database (fruitcounter)</h2><a class="stealth" href="#step-2-create-the-cloudant-database-fruitcounter">🔗</a><br>
 <p>Now you need to create a Cloudant database to store your fruit data. ]<a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-navigate-the-dashboard">Follow steps 1 and 2 in this document</a>.</p>
 <p>Call your database <code>fruitcounter</code>.</p>
 <p>You are now ready to store your fruit data.</p>
-<h2 id="step-3-optional--deploy-and-test-locally"><a href="#step-3-optional--deploy-and-test-locally">Step 3 (Optional):  Deploy and test locally</a></h2>
-<h3 id="the-short-version"><a href="#the-short-version">The short version</a></h3>
+<h2 id="step-3-optional--deploy-and-test-locally"style="display:inline">Step 3 (Optional):  Deploy and test locally</h2><a class="stealth" href="#step-3-optional--deploy-and-test-locally">🔗</a><br>
+<h3 id="the-short-version"style="display:inline">The short version</h3><a class="stealth" href="#the-short-version">🔗</a><br>
 <p>Open a terminal window. Create some environment variables to access the Cloudant database using the values you obtained when creating the service credentials:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export CLOUDANT_URL<span style="color:#f92672">=</span>&lt;your_url&gt;
 </span></span><span style="display:flex;"><span>export CLOUDANT_APIKEY<span style="color:#f92672">=</span>&lt;your_key&gt;
@@ -186,7 +190,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>npm run start
 </span></span></code></pre></div><p>Now, open a browser and visit http://localhost:8080.</p>
 <p>You should be able to pick your favourite fruit, submit your choice and see the running total of picks.</p>
-<h3 id="a-bit-more-info"><a href="#a-bit-more-info">A bit more info</a></h3>
+<h3 id="a-bit-more-info"style="display:inline">A bit more info</h3><a class="stealth" href="#a-bit-more-info">🔗</a><br>
 <p>The application is a very simple Node.js application. It uses two main packages:</p>
 <ol>
 <li><a href="https://github.com/IBM/cloudant-node-sdk">@ibm-cloud/cloudant</a> to connect to IBM Cloudant and read/write data.</li>
@@ -200,7 +204,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>If you navigate to the Cloudant console and find your database you will see some documents like this one:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/codeengine1.jpg" alt="codeengine1"></p>
 <p>As you can see, your choice of fruit was added with a timestamp. Cloudant created a unique ID for this document.</p>
-<h2 id="step-4-deploying-to-ibm-code-engine"><a href="#step-4-deploying-to-ibm-code-engine">Step 4: Deploying to IBM Code Engine</a></h2>
+<h2 id="step-4-deploying-to-ibm-code-engine"style="display:inline">Step 4: Deploying to IBM Code Engine</h2><a class="stealth" href="#step-4-deploying-to-ibm-code-engine">🔗</a><br>
 <p>So far, so good; but as this is running locally, only you can pick your favourite fruit. Now we want the whole internet to choose their fruit as well — this is where Code Engine comes in.</p>
 <p>In a former life, if you wanted to deploy this app to the Internet, you would have had to do the following:</p>
 <ul>
@@ -250,18 +254,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Click on Open Application URL.</p>
 <p>You should see the fruit picker application on the web. Go ahead, pick your favourite fruit and submit. You should see the running total of fruit choices.</p>
 <p>If you refresh the page and submit another choice, you will see the relevant counter incrementing.</p>
-<h2 id="slow-start"><a href="#slow-start">Slow start</a></h2>
+<h2 id="slow-start"style="display:inline">Slow start</h2><a class="stealth" href="#slow-start">🔗</a><br>
 <p>You may notice that the first time you visit the application URL (or after you haven&rsquo;t used it for a while) it takes a while to display. This is because Code Engine is creating and starting the first instance of your application there and then. After a period of inactivity, this instance is deprovisioned and the next visitor has to start again. This is very cost-effective (you only pay while the instances are up and running), but may not be practical for applications that need to respond in milliseconds even on the first request, like a business intelligence dashboard.</p>
 <p>You can modify the minimum (and maximum) number of instances in the Runtime section of the Cloud Engine dashboard:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/codeengine4.jpg" alt="codeengine1"></p>
 <p>If you set it to a minimum of one, there will always be at least one instance of your application ready to receive visitors, but you will eventually run out of free tier vCPU seconds and will start to pay for your deployment.</p>
-<h2 id="the-dockerfile"><a href="#the-dockerfile">The Dockerfile</a></h2>
+<h2 id="the-dockerfile"style="display:inline">The Dockerfile</h2><a class="stealth" href="#the-dockerfile">🔗</a><br>
 <p>There is one file in the project that we&rsquo;ve glossed over: the Dockerfile. For those familiar with the way containers work, this file needs no explanation. For those who are not, the Dockerfile is the &ldquo;recipe&rdquo; that is used to create the container that will host and run your application. The Dockerfile in this project is very simple — it says that the container should be created using a starting configuration (base image) that supports Node.js version 14; that it should run the application from a certain directory (/usr/src/app); that it needs to copy all the application files into that directory and install all the dependencies (npm install); that it should listen for traffic on port 8080; and, finally, that it should start the application by running the following command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>npm run start
 </span></span></code></pre></div><p>Code Engine uses this set of instructions to build the container that runs your application.</p>
-<h2 id="service-bindings"><a href="#service-bindings">Service bindings</a></h2>
+<h2 id="service-bindings"style="display:inline">Service bindings</h2><a class="stealth" href="#service-bindings">🔗</a><br>
 <p>The way we connected the Code Engine and Cloudant services together is good for allowing a simple way to run the application locally and generally demonstrating how things work. For more real-life secure implementations, however, it is probably better to use &ldquo;service bindings&rdquo; when combining IBM services together. That is beyond the scope of this tutorial, but you can <a href="https://cloud.ibm.com/docs/codeengine?topic=codeengine-service-binding">read more about service bindings here</a>.</p>
-<h2 id="summary"><a href="#summary">Summary</a></h2>
+<h2 id="summary"style="display:inline">Summary</h2><a class="stealth" href="#summary">🔗</a><br>
 <p>In this tutorial, we have combined two IBM Cloud services to create an application that can capture, store and retrieve data from the IBM Cloudant database service. This application can then be deployed to the internet using IBM Code Engine in a way that is scalable and secure.</p>
 <p>Both Cloudant and Code Engine have generous free tiers, so we encourage you to use these to prototype and try out your ideas. You have, quite literally, nothing to lose!</p>
 

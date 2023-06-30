@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">couchbackup</a></h1>
+  <h1 class="p-name">couchbackup</h1>
   
   <div class="postmeta">Mar 22, 2016 | Glynn Bird | 
 
-<bx-tag>Backup</bx-tag>
+  
+  <bx-tag>Backup</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>How do you back up an Apache CouchDB™ or Cloudant database? One solution is to use CouchDB&rsquo;s built-in replication API. Let&rsquo;s say we have a Cloudant database called  <strong>mydata</strong> that we need to back up.</p>
 <p>In CouchDB 1.x, backing up an entire database was as simple as locating the database&rsquo;s <code>.couch</code> file and copying it somewhere else. With its 2.x release, CouchDB and the Cloudant database shard the data, splitting a single database into pieces and distributing the data across multiple servers. So backing up a database is no longer as simple as copying a single file.</p>
@@ -129,7 +133,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>replicate via the command-line</li>
 <li>replicate via the Cloudant dashboard</li>
 </ul>
-<h2 id="back-up-to-a-text-file"><a href="#back-up-to-a-text-file">Back up to a text file</a></h2>
+<h2 id="back-up-to-a-text-file"style="display:inline">Back up to a text file</h2><a class="stealth" href="#back-up-to-a-text-file">🔗</a><br>
 <p>Cloudant has a RESTful HTTP API, so it is easy to create your own tools to interact with the service. I created a command-line tool called <a href="https://www.npmjs.com/package/@cloudant/couchbackup">couchbackup</a>, which you can use to spool an entire database (either CouchDB or Cloudant) to a text file.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/couchbackup.gif" alt="couchbackup"></p>
 <p>To install the tool:</p>
@@ -163,7 +167,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>To increase the speed of the restore operation you can perform multiple write operations in parallel:</li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; cat mydb.txt | couchrestore --db mydb --parallelism <span style="color:#ae81ff">5</span>
-</span></span></code></pre></div><h2 id="replication-via-the-command-line"><a href="#replication-via-the-command-line">Replication via the command-line</a></h2>
+</span></span></code></pre></div><h2 id="replication-via-the-command-line"style="display:inline">Replication via the command-line</h2><a class="stealth" href="#replication-via-the-command-line">🔗</a><br>
 <p>Another option is to <strong>replicate</strong> the database to another Cloudant account or to another CouchDB service by issuing an API call to set off a replication task that copies data from the source database to the target database.</p>
 <p>Start replication by adding a document into the <code>_replicator</code> database; a  document that lists the source and target database, including authentication credentials. You can achieve all of this from the command-line using a single <code>curl</code> command:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; export SOURCE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://myusername:mypassword@myhost.cloudant.com&#34;</span>
@@ -179,7 +183,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>&gt; export JSON<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{\&#34;source\&#34;:\&#34;</span>$SOURCE<span style="color:#e6db74">/mydata\&#34;,\&#34;target\&#34;:\&#34;</span>$TARGET<span style="color:#e6db74">/mydata\&#34;}&#34;</span>
 </span></span><span style="display:flex;"><span>&gt; curl -X PUT -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -d <span style="color:#e6db74">&#34;</span>$JSON<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$TARGET<span style="color:#e6db74">/_replicator&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;0b05156eefc1feca97e48cd6bd001976&#34;</span>,<span style="color:#e6db74">&#34;_rev&#34;</span>:<span style="color:#e6db74">&#34;1-ac15e7843682715ccb712fac41169cf5&#34;</span><span style="color:#f92672">}</span> 
-</span></span></code></pre></div><h2 id="replication-via-the-cloudant-dashboard"><a href="#replication-via-the-cloudant-dashboard">Replication via the Cloudant dashboard</a></h2>
+</span></span></code></pre></div><h2 id="replication-via-the-cloudant-dashboard"style="display:inline">Replication via the Cloudant dashboard</h2><a class="stealth" href="#replication-via-the-cloudant-dashboard">🔗</a><br>
 <p>You can also start and monitor a replication using the web-based user interface of the Cloudant dashboard.</p>
 <ol>
 <li>On the left, choose the <strong>Replication</strong> tab,</li>
@@ -187,7 +191,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Complete the form and click <strong>Replicate</strong>.</li>
 </ol>
 <p>In the above example, we are replicating a database that lives in the current user&rsquo;s Cloudant account (the &ldquo;My Databases&rdquo; tab in the Source Database section) to another Cloudant account (the &ldquo;Remote Database&rdquo; tab in the Target Database section). But we could also be in the target account. Use the same form to perform replications between all combinations of local and remote sources and targets.</p>
-<h2 id="the-difference-between-replication-and-couchbackup"><a href="#the-difference-between-replication-and-couchbackup">The difference between replication and couchbackup</a></h2>
+<h2 id="the-difference-between-replication-and-couchbackup"style="display:inline">The difference between replication and couchbackup</h2><a class="stealth" href="#the-difference-between-replication-and-couchbackup">🔗</a><br>
 <p>CouchDB/Cloudant replication is a sophisticated sync protocol that ensures all data from the source database is transferred to the target. If the target database already contains some documents, then clashing revisions are stored as <a href="https://cloudant.com/blog/introduction-to-document-conflicts-part-one/">document conflicts</a>. In addition, deleted documents from the source database are also transferred to the target database.</p>
 <p><code>couchbackup</code> simply iterates through the <code>/db/_all_docs</code> endpoint fetching the &ldquo;winning revisions&rdquo; of documents from the source database. Unlike replication, it ignores deleted documents and conflicts from the source database. During the restoration of backed up data, it also assumes that the target database is empty; no conflicting revisions are created. The result of a <code>couchrestore</code> operation is a collection of &ldquo;first revisions&rdquo; that matches the winning revisions of the source database.</p>
 <blockquote>

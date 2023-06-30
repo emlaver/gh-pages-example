@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Using the Changes Feed</a></h1>
+  <h1 class="p-name">Using the Changes Feed</h1>
   
   <div class="postmeta">Jan 21, 2022 | Glynn Bird | 
 
-<bx-tag>Changes</bx-tag>
+  
+  <bx-tag>Changes</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>A Cloudant database&rsquo;s changes feed&rsquo;s primary use-case is to power the replication of data from a source to a target database. The Cloudant replicator is built to handle the changes feed and performs the necessary checks to ensure data is copied accurately to its destination.</p>
 <p>There is a raw <a href="https://cloud.ibm.com/apidocs/cloudant#getchanges-changes">changes feed API</a> that can be used to consume a single database&rsquo;s changes but it must be used with care.</p>
@@ -128,83 +132,83 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/5IHz5WhosQE">Chris Lawton on Unsplash</a></p>
 </blockquote>
-<h2 id="how-do-i-consume-the-changes-feed"><a href="#how-do-i-consume-the-changes-feed">How do I consume the changes feed?</a></h2>
+<h2 id="how-do-i-consume-the-changes-feed"style="display:inline">How do I consume the changes feed?</h2><a class="stealth" href="#how-do-i-consume-the-changes-feed">🔗</a><br>
 <p>Given a single database <code>orders</code>, I can ask the database for a list of changes, in this case limiting the result set to five changes with <code>?limit=5</code>:</p>
-<pre tabindex="0"><code>GET /orders/_changes?limit=5
-{
-  &#34;results&#34;: [
-    {
-      &#34;seq&#34;: &#34;1-g1AAAAB5eJzLYWBg&#34;,
-      &#34;id&#34;: &#34;00002Sc12XI8HD0YIBJ92n9ozC0Z7TaO&#34;,
-      &#34;changes&#34;: [
-        {
-          &#34;rev&#34;: &#34;1-3ef45fdbb0a5245634dc31be69db35f7&#34;
-        }
-      ]
-    },
-    ....
-  ],
-  &#34;last_seq&#34;: &#34;5-g1AAAAB5eJzLYWBg&#34;
-}
-</code></pre><p>The API call returns:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">GET</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">orders</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_changes</span><span style="color:#f92672">?</span><span style="color:#a6e22e">limit</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;results&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;seq&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-g1AAAAB5eJzLYWBg&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;00002Sc12XI8HD0YIBJ92n9ozC0Z7TaO&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;changes&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-3ef45fdbb0a5245634dc31be69db35f7&#34;</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    ....
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;last_seq&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;5-g1AAAAB5eJzLYWBg&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The API call returns:</p>
 <ul>
 <li><code>results</code>: an array of changes.</li>
 <li><code>last_seq</code>: a token which can be supplied to the changes endpoint in a subsequent API call to get the next batch of changes.</li>
 </ul>
 <p>Fetching the next batch:</p>
-<pre tabindex="0"><code>GET /orders/_changes?limit=5&amp;since=5-g1AAAAB5eJzLYWBg
-{
-  &#34;results&#34;: [ ...],
-  &#34;last_seq&#34;: &#34;10-g1AAAACbeJzLY&#34;
-}
-</code></pre><p>The <code>since</code> parameter is used to define where in the changes feed you wish to start from:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">GET</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">orders</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_changes</span><span style="color:#f92672">?</span><span style="color:#a6e22e">limit</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">since</span><span style="color:#f92672">=</span><span style="color:#ae81ff">5</span><span style="color:#f92672">-</span><span style="color:#a6e22e">g1AAAAB5eJzLYWBg</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;results&#34;</span><span style="color:#f92672">:</span> [ ...],
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;last_seq&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;10-g1AAAACbeJzLY&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>since</code> parameter is used to define where in the changes feed you wish to start from:</p>
 <ul>
 <li><code>since=0</code> - the beginning of the changes feed.</li>
 <li><code>since=now</code> - the end of the changes feed.</li>
 <li><code>since=&lt;a last seq token&gt;</code> - from a known place in the changes feed.</li>
 </ul>
 <p>On face value it would seem like following the changes feed would be as simple as chaining <code>_changes</code> API calls together, passing the <code>last_seq</code> from one changes feed response into the next request&rsquo;s <code>since</code> parameter. But there are some subtleties to the changes feed that need further discussion.</p>
-<h2 id="the-changes-feed-delivers-each-change-at-least-once"><a href="#the-changes-feed-delivers-each-change-at-least-once">The changes feed delivers each change at least once</a></h2>
+<h2 id="the-changes-feed-delivers-each-change-at-least-once"style="display:inline">The changes feed delivers each change at least once</h2><a class="stealth" href="#the-changes-feed-delivers-each-change-at-least-once">🔗</a><br>
 <p>The Cloudant Standard changes feed promises to return each document <em>at least once</em>. This isn&rsquo;t the same as promising to return each document <em>only once</em>. Put another way, it is possible for a consumer of the changes feed to see the same change again, or indeed a set of changes repeated.</p>
 <p>It is important that a consumer of the changes feed treats the changes <em>idempotently</em>. In practice this means remembering whether a change has already been dealt with before triggering an action from a change. A naive changes feed consumer might send a message to a smartphone on every change received, but a user may receive duplicate text messages if a change is not treated idempotently in the event of replayed changes.</p>
 <p>Usually these &ldquo;rewinds&rdquo; of the changes feed are short, replaying only a handful of changes but in some cases a request may see a response with thousands of changes being replayed - potentially all of the changes from the beginning of time. The potential for rewinds makes using the changes feed unsuitable for an application expecting queue-like behaviour.</p>
 <p>To reiterate, Cloudant&rsquo;s changes feed promises to deliver a document <em>at least once</em> in a changes feed, and gives no guarantees about repeated values across multiple requests.</p>
-<h2 id="the-changes-feed-isnt-real-time"><a href="#the-changes-feed-isnt-real-time">The changes feed isn&rsquo;t &ldquo;real time&rdquo;</a></h2>
+<h2 id="the-changes-feed-isnt-real-time"style="display:inline">The changes feed isn&rsquo;t &ldquo;real time&rdquo;</h2><a class="stealth" href="#the-changes-feed-isnt-real-time">🔗</a><br>
 <p>The changes feed doesn&rsquo;t guarantee how quickly an incoming change will appear to a client consuming the changes feed. Applications shouldn&rsquo;t be developed  with the assumption that data inserts, updates and deletes will be immediately be propogated to a changes reader.</p>
-<h2 id="not-all-individual-document-changes-may-appear-in-the-changes-feed"><a href="#not-all-individual-document-changes-may-appear-in-the-changes-feed">Not all individual document changes may appear in the changes feed</a></h2>
+<h2 id="not-all-individual-document-changes-may-appear-in-the-changes-feed"style="display:inline">Not all individual document changes may appear in the changes feed</h2><a class="stealth" href="#not-all-individual-document-changes-may-appear-in-the-changes-feed">🔗</a><br>
 <p>If a document is updated several times in between changes feed calls, then the changes feed may only reflect the latest of these changes. If the client was hoping to receive every change to every document, they will be disappointed.</p>
 <p>The Cloudant changes feed isn&rsquo;t a <em>transaction log</em> containing every event that happened in time order.</p>
-<h2 id="a-filtered-changes-feed-is-not-for-operational-queries"><a href="#a-filtered-changes-feed-is-not-for-operational-queries">A filtered changes feed is not for operational queries</a></h2>
+<h2 id="a-filtered-changes-feed-is-not-for-operational-queries"style="display:inline">A filtered changes feed is not for operational queries</h2><a class="stealth" href="#a-filtered-changes-feed-is-not-for-operational-queries">🔗</a><br>
 <p>Filtering the changes feed, and by extension, performing filtered replication has its uses:</p>
 <ul>
 <li>Copying data from source to target but ignoring deleted documents.</li>
 <li>Copying data but without index definitions (design documents).</li>
 </ul>
-<p>This <a href="https://blog.cloudant.com/2019/12/13/Filtered-Replication.html">blog post</a> describes how supplying a <code>selector</code> during replication makes easy work of these use cases.</p>
+<p>This <a href="https://emlaver.github.io/gh-pages-example/2019/12/13/Filtered-Replication.html">blog post</a> describes how supplying a <code>selector</code> during replication makes easy work of these use cases.</p>
 <p>The changes feed with an accompanying <code>selector</code> parameter is <em>not</em> the way to extract slices of data from the database on a routine basis. It should not be used as a means of performing operational queries against a database. Filtered changes are slow (the filter is applied to every changed document in turn, without the help of an index), much slower than creating a secondary index (such as a MapReduce view) and querying that view.</p>
-<h2 id="the-changes-feed-does-not-guarantee-time-ordering"><a href="#the-changes-feed-does-not-guarantee-time-ordering">The changes feed does not guarantee time-ordering</a></h2>
+<h2 id="the-changes-feed-does-not-guarantee-time-ordering"style="display:inline">The changes feed does not guarantee time-ordering</h2><a class="stealth" href="#the-changes-feed-does-not-guarantee-time-ordering">🔗</a><br>
 <p>If the use case is:</p>
 <blockquote>
 <p>&ldquo;Fetch me every document that has changed since a known date, in the order they were written.&rdquo;</p>
 </blockquote>
 <p>then this cannot be achieved with the Cloudant changes feed. The Cloudant database does not record the time as each document change was written, and the changes feed makes no guarantees on the ordering of the changes in the feed - they are not guaranteed to be in the order they were sent to the database.</p>
 <p>This use case can, however, be acheived by storing the date in the document body:</p>
-<pre tabindex="0"><code>{
-  &#34;_id&#34;: &#34;2657&#34;,
-  &#34;type&#34;: &#34;order&#34;,
-  &#34;customer&#34;: &#34;bob@aol.com&#34;,
-  &#34;order_date&#34;: &#34;2022-01-05T10:40:00&#34;,
-  &#34;status&#34;: &#34;dispatched&#34;,
-  &#34;last_edit_date&#34;: &#34;2022-01-14T19:17:20&#34;
-}
-</code></pre><p>and creating a MapReduce view with <code>last_edit_date</code> as the key:</p>
-<pre tabindex="0"><code>function(doc) {
-  emit(doc.last_edit_date, null)
-}
-</code></pre><p>This view can be queried to return any documents modified on or after a supplied date/time:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2657&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;order&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;customer&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;bob@aol.com&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;order_date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2022-01-05T10:40:00&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;dispatched&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;last_edit_date&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2022-01-14T19:17:20&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>and creating a MapReduce view with <code>last_edit_date</code> as the key:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">last_edit_date</span>, <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This view can be queried to return any documents modified on or after a supplied date/time:</p>
 <pre tabindex="0"><code>/orders/_design/query/_view/by_last_edit?startkey=&#34;2022-01-13T00:00:00&#34;&amp;limit=100
 </code></pre><p>This technique will produce a time-ordered set of results with no repeated values in a performant and repeatable fashion. The consumer of this data need <em>not</em> treat the data idempotently, making for a simpler development process.</p>
-<h2 id="in-summary"><a href="#in-summary">In summary</a></h2>
+<h2 id="in-summary"style="display:inline">In summary</h2><a class="stealth" href="#in-summary">🔗</a><br>
 <p>The Cloudant changes feed is good for:</p>
 <ul>
 <li>Powering Cloudant replication, optionally with a selector to filter some changes.</li>

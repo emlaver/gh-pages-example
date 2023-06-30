@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Introduction to Conflicts - 3/3</a></h1>
+  <h1 class="p-name">Introduction to Conflicts - 3/3</h1>
   
   <div class="postmeta">Jan 26, 2015 | Glynn Bird | 
 
-<bx-tag>Conflicts</bx-tag>
+  
+  <bx-tag>Conflicts</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>In <a href="'2015/01/12/Introduction-to-Conflicts-Part-One.html'">Parts One</a> and <a href="'2015/01/20/Introduction-to-Conflicts-Part-Two.html'">Two</a> of this series, we looked at:</p>
 <ul>
@@ -137,7 +141,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/e1daGOrmkIk">jean wimmerlin on Unsplash</a></p>
 </blockquote>
-<h2 id="im-getting-a-http-409-error-when-i-try-to-write-a-document"><a href="#im-getting-a-http-409-error-when-i-try-to-write-a-document">I&rsquo;m Getting A HTTP 409 Error When I Try To Write A Document</a></h2>
+<h2 id="im-getting-a-http-409-error-when-i-try-to-write-a-document"style="display:inline">I&rsquo;m Getting A HTTP 409 Error When I Try To Write A Document</h2><a class="stealth" href="#im-getting-a-http-409-error-when-i-try-to-write-a-document">🔗</a><br>
 <p>Imagine your application pulls a document from a Cloudant database (say revision 1), makes a change to the document and posts the new document back to Cloudant, but Cloudant replies back with a HTTP 409 status code and the message</p>
 <pre tabindex="0"><code>{&#34;error&#34;:&#34;conflict&#34;,&#34;reason&#34;:&#34;Document update conflict.&#34;}
 </code></pre><p>This means that the document (id + revision) you are trying to edit has already been updated and your change has been rejected. This isn&rsquo;t a conflict as such (the conflict is not stored in the database), it is Cloudant preventing a conflicting revision from happening in the first place by indicating to you that you are trying to modify an old version of the document.</p>
@@ -150,7 +154,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>write a third revision of the document</li>
 </ul>
 <p>If this is happening frequently, or indeed if you find you&rsquo;re modifying the same document over and over, then you may want to consider a different approach.</p>
-<h2 id="preventing-conflicts-by-design"><a href="#preventing-conflicts-by-design">Preventing Conflicts By Design</a></h2>
+<h2 id="preventing-conflicts-by-design"style="display:inline">Preventing Conflicts By Design</h2><a class="stealth" href="#preventing-conflicts-by-design">🔗</a><br>
 <p>If your application is the recording of website events in a Cloudant database, it is tempting to design a schema like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;website&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;http://mydomain.com&#34;</span>,
@@ -182,7 +186,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>a blogging platform, instead of having one document per post (a document which is updated every time the post is modified), could have a document for each version of the post. Not only does this avoid conflicts, it gives a persistent revision history for each post. (Although Cloudant maintains revision tokens for each document change, document revisions cannot be relied on to provide rollback or a full revision history)</li>
 <li>a cache framework, instead of having one document per cache key (which is updated as the key&rsquo;s value changes), could have one document for each version of the key. A timestamp in the document would allow the latest key/value pair to be extracted.</li>
 </ul>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>Cloudant is a distributed database built to store data at a massive scale, whether through volume of data or concurrent user count. To be able to scale out horizontally, Cloudant imposes no locking of documents between nodes. Each shard of the database acts independently of each other, allowing your service to be always-available and able to survive a network partition.</p>
 <p>A by-product of this is that when disconnected nodes finally communicate, a document may have been modified in a different way on separate nodes. A conflict is stored in the document, with a copy of each competing revision and the application is able resolve the conflict with no data loss.</p>
 <p>Mobile applications need this flexibility because if a mobile phone had to connect to the internet for every operation then it would not be able to function offline, in a tunnel or with flaky reception. Cloudant&rsquo;s conflict storage mechanism allows you to build intelligent mobile applications, collecting data offline and syncing with the cloud when an internet connection is available.</p>

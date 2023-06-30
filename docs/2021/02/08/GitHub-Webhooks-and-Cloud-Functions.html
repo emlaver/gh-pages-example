@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">GitHub Webhooks and Cloud Functions</a></h1>
+  <h1 class="p-name">GitHub Webhooks and Cloud Functions</h1>
   
   <div class="postmeta">Feb 8, 2021 | Glynn Bird | 
 
-<bx-tag>GitHub</bx-tag>
+  
+  <bx-tag>GitHub</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
 
-<bx-tag>Serverless</bx-tag>
 
-</div>
+  </div>
   
   <p>Some GitHub repositories are not just source code for apps, they can also store data files holding JSON, YAML, XML or any other file format e.g.</p>
 <ul>
@@ -140,7 +144,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>An IBM Cloud account</li>
 <li>A GitHub account</li>
 </ul>
-<h2 id="step-1---ibm-cloud-function"><a href="#step-1---ibm-cloud-function">Step 1 - IBM Cloud Function</a></h2>
+<h2 id="step-1---ibm-cloud-function"style="display:inline">Step 1 - IBM Cloud Function</h2><a class="stealth" href="#step-1---ibm-cloud-function">🔗</a><br>
 <p>First we are going to create an IBM Cloud function which will be called for every GitHub commit.</p>
 <ul>
 <li>Visit the <a href="https://cloud.ibm.com/functions">Functions dashboard in the IBM Cloud</a>.</li>
@@ -152,13 +156,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Make a note of the URL of your Cloud Function - we&rsquo;ll need this URL in the next step.</li>
 </ul>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/githubsync1.png" alt="pic1"></p>
-<h2 id="step-2---github-webhook"><a href="#step-2---github-webhook">Step 2 - GitHub WebHook</a></h2>
+<h2 id="step-2---github-webhook"style="display:inline">Step 2 - GitHub WebHook</h2><a class="stealth" href="#step-2---github-webhook">🔗</a><br>
 <ul>
 <li>Create a <a href="https://github.com/new">new GitHub repository</a>.</li>
 <li>In the repository&rsquo;s Settings panel, under the Webhooks sub-menu, click &ldquo;Add webhook&rdquo;.</li>
 <li>Enter the URL from the first step, choose a content type of &ldquo;application/json&rdquo; and enter a secret. Make a note of the secret, as we&rsquo;ll need it in step 4. Click &ldquo;Add Webhook&rdquo;</li>
 </ul>
-<h2 id="step-3---create-a-cloudant-service"><a href="#step-3---create-a-cloudant-service">Step 3 - Create a Cloudant service</a></h2>
+<h2 id="step-3---create-a-cloudant-service"style="display:inline">Step 3 - Create a Cloudant service</h2><a class="stealth" href="#step-3---create-a-cloudant-service">🔗</a><br>
 <ul>
 <li>In the IBM Cloud dashboard, browse the catalog to find the <a href="https://cloud.ibm.com/catalog/services/cloudant">Cloudant service</a>.</li>
 <li>Choose a region, set the authentication method to &ldquo;IAM and legacy credentials&rdquo; and choose the plan (Lite is free). Click &ldquo;Create&rdquo;.</li>
@@ -166,7 +170,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Inspect the newly created credential and make a note of the &ldquo;url&rdquo; field - we&rsquo;ll need this in Step 4.</li>
 <li>Visit the Cloudant dashboard and create a new database called &ldquo;github&rdquo;.</li>
 </ul>
-<h2 id="step-4---configuring-the-cloud-function"><a href="#step-4---configuring-the-cloud-function">Step 4 - Configuring the Cloud Function</a></h2>
+<h2 id="step-4---configuring-the-cloud-function"style="display:inline">Step 4 - Configuring the Cloud Function</h2><a class="stealth" href="#step-4---configuring-the-cloud-function">🔗</a><br>
 <ul>
 <li>Revisit the Cloud Function you created in Step 1.</li>
 <li>Under the &ldquo;parameters&rdquo; menu add two new parameters:</li>
@@ -182,15 +186,15 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </li>
 <li>Note that the two parameters each need to be enclosed in double quotes.</li>
 </ul>
-<h2 id="step-5---thats-it"><a href="#step-5---thats-it">Step 5 - That&rsquo;s it!</a></h2>
+<h2 id="step-5---thats-it"style="display:inline">Step 5 - That&rsquo;s it!</h2><a class="stealth" href="#step-5---thats-it">🔗</a><br>
 <p>Try creating, editing and deleting JSON documents in your GitHub repository - you should see them mirrored in your Cloudant service&rsquo;s &ldquo;github&rdquo; database.</p>
 <p>Note that data only travels one way: from GitHub to Cloudant.</p>
-<h2 id="what-else-can-you-do-with-this"><a href="#what-else-can-you-do-with-this">What else can you do with this?</a></h2>
+<h2 id="what-else-can-you-do-with-this"style="display:inline">What else can you do with this?</h2><a class="stealth" href="#what-else-can-you-do-with-this">🔗</a><br>
 <ol>
 <li>Other data formats. Currently this script only accepts data from <code>.json</code> or <code>.geojson</code> files, but it could be extended to convert other formats e.g. YAML, into JSON before writing the data to Cloudant.</li>
 <li>Add indexing and querying. Using Cloudant&rsquo;s extensive indexing options, the Cloudant copy of the data could be used to provide a read-only API for this data, allowing API clients to retrieve slices of data of your choosing.</li>
 </ol>
-<h2 id="limitations"><a href="#limitations">Limitations</a></h2>
+<h2 id="limitations"style="display:inline">Limitations</h2><a class="stealth" href="#limitations">🔗</a><br>
 <p>The serverless function assumes that the commit it is processing can be written to Cloudant in one bulk write, but some GitHub commits or squashed pull requests could add up to many megabytes, exceeding the size of a single Cloudant write.</p>
 <p>Cloudant documents are limited to 1MB - adding larger documents to GitHub would result in a failure to write them to Cloudant.</p>
 

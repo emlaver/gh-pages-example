@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,22 +114,25 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Tracking cryptocurrencies</a></h1>
+  <h1 class="p-name">Tracking cryptocurrencies</h1>
   
   <div class="postmeta">Nov 16, 2017 | Glynn Bird | 
 
-<bx-tag>Serverless</bx-tag>
-
-</div>
   
-  <h1 id="tracking-your-cryptocurrency-portfolio-with-serverless-functions--cloudant"><a href="#tracking-your-cryptocurrency-portfolio-with-serverless-functions--cloudant">Tracking your cryptocurrency portfolio with serverless functions &amp; Cloudant</a></h1>
+  <bx-tag>Serverless</bx-tag>
+  
+
+
+  </div>
+  
+  <h1 id="tracking-your-cryptocurrency-portfolio-with-serverless-functions--cloudant"style="display:inline">Tracking your cryptocurrency portfolio with serverless functions &amp; Cloudant</h1><a class="stealth" href="#tracking-your-cryptocurrency-portfolio-with-serverless-functions--cloudant">🔗</a><br>
 <blockquote>
 <p>Monitor the value of your bitcoin hoard with serverless Cloud Functions writing data to Cloudant</p>
 </blockquote>
 <p>The value of crypto-currencies can vary greatly over time. If you&rsquo;re lucky, some coins bought for a handful of dollars a few years ago can be worth thousands of dollars now.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/bitcoin_price.png" alt="bitcoin price"></p>
 <p>There are many websites and apps that can help you monitor your portfolio, but what&rsquo;s the fun in using a ready-made solution when you can build your own?!</p>
-<h2 id="crypto-pricing-api"><a href="#crypto-pricing-api">Crypto pricing API</a></h2>
+<h2 id="crypto-pricing-api"style="display:inline">Crypto pricing API</h2><a class="stealth" href="#crypto-pricing-api">🔗</a><br>
 <p>We can use an API from <a href="https://www.cryptocompare.com/api/">CryptoCompare</a> to get the latest price of Bitcoin and Ether, two popular coins, in US dollars. We can call the API passing the symbols <code>BTC</code>, <code>ETH</code> and <code>USD</code> as parameters. For example:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH&amp;tsyms=USD&#39;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
@@ -144,7 +148,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;USD&#34;</span>: 6165.54
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span></code></pre></div><h2 id="retrieving-the-data-every-minute"><a href="#retrieving-the-data-every-minute">Retrieving the data every minute</a></h2>
+</span></span></code></pre></div><h2 id="retrieving-the-data-every-minute"style="display:inline">Retrieving the data every minute</h2><a class="stealth" href="#retrieving-the-data-every-minute">🔗</a><br>
 <p>We can write a script to fetch this data every minute, writing a document to a Cloudant database each time.</p>
 <p>The Node.js script to do this is very simple:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudant</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant&#39;</span>);
@@ -191,7 +195,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The <code>_id</code> is the unique key for each Cloudant document. Here, it is actually a timestamp (the number of milliseconds since 1970) which will be unique and in time order for our &ldquo;once per minute&rdquo; polling of the API.</p>
 <p>All we need now is to call the &ldquo;main&rdquo; function every minute.</p>
-<h2 id="going-serverless"><a href="#going-serverless">Going serverless</a></h2>
+<h2 id="going-serverless"style="display:inline">Going serverless</h2><a class="stealth" href="#going-serverless">🔗</a><br>
 <p>We have a number of options here:</p>
 <ul>
 <li>We could write a Node.js script that is on 24/7 and use a JavaScript <code>setInterval</code> timer to call the <code>main</code> function every 60000 milliseconds.</li>
@@ -214,7 +218,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-e96f50965801b81f2cf19fc2d2ad637b&#34;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;btcinusd&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">6200.42</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="querying-the-data"><a href="#querying-the-data">Querying the data</a></h2>
+</span></span></code></pre></div><h2 id="querying-the-data"style="display:inline">Querying the data</h2><a class="stealth" href="#querying-the-data">🔗</a><br>
 <p>Once we&rsquo;ve left our data collection script running for a while, we can query the data using Cloudant&rsquo;s API. Our data is already sorted in time order because we used a timestamp as the key <code>_id</code> field.</p>
 <p>We can therefore get the first 2 hours of data:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_all_docs?limit=120&#34;</span>
@@ -222,7 +226,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_all_docs?limit=60&amp;descending=true&#34;</span>
 </span></span></code></pre></div><p>The most recent data point:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_all_docs?limit=1&amp;descending=true&#34;</span>
-</span></span></code></pre></div><h2 id="aggregating-the-data"><a href="#aggregating-the-data">Aggregating the data</a></h2>
+</span></span></code></pre></div><h2 id="aggregating-the-data"style="display:inline">Aggregating the data</h2><a class="stealth" href="#aggregating-the-data">🔗</a><br>
 <p>Cloudant&rsquo;s <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce</a> system allows custom indexes to be created by supplying a JavaScript function which is executed over each document in a database.</p>
 <p>We can use a function like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">doc</span>) {
@@ -288,7 +292,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>We can also specify a <code>startkey</code> and <code>endkey</code> to limit range of data we want to report on:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$CLOUDANT_URL<span style="color:#e6db74">/bitcoin/_design/query/_view/bydate?group_level=3&amp;startkey=[2017,10,1]&amp;endkey=[2017,11,1]&#34;</span>
 </span></span></code></pre></div><p>The above command asks for year/month/day data for the month of October 2017.</p>
-<h2 id="whats-next"><a href="#whats-next">What&rsquo;s next?</a></h2>
+<h2 id="whats-next"style="display:inline">What&rsquo;s next?</h2><a class="stealth" href="#whats-next">🔗</a><br>
 <p>We could do more than just record the data. We could calculate <a href="https://www.npmjs.com/package/technicalindicators">technical indicators</a> and use them to predict whether the market is heading upwards or downwards. We could send emails or alerts when certain market conidtions prevail. We could write an algorithm that decides when it&rsquo;s a good time to buy or sell and call a third-party API to actually make crypto-currency trades.</p>
 <p>I&rsquo;m not that brave, so I wrote a trading simulator that allows you to simulate crypto-currency trading using the last 2 hours of bitcoin data. You start with $5000 of cash and $5000 of bitcoin. Trade as many times as you like and see if you end up with more than $10000 at the end of the game.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/bitcoin-trader.png" alt="trader"></p>

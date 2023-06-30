@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,209 +114,204 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">How to recover a deleted document</a></h1>
+  <h1 class="p-name">How to recover a deleted document</h1>
   
   <div class="postmeta">Jul 17, 2020 | Brian Wilkins | 
 
-<bx-tag>Compaction</bx-tag>
-
-</div>
   
-  <h2 id="introduction"><a href="#introduction">Introduction</a></h2>
+  <bx-tag>Compaction</bx-tag>
+  
+
+
+  </div>
+  
+  <h2 id="introduction"style="display:inline">Introduction</h2><a class="stealth" href="#introduction">🔗</a><br>
 <p>This article describes how you might be able to recover data in Cloudant after it has been deleted or overwritten.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/joshua-coleman-Cj8h7-b47ko-unsplash.jpg" alt="image"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/Cj8h7-b47ko">Joshua Coleman on Unsplash</a></p>
 </blockquote>
 <p>Deleting a Cloudant document leaves behind a so-called <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-documents#tombstone-documents">tombstone</a> - a shell of the original document containing only an <code>_id</code>/<code>_rev</code> pair and a <code>_deleted: true</code> flag. Soon after deletion (or after updating a document), the previous revision&rsquo;s document body is removed in a process called &ldquo;compaction&rdquo;. This process runs automatically from time to time in the Cloudant service as an essential part of database maintenance. There is however, a short time window between updating/deleting a document and its body being compacted - if you know what you&rsquo;re doing, and you&rsquo;re quick, it&rsquo;s possible to recover the old document body before it is lost forever.</p>
-<h2 id="examples"><a href="#examples">Examples</a></h2>
+<h2 id="examples"style="display:inline">Examples</h2><a class="stealth" href="#examples">🔗</a><br>
 <p>To follow the examples in this section, replace:</p>
 <ul>
 <li><code>$USER</code> with the Cloudant account name</li>
 <li><code>$PASS</code> with the password of $USER</li>
 <li><code>$DB</code> with the name of the database.</li>
 </ul>
-<h3 id="how-to-recover-a-document-that-has-been-deleted"><a href="#how-to-recover-a-document-that-has-been-deleted">How to recover a document that has been deleted</a></h3>
+<h3 id="how-to-recover-a-document-that-has-been-deleted"style="display:inline">How to recover a document that has been deleted</h3><a class="stealth" href="#how-to-recover-a-document-that-has-been-deleted">🔗</a><br>
 <p>Here are example steps which demonstrate how you might be able to recover a document after it has been deleted.</p>
 <ol>
-<li>
-<p>Write a new document as an example:</p>
+<li>Write a new document as an example:</li>
+</ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -u $USER:$PASS -X POST https://$USER.cloudant.com/$DB <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{   
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             &#34;_id&#34;: &#34;example&#34;,
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             &#34;data&#34;: &#34;Your data here.&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         }&#39;</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      -d <span style="color:#e6db74">&#39;{   
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              &#34;_id&#34;: &#34;example&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              &#34;data&#34;: &#34;Your data here.&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          }&#39;</span>
 </span></span></code></pre></div><p>The output I got:</p>
-<pre><code> {&quot;ok&quot;:true,&quot;id&quot;:&quot;example&quot;,&quot;rev&quot;:&quot;1-4a5958602638984def83a2075a86bc7a&quot;}
-</code></pre>
-<p>indicates that the revision of the new document in this example is: <code>1-4a5958602638984def83a2075a86bc7a</code></p>
-</li>
-<li>
-<p>Delete the document:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;ok&#34;</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>,<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;example&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;1-4a5958602638984def83a2075a86bc7a&#34;</span>}
+</span></span></code></pre></div><p>indicates that the revision of the new document in this example is: <code>1-4a5958602638984def83a2075a86bc7a</code></p>
+<ol start="2">
+<li>Delete the document:</li>
+</ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -u $USER:$PASS -X DELETE https://$USER.cloudant.com/$DB/example?rev<span style="color:#f92672">=</span>1-4a5958602638984def83a2075a86bc7a
 </span></span></code></pre></div><p>The output I got:</p>
-<pre><code> {&quot;ok&quot;:true,&quot;id&quot;:&quot;example&quot;,&quot;rev&quot;:&quot;2-45a4676f3cae54b3e7346d3a09dda771&quot;}
-</code></pre>
-<p>indicates that the new revision of the (now deleted) document in this example is: <code>2-45a4676f3cae54b3e7346d3a09dda771</code></p>
-</li>
-<li>
-<p>These command outputs confirm that the document is now deleted:</p>
-<pre tabindex="0"><code>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
-{
-  &#34;error&#34;: &#34;not_found&#34;,
-  &#34;reason&#34;: &#34;deleted&#34;
-}
-
-$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?deleted=true | jq .
-{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;,
-  &#34;_deleted&#34;: true
-}
-</code></pre></li>
-<li>
-<p>This command uses the <code>revs_info=true</code> parameter to get the status of the document revisions:</p>
-<pre tabindex="0"><code>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?deleted=true\&amp;revs_info=true | jq .
-</code></pre><p>Here is the output I got:</p>
-<pre tabindex="0"><code>{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;,
-  &#34;_deleted&#34;: true,
-  &#34;_revs_info&#34;: [
-    {
-      &#34;rev&#34;: &#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;,
-      &#34;status&#34;: &#34;deleted&#34;
-    },
-    {
-      &#34;rev&#34;: &#34;1-4a5958602638984def83a2075a86bc7a&#34;,
-      &#34;status&#34;: &#34;available&#34;
-    }
-  ]
-}
-</code></pre><p>It shows that the revision which immediately precedes the deleted revision is <code>1-4a5958602638984def83a2075a86bc7a</code>.<br>
-Because compaction of this document has not yet run since the document was deleted, revision <code>1-4a5958602638984def83a2075a86bc7a</code> has status <code>&quot;available&quot;</code>. If that revision were no longer available, its status would be <code>&quot;missing&quot;</code>.</p>
-</li>
-<li>
-<p>If its status is <code>&quot;available&quot;</code> you can still get the contents of revision <code>1-4a5958602638984def83a2075a86bc7a</code>:</p>
-<pre tabindex="0"><code>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?rev=1-4a5958602638984def83a2075a86bc7a | jq .
-{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;1-4a5958602638984def83a2075a86bc7a&#34;,
-  &#34;data&#34;: &#34;Your data here.&#34;
-}
-</code></pre></li>
-<li>
-<p>Now you can write the contents of the revision back just as it was before the document was deleted. Do not include the <code>_rev</code> field.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -u $USER:$PASS -X POST https://$USER.cloudant.com/$DB <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span>  <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             &#34;_id&#34;: &#34;example&#34;,
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             &#34;data&#34;: &#34;Your data here.&#34; 
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         }&#39;</span>
-</span></span></code></pre></div><p>The output I got:</p>
-<pre tabindex="0"><code>{&#34;ok&#34;:true,&#34;id&#34;:&#34;example&#34;,&#34;rev&#34;:&#34;3-a95d2245a9f11e5fa62390c600204d18&#34;}     
-</code></pre><p>indicates that the new revision in this example is: <code>3-a95d2245a9f11e5fa62390c600204d18     </code></p>
-</li>
-<li>
-<p>This command confirms that the document is now live (not deleted):</p>
-<pre tabindex="0"><code>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
-{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;3-a95d2245a9f11e5fa62390c600204d18&#34;,
-  &#34;data&#34;: &#34;Your data here.&#34;
-}
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;ok&#34;</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>,<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;example&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;</span>}
+</span></span></code></pre></div><p>indicates that the new revision of the (now deleted) document in this example is: <code>2-45a4676f3cae54b3e7346d3a09dda771</code></p>
+<ol start="3">
+<li>These command outputs confirm that the document is now deleted:</li>
 </ol>
-<h3 id="how-to-recover-a-document-that-has-been-overwritten"><a href="#how-to-recover-a-document-that-has-been-overwritten">How to recover a document that has been overwritten</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;not_found&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;reason&#34;</span>: <span style="color:#e6db74">&#34;deleted&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?deleted<span style="color:#f92672">=</span>true | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_deleted&#34;</span>: true
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ol start="4">
+<li>This command uses the <code>revs_info=true</code> parameter to get the status of the document revisions:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?deleted<span style="color:#f92672">=</span>true<span style="color:#ae81ff">\&amp;</span>revs_info<span style="color:#f92672">=</span>true | jq .
+</span></span></code></pre></div><p>Here is the output I got:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_deleted&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_revs_info&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;deleted&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-4a5958602638984def83a2075a86bc7a&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;available&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>It shows that the revision which immediately precedes the deleted revision is <code>1-4a5958602638984def83a2075a86bc7a</code>.<br>
+Because compaction of this document has not yet run since the document was deleted, revision <code>1-4a5958602638984def83a2075a86bc7a</code> has status <code>&quot;available&quot;</code>. If that revision were no longer available, its status would be <code>&quot;missing&quot;</code>.</p>
+<ol start="5">
+<li>If its status is <code>&quot;available&quot;</code> you can still get the contents of revision <code>1-4a5958602638984def83a2075a86bc7a</code>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?rev<span style="color:#f92672">=</span>1-4a5958602638984def83a2075a86bc7a | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;1-4a5958602638984def83a2075a86bc7a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;Your data here.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ol start="6">
+<li>Now you can write the contents of the revision back just as it was before the document was deleted. Do not include the <code>_rev</code> field.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -u $USER:$PASS -X POST https://$USER.cloudant.com/$DB <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span>  <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      -d <span style="color:#e6db74">&#39;{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              &#34;_id&#34;: &#34;example&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              &#34;data&#34;: &#34;Your data here.&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          }&#39;</span>
+</span></span></code></pre></div><p>The output I got:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;ok&#34;</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>,<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;example&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;3-a95d2245a9f11e5fa62390c600204d18&#34;</span>}     
+</span></span></code></pre></div><p>indicates that the new revision in this example is: <code>3-a95d2245a9f11e5fa62390c600204d18     </code></p>
+<ol start="7">
+<li>This command confirms that the document is now live (not deleted):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-a95d2245a9f11e5fa62390c600204d18&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;Your data here.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="how-to-recover-a-document-that-has-been-overwritten"style="display:inline">How to recover a document that has been overwritten</h3><a class="stealth" href="#how-to-recover-a-document-that-has-been-overwritten">🔗</a><br>
 <p>Here are example steps which demonstrate how you might be able to recover the original data after a document has been updated.</p>
 <ol>
-<li>
-<p>Update the example document, replacing the original data with new data.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -u $USER:$PASS -X POST https://$USER.cloudant.com/$DB <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        -d <span style="color:#e6db74">&#39;{   
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                &#34;_id&#34;: &#34;example&#34;,
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                &#34;_rev&#34;: &#34;3-a95d2245a9f11e5fa62390c600204d18&#34;,
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                &#34;data&#34;: &#34;New data that replaces the original data.&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            }&#39;</span>
-</span></span></code></pre></div><p>The output I got:</p>
-<pre><code> {&quot;ok&quot;:true,&quot;id&quot;:&quot;example&quot;,&quot;rev&quot;:&quot;4-9515f5aa01411766cc8aed181af12c1c&quot;}
-</code></pre>
-<p>indicates that the new document revision in this example is: <code>4-9515f5aa01411766cc8aed181af12c1c</code></p>
-</li>
-<li>
-<p>This command confirms that the original data in the document has been replaced by the new data:</p>
-<pre tabindex="0"><code>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
-{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;4-9515f5aa01411766cc8aed181af12c1c&#34;,
-  &#34;data&#34;: &#34;New data that replaces the original data.&#34;
-}
-</code></pre></li>
-<li>
-<p>This command uses the <code>revs_info=true</code> parameter to get the status of the document revisions now:</p>
-<pre tabindex="0"><code>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?revs_info=true | jq .
-</code></pre><p>Here is the output I got:</p>
-<pre tabindex="0"><code>{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;4-9515f5aa01411766cc8aed181af12c1c&#34;,
-  &#34;data&#34;: &#34;New data that replaces the original data.&#34;,
-  &#34;_revs_info&#34;: [
-    {
-      &#34;rev&#34;: &#34;4-9515f5aa01411766cc8aed181af12c1c&#34;,
-      &#34;status&#34;: &#34;available&#34;
-    },
-    {
-      &#34;rev&#34;: &#34;3-a95d2245a9f11e5fa62390c600204d18&#34;,
-      &#34;status&#34;: &#34;available&#34;
-    },
-    {
-      &#34;rev&#34;: &#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;,
-      &#34;status&#34;: &#34;deleted&#34;
-    },
-    {
-      &#34;rev&#34;: &#34;1-4a5958602638984def83a2075a86bc7a&#34;,
-      &#34;status&#34;: &#34;available&#34;
-    }
-  ]
-}
-</code></pre><p>It shows that the revision which immediately precedes the latest revision is <code>3-a95d2245a9f11e5fa62390c600204d18</code>.<br>
-Because compaction of this document has not yet run since the document was updated, revision <code>3-a95d2245a9f11e5fa62390c600204d18</code> has status <code>&quot;available&quot;</code>. If that revision were no longer available, its status would be <code>&quot;missing&quot;</code>.</p>
-</li>
-<li>
-<p>If its status is <code>&quot;available&quot;</code> you can still get the contents of revision <code>3-a95d2245a9f11e5fa62390c600204d18</code>:</p>
-<pre tabindex="0"><code>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?rev=3-a95d2245a9f11e5fa62390c600204d18 | jq .
-{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;3-a95d2245a9f11e5fa62390c600204d18&#34;,
-  &#34;data&#34;: &#34;Your data here.&#34;
-}
-</code></pre></li>
-<li>
-<p>Now you can write the contents of the revision back just as it was before the document was updated. This time you must include the latest <code>_rev</code> in the document you write.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -u $USER:$PASS -X POST https://$USER.cloudant.com/$DB <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span>  <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d <span style="color:#e6db74">&#39;{
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             &#34;_id&#34;: &#34;example&#34;,
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             &#34;_rev&#34;: &#34;4-9515f5aa01411766cc8aed181af12c1c&#34;,
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">             &#34;data&#34;: &#34;Your data here.&#34; 
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         }&#39;</span>
-</span></span></code></pre></div><p>The output I got:</p>
-<pre tabindex="0"><code>{&#34;ok&#34;:true,&#34;id&#34;:&#34;example&#34;,&#34;rev&#34;:&#34;5-0bdac581d633b76a696c2b4b3972c87d&#34;}
-</code></pre><p>indicates that the new revision in this example is: <code>5-0bdac581d633b76a696c2b4b3972c87d</code>     `</p>
-</li>
-<li>
-<p>This command confirms that the document now contains the original data, as it was before it was updated:</p>
-<pre tabindex="0"><code>curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
-{
-  &#34;_id&#34;: &#34;example&#34;,
-  &#34;_rev&#34;: &#34;5-0bdac581d633b76a696c2b4b3972c87d&#34;,
-  &#34;data&#34;: &#34;Your data here.&#34;
-}
-</code></pre></li>
+<li>Update the example document, replacing the original data with new data.</li>
 </ol>
-<h3 id="how-to-find-what-documents-have-been-deleted-or-overwritten"><a href="#how-to-find-what-documents-have-been-deleted-or-overwritten">How to find what documents have been deleted or overwritten</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>  curl -u $USER:$PASS -X POST https://$USER.cloudant.com/$DB <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>          -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>          -d <span style="color:#e6db74">&#39;{   
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                  &#34;_id&#34;: &#34;example&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                  &#34;_rev&#34;: &#34;3-a95d2245a9f11e5fa62390c600204d18&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                  &#34;data&#34;: &#34;New data that replaces the original data.&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              }&#39;</span>
+</span></span></code></pre></div><p>The output I got:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;ok&#34;</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>,<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;example&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;4-9515f5aa01411766cc8aed181af12c1c&#34;</span>}
+</span></span></code></pre></div><p>indicates that the new document revision in this example is: <code>4-9515f5aa01411766cc8aed181af12c1c</code></p>
+<ol start="2">
+<li>This command confirms that the original data in the document has been replaced by the new data:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;4-9515f5aa01411766cc8aed181af12c1c&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;New data that replaces the original data.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ol start="3">
+<li>This command uses the <code>revs_info=true</code> parameter to get the status of the document revisions now:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?revs_info<span style="color:#f92672">=</span>true | jq .
+</span></span></code></pre></div><p>Here is the output I got:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;4-9515f5aa01411766cc8aed181af12c1c&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;data&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;New data that replaces the original data.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_revs_info&#34;</span><span style="color:#f92672">:</span> [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;4-9515f5aa01411766cc8aed181af12c1c&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;available&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3-a95d2245a9f11e5fa62390c600204d18&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;available&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2-45a4676f3cae54b3e7346d3a09dda771&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;deleted&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;rev&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1-4a5958602638984def83a2075a86bc7a&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;available&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>It shows that the revision which immediately precedes the latest revision is <code>3-a95d2245a9f11e5fa62390c600204d18</code>.<br>
+Because compaction of this document has not yet run since the document was updated, revision <code>3-a95d2245a9f11e5fa62390c600204d18</code> has status <code>&quot;available&quot;</code>. If that revision were no longer available, its status would be <code>&quot;missing&quot;</code>.</p>
+<ol start="4">
+<li>If its status is <code>&quot;available&quot;</code> you can still get the contents of revision <code>3-a95d2245a9f11e5fa62390c600204d18</code>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example?rev<span style="color:#f92672">=</span>3-a95d2245a9f11e5fa62390c600204d18 | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;3-a95d2245a9f11e5fa62390c600204d18&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;Your data here.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ol start="5">
+<li>Now you can write the contents of the revision back just as it was before the document was updated. This time you must include the latest <code>_rev</code> in the document you write.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -u $USER:$PASS -X POST https://$USER.cloudant.com/$DB <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span>  <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>      -d <span style="color:#e6db74">&#39;{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              &#34;_id&#34;: &#34;example&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              &#34;_rev&#34;: &#34;4-9515f5aa01411766cc8aed181af12c1c&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">              &#34;data&#34;: &#34;Your data here.&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">          }&#39;</span>
+</span></span></code></pre></div><p>The output I got:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>  {<span style="color:#f92672">&#34;ok&#34;</span>:<span style="color:#66d9ef">true</span>,<span style="color:#f92672">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;example&#34;</span>,<span style="color:#f92672">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;5-0bdac581d633b76a696c2b4b3972c87d&#34;</span>}
+</span></span></code></pre></div><p>indicates that the new revision in this example is: <code>5-0bdac581d633b76a696c2b4b3972c87d</code>     `</p>
+<ol start="6">
+<li>This command confirms that the document now contains the original data, as it was before it was updated:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/example | jq .
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span>: <span style="color:#e6db74">&#34;example&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_rev&#34;</span>: <span style="color:#e6db74">&#34;5-0bdac581d633b76a696c2b4b3972c87d&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;Your data here.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="how-to-find-what-documents-have-been-deleted-or-overwritten"style="display:inline">How to find what documents have been deleted or overwritten</h3><a class="stealth" href="#how-to-find-what-documents-have-been-deleted-or-overwritten">🔗</a><br>
 <p>To find out what document ids have been deleted or overwritten, you can use the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-databases#get-changes">changes feed</a>, which returns a list of changes that have been made to documents in the database, including insertions, updates, and deletions.</p>
 <p>For example:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl -s -u $USER:$PASS https://$USER.cloudant.com/$DB/_changes

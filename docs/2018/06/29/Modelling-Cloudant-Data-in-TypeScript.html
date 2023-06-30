@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Modelling with TypeScript</a></h1>
+  <h1 class="p-name">Modelling with TypeScript</h1>
   
   <div class="postmeta">Jun 29, 2018 | Glynn Bird | 
 
-<bx-tag>TypeScript</bx-tag>
+  
+  <bx-tag>TypeScript</bx-tag>
+  
+  <bx-tag>Modelling</bx-tag>
+  
 
-<bx-tag>Modelling</bx-tag>
 
-</div>
+  </div>
   
   <p><a href="https://www.typescriptlang.org/">TypeScript</a> is a programming language that is a super-set of JavaScript written by Microsoft. TypeScript code compiles to various flavours of JavaScript to run in the browser, in Node.js or in concert with frameworks such as React, Angular, Vue.js etc. Programming in TypeScript brings you the luxury of:</p>
 <ul>
@@ -138,7 +142,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p><img src="https://emlaver.github.io/gh-pages-example/img/typescript0.png" alt="typescript0"></p>
 <p>In the above example, the red line indicates that there is no &lsquo;postcode&rsquo; property of the <code>Address</code> class. Catching mistakes like this in the editor saves lots of time later, chasing down errors and figuring out why the code isn&rsquo;t doing what is expected.</p>
 <p>Typescript is <a href="https://github.com/Microsoft/TypeScript">open-sourced</a> and Microsoft&rsquo;s popular <a href="https://code.visualstudio.com/">VS Code</a> editor is itself written in TypeScript!</p>
-<h2 id="data-modelling-with-cloudant"><a href="#data-modelling-with-cloudant">Data modelling with Cloudant</a></h2>
+<h2 id="data-modelling-with-cloudant"style="display:inline">Data modelling with Cloudant</h2><a class="stealth" href="#data-modelling-with-cloudant">🔗</a><br>
 <p>Let&rsquo;s say we want to store employee records in Cloudant. As Cloudant stores JSON objects, we can use plain JavaScript objects in our code that are transformed to JSON with <code>JSON.stringify</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">obj</span> <span style="color:#f92672">=</span> {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn&#34;</span>,
@@ -163,7 +167,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p><img src="https://emlaver.github.io/gh-pages-example/img/swapnil-dwivedi-246205-unsplash.jpg" alt="modelling"></p>
 <p>Ideally, an <em>Employee</em> class containing these building-block classes would have a usuable JSON representation that could be stored in Cloudant. In addtion, the JSON string could be returned to a concrete class after retrieving data from the database.</p>
 <p>There is a solution to this, so let&rsquo;s start with a custom <em>Address</em> class.</p>
-<h2 id="address-class"><a href="#address-class">Address class</a></h2>
+<h2 id="address-class"style="display:inline">Address class</h2><a class="stealth" href="#address-class">🔗</a><br>
 <p>We can create a custom TypeScript class that embodies a postal address and geo-location:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// Address.ts
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
@@ -208,7 +212,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>A simple class like <em>Address</em> that only uses JavaScript primitive types turns into a sensible form of JSON - an object which looks like the <em>iAddress</em> interface:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/typescript1.png" alt="typescript1"></p>
 <p>We&rsquo;ll see how to incorporate this into our <em>Employee</em> class later, but first let&rsquo;s look at how we can use a similar technique to model a date.</p>
-<h2 id="the-cloudantdate-class"><a href="#the-cloudantdate-class">The CloudantDate class</a></h2>
+<h2 id="the-cloudantdate-class"style="display:inline">The CloudantDate class</h2><a class="stealth" href="#the-cloudantdate-class">🔗</a><br>
 <p>In <a href="https://medium.com/@glynn_bird/date-formats-for-apache-couchdb-and-cloudant-1c017b7b878b">this blog post</a>, I discussed various ways of representing a date/time in Cloudant JSON. I concluded that it&rsquo;s good to have the constituent date/time parts (day, month, year) present in the object to allow <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#query">Cloudant Query</a> to access them and a &ldquo;seconds since 1970&rdquo; integer or an ISO-8601 string for sorting purposes.</p>
 <p>To represent a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">JavaScript Date</a> object in our <em>Employee</em> class, we&rsquo;re going to create a wrapper class called <em>CloudantDate</em> which has a trick up its sleeve:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// CloudantDate.ts
@@ -259,7 +263,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>If we create a <em>CloudantDate</em> object and <code>JSON.stringify</code> it, the resultant string contains all the date and time pieces broken out:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/typescript2.png" alt="typescript1"></p>
 <p>This allows us to have dates that are useable <code>Date</code> classes in our code and have the constituent parts broken down in the Cloudant database, where they are accessible to the Cloudant indexing engine.</p>
-<h2 id="tagcollection-class"><a href="#tagcollection-class">TagCollection class</a></h2>
+<h2 id="tagcollection-class"style="display:inline">TagCollection class</h2><a class="stealth" href="#tagcollection-class">🔗</a><br>
 <p>Our final storage class is <em>TagCollection</em> which stores an array of strings. It has a couple of helper functions (<code>add</code> and <code>remove</code>) and also overrides the <code>toJSON</code> function to ensure that only an array of strings appears in the JSON:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// TagCollection.ts
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
@@ -308,7 +312,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/typescript3.png" alt="typescript3"></p>
-<h2 id="assembling-the-employee-class"><a href="#assembling-the-employee-class">Assembling the Employee class</a></h2>
+<h2 id="assembling-the-employee-class"style="display:inline">Assembling the Employee class</h2><a class="stealth" href="#assembling-the-employee-class">🔗</a><br>
 <p>Now we have all the pieces in place, we can create a top level &ldquo;Employee&rdquo; class that uses our custom classes:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// Employee.ts
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
@@ -434,7 +438,7 @@ export class CloudantDocument {
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">err</span>) <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error(<span style="color:#a6e22e">err</span>)
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">e</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">Employee</span>.<span style="color:#a6e22e">fromObject</span>(<span style="color:#a6e22e">data</span>)
 </span></span><span style="display:flex;"><span>})
-</span></span></code></pre></div><h2 id="typescript-conclusions"><a href="#typescript-conclusions">Typescript conclusions</a></h2>
+</span></span></code></pre></div><h2 id="typescript-conclusions"style="display:inline">Typescript conclusions</h2><a class="stealth" href="#typescript-conclusions">🔗</a><br>
 <p>Writing in TypeScript adds some of the rigour of writing Java code to JavaScript, including strong typing and classes with inheritance &amp; access control. This allows the developer to build neat, consistent code with the code editor advising at every turn. TypeScript is transpiled, whether your target is a minified package for a web app, a server-side Node.js module or a native Electron app.</p>
 <p>Overriding the <code>toJSON</code> function in your custom TypeScript classes allows you to use classes in your code and pass them to the Cloudant Node.js library to be saved in a form of JSON of your choice.</p>
 

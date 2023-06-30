@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Introduction to Conflicts - 2/3</a></h1>
+  <h1 class="p-name">Introduction to Conflicts - 2/3</h1>
   
   <div class="postmeta">Jan 20, 2015 | Glynn Bird | 
 
-<bx-tag>Conflicts</bx-tag>
+  
+  <bx-tag>Conflicts</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>In <a href="https://emlaver.github.io/gh-pages-example/2015/01/12/Introduction-to-Conflicts-Part-One.html">Part One</a> of this series we looked at:</p>
 <ul>
@@ -134,7 +138,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/DCtwjzQ9uVE">CloudVisual on Unsplash</a></p>
 </blockquote>
-<h2 id="detecting-conflicts---piecemeal"><a href="#detecting-conflicts---piecemeal">Detecting Conflicts - Piecemeal</a></h2>
+<h2 id="detecting-conflicts---piecemeal"style="display:inline">Detecting Conflicts - Piecemeal</h2><a class="stealth" href="#detecting-conflicts---piecemeal">🔗</a><br>
 <p>When fetching single documents, simply adding <code>?conflicts=true</code> will ask Cloudant to additionally return a <code>_conflicts</code> key, listing conflicting revisions:</p>
 <pre tabindex="0"><code>GET /mydb/0f900fc85f2c5249759d9dd939b9c080?conflicts=true
 
@@ -167,7 +171,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
     }
   }
 ]
-</code></pre><h2 id="detecting-conflicts--bulk"><a href="#detecting-conflicts--bulk">Detecting Conflicts – Bulk</a></h2>
+</code></pre><h2 id="detecting-conflicts--bulk"style="display:inline">Detecting Conflicts – Bulk</h2><a class="stealth" href="#detecting-conflicts--bulk">🔗</a><br>
 <p>To detect which of the documents in your database are conflicted requires a map/reduce view to be created:</p>
 <pre tabindex="0"><code>map:
   function(doc) {
@@ -184,7 +188,7 @@ reduce:
 <li>fetch a list of document ids whose conflicts need resolving</li>
 </ul>
 <p>For example, a script could page through the documents in the view, resolving the conflicts as it goes.</p>
-<h2 id="how-do-i-resolve-a-conflict"><a href="#how-do-i-resolve-a-conflict">How Do I Resolve A Conflict?</a></h2>
+<h2 id="how-do-i-resolve-a-conflict"style="display:inline">How Do I Resolve A Conflict?</h2><a class="stealth" href="#how-do-i-resolve-a-conflict">🔗</a><br>
 <p>Resolution of a conflict is to:</p>
 <ul>
 <li>delete the conflicting revisions</li>
@@ -194,7 +198,7 @@ reduce:
 <p>In the above example, if we decided that &ldquo;3-uvwx&rdquo; should be the winning revision, all we would have to do is delete revision &ldquo;3-qrst&rdquo; which would leave the document without conflicts, restoring revision &ldquo;3-uvwx&rdquo; to the head of the revision list (as it is the only remaining &ldquo;revision 3&rdquo;):</p>
 <pre tabindex="0"><code>DELETE &#34;/test/abc?rev=3-qrst&#34;
 </code></pre><p><img src="https://emlaver.github.io/gh-pages-example/img/Conflicts-Part-Two-Resolving-doc-conflicts-2.png" alt="two"></p>
-<h2 id="resolving-conflicts-in-bulk"><a href="#resolving-conflicts-in-bulk">Resolving Conflicts In Bulk</a></h2>
+<h2 id="resolving-conflicts-in-bulk"style="display:inline">Resolving Conflicts In Bulk</h2><a class="stealth" href="#resolving-conflicts-in-bulk">🔗</a><br>
 <p>In more complicated examples, where there are lots of conflicts to fix, it is more efficient to delete the unwanted revisions in bulk:</p>
 <pre tabindex="0"><code>POST /test/_bulk_docs
 { &#34;docs&#34;: [ 
@@ -203,7 +207,7 @@ reduce:
   ]
 }
 </code></pre><p>N.B. this technique is only useful if you are deleting conflicting revisions that are not the &ldquo;winning&rdquo; revision and should be limited to a maximum of 500 deletions per request.</p>
-<h2 id="conflict-resolution-strategies"><a href="#conflict-resolution-strategies">Conflict Resolution Strategies</a></h2>
+<h2 id="conflict-resolution-strategies"style="display:inline">Conflict Resolution Strategies</h2><a class="stealth" href="#conflict-resolution-strategies">🔗</a><br>
 <p>Most often, resolution of a conflict isn&rsquo;t as simple as removing old conflicting revisions; that is simply destroying data. What if the old revisions contain something you want to keep? What if you need to merge two documents together?</p>
 <p>That is where Cloudant respectfully says &ldquo;that is an application-specific&rdquo; problem. In other words, Cloudant will never try to merge two JSON documents together to form a hybrid.</p>
 <p>Imagine an email application. There is a mobile application with a synced copy of an inbox and a copy of the same inbox on the server. What should happen if an item is marked &ldquo;read&rdquo; on the server and &ldquo;unread&rdquo; on the phone? The answer is that only your application can make that decision.</p>
@@ -213,7 +217,7 @@ if your application has different levels of user access, discard &lsquo;standard
 if your document schema is suitable, data can be merged from conflicting revisions
 or a combination of the above; it&rsquo;s up to you
 Conflicts are not an error condition, they are the result of your infrastructure allowing the same data set to be modified across disconnected systems. The introduction of such conflicts in such a topology is the expected behaviour and their programmatic resolution is a core piece of application logic.</p>
-<h2 id="but-im-getting-conflicts-and-im-not-even-using-replication"><a href="#but-im-getting-conflicts-and-im-not-even-using-replication">But I&rsquo;m Getting Conflicts And I&rsquo;m Not Even Using Replication!</a></h2>
+<h2 id="but-im-getting-conflicts-and-im-not-even-using-replication"style="display:inline">But I&rsquo;m Getting Conflicts And I&rsquo;m Not Even Using Replication!</h2><a class="stealth" href="#but-im-getting-conflicts-and-im-not-even-using-replication">🔗</a><br>
 <p>Even on a Cloudant cluster, with no replication to remote databases, conflicts can arise if the same document is updated in different ways on two nodes, before the two nodes have had chance to communicate with each other.</p>
 <p>The solution to that problem is subject of the <a href="https://emlaver.github.io/gh-pages-example/2015/01/26/Introduction-to-Conflicts-Part-Three.html">Part Three</a> of this series, we&rsquo;ll look at ways you can avoid conflicts arising in the first place by employing conflict-proof design patterns.</p>
 

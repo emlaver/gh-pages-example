@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Optimising Cloudant Queries</a></h1>
+  <h1 class="p-name">Optimising Cloudant Queries</h1>
   
   <div class="postmeta">Apr 24, 2020 | Glynn Bird | 
 
-<bx-tag>Querying</bx-tag>
+  
+  <bx-tag>Querying</bx-tag>
+  
+  <bx-tag>Indexing</bx-tag>
+  
 
-<bx-tag>Indexing</bx-tag>
 
-</div>
+  </div>
   
   <p><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">Cloudant Query</a> is a JSON-based query language inspired by MongoDB. It allows the developer to express the slice of data they need from a database using a mixture of logical and comparison operators.</p>
 <p>For example, if the following JSON is sent to the database&rsquo;s <code>_find</code> endpoint:</p>
@@ -150,7 +154,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Photo by <a href="https://unsplash.com/photos/oP_xD70TpsI">Peter Kleinau on Unsplash</a></p>
 </blockquote>
 <p>This may be fine during development of your application, but if you want great performance as your data size and traffic increases, then we need to define a suitable <em>secondary index</em> to help Cloudant get the answer without reading every document in the database.</p>
-<h2 id="explain---which-index-is-being-used"><a href="#explain---which-index-is-being-used">Explain - which index is being used?</a></h2>
+<h2 id="explain---which-index-is-being-used"style="display:inline">Explain - which index is being used?</h2><a class="stealth" href="#explain---which-index-is-being-used">🔗</a><br>
 <p>How can we tell if a query is using a secondary index or &ldquo;flying blind&rdquo; and scanning each document in turn? We can send our query to the database&rsquo;s <code>_explain</code> endpoint (instead of <code>_find</code>):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">POST</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">orders</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_explain</span>
 </span></span><span style="display:flex;"><span>
@@ -183,7 +187,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>   ...
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>In the above example, no secondary index is capable of helping the query - Cloudant is falling back on <code>_all_docs</code>, that is scanning each document in turn.</p>
-<h2 id="secondary-indexing"><a href="#secondary-indexing">Secondary indexing</a></h2>
+<h2 id="secondary-indexing"style="display:inline">Secondary indexing</h2><a class="stealth" href="#secondary-indexing">🔗</a><br>
 <p>A secondary index is an extra data structure that sits alongside the core database documents and is ordered by one or more attributes in the document. If we were extracting data by <code>date</code> then we may elect to create an index on the <code>date</code> field, by posting some JSON to the database&rsquo;s <code>_index</code> endpoint:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">POST</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">orders</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_index</span>
 </span></span><span style="display:flex;"><span>
@@ -204,7 +208,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Orders created between two dates.</li>
 </ul>
 <p>But is &ldquo;date&rdquo; the right field to index in this case?</p>
-<h2 id="which-attribute-should-i-index"><a href="#which-attribute-should-i-index">Which attribute should I index?</a></h2>
+<h2 id="which-attribute-should-i-index"style="display:inline">Which attribute should I index?</h2><a class="stealth" href="#which-attribute-should-i-index">🔗</a><br>
 <p>The choice of attribute or attributes to index depends on the distribution of values within your database and the query you&rsquo;re making.</p>
 <p>For a database containing 100,000 orders, let&rsquo;s look at the distribution of orders by year in this dataset:</p>
 <table>
@@ -305,7 +309,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  ...
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Notice that the <code>index</code> response to the <code>_explain</code> call indicates that Cloudant is no longer selecting the <code>_all_docs</code> route - the full-database scan - it is using our <code>byUser</code> index.</p>
-<h2 id="measuring-the-efficiency-of-a-query"><a href="#measuring-the-efficiency-of-a-query">Measuring the efficiency of a query</a></h2>
+<h2 id="measuring-the-efficiency-of-a-query"style="display:inline">Measuring the efficiency of a query</h2><a class="stealth" href="#measuring-the-efficiency-of-a-query">🔗</a><br>
 <p>If we want to measure the efficiency of a Cloudant Query, we can add <code>execution_stats: true</code> to the object we pass to <code>_find</code> e.g.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
@@ -330,7 +334,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;warning&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;The number of documents examined is high in proportion to the number of results returned. Consider adding a more specific index to improve this.&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>In this case, Cloudant is explaining that in order to find the two matching documents, it had to examine fifty (<code>total_docs_examined</code>) documents. This isn&rsquo;t <em>too bad</em>, considering without an index, Cloudant would have had to scan <em>100,000</em> documents. But we can do better.</p>
-<h2 id="should-i-index-additional-attributes"><a href="#should-i-index-additional-attributes">Should I index additional attributes?</a></h2>
+<h2 id="should-i-index-additional-attributes"style="display:inline">Should I index additional attributes?</h2><a class="stealth" href="#should-i-index-additional-attributes">🔗</a><br>
 <p>How are the fifty orders belonging to Bob distributed by date &amp; status?</p>
 <table>
 <thead>
@@ -397,7 +401,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>We are now scanning only two (<code>total_docs_examined</code>) documents to find the documents we need.</p>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <ul>
 <li>Without an index, Cloudant Query will scan all documents in a database until it finds enough matches to satisfy the supplied query. This can be a very expensive query if the slice of data you are looking for is rare in the data set.</li>
 <li>A secondary index will be chosen to help the query if a query and an index have the same matching attributes. A well-designed index can greatly reduce the amount of work a query does by allowing Cloudant to jump straight to the matching data.</li>

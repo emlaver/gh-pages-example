@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Searching Jekyll Sites</a></h1>
+  <h1 class="p-name">Searching Jekyll Sites</h1>
   
   <div class="postmeta">Aug 10, 2018 | Glynn Bird | 
 
-<bx-tag>Search</bx-tag>
+  
+  <bx-tag>Search</bx-tag>
+  
+  <bx-tag>Static</bx-tag>
+  
 
-<bx-tag>Static</bx-tag>
 
-</div>
+  </div>
   
   <p>I&rsquo;m a big fan of <a href="https://jekyllrb.com/">Jekyll</a> for building static websites. If you&rsquo;re not familiar with Jekyll, it takes a collection of configuration, templates and source files (I write my posts in <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>) and transforms them into static HTML files that can be delivered to the world by any web server. Jekyll is built into <a href="https://pages.github.com/">GitHub Pages</a> so that you can host the source files for your website or blog in a Git repository and have the resultant static web site served out by GitHub Pages without having to manage any server infrastructure yourself. As of May 2018, <a href="https://blog.github.com/2018-05-01-github-pages-custom-domains-https/">GitHub Pages now supports HTTPS on your custom domains</a>.</p>
 <p>Static sites are fast and easy to manage but without any dynamic server-side components, they may leave your users without features they expect, such as <em>search</em>. In a Wordpress-style blog, the content is served out from a MySQL database and site search is powered by querying that data set.</p>
@@ -138,10 +142,10 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Query the Cloudant database directly from the web page whenever a search is to be performed.</li>
 </ol>
 <p>Let&rsquo;s dive into the detail.</p>
-<h2 id="building-a-blog-with-jekyll"><a href="#building-a-blog-with-jekyll">Building a blog with Jekyll</a></h2>
+<h2 id="building-a-blog-with-jekyll"style="display:inline">Building a blog with Jekyll</h2><a class="stealth" href="#building-a-blog-with-jekyll">🔗</a><br>
 <p>There are plenty of guides that show you <a href="https://www.smashingmagazine.com/2014/08/build-blog-jekyll-github-pages/">how to build a Jekyll-powered blog on GitHub Pages</a> or follow the Jekyll documentation&rsquo;s <a href="https://jekyllrb.com/docs/quickstart/">Quick Start Guide</a>.</p>
 <p>Once your blog is setup, make sure it has an Atom feed published at the <code>/feed.xml</code> endpoint. This is powered by the <a href="https://github.com/jekyll/jekyll-feed">jekyll-feed</a> plugin.</p>
-<h2 id="schema-design"><a href="#schema-design">Schema design</a></h2>
+<h2 id="schema-design"style="display:inline">Schema design</h2><a class="stealth" href="#schema-design">🔗</a><br>
 <p>In order to add a search tool to your static blog we&rsquo;re first going to need a database of blog post meta data. Using <a href="https://www.ibm.com/cloud/cloudant">Cloudant</a> as the database, we can store one JSON document per blog post like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3d8d5d582576d35c984ba7b328190f72&#34;</span>,
@@ -182,7 +186,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>The value to be indexed e.g. <code>doc.title</code>.</li>
 <li>An options object. When <code>store</code> is set to true, a copy of the value is stored unaltered in the index for retrieval at query-time. When <code>index</code> is set to <code>false</code> the value is not indexed for search, but <em>is</em> reproduced in the search results.</li>
 </ol>
-<h2 id="cors-and-effect"><a href="#cors-and-effect">CORS and effect</a></h2>
+<h2 id="cors-and-effect"style="display:inline">CORS and effect</h2><a class="stealth" href="#cors-and-effect">🔗</a><br>
 <p>If we want to be able to query our Cloudant database directly from a web page, we need to make two further tweaks to the Cloudant configuration.</p>
 <p>Firstly we must enable CORS (Cross-Origin Resource Sharing) in the Cloudant dashboard:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/atom4.png" alt="create database"></p>
@@ -190,7 +194,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Secondly, we need to make the database readable. You can either make the database <em>world readable</em> (grant <code>_reader</code> access to everyone) or create an API Key that grants <code>_reader</code> access to our database of blog post meta data. Both options are accessible from the &ldquo;Permissions&rdquo; panel in the Cloudant dashboard:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/atom5.png" alt="create database"></p>
 <p>Now our database is created and set up, we need a script to poll the blog&rsquo;s Atom feed, convert it to JSON and write it to the Cloudant database.</p>
-<h2 id="atom-feed-poller"><a href="#atom-feed-poller">Atom feed poller</a></h2>
+<h2 id="atom-feed-poller"style="display:inline">Atom feed poller</h2><a class="stealth" href="#atom-feed-poller">🔗</a><br>
 <p>We can write a simple Node.js script to fetch the Atom feed using a handful of npm modules:</p>
 <ul>
 <li><a href="https://www.npmjs.com/package/@cloudant/cloudant">@cloudant/cloudant</a> - to interface with the Cloudant database.</li>
@@ -296,7 +300,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>bx wsk trigger create cloudantblog_trigger --feed /whisk.system/alarms/alarm --param cron <span style="color:#e6db74">&#34;*/15 * * * *&#34;</span>
 </span></span><span style="display:flex;"><span>bx wsk rule update cloudantblog_rule cloudantblog_trigger cloudantblog/poll
 </span></span></code></pre></div><p>IBM Cloud Functions now has your polling code and is invoking it every 15 minutes. The script fetches your blog&rsquo;s Atom feed turns it into JSON ready to be inserterd into the Cloudant database and then writes all the records in a single bulk request. It manages to deduplicate the listings because it uses a hash of the document&rsquo;s URL as the document id - Cloudant won&rsquo;t accept two documents with the same <code>_id</code> so duplicates are rejected.</p>
-<h2 id="performing-searches"><a href="#performing-searches">Performing searches</a></h2>
+<h2 id="performing-searches"style="display:inline">Performing searches</h2><a class="stealth" href="#performing-searches">🔗</a><br>
 <p>Our database should contain some documents. Let&rsquo;s see them by querying our database&rsquo;s <a href="https://console.bluemix.net/docs/services/Cloudant/api/database.html#get-documents">_all_docs</a> endpoint:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export COUCH_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://USER:PASS@HOST.cloudant.com/blog&#34;</span>
 </span></span><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/_all_docs?include_docs=true&#34;</span>
@@ -332,7 +336,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </code></pre><p>The above query matches the <code>title</code>, <code>tags</code> or <code>description</code> fields against the query string, but attaches greater weight to title matches, than tags or description matches. This use of the <code>^</code> operator weights the search results to bring more relevant documents to the top of the results.</p>
 <p>We can send this query to Cloudant using <code>curl</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/_design/search/_search/search?q=title:&#39;red+apples&#39;^100+OR+tags:&#39;red+apples&#39;^10+OR+description:&#39;red+apples&#39;&#34;</span>
-</span></span></code></pre></div><h2 id="querying-from-the-front-end"><a href="#querying-from-the-front-end">Querying from the front end</a></h2>
+</span></span></code></pre></div><h2 id="querying-from-the-front-end"style="display:inline">Querying from the front end</h2><a class="stealth" href="#querying-from-the-front-end">🔗</a><br>
 <p>The final piece of the puzzle is making the search request from inside a web page. Here there are myriad options:</p>
 <ul>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest">XMLHttpRequest</a></li>
@@ -362,8 +366,8 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// update the web page
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#39;content&#39;</span>).<span style="color:#a6e22e">innerHTML</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">html</span>
-</span></span></code></pre></div><h2 id="example"><a href="#example">Example</a></h2>
-<p>The <a href="https://blog.cloudant.com/">Cloudant blog</a> is an example of this technology in action. It is a Jekyll-powered static website whose Atom feed is being polled by an IBM Cloud Functions action and whose search facility is powered by a Cloudant database containing the post&rsquo;s meta data.</p>
+</span></span></code></pre></div><h2 id="example"style="display:inline">Example</h2><a class="stealth" href="#example">🔗</a><br>
+<p>The Cloudant blog is an example of this technology in action. It is a Jekyll-powered static website whose Atom feed is being polled by an IBM Cloud Functions action and whose search facility is powered by a Cloudant database containing the post&rsquo;s meta data.</p>
 
 </div>
 </div>

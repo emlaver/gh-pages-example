@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,20 +114,23 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">HTTP 200, 201 &amp; 202</a></h1>
+  <h1 class="p-name">HTTP 200, 201 &amp; 202</h1>
   
   <div class="postmeta">Mar 27, 2023 | Glynn Bird | 
 
-<bx-tag>HTTP</bx-tag>
+  
+  <bx-tag>HTTP</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>When a Cloudant operation succeeds, it will reply with an HTTP code that is between 200 and 300. Sometimes a client application might see a 200 response and in other circumstances a 201 or 202 response. This blog post explains the difference between these response codes.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/kenny-eliason-e-g2bhvb2iQ-unsplash.jpg" alt="200"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/e-g2bhvb2iQ">Kenny Eliason on Unsplash</a></p>
 </blockquote>
-<h2 id="http-200"><a href="#http-200">HTTP 200</a></h2>
+<h2 id="http-200"style="display:inline">HTTP 200</h2><a class="stealth" href="#http-200">🔗</a><br>
 <p>The HTTP 200 response is the classic HTTP response that means &ldquo;OK&rdquo;. It can can be found for most operations that fetch documents singly or in bulk:</p>
 <ul>
 <li><a href="https://cloud.ibm.com/apidocs/cloudant#getdocument">Fetching a document by id</a></li>
@@ -137,18 +141,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>and many others.</li>
 </ul>
 <p>HTTP 200 means that the API call was well formed and the response will contain the document or documents requested.</p>
-<h2 id="writes-in-cluster"><a href="#writes-in-cluster">Writes in cluster</a></h2>
+<h2 id="writes-in-cluster"style="display:inline">Writes in cluster</h2><a class="stealth" href="#writes-in-cluster">🔗</a><br>
 <p>Cloudant clusters are multi-node distributed systems, with three copies of each document and each index being stored on separate machines. The database is <em>eventually consistent</em> so the service prefers to be <em>available</em> rather than <em>consistent</em> i.e. if a node is down, it will continue to service reads and writes, even if it means that the failed node will have to catch up when it comes back online.</p>
 <p>When a document is written to a Cloudant database, whether it be an insert, update or delete operation, the node handling the request calculates which three nodes need to store the document. The three nodes are sent the new request and the handling node responds to the user as soon as either:</p>
 <ul>
 <li>(At least) 2 or the 3 nodes respond that they have accepted the request. This results in an HTTP &ldquo;201 Created&rdquo; response.</li>
 <li>One node accepts the request and other two do not (yet). This results in an &ldquo;HTTP 202 Accepted&rdquo; response.</li>
 </ul>
-<h2 id="should-i-worry-about-an-http-202-response"><a href="#should-i-worry-about-an-http-202-response">Should I worry about an HTTP 202 response?</a></h2>
+<h2 id="should-i-worry-about-an-http-202-response"style="display:inline">Should I worry about an HTTP 202 response?</h2><a class="stealth" href="#should-i-worry-about-an-http-202-response">🔗</a><br>
 <p>In short &ldquo;no&rdquo;. A HTTP 202 response means that the data is safely stored in at least one Cloudant node and the others have already received the update, or will in due course via Cloudant&rsquo;s internal replication. It may be that the other nodes already have the document revision in question, but they were too slow to respond to the coordinating node. In any case, no further action is required.</p>
 <p>The <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-client-libraries">Client Libraries</a> all treat any 2xx response as a success and client applications should follow this example.</p>
 <hr>
-<p>For more details on how Cloudant&rsquo;s clustering works, see <a href="https://blog.cloudant.com/2015/10/19/Read-Write-Behaviour-in-a-cluster.html">this blog post</a>.</p>
+<p>For more details on how Cloudant&rsquo;s clustering works, see <a href="https://emlaver.github.io/gh-pages-example/2015/10/19/Read-Write-Behaviour-in-a-cluster.html">this blog post</a>.</p>
 
 </div>
 </div>

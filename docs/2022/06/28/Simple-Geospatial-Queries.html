@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Simple Geospatial Queries</a></h1>
+  <h1 class="p-name">Simple Geospatial Queries</h1>
   
   <div class="postmeta">Jun 28, 2022 | Glynn Bird | 
 
-<bx-tag>Geospatial</bx-tag>
+  
+  <bx-tag>Geospatial</bx-tag>
+  
+  <bx-tag>Search</bx-tag>
+  
 
-<bx-tag>Search</bx-tag>
 
-</div>
+  </div>
   
   <p>In this blog post I&rsquo;ll show how to perform basic Geospatial queries using standard Cloudant secondary indexes:</p>
 <ul>
@@ -132,7 +136,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/4JL_VAgxwcU">Adolfo Félix on Unsplash</a></p>
 </blockquote>
-<h2 id="the-data"><a href="#the-data">The data</a></h2>
+<h2 id="the-data"style="display:inline">The data</h2><a class="stealth" href="#the-data">🔗</a><br>
 <p>To demonstrate, I&rsquo;ll use a dataset containing <a href="https://en.m.wikipedia.org/wiki/GeoJSON">GeoJSON</a> - an industry-standard JSON representation of geographical content. My database contains a number of &ldquo;features&rdquo; represented by a decimal latitude,longitude point representing the <a href="https://en.wikipedia.org/wiki/World_Geodetic_System#1984_version">WGS84</a> coordinate of the feature. Other attributes of the feature are stored in the <code>properties</code> object.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Feature&#34;</span>,
@@ -144,7 +148,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Shenika Bond&#34;</span>
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="indexing"><a href="#indexing">Indexing</a></h2>
+</span></span></code></pre></div><h2 id="indexing"style="display:inline">Indexing</h2><a class="stealth" href="#indexing">🔗</a><br>
 <p>In order to efficiently query our data, we&rsquo;ll need a secondary index. I can define a <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-cloudant-search">Cloudant Search</a> index by providing a JavaScript function that decides which portion of a document is to be indexed:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e">// index the latitude
@@ -162,9 +166,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <ul>
 <li>An index definition resides in a <em>Design Document</em>, in this case <code>_design/find</code>.</li>
 <li>Each index has a name e.g <code>geospatial</code></li>
-<li>Cloudant Search has a nominated &ldquo;Analyzer&rdquo; which pre-processes string fields. See <a href="https://blog.cloudant.com/2018/10/19/Search-Analyzers.html">this blog post</a> for more details.</li>
+<li>Cloudant Search has a nominated &ldquo;Analyzer&rdquo; which pre-processes string fields. See <a href="https://emlaver.github.io/gh-pages-example/2018/10/19/Search-Analyzers.html">this blog post</a> for more details.</li>
 </ul>
-<h2 id="find-documents-within-a-rectangle"><a href="#find-documents-within-a-rectangle">Find documents within a rectangle</a></h2>
+<h2 id="find-documents-within-a-rectangle"style="display:inline">Find documents within a rectangle</h2><a class="stealth" href="#find-documents-within-a-rectangle">🔗</a><br>
 <p>We can query the view using Lucene&rsquo;s query language. A typical query might be:</p>
 <pre tabindex="0"><code>latitude:[49.7 61.1] AND longitude: [-8 0.5]
 </code></pre><p>This says &ldquo;find my documents whose latitude is between 49.7 and 61.1 degrees, and whose longitude is between -8 and 0.5 degrees&rdquo;. This corresponds roughly to the boundary of the UK. It&rsquo;s not <em>really</em> a rectangle, but represents the South West and North East boundaries of a shape on the globe.</p>
@@ -199,7 +203,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>  ...
 </span></span></code></pre></div><p>The <code>fields</code> object contains the content we indexed and opted to store in the index (<code>{store: true}</code>).</p>
-<h2 id="find-nearest"><a href="#find-nearest">Find nearest</a></h2>
+<h2 id="find-nearest"style="display:inline">Find nearest</h2><a class="stealth" href="#find-nearest">🔗</a><br>
 <p>Finding the nearest items is a small iteration of the <em>Find documents within a rectangle</em> use-case. We still retain our &ldquo;rectangle&rdquo; so that the database doesn&rsquo;t have to sort every document in the database into nearest-first order.</p>
 <p>We simply add a <code>sort</code> parameter, specifying the point from which distances are to be measured:</p>
 <pre tabindex="0"><code>  sort=&#34;&lt;distance,longitude,latitude,-3.25,55.4,km&gt;&#34;
@@ -235,7 +239,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>	},
 </span></span><span style="display:flex;"><span>  ...
 </span></span></code></pre></div><p>But the first element of the order array indicates the distance from the provided point in <code>km</code>.</p>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>Cloudant Search indexes allow fields to be indexed and queried using the standard &ldquo;Lucene&rdquo; query language. By indexing an object&rsquo;s latitude and longitude we can perform simple geospatial queries, such as find within a rectangle or find nearest. We can also combine the geospatial query with a normal lucene query e.g. find people called &ldquo;Tricia&rdquo; sorted by distance.</p>
 
 </div>

@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,31 +114,34 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">HTTP 429</a></h1>
+  <h1 class="p-name">HTTP 429</h1>
   
   <div class="postmeta">Mar 27, 2023 | Glynn Bird | 
 
-<bx-tag>HTTP</bx-tag>
+  
+  <bx-tag>HTTP</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>Cloudant is a Database-as-a-Service that allows customers to provision the database capacity they need in terms of the number of read, write and query operations per second.</p>
 <p>If the consumed capacity is exceeds the provisioned capacity in a given one second window, Cloudant will respond with an <em>HTTP 429 Too Many Requests</em> response to further requests.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/isabella-fischer-FrGYMDjdg4U-unsplash.jpg" alt="speed limit"></p>
 <p>In this blog post we&rsquo;ll explore which Cloudant APIs fall into the three categories and how your application can avoid HTTP 429 responses.</p>
-<h2 id="reads-writes-and-queries"><a href="#reads-writes-and-queries">Reads, Writes and Queries</a></h2>
+<h2 id="reads-writes-and-queries"style="display:inline">Reads, Writes and Queries</h2><a class="stealth" href="#reads-writes-and-queries">🔗</a><br>
 <p>Cloudant API operations are classified as one of three types:</p>
-<h3 id="reads"><a href="#reads">Reads</a></h3>
+<h3 id="reads"style="display:inline">Reads</h3><a class="stealth" href="#reads">🔗</a><br>
 <ul>
 <li>Single document fetches, by a known id: <code>GET /&lt;db&gt;/&lt;doc_id&gt;</code>.</li>
 <li>All multi-document operations on a <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-database-partitioning">partitioned database</a>, charged as one read per document e.g. <code>GET /&lt;db&gt;/_partition/&lt;partition_id&gt;/_all_docs</code>.</li>
 </ul>
-<h3 id="writes"><a href="#writes">Writes</a></h3>
+<h3 id="writes"style="display:inline">Writes</h3><a class="stealth" href="#writes">🔗</a><br>
 <ul>
 <li>Single document writes: <code>PUT /&lt;db&gt;/&lt;doc_id&gt;</code> or <code>POST /&lt;db&gt;</code>.</li>
 <li>Bulk document writes: <code>POST /&lt;db&gt;/_bulk_docs</code>.</li>
 </ul>
-<h3 id="queries"><a href="#queries">Queries</a></h3>
+<h3 id="queries"style="display:inline">Queries</h3><a class="stealth" href="#queries">🔗</a><br>
 <ul>
 <li>All documents: <code>GET/POST /&lt;db&gt;/_all_docs</code>.</li>
 <li>Bulk documents: <code>POST /&lt;db&gt;/_bulk_get</code>.</li>
@@ -145,19 +149,19 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Cloudant MapReduce: <code>GET/POST /&lt;db&gt;/_design/&lt;design_doc&gt;/_view/&lt;view_name&gt;</code></li>
 <li>Cloudant Search: <code>GET/POST /&lt;db&gt;/_design/&lt;design_doc&gt;/_search/&lt;view_name&gt;</code></li>
 </ul>
-<h2 id="provisioned-capacity"><a href="#provisioned-capacity">Provisioned Capacity</a></h2>
+<h2 id="provisioned-capacity"style="display:inline">Provisioned Capacity</h2><a class="stealth" href="#provisioned-capacity">🔗</a><br>
 <p>Each Cloudant instance has its own Provisioned Capacity expressed as number, with each increment representing 100 reads, 50 writes and 5 queries per second. So an instance with a Provisioned Capacity of 100 has 10,000 reads, 5,000 writes and 500 queries per second. The more you pay, the greater the number of reads, writes and queries your Cloudant instance will be able to service.</p>
 <p>The capacity of your instance can be changed at any time using the IBM Cloud web UI or via the <a href="https://cloud.ibm.com/apidocs/cloudant#putcapacitythroughputconfiguration">API</a>. When your target capacity is changed, the capacity of the instance will be changed asynchronously to meet the new target.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/429-1.png" alt="IBM Cloud dashboard screenshot"></p>
 <p>Importantly, the provisioned capacity is a hard limit. If a Cloudant instance receives more reads, writes or queries in a given second than its capacity, then the excess requests will recieve a <em>HTTP 429 Too Many Requests</em> response. Further requests will be allowed again at the start of next second boundary.</p>
-<h2 id="how-do-i-avoid-http-429-responses"><a href="#how-do-i-avoid-http-429-responses">How do I avoid HTTP 429 responses?</a></h2>
-<h3 id="set-your-provisioned-capacity-correctly"><a href="#set-your-provisioned-capacity-correctly">Set your provisioned capacity correctly</a></h3>
-<p>The provisioned capacity of your Cloudant instance should be set such that your application never exhausts the reads, writes and queries per second limit. There is an <a href="https://cloud.ibm.com/apidocs/cloudant#getcurrentthroughputinformation">API call</a> which can tell you whether your applicaiton is hitting the limit and the the HTTP 429 responses can be found in your Cloudant logs. See <a href="https://blog.cloudant.com/2019/09/16/Cloudant-Logging-with-LogDNA.html">Logging with LogDNA</a>.</p>
+<h2 id="how-do-i-avoid-http-429-responses"style="display:inline">How do I avoid HTTP 429 responses?</h2><a class="stealth" href="#how-do-i-avoid-http-429-responses">🔗</a><br>
+<h3 id="set-your-provisioned-capacity-correctly"style="display:inline">Set your provisioned capacity correctly</h3><a class="stealth" href="#set-your-provisioned-capacity-correctly">🔗</a><br>
+<p>The provisioned capacity of your Cloudant instance should be set such that your application never exhausts the reads, writes and queries per second limit. There is an <a href="https://cloud.ibm.com/apidocs/cloudant#getcurrentthroughputinformation">API call</a> which can tell you whether your applicaiton is hitting the limit and the the HTTP 429 responses can be found in your Cloudant logs. See <a href="https://emlaver.github.io/gh-pages-example/2019/09/13/Cloudant-Logging-with-LogDNA.html">Logging with LogDNA</a>.</p>
 <p>Set the capacity of your Cloudant service higher than the peak traffic required at your application&rsquo;s busiest time.</p>
-<h3 id="retry-rate-limited-requests"><a href="#retry-rate-limited-requests">Retry rate-limited requests</a></h3>
+<h3 id="retry-rate-limited-requests"style="display:inline">Retry rate-limited requests</h3><a class="stealth" href="#retry-rate-limited-requests">🔗</a><br>
 <p>If your application receives a HTTP 429 response, you may elect to retry the request a number of times - backing off exponentially with each attempt e.g after 1s, 2s and 4s. This technique is suitable for small blips in traffic that push your application above its normal usage. Retry logic is not suitable for sustained API traffic that exceeds the capacity of your Cloudant instance.</p>
 <p>The official IBM Cloudant SDKs can be configured to <a href="https://github.com/IBM/ibm-cloud-sdk-common/#automatic-retries">attempt retries after a 429 response</a> so that your higher-level application code need not know that a retry occurred.</p>
-<h3 id="spread-out-load-from-background-tasks"><a href="#spread-out-load-from-background-tasks">Spread out load from background tasks</a></h3>
+<h3 id="spread-out-load-from-background-tasks"style="display:inline">Spread out load from background tasks</h3><a class="stealth" href="#spread-out-load-from-background-tasks">🔗</a><br>
 <p>If your application performs background tasks periodically, make sure that they are set up such that the load they bear on your Cloudant service doesn&rsquo;t use up capacity needed for operational API calls.</p>
 <ul>
 <li>Keep bulk inserts to reasonable batch size e.g. 100 small docs per request.</li>

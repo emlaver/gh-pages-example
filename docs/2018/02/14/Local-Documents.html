@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Local documents</a></h1>
+  <h1 class="p-name">Local documents</h1>
   
   <div class="postmeta">Feb 13, 2018 | Glynn Bird | 
 
-<bx-tag>Local</bx-tag>
+  
+  <bx-tag>Local</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>The Apache CouchDB™ family has a JSON document database for every application:</p>
 <ul>
@@ -133,7 +137,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/QdlZY4ofH4c">Jerry Kiesewetter</a> on <a href="https://unsplash.com/">Unsplash</a>.</p>
 </blockquote>
-<h2 id="what-are-couchdb-local-documents"><a href="#what-are-couchdb-local-documents">What are CouchDB local documents?</a></h2>
+<h2 id="what-are-couchdb-local-documents"style="display:inline">What are CouchDB local documents?</h2><a class="stealth" href="#what-are-couchdb-local-documents">🔗</a><br>
 <p>CouchDB local documents are JSON documents whose <code>_id</code> value starts with <code>_local/</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;_local/config&#34;</span>,
@@ -141,7 +145,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;defcon&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2018-02-10&#34;</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="what-are-local-couchdb-documents-used-for"><a href="#what-are-local-couchdb-documents-used-for">What are local CouchDB documents used for?</a></h2>
+</span></span></code></pre></div><h2 id="what-are-local-couchdb-documents-used-for"style="display:inline">What are local CouchDB documents used for?</h2><a class="stealth" href="#what-are-local-couchdb-documents-used-for">🔗</a><br>
 <p>If you are replicating data between two members of the CouchDB family (e.g., between your PouchDB-powered web app and hosted Cloudant), you may need to store some configuration on the client side that is:</p>
 <ul>
 <li>never to be replicated</li>
@@ -149,7 +153,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p>I use local documents for storing configuration or other application state that is to remain on the machine it was created on. It saves you from the work of creating a separate client-side database just to store a tiny amount of configuration data.</p>
 <p>The CouchDB replicator uses local documents to keep track of where it got to by writing state in local documents to the source and target database.</p>
-<h2 id="crud-operations-for-couchdb-local-documents"><a href="#crud-operations-for-couchdb-local-documents">CRUD operations for CouchDB local documents</a></h2>
+<h2 id="crud-operations-for-couchdb-local-documents"style="display:inline">CRUD operations for CouchDB local documents</h2><a class="stealth" href="#crud-operations-for-couchdb-local-documents">🔗</a><br>
 <p>Local documents are created in a similar way to normal JSON documents by using an HTTP POST:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://username:password@host.cloudant.com/mydatabase&#34;</span>
 </span></span><span style="display:flex;"><span>HEAD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Content-type: application/json&#34;</span>

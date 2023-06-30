@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Elasticsearch hybrid</a></h1>
+  <h1 class="p-name">Elasticsearch hybrid</h1>
   
   <div class="postmeta">Nov 30, 2017 | Glynn Bird | 
 
-<bx-tag>ElasticSearch</bx-tag>
+  
+  <bx-tag>ElasticSearch</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
 
-<bx-tag>Serverless</bx-tag>
 
-</div>
+  </div>
   
   <p>On the face of it, IBM Cloudant and Elasticsearch seem to be very similar products. They both:</p>
 <ul>
@@ -138,7 +142,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p>Such a setup needs a means of moving data from Cloudant to Elasticsearch as it changes. In this article, we&rsquo;ll see how to automatically keep the data in sync using a &ldquo;serverless&rdquo; function.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/cloudant-es-bridge.png" alt="schematic"></p>
-<h2 id="cloudant-to-elasticsearch-bridge"><a href="#cloudant-to-elasticsearch-bridge">Cloudant-to-Elasticsearch bridge</a></h2>
+<h2 id="cloudant-to-elasticsearch-bridge"style="display:inline">Cloudant-to-Elasticsearch bridge</h2><a class="stealth" href="#cloudant-to-elasticsearch-bridge">🔗</a><br>
 <p>The Cloudant database has a <a href="https://console.bluemix.net/docs/services/Cloudant/api/database.html#get-changes">changes feed</a>, an HTTP stream that spools out each add/update/delete that happens to the dataset. By consuming that feed, we can trigger other actions as each change arrives, in this case, writing to an Elasticsearch index. The <a href="https://console.bluemix.net/openwhisk/">IBM Cloud Functions</a> platform can be configured to listen to the Cloudant changes feed on your behalf, and execute custom code on each change. As IBM Cloud Functions is a &ldquo;serverless&rdquo; platform, you don&rsquo;t pay for any fixed computing power to run the actions. You simply pay for the number of invocations of your code, which is proportional to the rate of change of your data.</p>
 <p>I&rsquo;ve written a script to set up the serverless infrastructure. Clone the code:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone https://github.com/ibm-watson-data-lab/cloudant-es-bridge
@@ -185,11 +189,11 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span></code></pre></div><h2 id="do-i-need-separate-cloudant--elasticsearch"><a href="#do-i-need-separate-cloudant--elasticsearch">Do I need separate Cloudant &amp; Elasticsearch?</a></h2>
+</span></span></code></pre></div><h2 id="do-i-need-separate-cloudant--elasticsearch"style="display:inline">Do I need separate Cloudant &amp; Elasticsearch?</h2><a class="stealth" href="#do-i-need-separate-cloudant--elasticsearch">🔗</a><br>
 <p>Whether you use Cloudant on its own, or pick Cloudant for storage and Elasticsearch for search, depends on your application and how it&rsquo;s used.</p>
 <p>If your application relies heavily on search, then you may want to direct the search requests to an Elasticsearch cluster that contains a copy of your searchable data. This would allow you to scale your search capability separately to your storage engine.</p>
 <p>If search is an occasional or secondary activity in your app, or if you prefer the convenience of fewer moving parts, then you may wish to use Cloudant&rsquo;s built-in <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#search">free-text search</a>. While not as fully-featured as Elasticsearch, it can easily handle free-text searches, range queries, and faceting as it is built on the same Lucene library that powers Elasticsearch.</p>
-<h2 id="open-source-ftw"><a href="#open-source-ftw">Open-Source ftw</a></h2>
+<h2 id="open-source-ftw"style="display:inline">Open-Source ftw</h2><a class="stealth" href="#open-source-ftw">🔗</a><br>
 <p>If you want to build on this utility, the code is <a href="https://github.com/ibm-watson-data-lab/cloudant-es-bridge">on GitHub</a>. It&rsquo;s free and open-sourced via the Apache-2.0 license. You may want to modify the <code>onchange.js</code> action to alter the document before it&rsquo;s written to Elasticsearch. You may also need to deploy multiple changes feed listeners for multiple data sources. It&rsquo;s up to you.</p>
 
 </div>

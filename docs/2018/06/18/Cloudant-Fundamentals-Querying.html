@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,18 +114,21 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Cloudant Fundamentals 7/10</a></h1>
+  <h1 class="p-name">Cloudant Fundamentals 7/10</h1>
   
   <div class="postmeta">Jun 18, 2018 | Glynn Bird | 
 
-<bx-tag>Fundamentals</bx-tag>
+  
+  <bx-tag>Fundamentals</bx-tag>
+  
+  <bx-tag>Query</bx-tag>
+  
 
-<bx-tag>Query</bx-tag>
 
-</div>
+  </div>
   
   <p>In previous posts we&rsquo;ve looked add adding and retrieving documents from a Cloudant database by their key fields - the <code>_id</code> field. There&rsquo;s a good chance that you want your database to be able to do more than that which is where querying comes in.</p>
-<h2 id="making-a-query"><a href="#making-a-query">Making a query</a></h2>
+<h2 id="making-a-query"style="display:inline">Making a query</h2><a class="stealth" href="#making-a-query">🔗</a><br>
 <p>A <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#query">Cloudant Query</a> allows questions to be asked of your Cloudant data, questions such as:</p>
 <ul>
 <li>get me all the documents where the <code>dob</code> field is less than <code>1970-01-01</code></li>
@@ -157,7 +161,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><code>bookmark</code> unlocks access to the <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#pagination">next page of matches</a></li>
 <li><code>warning</code> is cautioning us that we are performing a query which foreces Cloudant to scan the whole database to answer. We can improve performance with an <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#creating-an-index">index</a>, a feature we&rsquo;ll meet later.</li>
 </ul>
-<h2 id="more-complex-clauses"><a href="#more-complex-clauses">More complex clauses</a></h2>
+<h2 id="more-complex-clauses"style="display:inline">More complex clauses</h2><a class="stealth" href="#more-complex-clauses">🔗</a><br>
 <p>Our second query needs to use the <code>$and</code> operator which is fed an array of clauses. The first clause is the same as our first query and we add on a second clause to match by actor name.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
@@ -174,7 +178,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Only documents matching all of the <code>$and</code> clauses will make it to the result set.</p>
-<h2 id="sorting"><a href="#sorting">Sorting</a></h2>
+<h2 id="sorting"style="display:inline">Sorting</h2><a class="stealth" href="#sorting">🔗</a><br>
 <p>The third query adds a <code>sort</code> attribute to the query object:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
@@ -185,7 +189,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>We can <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#sort-syntax">sort</a> by one or more fields in ascending (asc) or descending (desc) order.</p>
-<h2 id="next-time"><a href="#next-time">Next time</a></h2>
+<h2 id="next-time"style="display:inline">Next time</h2><a class="stealth" href="#next-time">🔗</a><br>
 <p>In the next post we&rsquo;ll do all this again, but programmatically in Node.js and  introduce the prospect of expressing our queries in SQL.</p>
 
 </div>

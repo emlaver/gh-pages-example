@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">CouchApp function deprecation</a></h1>
+  <h1 class="p-name">CouchApp function deprecation</h1>
   
   <div class="postmeta">Aug 16, 2022 | Glynn Bird | 
 
-<bx-tag>Deprecation</bx-tag>
+  
+  <bx-tag>Deprecation</bx-tag>
+  
+  <bx-tag>CouchApp</bx-tag>
+  
 
-<bx-tag>CouchApp</bx-tag>
 
-</div>
+  </div>
   
   <p>IBM Cloudant, the Database-as-a-Service based on the Apache CouchDB project, is giving notice that the following features are deprecated:</p>
 <ul>
@@ -136,9 +140,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Photo by <a href="https://unsplash.com/photos/Vfml26Iy4mI">Hal Gatewood on Unsplash</a></p>
 </blockquote>
 <p>Although these features are deprecated, they will not be removed from the service yet. We may completely remove this features in due course, but will leave them operable for the time being to give customers time to modify their applications. As deprecated features, they will not appear in our documentation, their use is not recommended and they will not be supported by our Support team.</p>
-<h2 id="alternatives"><a href="#alternatives">Alternatives</a></h2>
+<h2 id="alternatives"style="display:inline">Alternatives</h2><a class="stealth" href="#alternatives">🔗</a><br>
 <p>Show and List function simply transform single documents and view rows, respectively, within Cloudant before returning data to the client. This functionality can be easily reproduced by transforming Cloudant&rsquo;s usual JSON reponses on the client side.</p>
-<p>Rewrite functions are used in CouchApps, where a web application is hosted by Cloudant - CouchApps <a href="https://blog.cloudant.com/2021/10/20/CouchApps-no-longer-work.html">were deprecated in October 2021</a> so application hosting must be undertaken by a separate web server or hosting provider which can perform the routing logic.</p>
+<p>Rewrite functions are used in CouchApps, where a web application is hosted by Cloudant - CouchApps <a href="https://emlaver.github.io/gh-pages-example/2021/10/20/CouchApps-no-longer-work.html">were deprecated in October 2021</a> so application hosting must be undertaken by a separate web server or hosting provider which can perform the routing logic.</p>
 <p>Update functions have two main use-cases:</p>
 <ol>
 <li>Modifying a document prior to writing - this logic can be transferred into client-side application logic instead i.e. if you need a timestamp recording inside every document written, add this field in your client-side logic.</li>

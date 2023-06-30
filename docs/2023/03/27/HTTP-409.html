@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">HTTP 409</a></h1>
+  <h1 class="p-name">HTTP 409</h1>
   
   <div class="postmeta">Mar 27, 2023 | Glynn Bird | 
 
-<bx-tag>HTTP</bx-tag>
+  
+  <bx-tag>HTTP</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>Cloudant&rsquo;s HTTP API will return a variety of HTTP response codes in reply to API requests. One that causes a good deal of confusion is <code>409 - Document update conflict</code>.</p>
 <blockquote>
@@ -130,7 +134,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/4OhFZSAT3sw">Jan Huber on Unsplash</a></p>
 </blockquote>
-<h2 id="what-dodes-the-http-409-response-mean"><a href="#what-dodes-the-http-409-response-mean">What dodes the HTTP 409 response mean?</a></h2>
+<h2 id="what-dodes-the-http-409-response-mean"style="display:inline">What dodes the HTTP 409 response mean?</h2><a class="stealth" href="#what-dodes-the-http-409-response-mean">🔗</a><br>
 <p>The <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-409-conflict">HTTP RFC</a> states:</p>
 <blockquote>
 <p>The 409 (Conflict) status code indicates that the request could not be completed due to a conflict with the current state of the target resource.</p>
@@ -141,7 +145,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>or, a document is being modified or deleted and the supplied revision has already been superceded.</li>
 </ol>
 <p>Let&rsquo;s explore those scenarios by example:</p>
-<h3 id="the-document-_id-field-must-be-unique"><a href="#the-document-_id-field-must-be-unique">The document _id field must be unique</a></h3>
+<h3 id="the-document-_id-field-must-be-unique"style="display:inline">The document _id field must be unique</h3><a class="stealth" href="#the-document-_id-field-must-be-unique">🔗</a><br>
 <p>Cloudant documents can be created without a document <code>_id</code> and Cloudant will generate a unique <code>_id</code> for you:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a document with Cloudant-generated _id field</span>
 </span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
@@ -162,9 +166,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;error&#34;</span>:<span style="color:#e6db74">&#34;conflict&#34;</span>,<span style="color:#e6db74">&#34;reason&#34;</span>:<span style="color:#e6db74">&#34;Document update conflict.&#34;</span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><blockquote>
-<p>The fix? If you want to supply your own <code>_id</code> field when creating documents, then you are responsible for their uniqueness. See this blog post on <a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">creating time-sortable ids</a>.</p>
+<p>The fix? If you want to supply your own <code>_id</code> field when creating documents, then you are responsible for their uniqueness. See this blog post on <a href="https://emlaver.github.io/gh-pages-example/2018/08/24/Time-sortable-document-ids.html">creating time-sortable ids</a>.</p>
 </blockquote>
-<h3 id="a-document-revision-cant-be-superceded-more-than-once"><a href="#a-document-revision-cant-be-superceded-more-than-once">A document revision can&rsquo;t be superceded more than once</a></h3>
+<h3 id="a-document-revision-cant-be-superceded-more-than-once"style="display:inline">A document revision can&rsquo;t be superceded more than once</h3><a class="stealth" href="#a-document-revision-cant-be-superceded-more-than-once">🔗</a><br>
 <p>If we create a document it will take a <code>1-xxx</code> revision (stored as the <code>_rev</code> attribute in the document). When the document is later updated, the <code>1-xxx</code> revision will become <code>2-yyy</code> where the alpha-numeric sequence after the <code>-</code> represents a hash of the document&rsquo;s content.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a the first revision of a document</span>
 </span></span><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\
@@ -197,7 +201,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>The fix? Supply the &ldquo;rev&rdquo; of the document revision that is to be changed. If that &ldquo;rev&rdquo; has already been superceded, then Cloudant will not accept the change and will return an HTTP 409. A work around is to fetch the document again, to see the current state of the database and then resubmit your request with a different &ldquo;rev&rdquo;.</p>
 </blockquote>
 <p>Note that design patterns which require a document to be modified quickly (multiple times a second) are not a good fit for Cloudant as they can result in conflicts - see next section on document conflicts.</p>
-<h2 id="conflicts"><a href="#conflicts">Conflicts</a></h2>
+<h2 id="conflicts"style="display:inline">Conflicts</h2><a class="stealth" href="#conflicts">🔗</a><br>
 <p>A conflict is a branch in the revision tree. In other words, instead of a document&rsquo;s revision proceeding linearly with revision 1, 2, 3, 4, there are circumstances where there are multiple revisions of same document revision number.</p>
 <p>In the diagram below, on the left we can see an unconflicted revision tree where each new revision supercedes the last. On the right, there is a branch in the revision tree after the second document revision.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/409-1.png" alt="document revision trees"></p>
@@ -206,8 +210,8 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Replication: Cloudant allows data to be replicated to other Cloudant databases, or to Apache CouchDB databases or to mobile applications running PouchDB. When there are multiple copies of data that are connected asynchronously (or perhaps only connected occasionally), it is possible that a document can be modified in two different ways and when the two conficted changes are replicated, both revisions are retained. This is intentional and allows application developers to be assured that conflicting data is not discarded - it can subsequently be repaired by deleting an unwanted revision, merging the conflicted revisions or implementing the <em>conflict revision</em> strategy that best suits the application.</li>
 <li>Fast writes: Cloudant is a distributed database with three copies of each document on separate database nodes. It is possible when updating a document over and over in a short time window that a conflicting write can be accepted by the database (as opposed to being denied with a 409). These spurious conflicts can be eliminated by avoiding design patterns that a require a single document to be modifed very quickly.</li>
 </ol>
-<p>Read more about <a href="https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html">Conflicts</a> and <a href="https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html">how to repair a database with conflicts</a> elsewhere in the Cloudant Blog (although spurious conflicts are best avoided in the first place).</p>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<p>Read more about <a href="https://emlaver.github.io/gh-pages-example/2018/07/25/Removing-Conflicts.html">Conflicts</a> and <a href="https://emlaver.github.io/gh-pages-example/2020/11/26/Repairing-a-Database-With-Conflicts.html">how to repair a database with conflicts</a> elsewhere in the Cloudant Blog (although spurious conflicts are best avoided in the first place).</p>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>If an application gets an HTTP 409 response saying &ldquo;409 - Document update conflict&rdquo;, it doesn&rsquo;t mean that Cloudant has <em>created</em> a document conflict. On the contrary, it means that Cloudant refused to accept the request to <em>avoid creating a conflict</em>.</p>
 
 </div>

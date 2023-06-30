@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,18 +114,21 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Date formats</a></h1>
+  <h1 class="p-name">Date formats</h1>
   
   <div class="postmeta">May 24, 2018 | Glynn Bird | 
 
-<bx-tag>Date</bx-tag>
+  
+  <bx-tag>Date</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p><a href="http://couchdb.apache.org/">Apache CouchDB</a> and IBM Cloudant are JSON document stores and as such don&rsquo;t have a native <em>date</em> type - only the data primitives allowed in the JSON specification.</p>
 <p>Before discussing date storage formats, we should first tackle the issue of timezones. Timezones are <a href="https://www.youtube.com/watch?v=cGXp34c_o48&amp;feature=youtu.be&amp;t=12s">utterly baffling</a> so best practice is to store dates in the <strong>UTC timezone</strong> in the database even if your data originated from many places across the globe. Storing data in the same univeral timezone in the database means all the dates and times in our date store are in the same &ldquo;units&rdquo;. There&rsquo;s nothing stopping your front end app converting these dates into a format according to the locale of each of your users. Using UTC also neatly sidesteps the issue of Daylight Savings Time!</p>
 <p>As to storage formats, there are three options in common use.</p>
-<h2 id="1-store-date-as-a-single-iso-8601-string"><a href="#1-store-date-as-a-single-iso-8601-string">1. Store date as a single ISO-8601 string</a></h2>
+<h2 id="1-store-date-as-a-single-iso-8601-string"style="display:inline">1. Store date as a single ISO-8601 string</h2><a class="stealth" href="#1-store-date-as-a-single-iso-8601-string">🔗</a><br>
 <p>There&rsquo;s an <a href="https://www.iso.org/iso-8601-date-and-time-format.html">international standard</a> for storing date and time as a human and machine readable string:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn&#34;</span>,
@@ -150,7 +154,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/_design/mydesigndoc/_view/myview?group=true&#34;</span>
 </span></span></code></pre></div><p>This produces time-ordered, hierarchical, grouped aggregations of your data.</p>
 <p>What is less obvious is that if you had chosen to store the data in different format, such as <code>2018-05-02 15:02:40</code>, then the call to <code>new Date(doc.datetime)</code> would have failed. This is due to the older version of the SpiderMonkey JavaScript engine used by CouchDB &amp; Cloudant being unable to parse this unrecognised date format.</p>
-<h2 id="2-store-date-as-a-timestamp"><a href="#2-store-date-as-a-timestamp">2. Store date as a timestamp</a></h2>
+<h2 id="2-store-date-as-a-timestamp"style="display:inline">2. Store date as a timestamp</h2><a class="stealth" href="#2-store-date-as-a-timestamp">🔗</a><br>
 <p>Instead of storing your date and time as a string, you could opt to store an integer timestamp instead - specifically, the number of milliseconds since 1 January 1970 00:00:00 UTC.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn&#34;</span>,
@@ -170,7 +174,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">diff</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">getTime</span>() <span style="color:#f92672">-</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">getTime</span>();
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">days</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">diff</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">1000</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span><span style="color:#f92672">*</span><span style="color:#ae81ff">60</span><span style="color:#f92672">*</span><span style="color:#ae81ff">24</span>;
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// 467.9
-</span></span></span></code></pre></div><h2 id="3-store-date-and-time-components-in-separate-fields"><a href="#3-store-date-and-time-components-in-separate-fields">3. Store date and time components in separate fields</a></h2>
+</span></span></span></code></pre></div><h2 id="3-store-date-and-time-components-in-separate-fields"style="display:inline">3. Store date and time components in separate fields</h2><a class="stealth" href="#3-store-date-and-time-components-in-separate-fields">🔗</a><br>
 <p>The third option is to store each date and time component separately:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Glynn&#34;</span>,
@@ -188,7 +192,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>and query the index using the <code>/db/_find</code> endpoint or again, using the dashboard:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/date2.png" alt="date ui"></p>
 <p>If the data were stored in ISO-8601 format, it would not be possible to index or query a single component (e.g. the year) on its own using Cloudant Query.</p>
-<h2 id="date--time-gotchas"><a href="#date--time-gotchas">Date &amp; time gotchas</a></h2>
+<h2 id="date--time-gotchas"style="display:inline">Date &amp; time gotchas</h2><a class="stealth" href="#date--time-gotchas">🔗</a><br>
 <ul>
 <li>Remember that the JavaScript <code>Date.getMonth()</code> and <code>Date.setMonth()</code> functions use number 0-11 to represent months January to December.</li>
 <li>When extracting data from a Javascript <em>Date</em> object, remember it&rsquo;s <code>getDate()</code>, <code>getMonth()+1</code> and <code>getFullYear()</code>, not the function names you might expect!</li>

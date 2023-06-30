@@ -263,10 +263,10 @@
     <loc>https://emlaver.github.io/gh-pages-example/tags/query/</loc>
     <lastmod>2019-11-08T06:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://emlaver.github.io/gh-pages-example/tags/continuous-delivery/</loc>
+    <loc>https://emlaver.github.io/gh-pages-example/tags/cd/</loc>
     <lastmod>2019-11-01T06:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://emlaver.github.io/gh-pages-example/tags/continuous-integration/</loc>
+    <loc>https://emlaver.github.io/gh-pages-example/tags/ci/</loc>
     <lastmod>2019-11-01T06:00:00+00:00</lastmod>
   </url><url>
     <loc>https://emlaver.github.io/gh-pages-example/2019/11/01/Improve-and-then-improve-some-more.html</loc>
@@ -311,7 +311,7 @@
     <loc>https://emlaver.github.io/gh-pages-example/tags/node.js/</loc>
     <lastmod>2019-05-24T06:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://emlaver.github.io/gh-pages-example/tags/partitioned-databases/</loc>
+    <loc>https://emlaver.github.io/gh-pages-example/tags/partitioned/</loc>
     <lastmod>2019-05-24T06:00:00+00:00</lastmod>
   </url><url>
     <loc>https://emlaver.github.io/gh-pages-example/2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html</loc>

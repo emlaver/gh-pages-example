@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Projection</a></h1>
+  <h1 class="p-name">Projection</h1>
   
   <div class="postmeta">Nov 12, 2021 | Glynn Bird | 
 
-<bx-tag>Views</bx-tag>
+  
+  <bx-tag>Views</bx-tag>
+  
+  <bx-tag>Performance</bx-tag>
+  
 
-<bx-tag>Performance</bx-tag>
 
-</div>
+  </div>
   
   <p>Cloudant&rsquo;s MapReduce indexes give you complete control over what data from your primary JSON objects are stored in your secondary indexes. JavaScript functions are used to programmatically decide which document attributes are selected for inclusion as either the <em>key</em> or the <em>value</em> of the views - the JavaScript functions can even be used to process the data before it&rsquo;s saved in the index.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/jeremy-yap-J39X2xX_8CQ-unsplash.jpg" alt="projection"></p>
@@ -129,7 +133,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Photo by <a href="https://unsplash.com/photos/J39X2xX_8CQ">Jeremy Yap on Unsplash</a></p>
 </blockquote>
 <p>In this blog post we&rsquo;ll look at a technique called <em>projection</em> which produces the fastest, most efficient data selection indexes.</p>
-<h2 id="mapreduce-basics"><a href="#mapreduce-basics">MapReduce basics</a></h2>
+<h2 id="mapreduce-basics"style="display:inline">MapReduce basics</h2><a class="stealth" href="#mapreduce-basics">🔗</a><br>
 <p>A <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-creating-views-mapreduce">MapReduce</a> index is defined in two parts</p>
 <ol>
 <li>The Map function - a JavaScript function which is called for each document in the database and chooses what is stored in the index.</li>
@@ -147,7 +151,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>The function uses an <code>if</code> statement to decided whether to index something or nothing. This is called a <em>partial</em> or <em>sparse</em> index as it only contains data for some of the documents. This keeps the index as compact and performant as possible.</li>
 <li>The data emitted has two parts: the <code>key</code> and the <code>value</code> forming the first and second parameters to the <code>emit</code> function. The <code>key</code> determines the order of the index and consequently marries with the <em>access pattern</em> your index is serving i.e. by emitting a key of <code>doc.timestamp</code> we are creating a secondary index in date/time order allowing us to query data by a single timestamp or a range of time values. The <code>value</code> is null - the value is usually used to store data which is aggregated by the <em>reducer</em>, but for the moment we can elect to store nothing here.</li>
 </ul>
-<h2 id="using-the-view"><a href="#using-the-view">Using the view</a></h2>
+<h2 id="using-the-view"style="display:inline">Using the view</h2><a class="stealth" href="#using-the-view">🔗</a><br>
 <p>Once the above view has built, we can invoke the API endpoint associated with our view suppling parameters to define the slice of data we need:</p>
 <ul>
 <li><code>?key=&quot;2021-04-01T10:44:00.000Z&quot;</code> - find documents matching a single timestamp.</li>
@@ -181,11 +185,11 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>]}
 </span></span></code></pre></div><p>The trouble with <code>include_docs=true</code> is it adds extra complexity to the query: Cloudant has to first find the matching view rows from the secondary index and then in a second operation, fetch the matching document bodies. Extra complexity means extra database load and poorer performance.</p>
 <p>How can we avoid doing <code>include_docs=true</code>? Using projection!</p>
-<h2 id="projection"><a href="#projection">Projection</a></h2>
+<h2 id="projection"style="display:inline">Projection</h2><a class="stealth" href="#projection">🔗</a><br>
 <p><em>Projection</em> is the process of storing data in the <em>value</em> portion of the MapReduce index so that it is retrieved at query-time <em>without</em> having to do <code>include_docs=true</code>.</p>
 <p>An index with data projected into the index&rsquo;s value makes for a larger index but as the index&rsquo;s value is stored next to the index&rsquo;s keys, retrieval of the data is much faster than fetching the entire document bodies in a separate operation.</p>
 <p>Projected indexes are the fastest way of retrieving selections of data from a Cloudant database and should be used by users who want the fastest performance and the lowest server load for operational queries.</p>
-<h3 id="projecting-the-entire-document"><a href="#projecting-the-entire-document">Projecting the entire document</a></h3>
+<h3 id="projecting-the-entire-document"style="display:inline">Projecting the entire document</h3><a class="stealth" href="#projecting-the-entire-document">🔗</a><br>
 <p>In this example we&rsquo;re adding the entire document into the index:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">status</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;complete&#39;</span>) {
@@ -207,7 +211,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;GFY67VNMC0J8AQBX&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2020-04-01T01:32:31.487Z&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span>{<span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;GFY67VNMC0J8AQBX&#34;</span>,<span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;1-989788f7d9e2cb881c92c44cdc765eed&#34;</span>,<span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;complete&#34;</span>,<span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2020-04-01T01:32:31.487Z&#34;</span>,<span style="color:#e6db74">&#34;price&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">28.08</span>,<span style="color:#e6db74">&#34;buyer&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;Santina Leal&#34;</span>,<span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;santina_leal3384@gmail.com&#34;</span>,<span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;6443 Ashlands Street , Eccles, Essex, KY8 9JC&#34;</span>,<span style="color:#e6db74">&#34;delivery&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;delivered&#34;</span>}},
 </span></span><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;S7VZS7A31GV1QS96&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2020-04-01T01:55:19.592Z&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span>{<span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;S7VZS7A31GV1QS96&#34;</span>,<span style="color:#e6db74">&#34;_rev&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;1-ea8cf28f1e5c9af038d4120753c513ee&#34;</span>,<span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;complete&#34;</span>,<span style="color:#e6db74">&#34;timestamp&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2020-04-01T01:55:19.592Z&#34;</span>,<span style="color:#e6db74">&#34;price&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">8.99</span>,<span style="color:#e6db74">&#34;buyer&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;Thomas Abreu&#34;</span>,<span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;thomas.abreu@duo.com&#34;</span>,<span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;3250 Turfland Road , Kidsgrove, Radnorshire, EC8 5MQ&#34;</span>,<span style="color:#e6db74">&#34;delivery&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;delivered&#34;</span>}}
 </span></span><span style="display:flex;"><span>]}
-</span></span></code></pre></div><h3 id="projecting-only-the-data-that-is-needed"><a href="#projecting-only-the-data-that-is-needed">Projecting only the data that is needed</a></h3>
+</span></span></code></pre></div><h3 id="projecting-only-the-data-that-is-needed"style="display:inline">Projecting only the data that is needed</h3><a class="stealth" href="#projecting-only-the-data-that-is-needed">🔗</a><br>
 <p>Even better than lazily emitting the entire document into the index&rsquo;s value is to only emit the key/value pairs that your application <em>needs</em>. e.g.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">status</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;complete&#39;</span>) {
@@ -236,7 +240,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;S7VZS7A31GV1QS96&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;2020-04-01T01:55:19.592Z&#34;</span>,<span style="color:#e6db74">&#34;value&#34;</span><span style="color:#f92672">:</span>{<span style="color:#e6db74">&#34;p&#34;</span><span style="color:#f92672">:</span><span style="color:#ae81ff">8.99</span>,<span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;Thomas Abreu&#34;</span>,<span style="color:#e6db74">&#34;e&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;thomas.abreu@duo.com&#34;</span>,<span style="color:#e6db74">&#34;d&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;delivered&#34;</span>}}
 </span></span><span style="display:flex;"><span>]}
 </span></span></code></pre></div><hr>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>Projection of small objects into a MapReduce index&rsquo;s value is the recipe for the fastest performance for boilerplate queries. It is faster and cheaper to execute than a view with <code>?include_docs=true</code> at the expense of a slightly larger index size.</p>
 
 </div>

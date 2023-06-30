@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Automatic Cross-region Failover</a></h1>
+  <h1 class="p-name">Automatic Cross-region Failover</h1>
   
   <div class="postmeta">Jul 1, 2020 | Debatosh Tripathy | 
 
-<bx-tag>Failover</bx-tag>
+  
+  <bx-tag>Failover</bx-tag>
+  
+  <bx-tag>HA</bx-tag>
+  
 
-<bx-tag>HA</bx-tag>
 
-</div>
+  </div>
   
   <p>IBM Cloudant NoSQL database offers high availability through in-region automatic data redundancy by storing data in triplicate across three servers within a single region. In a true sense, achieving high availability and eliminating single point failure couldn’t be accomplished using a single region Cloudant setup. So, to address this, we have to consider doing two things:</p>
 <ol>
@@ -139,13 +143,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Applications that work within an active-active configuration must have a strategy for handling conflicts to avoid problems with multiple copies of data.</li>
 </ul>
 </blockquote>
-<h2 id="target-architecture-with-auto-failover-mechanism"><a href="#target-architecture-with-auto-failover-mechanism">Target architecture with auto-failover mechanism:</a></h2>
+<h2 id="target-architecture-with-auto-failover-mechanism"style="display:inline">Target architecture with auto-failover mechanism:</h2><a class="stealth" href="#target-architecture-with-auto-failover-mechanism">🔗</a><br>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/failover.png" alt=""></p>
-<h2 id="how-does-this-setup-work"><a href="#how-does-this-setup-work">How does this setup work?</a></h2>
+<h2 id="how-does-this-setup-work"style="display:inline">How does this setup work?</h2><a class="stealth" href="#how-does-this-setup-work">🔗</a><br>
 <p>First, we have to configure two CIS load balancers (LB) which points to primary and secondary Cloudant regions respectively. In addition to this, we have to explicitly set the database hostname as the &ldquo;Host Header Override&rdquo; value inside the &ldquo;Page Rules&rdquo; option in the CIS dashboard. Without this, Cloudant won’t honour the request as it would expect the host header value as &ldquo;Cloudant database hostname&rdquo;, whereas it will have the value as &ldquo;CIS load balancer hostname&rdquo;. Adding &ldquo;Host Header Override&rdquo; solves one issue but creates another. As the value inside it is hardcoded, it couldn’t be dynamically changed, so, effectively the load balancer starts behaving like a reverse proxy and can’t load balance between the primary or secondary Cloudant cluster. To get around this problem, we could use the CIS Edge function which could intercept any incoming request for a specific LB URL, before it reaches the actual LB and we could inject custom routing logic in there.</p>
 <p>As shown in the above diagram, the CIS Edge function intercepts the primary CIS LB URL and checks if the primary site/region is up or not by pinging a database document inside it. If the primary site is up, CIS Edge function forwards the call to the primary Cloudant site. If the primary site is nonresponsive and the ping fails, then the request would be redirected to the secondary site/region automatically. As this check would be done on every incoming request to the CIS LB URL, it would add network latency, which could be minimized by adding a monitoring logic which would only check if the site/region is up or not in a specific time interval. For this example, we would use 15 seconds time interval, which means the CIS Edge function will check every 15 seconds if the site is up or not and accordingly forward the request to either primary or secondary Cloudant site.</p>
-<h2 id="steps-involved"><a href="#steps-involved">Steps Involved:</a></h2>
-<h3 id="step-1"><a href="#step-1">Step 1</a></h3>
+<h2 id="steps-involved"style="display:inline">Steps Involved:</h2><a class="stealth" href="#steps-involved">🔗</a><br>
+<h3 id="step-1"style="display:inline">Step 1</h3><a class="stealth" href="#step-1">🔗</a><br>
 <p>Configure primary CIS LB with Cloudant URL for the primary site and set the database hostname as the &ldquo;Host Header Override&rdquo; value inside &ldquo;Page Rules&rdquo; option in the CIS dashboard.
 On the CIS dashboard, you&rsquo;ll see three lists that show the load balancers, origin pools, and health checks.</p>
 <ol>
@@ -164,10 +168,10 @@ On the CIS dashboard, you&rsquo;ll see three lists that show the load balancers,
 <blockquote>
 <p><strong>Note :</strong> For more information on setting up the load balancer, follow this <a href="https://cloud.ibm.com/docs/cis?topic=cis-set-up-and-configure-your-load-balancers">Link</a></p>
 </blockquote>
-<h3 id="step-2"><a href="#step-2">Step 2</a></h3>
+<h3 id="step-2"style="display:inline">Step 2</h3><a class="stealth" href="#step-2">🔗</a><br>
 <p>Configure secondary CIS LB with Cloudant URL for the secondary site and set the database hostname as the &ldquo;Host Header Override&rdquo; value inside &ldquo;Page Rules&rdquo; option in the CIS dashboard.
 Follow the Steps mentioned above.</p>
-<h3 id="step-3"><a href="#step-3">Step 3</a></h3>
+<h3 id="step-3"style="display:inline">Step 3</h3><a class="stealth" href="#step-3">🔗</a><br>
 <p>Create an Action under the CIS Edge function, which would check if the primary Cloudant site is up or not in a specific interval of time. e.g 15 seconds. If it is up, then the request is routed to the primary Cloudant site, if it is down than the request automatically gets forwarded to the secondary site.</p>
 <ul>
 <li>Open the &ldquo;Edge Functions&rdquo; page from the CIS instance dashboard.</li>
@@ -218,7 +222,7 @@ Follow the Steps mentioned above.</p>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">modifiedRequest</span>);
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>} 
-</span></span></code></pre></div><h3 id="step-4"><a href="#step-4">Step 4</a></h3>
+</span></span></code></pre></div><h3 id="step-4"style="display:inline">Step 4</h3><a class="stealth" href="#step-4">🔗</a><br>
 <p>Create a Trigger under the CIS Edge function which would intercept the primary CIS LB URL and invoke the Action we have defined in the earlier step.</p>
 <ul>
 <li>Select the &ldquo;Triggers&rdquo; panel from the Edge Functions page.</li>
@@ -227,7 +231,7 @@ Follow the Steps mentioned above.</p>
 <li>Select the &ldquo;cloudant-db-route&rdquo; action from the drop-down menu.</li>
 <li>Click the &ldquo;Save&rdquo; button.</li>
 </ul>
-<h3 id="step-5"><a href="#step-5">Step 5</a></h3>
+<h3 id="step-5"style="display:inline">Step 5</h3><a class="stealth" href="#step-5">🔗</a><br>
 <p>To check if the failover is working or not, you could temporarily delete the db document in the primary Cloudant cluster which CIS Edge function pings and will return error code other than 200. This would automatically cause the traffic route to secondary cluster within 15 seconds in this case. You could select the db monitoring interval as per the NFR defined for your project.</p>
 
 </div>

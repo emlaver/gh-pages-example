@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,17 +114,20 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Partitioned Databases and Node.js</a></h1>
+  <h1 class="p-name">Partitioned Databases and Node.js</h1>
   
   <div class="postmeta">May 24, 2019 | Glynn Bird | 
 
-<bx-tag>Node.js</bx-tag>
-
-<bx-tag>Partitioned Databases</bx-tag>
-
-</div>
   
-  <p>The Cloudant database has four supported client libraries: <a href="https://github.com/IBM/cloudant-node-sdk">Node.js</a>, <a href="https://github.com/IBM/cloudant-java-sdk">Java</a>, <a href="https://github.com/IBM/cloudant-go-sdk">Go</a>and  <a href="https://github.com/IBM/cloudant-python-sdk">Python</a>. In this post, we&rsquo;ll see examples on how the Node.js library can be used with the new <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partition Databases</a> feature.</p>
+  <bx-tag>Node.js</bx-tag>
+  
+  <bx-tag>Partitioned</bx-tag>
+  
+
+
+  </div>
+  
+  <p>The Cloudant database has four supported client libraries: <a href="https://github.com/IBM/cloudant-node-sdk">Node.js</a>, <a href="https://github.com/IBM/cloudant-java-sdk">Java</a>, <a href="https://github.com/IBM/cloudant-go-sdk">Go</a>and  <a href="https://github.com/IBM/cloudant-python-sdk">Python</a>. In this post, we&rsquo;ll see examples on how the Node.js library can be used with the new <a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partition Databases</a> feature.</p>
 <p>Here&rsquo;s a table of all the functions we&rsquo;ll be using:</p>
 <table>
 <thead>
@@ -210,14 +214,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/EFIvaYLABmU">Amelie Ohlrogge on Unsplash</a></p>
 </blockquote>
-<h2 id="create-database"><a href="#create-database">Create database</a></h2>
+<h2 id="create-database"style="display:inline">Create database</h2><a class="stealth" href="#create-database">🔗</a><br>
 <p>To create a partitioned database, simply add the <code>{ partitioned: true }</code> object as the second parameter to <code>create</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">putDatabase</span>({
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mypartitioneddb&#39;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">partitioned</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { ok: true }
-</span></span></span></code></pre></div><h2 id="insert-data-into-a-partition"><a href="#insert-data-into-a-partition">Insert data into a partition</a></h2>
+</span></span></span></code></pre></div><h2 id="insert-data-into-a-partition"style="display:inline">Insert data into a partition</h2><a class="stealth" href="#insert-data-into-a-partition">🔗</a><br>
 <p>No special functions are required to add data, just remember to supply a two part <code>_id</code> field - <code>&lt;partition_key&gt;:&lt;document_key&gt;</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// document to add - notice the two-part _id
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;canidae:dog&#39;</span>, <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Dog&#39;</span>, <span style="color:#a6e22e">latin</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Canis lupus familiaris&#39;</span> }
@@ -228,7 +232,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  document<span style="color:#f92672">:</span> <span style="color:#a6e22e">doc</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { &#34;ok&#34;: true, &#34;id&#34;: &#34;canidae:dog&#34;, &#34;rev&#34;: &#34;1-3a4c4c5d65709bcb3ec675ec895d4051&#34; }
-</span></span></span></code></pre></div><h2 id="fetch-document-by-_id-from-a-partition"><a href="#fetch-document-by-_id-from-a-partition">Fetch document by _id from a partition</a></h2>
+</span></span></span></code></pre></div><h2 id="fetch-document-by-_id-from-a-partition"style="display:inline">Fetch document by _id from a partition</h2><a class="stealth" href="#fetch-document-by-_id-from-a-partition">🔗</a><br>
 <p>Again, no special functions required here. Just use <code>getDocument</code> to pull back a single document by its <code>_id</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// fetch a document by its id
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">getDocument</span>({
@@ -236,7 +240,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">docId</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;canidae:dog&#39;</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { _id: &#39;canidae:dog&#39;, _rev: &#39;1-3a4c4c5d65709bcb3ec675ec895d4051&#39;, name: &#39;Dog&#39;, latin: &#39;Canis lupus familiaris&#39; }
-</span></span></span></code></pre></div><h2 id="get-partition-info"><a href="#get-partition-info">Get Partition Info</a></h2>
+</span></span></span></code></pre></div><h2 id="get-partition-info"style="display:inline">Get Partition Info</h2><a class="stealth" href="#get-partition-info">🔗</a><br>
 <p>To fetch the information about a single partition, use the <code>partitionInfo</code> function and pass a partition key:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// get partition information from the &#39;canidae&#39; partition
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">getPartitionInformation</span>({
@@ -244,7 +248,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">partitionKey</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;canidae&#39;</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// {&#34;db_name&#34;:&#34;myhost-bluemix/mypartitioneddb&#34;,&#34;sizes&#34;:{&#34;active&#34;:392,&#34;external&#34;:332},&#34;partition&#34;:&#34;canidae&#34;,&#34;doc_count&#34;:4,&#34;doc_del_count&#34;:0}
-</span></span></span></code></pre></div><h2 id="get-all-documents-from-a-partition"><a href="#get-all-documents-from-a-partition">Get all documents from a partition</a></h2>
+</span></span></span></code></pre></div><h2 id="get-all-documents-from-a-partition"style="display:inline">Get all documents from a partition</h2><a class="stealth" href="#get-all-documents-from-a-partition">🔗</a><br>
 <p>To fetch all of the documents from a partition, use the <code>partitionedList</code> function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// fetch all documents in the &#39;canidae&#39; partition, returning document bodies too.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">postPartitionAllDocs</span>({
@@ -253,8 +257,8 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">includeDocs</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { &#34;total_rows&#34;: 4, &#34;offset&#34;: 0, &#34;rows&#34;: [ ... ] }
-</span></span></span></code></pre></div><h2 id="partitioned-cloudant-query"><a href="#partitioned-cloudant-query">Partitioned Cloudant Query</a></h2>
-<h3 id="create-a-partitioned-index"><a href="#create-a-partitioned-index">Create a partitioned index</a></h3>
+</span></span></span></code></pre></div><h2 id="partitioned-cloudant-query"style="display:inline">Partitioned Cloudant Query</h2><a class="stealth" href="#partitioned-cloudant-query">🔗</a><br>
+<h3 id="create-a-partitioned-index"style="display:inline">Create a partitioned index</h3><a class="stealth" href="#create-a-partitioned-index">🔗</a><br>
 <p>To <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#creating-an-index">create an index</a> that is partitioned, ensure that the <code>partitioned: true</code> field is set when calling the <code>postIndex</code> function, to instruct Cloudant to create a partitioned query, instead of a global one:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// index definition
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">indexDef</span> <span style="color:#f92672">=</span> {
@@ -270,7 +274,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">partitioned</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { result: &#39;created&#39;, id: &#39;_design/mydesigndoc&#39;, name: &#39;byName&#39; }
-</span></span></span></code></pre></div><h3 id="find-within-a-partition"><a href="#find-within-a-partition">Find within a partition</a></h3>
+</span></span></span></code></pre></div><h3 id="find-within-a-partition"style="display:inline">Find within a partition</h3><a class="stealth" href="#find-within-a-partition">🔗</a><br>
 <p>To perform a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">Cloudant Query</a> in a single partition, use the <code>partitionedFind</code> (or <code>partitionedFindAsStream</code>) function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// find document whose name is &#39;wolf&#39; in the &#39;canidae&#39; partition
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">postPartitionFind</span>({
@@ -279,8 +283,8 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">selector</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#39;name&#39;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;Wolf&#39;</span> }
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { &#34;docs&#34;: [ ... ], &#34;bookmark&#34;: &#34;...&#34; }  
-</span></span></span></code></pre></div><h2 id="partitioned-search"><a href="#partitioned-search">Partitioned Search</a></h2>
-<h3 id="create-a-partitioned-search-index"><a href="#create-a-partitioned-search-index">Create a partitioned search index</a></h3>
+</span></span></span></code></pre></div><h2 id="partitioned-search"style="display:inline">Partitioned Search</h2><a class="stealth" href="#partitioned-search">🔗</a><br>
+<h3 id="create-a-partitioned-search-index"style="display:inline">Create a partitioned search index</h3><a class="stealth" href="#create-a-partitioned-search-index">🔗</a><br>
 <p>To create <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search">Cloudant Search</a> index that is partitioned, write a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-design-documents">Design Document</a> to the database containing the index definition. Use <code>options.partitioned = true</code> to specify that this is a partitioned index:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">// the search definition
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">func</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
@@ -305,7 +309,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ddoc</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;searchddoc&#39;</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { ok: true, id: &#39;_design/searchddoc&#39;, rev: &#39;1-e7257e575d666ca062b4fe0bdeb6fba1&#39; }
-</span></span></span></code></pre></div><h3 id="search-within-a-partition"><a href="#search-within-a-partition">Search within a partition</a></h3>
+</span></span></span></code></pre></div><h3 id="search-within-a-partition"style="display:inline">Search within a partition</h3><a class="stealth" href="#search-within-a-partition">🔗</a><br>
 <p>To perform a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search">Cloudant Search</a> against a pre-existing Cloudant search index, use the <code>partitionedSearch</code> function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">postPartitionSearch</span>({
@@ -316,8 +320,8 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">query</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;name:\&#39;Wolf\&#39;&#39;</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { total_rows: ... , bookmark: ..., rows: [ ...] }
-</span></span></span></code></pre></div><h2 id="mapreduce-views"><a href="#mapreduce-views">MapReduce Views</a></h2>
-<h2 id="creating-a-partitioned-mapreduce-view"><a href="#creating-a-partitioned-mapreduce-view">Creating a partitioned MapReduce view</a></h2>
+</span></span></span></code></pre></div><h2 id="mapreduce-views"style="display:inline">MapReduce Views</h2><a class="stealth" href="#mapreduce-views">🔗</a><br>
+<h2 id="creating-a-partitioned-mapreduce-view"style="display:inline">Creating a partitioned MapReduce view</h2><a class="stealth" href="#creating-a-partitioned-mapreduce-view">🔗</a><br>
 <p>To create a MapReduce view, ensure the <code>options.partitioned</code> flag is set to <code>true</code> to indicate to Cloudant that this is a partitioned rather than a global view:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">func</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">family</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">weight</span>)
@@ -343,7 +347,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">ddoc</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;viewddoc&#39;</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { ok: true, id: &#39;_design/viewddoc&#39;, rev: &#39;1-a062b4fe0bdeb6fbe7257e575d666ca1&#39; }
-</span></span></span></code></pre></div><h2 id="querying-a-partitioned-mapreduce-view"><a href="#querying-a-partitioned-mapreduce-view">Querying a partitioned MapReduce view</a></h2>
+</span></span></span></code></pre></div><h2 id="querying-a-partitioned-mapreduce-view"style="display:inline">Querying a partitioned MapReduce view</h2><a class="stealth" href="#querying-a-partitioned-mapreduce-view">🔗</a><br>
 <p>To direct a query to a pre-existing partitioned MapReduce view, use the <code>partitionedView</code> (or <code>partitionedViewAsStream</code>) function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> {}
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">postPartitionView</span>({
@@ -355,7 +359,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">view</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;familyweight&#39;</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { rows: [ { key: ... , value: [Object] } ] }
-</span></span></span></code></pre></div><h2 id="global-indexes"><a href="#global-indexes">Global indexes</a></h2>
+</span></span></span></code></pre></div><h2 id="global-indexes"style="display:inline">Global indexes</h2><a class="stealth" href="#global-indexes">🔗</a><br>
 <p>A partitioned database may still have <em>global</em> Cloudant Query, Cloudant Search and MapReduce indexes. Create the indexes as normal but be sure to supply <code>false</code> as the <code>partitioned</code> flag, to indicate you need a global index. Then query your index as normal using <code>client.postFind</code>, <code>client.postSearch</code> or <code>client.postView</code>.</p>
 
 </div>

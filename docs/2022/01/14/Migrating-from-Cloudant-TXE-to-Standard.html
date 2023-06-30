@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Migrating from TXE</a></h1>
+  <h1 class="p-name">Migrating from TXE</h1>
   
   <div class="postmeta">Jan 14, 2022 | Glynn Bird | 
 
-<bx-tag>Migration</bx-tag>
+  
+  <bx-tag>Migration</bx-tag>
+  
+  <bx-tag>TXE</bx-tag>
+  
 
-<bx-tag>TXE</bx-tag>
 
-</div>
+  </div>
   
   <p>In this blog post we&rsquo;ll show how data stored in a Cloudant on Transaction Engine (TXE) instance can be easily migrated to Cloudant Standard. There are few differences betweeen the two offerrings, so we&rsquo;ll explore ways to avoid any pitfalls along the way.</p>
 <p>There isn&rsquo;t a way of converting an existing account from TXE to Standard, so the first step is to provision a new Cloudant Standard account.</p>
@@ -129,7 +133,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/faCwTallTC0">Julia Craice on Unsplash</a></p>
 </blockquote>
-<h2 id="create-a-new-cloudant-standard-account"><a href="#create-a-new-cloudant-standard-account">Create a new Cloudant Standard account</a></h2>
+<h2 id="create-a-new-cloudant-standard-account"style="display:inline">Create a new Cloudant Standard account</h2><a class="stealth" href="#create-a-new-cloudant-standard-account">🔗</a><br>
 <p>In the IBM Cloud Dashboard, locate the <a href="https://cloud.ibm.com/catalog/services/cloudant">Cloudant service</a> and complete the form to create a new Cloudant Standard service:</p>
 <ul>
 <li>Choose &ldquo;Standard&rdquo; as the plan.</li>
@@ -138,13 +142,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Note Cloudant Standard offers two authentication mechanisms: IAM only, or IAM and Legacy Credentials. TXE only has IAM.</p>
 </blockquote>
-<h2 id="create-new-empty-databases"><a href="#create-new-empty-databases">Create new empty databases</a></h2>
+<h2 id="create-new-empty-databases"style="display:inline">Create new empty databases</h2><a class="stealth" href="#create-new-empty-databases">🔗</a><br>
 <p>For each of your databases that needs to be copied over, in the new Cloudant Standard dashboard choose &ldquo;Create Database&rdquo; and enter the name of the database to create a new, empty target database.</p>
 <blockquote>
 <p>Note Cloudant Standard has two types of databases: partitioned and non-partitioned. As all of your TXE databases will be non-partitioned, choose the &ldquo;non-partitioned&rdquo; option.</p>
 </blockquote>
 <p>We will also need a <code>_replicator</code> database in the Cloudant Standard instance which will handle the replication jobs. Follow the same steps to create a new, empty <code>_replicator</code> database.</p>
-<h2 id="replicating-the-data"><a href="#replicating-the-data">Replicating the data</a></h2>
+<h2 id="replicating-the-data"style="display:inline">Replicating the data</h2><a class="stealth" href="#replicating-the-data">🔗</a><br>
 <p>Cloudant&rsquo;s replication capabilities can be used to copy the data from the source (Cloudant TXE) to the target (Standard) and it is recommend to use the Standard account to mediate the replication - i.e. we will be sending our replication document to the Standard account and it will &ldquo;pull&rdquo; the data from TXE.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/migratingtxe1.png" alt="replication plan"></p>
 <p>You&rsquo;ll need a replication document for each of the TXE databases that are to be copied over. Generate the JSON ahead of time and then add a document for each database to the Cloudant Standard account&rsquo;s <code>_replicator</code> database:</p>
@@ -181,20 +185,20 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Note if you have a large number of databases, it is advisable to copy databases over in small batches. Copying databases one at a time makes it easier to monitor.</p>
 </blockquote>
-<h2 id="differences-between-txe-and-standard"><a href="#differences-between-txe-and-standard">Differences between TXE and Standard</a></h2>
+<h2 id="differences-between-txe-and-standard"style="display:inline">Differences between TXE and Standard</h2><a class="stealth" href="#differences-between-txe-and-standard">🔗</a><br>
 <p>Before we switch application traffic over to the new Cloudant Standard URL, we need to do some checks to make sure everything is in order. Here are some pitfalls that should be avoided.</p>
-<h3 id="javascript-versions"><a href="#javascript-versions">JavaScript versions</a></h3>
+<h3 id="javascript-versions"style="display:inline">JavaScript versions</h3><a class="stealth" href="#javascript-versions">🔗</a><br>
 <p>Cloudant TXE allows newer (ES6) JavaScript syntax than Cloudant Standard, so it&rsquo;s worth querying each of your secondary indexes to make sure they&rsquo;re returning the data you are expecting. If you are seeing errors, then simplify your JavaScript code: <code>var</code> instead of <code>const</code>/<code>let</code>, simple <code>for</code> loops and conditional statements.</p>
 <blockquote>
 <p>Note that if you modify an index definition, then the secondary index will need to rebuild again.</p>
 </blockquote>
-<h3 id="other-differences"><a href="#other-differences">Other differences</a></h3>
+<h3 id="other-differences"style="display:inline">Other differences</h3><a class="stealth" href="#other-differences">🔗</a><br>
 <ul>
 <li>Cloudant TXE has its own Pagination API, where as Cloudant Standard has a different set of <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-pagination-and-bookmarks">parameters for each query method</a>.</li>
 <li>The two products have different <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-feature-comparison#pricing-feature-compare">pricing models</a> so the billing for the same apps running on each would likely be different.</li>
 <li>There are <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-feature-comparison">service limit</a> differences between the two products. Cloudant Standard is more permissive, so this is unlikely to cause problems.</li>
 <li>Cloudant TXE&rsquo;s changes feed is linearized where as Cloudant Standard&rsquo;s guarantees to give you each change at least once - so duplicates are possible.</li>
-<li>Cloudant TXE does not create in-region conflicts, but they are possible with Cloudant Standard, especially if a document is modified over and over in short time window. See <a href="https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html">Best &amp; Worst Practice</a> for Cloudant Standard.</li>
+<li>Cloudant TXE does not create in-region conflicts, but they are possible with Cloudant Standard, especially if a document is modified over and over in short time window. See <a href="https://emlaver.github.io/gh-pages-example/2019/11/21/Best-and-Worst-Practices.html">Best &amp; Worst Practice</a> for Cloudant Standard.</li>
 </ul>
 
 </div>

@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,20 +114,21 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Partitioned Databases - Data Design</a></h1>
+  <h1 class="p-name">Partitioned Databases - Data Design</h1>
   
   <div class="postmeta">Mar 5, 2019 | Glynn Bird | 
 
-<bx-tag>Partitioned Databases</bx-tag>
+  
+  <bx-tag>Partitioned</bx-tag>
+  
+  <bx-tag>Indexing</bx-tag>
+  
 
-<bx-tag>Indexing</bx-tag>
 
-<bx-tag>Query</bx-tag>
-
-</div>
+  </div>
   
   <blockquote>
-<p>This is the second part of a series of posts on Partitioned Databases in Cloudant. <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Part One</a>, <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">Part Three</a> and <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html">Part Four</a> may also be of interest.</p>
+<p>This is the second part of a series of posts on Partitioned Databases in Cloudant. <a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Part One</a>, [Part Three][3] and [Part Four][4] may also be of interest.</p>
 </blockquote>
 <p>Modelling data with a JSON document store is very different from modelling data in a relational database system. Generations of computer scientists have been taught how to <a href="https://en.wikipedia.org/wiki/Database_normalization">normalize data</a> into tables, that is organising data into their own collections so that information is not repeated and relationships between collections are modelled with foreign keys.</p>
 <p>Organising data in a &ldquo;NoSQL&rdquo; database like Cloudant makes &ldquo;joins&rdquo; prohibitively expensive and as a result the data design may involve the repetition of data. As with any data modelling exercise, there should be careful consideration of how the data is to be consumed - it is these &ldquo;access patterns&rdquo; that, together with database&rsquo;s best practise documentation, will influence how data is represented in the JSON documents.</p>
@@ -146,7 +148,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/5-MNAjL81Iw">Toa Heftiba on Unsplash</a></p>
 </blockquote>
-<h2 id="the-products-database"><a href="#the-products-database">The products database</a></h2>
+<h2 id="the-products-database"style="display:inline">The products database</h2><a class="stealth" href="#the-products-database">🔗</a><br>
 <p>The <em>products</em> database contains one document per sellable product. Products are categorised into a taxonomy of categories e.g. &ldquo;Home &gt; Kitchen &gt; Small Appliances&rdquo;, a hierarchy which is surfaced in the website as a clickable menu of category names.</p>
 <p>Each product has a simple list of attributes, some of which are searchable (e.g. keywords) others (e.g. image) are used to render the front-end web page or mobile app.</p>
 <p>The document&rsquo;s _id contains:</p>
@@ -170,7 +172,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;delivery&#34;</span>; <span style="color:#ae81ff">0</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;image&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;assets/img/0gmsnghhew.jpg&#34;</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="users-database"><a href="#users-database">Users database</a></h2>
+</span></span></code></pre></div><h2 id="users-database"style="display:inline">Users database</h2><a class="stealth" href="#users-database">🔗</a><br>
 <p>The <em>users</em> database stores details about the registered users of our store. We store:</p>
 <ul>
 <li>1 core document per user.</li>
@@ -205,7 +207,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;address&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;22 Central Tower, Newcastle, NE1 4JD&#34;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;default&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="orders-database"><a href="#orders-database">Orders database</a></h2>
+</span></span></code></pre></div><h2 id="orders-database"style="display:inline">Orders database</h2><a class="stealth" href="#orders-database">🔗</a><br>
 <p>An order consists of a number of documents written to the database when a shopping basket of items is paid for:</p>
 <ul>
 <li>1 core &ldquo;order&rdquo; document containing meta data.</li>
@@ -278,7 +280,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;courier&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;UPS&#34;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;courierid&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;15125425151261289&#34;</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="querying-the-partitions"><a href="#querying-the-partitions">Querying the partitions</a></h2>
+</span></span></code></pre></div><h2 id="querying-the-partitions"style="display:inline">Querying the partitions</h2><a class="stealth" href="#querying-the-partitions">🔗</a><br>
 <p>The database already indexes each document&rsquo;s <code>_id</code> field and with <em>partitioned databases</em>, documents belonging to the same partition reside on the same shard, making querying data in a single partition very efficient. We&rsquo;ve made use of partitions to keep:</p>
 <ul>
 <li>products belonging to the same category in a partition per category.</li>
@@ -286,7 +288,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>users and other user meta data is stored in a partition per user.</li>
 </ul>
 <p>Here&rsquo;s how we can use Cloudant Query to fetch documents from these partitions.</p>
-<h3 id="fetch-products-belonging-a-category"><a href="#fetch-products-belonging-a-category">Fetch products belonging a category</a></h3>
+<h3 id="fetch-products-belonging-a-category"style="display:inline">Fetch products belonging a category</h3><a class="stealth" href="#fetch-products-belonging-a-category">🔗</a><br>
 <p>To fetch the first one hundred products from the <code>Home#Kitchen#Small Appliances</code> category, we can simply send a blank <em>selector</em> to the partition&rsquo;s <code>_find</code> endpoint:</p>
 <pre tabindex="0"><code>POST /products/_partition/Home%23Kitchen%23Small%20Appliances/_find
 {
@@ -295,7 +297,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 }
 </code></pre><p>Alternatively, the <code>_all_docs</code> endpoint can be used to fetch all the data from a partition</p>
 <pre tabindex="0"><code>GET /products/_partition/Home%23Kitchen%23Small%20Appliances/_all_docs
-</code></pre><h3 id="searching-within-a-known-category"><a href="#searching-within-a-known-category">Searching within a known category</a></h3>
+</code></pre><h3 id="searching-within-a-known-category"style="display:inline">Searching within a known category</h3><a class="stealth" href="#searching-within-a-known-category">🔗</a><br>
 <p>If we know the product category (perhaps the user has navigated to the &ldquo;Home#Kitchen#Small Appliances&rdquo; page), we can search for products within that partition by first defining a partitioned index and then querying it. A query aimed at a single partition and serviced by a pre-defined index constitutes best practice for a Cloudant database.</p>
 <p>We can define a partial Cloudant Search index with a JavaScript function</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
@@ -312,7 +314,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></code></pre></div><p>Queries can be directed to a single partition with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl $URL/products/_partition/Home%23Kitchen%23Small%20Appliances/_design/mydesigndoc/_search/mysearchindex?q<span style="color:#f92672">=</span>salter+scales+red
 </span></span></code></pre></div><p>Note that an index defined on a partitioned database is itself partitioned by default, although this behaviour can be overridden by supplying a <code>partitioned: false</code> flag at query-time to create a <em>global index</em>.</p>
-<h3 id="fetch-order-data"><a href="#fetch-order-data">Fetch order data</a></h3>
+<h3 id="fetch-order-data"style="display:inline">Fetch order data</h3><a class="stealth" href="#fetch-order-data">🔗</a><br>
 <p>Similarly, all of an order&rsquo;s details can be fetched by pulling all of the data from the order&rsquo;s partition:</p>
 <pre tabindex="0"><code>GET /orders/_partition/order555/_all_docs
 </code></pre><p>If we only need the line items from the order we can be more specific:</p>
@@ -325,7 +327,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 }
 </code></pre><p>If we only need the top-level meta data we can be even more selective: in fact, we don&rsquo;t even need to perform a query - we can simply fetch the document by its <code>_id</code>:</p>
 <pre tabindex="0"><code>GET /orders/order555:order
-</code></pre><h3 id="fetch-user-data"><a href="#fetch-user-data">Fetch user data</a></h3>
+</code></pre><h3 id="fetch-user-data"style="display:inline">Fetch user data</h3><a class="stealth" href="#fetch-user-data">🔗</a><br>
 <p>The same technique can be used for the users database:</p>
 <pre tabindex="0"><code>GET /users/_partition/user19952622/_all_docs
 </code></pre><p>or we could fetch a user&rsquo;s default postal address with this query:</p>
@@ -337,7 +339,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   },
   &#34;fields&#34;: [&#34;address&#34;]
 }
-</code></pre><h2 id="querying-the-whole-data-set---indexing"><a href="#querying-the-whole-data-set---indexing">Querying the whole data set - Indexing</a></h2>
+</code></pre><h2 id="querying-the-whole-data-set---indexing"style="display:inline">Querying the whole data set - Indexing</h2><a class="stealth" href="#querying-the-whole-data-set---indexing">🔗</a><br>
 <p>In addition to the default primary index, we can define secondary indicies to instruct the database to create additional data structures, ordering the documents by different attributes. The secondary indicies can service additional access patterns we need for our application. Here&rsquo;s some examples:</p>
 <ul>
 <li>Product Search - a user needs to be able to perform a free-text search for products across all categories or within a single category.</li>
@@ -347,7 +349,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Authentication - for authentication we need to pull back the &ldquo;auth&rdquo; document for a user of a known email address.</li>
 </ul>
 <p>Let&rsquo;s dive into the detail of how we would achieve each of these use-cases using different features of Cloudant.</p>
-<h3 id="indexing---product-search"><a href="#indexing---product-search">Indexing - Product Search</a></h3>
+<h3 id="indexing---product-search"style="display:inline">Indexing - Product Search</h3><a class="stealth" href="#indexing---product-search">🔗</a><br>
 <p>In order to allow the user to search products with a string of words e.g. &ldquo;Salter Scales Red&rdquo; or &ldquo;Digital Aquatronic&rdquo;, we need to index each document&rsquo;s searchable words and employ a &ldquo;free text&rdquo; search engine. Cloudant has a free text search engine built in in the form of its <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#search">Cloudant Search</a> API. An index is defined with a JavaScript index definition function inside a design document. The function calls <code>index</code> to instruct the database to index selected data items. Here&rsquo;s an example:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;product&#39;</span>) {
@@ -369,7 +371,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Query the data by weighting some fields more than others e.g. matches to the product name are worth more than matches to the product description. See <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#query-syntax">here</a>.</li>
 </ul>
 <p>Note that in order to create an index that spans all the partitions, we need to supply <code>partitioned: false</code> in the design document that defines the index. See <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#creating-a-global-view-index">documentation</a></p>
-<h3 id="indexing---orders-by-customer"><a href="#indexing---orders-by-customer">Indexing - Orders by Customer</a></h3>
+<h3 id="indexing---orders-by-customer"style="display:inline">Indexing - Orders by Customer</h3><a class="stealth" href="#indexing---orders-by-customer">🔗</a><br>
 <p>In our website&rsquo;s dashboard, we need to display a single user&rsquo;s order history. To service this access pattern, the <em>orders</em> database needs a <em>global</em> secondary index on the <code>userid</code> and <code>date</code> fields.</p>
 <p>To create an index that only works on documents where <code>type=&quot;order&quot;</code> and is indexed by <code>userid</code> and <code>date</code> we POST the following JSON to the <code>/orders/_index</code> endpoint:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
@@ -397,7 +399,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>   },
 </span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;use_index&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orders-by-customer-index&#34;</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="indexing---orders-by-time"><a href="#indexing---orders-by-time">Indexing - Orders by Time</a></h3>
+</span></span></code></pre></div><h3 id="indexing---orders-by-time"style="display:inline">Indexing - Orders by Time</h3><a class="stealth" href="#indexing---orders-by-time">🔗</a><br>
 <p>In order to get all orders ordered by time, we need to create another <em>global</em> Cloudant Query index, again only including the core order documents and ordering by the <code>date</code> field:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;index&#34;</span><span style="color:#f92672">:</span> {
@@ -421,7 +423,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>   },
 </span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;use_index&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;orders-by-date&#34;</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="indexing---sales-report"><a href="#indexing---sales-report">Indexing - Sales Report</a></h3>
+</span></span></code></pre></div><h3 id="indexing---sales-report"style="display:inline">Indexing - Sales Report</h3><a class="stealth" href="#indexing---sales-report">🔗</a><br>
 <p>Performing aggregations for reporting purposes requires the use of Cloudant&rsquo;s MapReduce feature. A JavaScript function, embedded in a design document, is called by Cloudant for every document in the database. The function emits the keys/value pairs that define the ordering and grouping of the data and which fields are to be aggregated. Here&rsquo;s an example function that emits orders by year/month/day:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;order&#34;</span>) {
@@ -437,7 +439,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>By choosing the <code>_sum</code> reducer, we instruct Cloudant to totalise the emitted value (<code>doc.total</code>). The MapReduce query engine allows data to be grouped by year/month/day, year/month, year or to group all the data to produce a grand total. In addition, the data can be filtered between <code>startkey</code> and <code>endkey</code> key values and the reducer can be switched off at query-time to just extract data between two dates.</p>
 <p>Note that in order to create an index that spans all the partitions, we need to supply <code>partitioned: false</code> in the design document that defines the index. See <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#creating-a-global-view-index">documentation</a></p>
-<h3 id="indexing---authentication"><a href="#indexing---authentication">Indexing - Authentication</a></h3>
+<h3 id="indexing---authentication"style="display:inline">Indexing - Authentication</h3><a class="stealth" href="#indexing---authentication">🔗</a><br>
 <p>When a user is logging in, we can&rsquo;t do partitioned query on our <code>users</code> database because we don&rsquo;t yet know the user&rsquo;s <code>userid</code>. We have to create a secondary index on the user&rsquo;s email address and select a user record by the email field. We can reduce the index size by using a <code>partial_filter_selector</code> to only include the main user records that are active and have been verified:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;index&#34;</span><span style="color:#f92672">:</span> {
@@ -463,17 +465,20 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>   <span style="color:#e6db74">&#34;use_index&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;users-by-email&#34;</span>,
 </span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">fields</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#34;userid&#34;</span>, <span style="color:#e6db74">&#34;password&#34;</span>, <span style="color:#e6db74">&#34;salt&#34;</span>]
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="summary"><a href="#summary">Summary</a></h2>
+</span></span></code></pre></div><h2 id="summary"style="display:inline">Summary</h2><a class="stealth" href="#summary">🔗</a><br>
 <p>The Cloudant partial databases feature provides a step change in query performance for data designs that use the <code>_id</code> field to store a partition key and a document key. Careful data design can ensure that data that belongs together, and that you application expects to query in isolation, is stored in its own partition. Queries directed at a single partition only use fraction of the computing resource of a &ldquo;whole database&rdquo; query, resulting in faster performance and lower per-query pricing.</p>
 <p>Other use-cases and access patterns can be serviced by secondary indexes that span <em>all</em> the partitions.</p>
-<h2 id="further-reading"><a href="#further-reading">Further reading</a></h2>
+<h2 id="further-reading"style="display:inline">Further reading</h2><a class="stealth" href="#further-reading">🔗</a><br>
 <ul>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">Partitioned databases - Data Migration</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html">Partitioned databases - Partition sizing</a></li>
-<li><a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#partitioned-databases">Partitioned databases - Cloudant Documentation</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
+<li>[Partitioned databases - Data Migration][3]</li>
+<li>[Partitioned databases - Partition sizing][4]</li>
+<li>[Partitioned databases - Cloudant Documentation][5]</li>
 </ul>
+<p>[3]: {{ ref &ldquo;2019-03-05-Partition-Databases-Data-Migration.md&rdquo; &gt;}}
+[4]: {{ ref &ldquo;2019-03-05-Partition-Databases-Sizing.md&rdquo; &gt;}}
+[5]: <a href="https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases">https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases</a></p>
 
 </div>
 </div>

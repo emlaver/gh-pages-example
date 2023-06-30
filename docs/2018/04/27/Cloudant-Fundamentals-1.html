@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Cloudant Fundamentals 1/10</a></h1>
+  <h1 class="p-name">Cloudant Fundamentals 1/10</h1>
   
   <div class="postmeta">Apr 27, 2018 | Glynn Bird | 
 
-<bx-tag>Fundamentals</bx-tag>
+  
+  <bx-tag>Fundamentals</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p><a href="https://www.ibm.com/cloud/cloudant">Cloudant</a> is a JSON document store, based on <a href="http://couchdb.apache.org/">Apache CouchDB</a>, running as-a-service in the IBM Cloud. The form of JSON you store in the database is up to you. You don&rsquo;t need to tell the database about the <em>schema</em> you&rsquo;re using ahead of time.</p>
 <p>Here&rsquo;s a typical document:</p>
@@ -152,15 +156,15 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/fvC5KxA5mPw?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Kristina Tripkovic</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a>.</p>
 </blockquote>
-<h2 id="rules-of-thumb"><a href="#rules-of-thumb">Rules of thumb</a></h2>
-<h3 id="avoid-thinking-in-joins"><a href="#avoid-thinking-in-joins">Avoid thinking in joins</a></h3>
+<h2 id="rules-of-thumb"style="display:inline">Rules of thumb</h2><a class="stealth" href="#rules-of-thumb">🔗</a><br>
+<h3 id="avoid-thinking-in-joins"style="display:inline">Avoid thinking in joins</h3><a class="stealth" href="#avoid-thinking-in-joins">🔗</a><br>
 <p>Cloudant doesn&rsquo;t do joins like a relational database, so the JSON objects tend to be denormalised (i.e., contain repetitions of data held elsewhere)ok . Don&rsquo;t try to  model your data in a relational way and join it yourself in your app.</p>
-<h3 id="size-matters"><a href="#size-matters">Size matters</a></h3>
+<h3 id="size-matters"style="display:inline">Size matters</h3><a class="stealth" href="#size-matters">🔗</a><br>
 <p>Cloudant will refuse to store documents over 1MB in size, but you shouldn&rsquo;t be going anywhere near that hard limit. The example document above is less than 1KB.</p>
-<h3 id="schemaless-doesnt-mean-schema-free"><a href="#schemaless-doesnt-mean-schema-free">Schemaless doesn&rsquo;t mean schema-free</a></h3>
+<h3 id="schemaless-doesnt-mean-schema-free"style="display:inline">Schemaless doesn&rsquo;t mean schema-free</h3><a class="stealth" href="#schemaless-doesnt-mean-schema-free">🔗</a><br>
 <p>Although Cloudant won&rsquo;t object if you use a different schema for each document in your database, that&rsquo;s probably not what you want. One of the first things I do when creating a new project is design the schema, in other words sketch the JSON that represents the objects I&rsquo;m going to save and the data types of each key. I don&rsquo;t have to tell <em>Cloudant</em> what the schema is, but that doesn&rsquo;t mean I shouldn&rsquo;t give careful consideration to my data model before I jump into the code.</p>
 <p>Unlike other databases, Cloudant doesn&rsquo;t enforce data types or mandatory fields or permitted ranges of values, but it&rsquo;s likely that you still want to do that in your app.</p>
-<h3 id="multiple-object-types-in-the-same-database"><a href="#multiple-object-types-in-the-same-database">Multiple object types in the same database</a></h3>
+<h3 id="multiple-object-types-in-the-same-database"style="display:inline">Multiple object types in the same database</h3><a class="stealth" href="#multiple-object-types-in-the-same-database">🔗</a><br>
 <p>One widely used pattern that is odd to folks coming from a relational background is storing different object types in the same database. You could have blog posts and authors in the same Cloudant database using their own separate schema. One convention is to use the <code>type</code> field to indicate which flavour of object it is.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;post&#34;</span>,
@@ -178,7 +182,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;email&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;john.doe@myspace.com&#34;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;confirmed&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="write-only-document-patterns"><a href="#write-only-document-patterns">Write-only document patterns</a></h3>
+</span></span></code></pre></div><h3 id="write-only-document-patterns"style="display:inline">Write-only document patterns</h3><a class="stealth" href="#write-only-document-patterns">🔗</a><br>
 <p>Cloudant allows documents to be updated, but not on a field-by-field basis. For example, your e-commerce site can&rsquo;t do:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">UPDATE</span> stock <span style="color:#66d9ef">SET</span> stock_level <span style="color:#f92672">=</span> stock_level  <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">WHERE</span> product_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;45&#39;</span>
 </span></span></code></pre></div><p>Your app would have to fetch the whole document and write the whole, modified document back to the database.</p>
@@ -189,7 +193,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p>The sum of the stock levels could then be calculated for each product by aggregating the documents. Using this technique you are only ever <em>writing</em> documents, not updating an existing document over and over.</p>
 <p>If you&rsquo;re interested in data modelling, then be sure to read <a href="https://console.bluemix.net/docs/services/Cloudant/guides/model_data.html#my-top-5-tips-for-modelling-your-data-to-scale">this guide</a> from the Cloudant documentation and watch Joan Touzet&rsquo;s excellent talk <a href="https://www.youtube.com/watch?v=BKQ9kXKoHS8">10 Common Misconceptions about CouchDB</a>.</p>
-<h2 id="next-time"><a href="#next-time">Next time</a></h2>
+<h2 id="next-time"style="display:inline">Next time</h2><a class="stealth" href="#next-time">🔗</a><br>
 <p>Next time we&rsquo;ll look at a vital component of a Cloudant document: the <code>_id</code> field.</p>
 
 </div>

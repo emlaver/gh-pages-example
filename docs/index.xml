@@ -514,7 +514,7 @@ a searchable database of your customers, with the customer name, description and
       <pubDate>Tue, 05 Mar 2019 09:00:00 +0000</pubDate>
       
       <guid>https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Sizing.html</guid>
-      <description>This is the fourth part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and Part Three may also be of interest.
+      <description>This is the fourth part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and [Part Three][3] may also be of interest.
 Choosing a partition key for a partitioned Cloudant databases is about selecting an attribute that has:
 Many values - lots of small partitions are better than a few large ones. No hot spots - avoid designing a system that makes one partition handle a high proportion of the workload.</description>
     </item>
@@ -525,7 +525,7 @@ Many values - lots of small partitions are better than a few large ones. No hot 
       <pubDate>Tue, 05 Mar 2019 08:00:00 +0000</pubDate>
       
       <guid>https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Data-Migration.html</guid>
-      <description>This is the third part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and Part Four may also be of interest.
+      <description>This is the third part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Two and [Part Four][4] may also be of interest.
 Cloudant&amp;rsquo;s new Partitioned Databases feature allows a Cloudant database to be organised into partitions (blocks of data guaranteed to reside on the same database shard) by specifying a two part _id field consisting of the parition and document id e.g.
 { &amp;#34;_id&amp;#34;: &amp;#34;US:52412&amp;#34;, &amp;#34;name&amp;#34;: &amp;#34;Boston&amp;#34;, &amp;#34;state&amp;#34;: &amp;#34;Massachusetts&amp;#34;, &amp;#34;country&amp;#34;: &amp;#34;US&amp;#34; .</description>
     </item>
@@ -536,7 +536,7 @@ Cloudant&amp;rsquo;s new Partitioned Databases feature allows a Cloudant databas
       <pubDate>Tue, 05 Mar 2019 07:00:00 +0000</pubDate>
       
       <guid>https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Data-Design.html</guid>
-      <description>This is the second part of a series of posts on Partitioned Databases in Cloudant. Part One, Part Three and Part Four may also be of interest.
+      <description>This is the second part of a series of posts on Partitioned Databases in Cloudant. Part One, [Part Three][3] and [Part Four][4] may also be of interest.
 Modelling data with a JSON document store is very different from modelling data in a relational database system. Generations of computer scientists have been taught how to normalize data into tables, that is organising data into their own collections so that information is not repeated and relationships between collections are modelled with foreign keys.</description>
     </item>
     
@@ -546,8 +546,8 @@ Modelling data with a JSON document store is very different from modelling data 
       <pubDate>Tue, 05 Mar 2019 06:00:00 +0000</pubDate>
       
       <guid>https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html</guid>
-      <description>This is the first part of a series of posts on Partitioned Databases in Cloudant. Part Two, Part Three and Part 4 may also be of interest.
-Cloudant has a new feature called Partitioned Databases which makes querying faster to execute while being cheaper per query request. In this article, we&amp;rsquo;ll find out what Partitioned Databases are, how to set them up and how they work. Other posts provide a deep dive into data modelling and data migration.</description>
+      <description>This is the first part of a series of posts on Partitioned Databases in Cloudant. Part Two, [Part Three][3] and [Part 4][4] may also be of interest.
+Cloudant has a new feature called Partitioned Databases which makes querying faster to execute while being cheaper per query request. In this article, we&amp;rsquo;ll find out what Partitioned Databases are, how to set them up and how they work. Other posts provide a deep dive into data modelling and [data migration][3].</description>
     </item>
     
     <item>

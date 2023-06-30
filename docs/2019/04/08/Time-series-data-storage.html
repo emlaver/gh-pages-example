@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Time-series Data Storage</a></h1>
+  <h1 class="p-name">Time-series Data Storage</h1>
   
   <div class="postmeta">Apr 8, 2019 | Glynn Bird | 
 
-<bx-tag>Time-series</bx-tag>
+  
+  <bx-tag>Time-series</bx-tag>
+  
+  <bx-tag>Partitioned</bx-tag>
+  
 
-<bx-tag>Partitioned Databases</bx-tag>
 
-</div>
+  </div>
   
   <p>Time-series data is simply the recording of data points in time order such as:</p>
 <ul>
@@ -135,7 +139,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/eIkbSc3SDtI">Sonja Langford on Unsplash</a></p>
 </blockquote>
-<h2 id="the-ever-growing-data-set"><a href="#the-ever-growing-data-set">The ever-growing data set</a></h2>
+<h2 id="the-ever-growing-data-set"style="display:inline">The ever-growing data set</h2><a class="stealth" href="#the-ever-growing-data-set">🔗</a><br>
 <p>It&rsquo;s tempting to create a single, ever-growing Cloudant database to store your time-series data but it&rsquo;s worth taking time to think about how much data you&rsquo;ll be storing and to estimate the data size growth.</p>
 <p>Let&rsquo;s say we&rsquo;re storing IoT data in documents like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
@@ -155,7 +159,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>mass deletion of individual Cloudant documents is a non-starter for archival of old data. A <a href="https://console.bluemix.net/docs/services/Cloudant/api/document.html#delete">Cloudant deletion</a> leaves a <em>tombstone</em> document behind - a document recording the last <code>_id</code>/<code>_rev</code> pair to ensure that the document remains deleted after replication.</li>
 </ul>
 <p>A common work-around is to adopt the &ldquo;timeboxed database&rdquo; pattern, as outlined in the next section.</p>
-<h2 id="the-timeboxed-database-pattern"><a href="#the-timeboxed-database-pattern">The timeboxed database pattern</a></h2>
+<h2 id="the-timeboxed-database-pattern"style="display:inline">The timeboxed database pattern</h2><a class="stealth" href="#the-timeboxed-database-pattern">🔗</a><br>
 <p>This pattern is pretty straightforward.</p>
 <ol>
 <li>Create a database per time-period (e.g month).</li>
@@ -168,19 +172,19 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>To remove unwanted data, simply delete older monthly databases that are no longer needed. Deleting a whole database recovers all the data occupied by the database (JSON documents and associated indexes) cleanly and quickly.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/timeseries3.png" alt="ts3"></p>
 <p>This <em>write only</em> approach combined with the deletion of older data by removing databases plays to Cloudant strengths.</p>
-<h2 id="storing-timedate-in-a-time-series-database"><a href="#storing-timedate-in-a-time-series-database">Storing time/date in a time-series database</a></h2>
-<p>The choice of time and date format in your JSON document is important because JSON has no native date/time data type. This is explained in more detail <a href="https://blog.cloudant.com/2018/05/24/Date-formats.html">here</a> but the gist is:</p>
+<h2 id="storing-timedate-in-a-time-series-database"style="display:inline">Storing time/date in a time-series database</h2><a class="stealth" href="#storing-timedate-in-a-time-series-database">🔗</a><br>
+<p>The choice of time and date format in your JSON document is important because JSON has no native date/time data type. This is explained in more detail <a href="https://emlaver.github.io/gh-pages-example/2018/05/22/Date-formats.html">here</a> but the gist is:</p>
 <ul>
 <li>use ISO-8601 format (&ldquo;2019-03-29T10:36:03.510Z&rdquo;) to store time-sortable, human &amp; machine readable time stamps.</li>
 <li>use &ldquo;milliseconds since 1970&rdquo; format for easy date/time arithmetic.</li>
 <li>use component day/month/year/hour/minute/second/millisecond/timezone pieces if you need to query by the pieces e.g. find events that occur when &ldquo;hour == 18&rdquo;.</li>
 <li>you can use more than one of the above.</li>
 </ul>
-<h2 id="time-sortable-ids"><a href="#time-sortable-ids">Time-sortable ids</a></h2>
-<p>If we&rsquo;re using 32 characters to store a &ldquo;random&rdquo; <code>_id</code> field, then it would be handy if it sorted in chronological order in a time-series database. This technique is outlined <a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">here</a>.</p>
+<h2 id="time-sortable-ids"style="display:inline">Time-sortable ids</h2><a class="stealth" href="#time-sortable-ids">🔗</a><br>
+<p>If we&rsquo;re using 32 characters to store a &ldquo;random&rdquo; <code>_id</code> field, then it would be handy if it sorted in chronological order in a time-series database. This technique is outlined <a href="https://emlaver.github.io/gh-pages-example/2018/08/24/Time-sortable-document-ids.html">here</a>.</p>
 <p>In brief, the front of the <code>_id</code> is a time-sortable string and rest is random data. The <code>_id</code> field then sorts in approximate date/time order (to a precision of one second).</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/kuuid.png" alt="An example time-sortable _id value"></p>
-<h2 id="using-timeboxed-databases-that-are-also-partitioned"><a href="#using-timeboxed-databases-that-are-also-partitioned">Using timeboxed databases that are also partitioned</a></h2>
+<h2 id="using-timeboxed-databases-that-are-also-partitioned"style="display:inline">Using timeboxed databases that are also partitioned</h2><a class="stealth" href="#using-timeboxed-databases-that-are-also-partitioned">🔗</a><br>
 <p>Depending on your use-case, it may also be useful to make your timeboxed databases <em>partitioned</em> too, that is generated with the <code>?partitioned=true</code> flag to enable Cloudant&rsquo;s new <a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases</a> feature.</p>
 <p>The choice of <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#what-makes-a-good-partition-key-">partition key</a> is beyond the scope of this post, but in a IoT application a <em>device id</em> may be a good choice, as long as there are many devices generating data at a similar rate.</p>
 <p>Here&rsquo;s an example document that uses the full gamut of Cloudant time-series tricks: monthly databases, time-ordered ids and partitioned databases:</p>
@@ -203,7 +207,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>// The data within the partition is in date/time order so the last <span style="color:#ae81ff">50</span> records are the
 </span></span><span style="display:flex;"><span>// ones we are interested in. descending<span style="color:#f92672">=</span>true reverses the order.
 </span></span><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/logs_2019_03/_partition/GE5521965B/_all_docs?limit=50&amp;descending=true&amp;include_docs=true&#34;</span>
-</span></span></code></pre></div><h2 id="aggregating-time-series-data-with-mapreduce"><a href="#aggregating-time-series-data-with-mapreduce">Aggregating time-series data with MapReduce</a></h2>
+</span></span></code></pre></div><h2 id="aggregating-time-series-data-with-mapreduce"style="display:inline">Aggregating time-series data with MapReduce</h2><a class="stealth" href="#aggregating-time-series-data-with-mapreduce">🔗</a><br>
 <p>A very common use-case for a time-series database is to produce aggregations of the recorded data grouped by time. <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">Cloudant&rsquo;s MapReduce</a> allows the generation of materialized views of data by grouped, complex keys.</p>
 <p>Cloudant supports the following reducers:</p>
 <ul>
@@ -259,14 +263,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>See <a href="https://cloud.ibm.com/docs/services/Cloudant/api?topic=cloudant-using-views#using-views">Using Views</a> in the Cloudant documentation for more details</li>
 </ul>
 <p>Note that when using monthly timeboxed databases, you may not need to emit the <code>year</code> and <code>month</code> values as all documents would emit the same first two keys, although it does help when combining aggregated results from multiple databases.</p>
-<h2 id="out-of-the-box-time-series-solutions"><a href="#out-of-the-box-time-series-solutions">Out-of-the box time-series solutions</a></h2>
+<h2 id="out-of-the-box-time-series-solutions"style="display:inline">Out-of-the box time-series solutions</h2><a class="stealth" href="#out-of-the-box-time-series-solutions">🔗</a><br>
 <p>If you don&rsquo;t want to build your own time-series solution, then the <a href="https://www.ibm.com/uk-en/internet-of-things">Watson Internet Of Things</a> platform can run the whole thing as-a-service including device registration, data storage, analytics, monitoring and archival.</p>
-<h2 id="further-reading"><a href="#further-reading">Further reading</a></h2>
+<h2 id="further-reading"style="display:inline">Further reading</h2><a class="stealth" href="#further-reading">🔗</a><br>
 <ul>
 <li><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-overview#overview">Cloudant documentation</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases Introduction</a></li>
-<li><a href="https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html">Time-sortable ids</a></li>
-<li><a href="https://blog.cloudant.com/2018/05/24/Date-formats.html">Date formats in Cloudant</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partitioned Databases Introduction</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2018/08/24/Time-sortable-document-ids.html">Time-sortable ids</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2018/05/22/Date-formats.html">Date formats in Cloudant</a></li>
 </ul>
 
 </div>

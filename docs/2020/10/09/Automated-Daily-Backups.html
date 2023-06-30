@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Automated Daily Backups</a></h1>
+  <h1 class="p-name">Automated Daily Backups</h1>
   
   <div class="postmeta">Oct 9, 2020 | Glynn Bird | 
 
-<bx-tag>Backup</bx-tag>
+  
+  <bx-tag>Backup</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
 
-<bx-tag>Serverless</bx-tag>
 
-</div>
+  </div>
   
   <p>Cloudant is already reslient in that it stores data in triplicate across a region&rsquo;s three availability zones but that&rsquo;s not the same thing as having a <em>backup</em>:</p>
 <ul>
@@ -142,7 +146,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>an IBM Cloud Object Storage service with a new empty bucket inside.</li>
 <li>the IBM Cloud <a href="https://cloud.ibm.com/docs/cli">command line interface</a> with the <a href="https://cloud.ibm.com/functions/learn/cli">IBM Cloud Functions CLI plugin</a>.</li>
 </ul>
-<h2 id="couchbackup"><a href="#couchbackup">Couchbackup</a></h2>
+<h2 id="couchbackup"style="display:inline">Couchbackup</h2><a class="stealth" href="#couchbackup">🔗</a><br>
 <p>The <a href="https://www.npmjs.com/package/@cloudant/couchbackup">couchbackup</a> utility is a command-line tool that allows a Cloudant database to be turned a text file.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># turn our &#34;animals&#34; database into a text file</span>
 </span></span><span style="display:flex;"><span>couchbackup --db animals &gt; animals.txt
@@ -150,7 +154,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># restore our animals backup to a new database</span>
 </span></span><span style="display:flex;"><span>cat animals.txt | couchrestore --db animals2
 </span></span></code></pre></div><p>All we need to do is trigger <code>couchbackup</code> periodically to perform a backup. To do this we&rsquo;ll use IBM Cloud Functions, which allows code to run <em>serverlessly</em>, meaning you pay only for the execution time and nothing while your application stands idle.</p>
-<h2 id="creating-a-suitable-docker-image"><a href="#creating-a-suitable-docker-image">Creating a suitable Docker image</a></h2>
+<h2 id="creating-a-suitable-docker-image"style="display:inline">Creating a suitable Docker image</h2><a class="stealth" href="#creating-a-suitable-docker-image">🔗</a><br>
 <p>To create a Docker image suitable for running inside the IBM Cloud Functions platform we need a file called <code>Dockerfile</code> containing the definition of our image:</p>
 <pre tabindex="0"><code># based on the IBM Cloud Functions Node.js runtime
 FROM ibmfunctions/action-nodejs-v10
@@ -167,7 +171,7 @@ RUN npm install @cloudant/couchbackup
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>docker build -t x/cloudant_backup .
 </span></span><span style="display:flex;"><span>docker push x/cloudant_backup:latest
 </span></span></code></pre></div><p>If you don&rsquo;t want to build the Docker image yourself, there is one already built using this definition at <a href="https://hub.docker.com/repository/docker/choirless/backup">https://hub.docker.com/repository/docker/choirless/backup</a> which we&rsquo;ll use in the rest of the tutorial.</p>
-<h2 id="making-a-backup-script"><a href="#making-a-backup-script">Making a backup script</a></h2>
+<h2 id="making-a-backup-script"style="display:inline">Making a backup script</h2><a class="stealth" href="#making-a-backup-script">🔗</a><br>
 <p>The Docker image provides the operating system, the IBM Cloud Functions scaffolding and the libraries we need - all that is required is to add our own custom code to allow us to backup a Cloudant database to Object Storage programmatically. Here&rsquo;s an example:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">couchbackup</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@cloudant/couchbackup&#39;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">AWS</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;ibm-cos-sdk&#39;</span>)
@@ -244,14 +248,14 @@ RUN npm install @cloudant/couchbackup
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># create a function in the cron package based on the Docker image</span>
 </span></span><span style="display:flex;"><span>ibmcloud fn action update cron/backup --docker choirless/backup:latest index.js
 </span></span></code></pre></div><p>We now have an IBM Cloud Function called <code>cron/backup</code> which is based on our Docker image and adds our <code>index.js</code> script.</p>
-<h2 id="executing-a-backup"><a href="#executing-a-backup">Executing a backup</a></h2>
+<h2 id="executing-a-backup"style="display:inline">Executing a backup</h2><a class="stealth" href="#executing-a-backup">🔗</a><br>
 <p>To avoid having to pass all of the configuration options in with each execution, we&rsquo;re going to bind <em>most</em> of the configuration (all items except the database name) to the function. Create a JSON file <code>opts.json</code> containing your configuration:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;CLOUDANT_IAM_KEY&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;abc123&#34;</span>,<span style="color:#e6db74">&#34;CLOUDANT_URL&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;https://myservice.cloudantnosqldb.appdomain.cloud&#34;</span>,<span style="color:#e6db74">&#34;COS_API_KEY&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;xyz456&#34;</span>,<span style="color:#e6db74">&#34;COS_ENDPOINT&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;s3.private.eu-gb.cloud-object-storage.appdomain.cloud&#34;</span>,<span style="color:#e6db74">&#34;COS_SERVICE_INSTANCE_ID&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;crn:v:w:x:y:z::&#34;</span>,<span style="color:#e6db74">&#34;COS_BUCKET&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;mybucket&#34;</span>}
 </span></span></code></pre></div><p>Then bind this configuration to your action:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ibmcloud fn action update cron/backup --param-file opts.json
 </span></span></code></pre></div><p>This means that when we execute the action we only need provide the one missing parameter: the name of the database to backup:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ibmcloud fn action invoke cron/backup --result --param CLOUDANT_DB mydb
-</span></span></code></pre></div><h2 id="scheduling-a-backup-to-run-periodically"><a href="#scheduling-a-backup-to-run-periodically">Scheduling a backup to run periodically</a></h2>
+</span></span></code></pre></div><h2 id="scheduling-a-backup-to-run-periodically"style="display:inline">Scheduling a backup to run periodically</h2><a class="stealth" href="#scheduling-a-backup-to-run-periodically">🔗</a><br>
 <p>We can tell IBM Cloud Functions to run our action once every 24 hours for each database we need to backup:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># backup each database after midnight</span>
 </span></span><span style="display:flex;"><span>
@@ -268,7 +272,7 @@ RUN npm install @cloudant/couchbackup
 <li>add a <em>rule</em> which associates the invocation of your function with the firing of the <em>trigger</em>.</li>
 </ul>
 <p>In the above example <code>mydb1</code> is backed up at five past midnight every day and <code>mydb2</code> five minutes later.</p>
-<h2 id="limitations"><a href="#limitations">Limitations</a></h2>
+<h2 id="limitations"style="display:inline">Limitations</h2><a class="stealth" href="#limitations">🔗</a><br>
 <p>This approach is reasonable for small Cloudant databases but IBM Cloud Functions has a ten minute execution limit so very large databases would not complete in time.</p>
 <p>For very large databases, consider consuming a database&rsquo;s <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-databases#get-changes">changes feed</a>, passing in a last known <code>since</code> value to get incremental changes.</p>
 

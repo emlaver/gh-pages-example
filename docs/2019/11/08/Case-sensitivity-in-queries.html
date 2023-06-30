@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,17 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Case-sensitivity in queries</a></h1>
+  <h1 class="p-name">Case-sensitivity in queries</h1>
   
   <div class="postmeta">Nov 8, 2019 | Glynn Bird | 
 
-<bx-tag>Query</bx-tag>
+  
+  <bx-tag>Query</bx-tag>
+  
+  <bx-tag>Search</bx-tag>
+  
 
-<bx-tag>Search</bx-tag>
 
-<bx-tag>MapReduce</bx-tag>
-
-</div>
+  </div>
   
   <p>By default, some Cloudant operations are <em>case sensitive</em> - the query parameter must match the value in the document exactly for it to be included in search results - but if you need a <em>case insensitive</em> query then there are number of solutions.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/amador-loureiro-BVyNlchWqzs-unsplash.jpg" alt="font"></p>
@@ -138,7 +140,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;make&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Buick&#34;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;model&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Skylark&#34;</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="mapreduce"><a href="#mapreduce">MapReduce</a></h2>
+</span></span></code></pre></div><h2 id="mapreduce"style="display:inline">MapReduce</h2><a class="stealth" href="#mapreduce">🔗</a><br>
 <p>If we create a MapReduce index with a map function that looks like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">model</span>, <span style="color:#66d9ef">null</span>)
@@ -153,7 +155,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></code></pre></div><p>and our query:</p>
 <pre tabindex="0"><code>GET /cars/_design/mydesigndoc/_view/bymodel?key=&#34;skylark&#34;
 </code></pre><p>As long as we remember to lowercase the key at query-time, we have a <em>case-insensitive</em> MapReduce index.</p>
-<h2 id="cloudant-search"><a href="#cloudant-search">Cloudant Search</a></h2>
+<h2 id="cloudant-search"style="display:inline">Cloudant Search</h2><a class="stealth" href="#cloudant-search">🔗</a><br>
 <p>Cloudant Search is a different beast because it is built for free-text matching, and its default behaviour is to build <em>case-insensitive</em> indexes. So if we build our index with a map function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#39;model&#39;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">model</span>)
@@ -165,9 +167,9 @@ GET /cars/_design/mydesigndoc/_search/modelsearch?q=model%3Askylark
 <pre tabindex="0"><code># uppercase
 GET /cars/_design/mydesigndoc/_search/modelsearch?q=model%3ASkylark
 </code></pre><p>we should get the same results.</p>
-<p>The way Cloudant Search behaves with supplied text depends on the <em>analyzer</em> used to pre-process and split the string into indexable tokens. The default Cloudant Search <em>analyzer</em> is the <em>standard analyzer</em> which removes punctuation, splits strings into words, removes stop words and lowercases everything prior to indexing. <a href="https://blog.cloudant.com/2018/10/19/Search-Analyzers.html">Other analyzers</a> are available which pre-process the data in different ways. If you need a <em>case sensitive</em> Cloudant Search, then you can opt to use the <em>whitespace analyzer</em> instead.</p>
-<h2 id="cloudant-query"><a href="#cloudant-query">Cloudant Query</a></h2>
-<h3 id="cloudant-query---typejson"><a href="#cloudant-query---typejson">Cloudant Query - type=json</a></h3>
+<p>The way Cloudant Search behaves with supplied text depends on the <em>analyzer</em> used to pre-process and split the string into indexable tokens. The default Cloudant Search <em>analyzer</em> is the <em>standard analyzer</em> which removes punctuation, splits strings into words, removes stop words and lowercases everything prior to indexing. <a href="https://emlaver.github.io/gh-pages-example/2018/10/19/Search-Analyzers.html">Other analyzers</a> are available which pre-process the data in different ways. If you need a <em>case sensitive</em> Cloudant Search, then you can opt to use the <em>whitespace analyzer</em> instead.</p>
+<h2 id="cloudant-query"style="display:inline">Cloudant Query</h2><a class="stealth" href="#cloudant-query">🔗</a><br>
+<h3 id="cloudant-query---typejson"style="display:inline">Cloudant Query - type=json</h3><a class="stealth" href="#cloudant-query---typejson">🔗</a><br>
 <p>We can create an a Cloudant Query index on the <code>model</code> field with the <code>POST /cars/_index</code> endpoint:</p>
 <pre tabindex="0"><code>POST /cars/_index
 {&#34;index&#34;:{&#34;fields&#34;:[&#34;model&#34;]},&#34;type&#34;:&#34;json&#34;}
@@ -175,7 +177,7 @@ GET /cars/_design/mydesigndoc/_search/modelsearch?q=model%3ASkylark
 <pre tabindex="0"><code>POST /cars/_find
 {&#34;selector&#34;:{&#34;model&#34;:&#34;Skylark&#34;}}
 </code></pre><p>The <code>type: json</code> indexes are <em>case sensitive</em> (which isn&rsquo;t surprising as they are backed by MapReduce technology under-the-hood)</p>
-<h3 id="cloudant-query---typetext"><a href="#cloudant-query---typetext">Cloudant Query - type=text</a></h3>
+<h3 id="cloudant-query---typetext"style="display:inline">Cloudant Query - type=text</h3><a class="stealth" href="#cloudant-query---typetext">🔗</a><br>
 <p>The <code>type: text</code> are built for free-text searching because they are backed by the same Lucene-based indexed used by Cloudant Search. So creating a index with:</p>
 <pre tabindex="0"><code>POST $URL/cars/_index
 {&#34;index&#34;:{&#34;fields&#34;:[{&#34;name&#34;:&#34;model&#34;,&#34;type&#34;:&#34;string&#34;}]},&#34;type&#34;:&#34;text&#34;}
@@ -187,7 +189,7 @@ GET /cars/_design/mydesigndoc/_search/modelsearch?q=model%3ASkylark
 <pre tabindex="0"><code>POST /cars/_find
 {&#34;selector&#34;:{&#34;$eq&#34;:{&#34;model&#34;:&#34;Skylark&#34;}}}
 </code></pre><p>Note: if you need to change the <em>analyzer</em> used by in <code>type: text</code> Cloudant Query index, then this is <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">possible at index-time</a>.</p>
-<h2 id="how-_not_-to-do-it---regular-expressions"><a href="#how-_not_-to-do-it---regular-expressions">How <em>not</em> to do it - Regular Expressions</a></h2>
+<h2 id="how-_not_-to-do-it---regular-expressions"style="display:inline">How <em>not</em> to do it - Regular Expressions</h2><a class="stealth" href="#how-_not_-to-do-it---regular-expressions">🔗</a><br>
 <p>It is possible to get a case-insensitive result out of Cloudant Query, without employing a <code>type: text</code> index by using the <code>$regex</code> operator and constructing a suitable regular expression. This is <strong>not</strong> the recommended approach because Cloudant cannot optimise the query, even if the searchable field is indexed. Each document in the database would have to be examined in turn to see it matched the provided regular expression. This process becomes very inefficient as the size of the data set increases and leads to very slow performance.</p>
 
 </div>

@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,18 +114,21 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">MapReduce</a></h1>
+  <h1 class="p-name">MapReduce</h1>
   
   <div class="postmeta">Jan 13, 2011 | Mike Miller | 
 
-<bx-tag>MapReduce</bx-tag>
+  
+  <bx-tag>MapReduce</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>Recently, Tim Anglade culminated his NOSQL World Tour with the release of <a href="http://nosqltapes.com">the NOSQL Tapes</a>, a collection of live interviews collected globally. Not only do I find that site aesthetically pleasing (courtesy of our own <a href="http://twitter.com/steadicat">Steadicat</a>), but there is a tremendous amount of solid content, from technical discussions to opinions and conjectures from many of the young leaders in the field. I was fortunate to get a bit of Tim’s time when he stopped in Seattle and we recorded a <a href="http://nosqltap.es/8">longish video</a> on MapReduce in my lab at UW. While I love the old school feel of a chalk-talk, I must admit I’m pretty embarrassed at how rambling and fragmented my explanations are, not to mention my shoddy use of available board space. Therefore the Physics Professor in me feels obligated to try again, albeit offline this time.</p>
-<h3 id="brief-nosql-taxonomy"><a href="#brief-nosql-taxonomy">Brief NOSQL Taxonomy</a></h3>
+<h3 id="brief-nosql-taxonomy"style="display:inline">Brief NOSQL Taxonomy</h3><a class="stealth" href="#brief-nosql-taxonomy">🔗</a><br>
 <p>To set the MapReduce stage, I’m going to offer a very naive taxonomy of NoSQL data stores (apologies to the experts). I have yet to meet a database that isn’t a key/value store, so let’s focus on some higher level distinction. In particular, let’s focus on the difference between <em>big tables</em> (BigTable, HBase, Cassandra, etc.) and _document store_s (CouchDB, MongoDB). All of these solutions are finding solid acceptance in the wild, so what – if any – difference is there? My one-word answer is <em>flexibility</em>. Huh, isn’t all NoSQL flexible? Well… yes and no. In my eyes, BigTable and its derivatives excel at one thing in particular: structuring your data for the efficient I/O access that is necessary to get blazing read speeds for large data sets. Somewhat orthogonal, document stores, especially CouchDB, prioritize flexibility. In particular, there is no requirement to define columns, column families, or super columns up front. You simply encapsulate your data as documents and push them into the store. How then, you may ask, can you get efficient queries? MongoDB treats the problem with blazingly fast in-memory table scans and document introspection for index builds, whereas CouchDB takes a different approach with something called incremental MapReduce. I’m going to briefly explain the latter and then show you how it works in action.</p>
-<h3 id="mapreduce-primer"><a href="#mapreduce-primer">MapReduce Primer</a></h3>
+<h3 id="mapreduce-primer"style="display:inline">MapReduce Primer</h3><a class="stealth" href="#mapreduce-primer">🔗</a><br>
 <p>MapReduce is an old design pattern that was recently made famous by Google. There are many different implementations, and I won’t even try to address them all. It suffices to say that MapReduce is all about giving programmers an efficient way to consume data without needing to know how or where it is actually stored. Further, MapReduce excels at traversing datasets that live on more than one machine. It is simple, a bit restrictive, but extremely powerful. I’m going to show you how it works in CouchDB (well, actually in BigCouch hosted on Cloudant.com).</p>
 <p>Broadly speaking, CouchDB (and Cloudant’s BigCouch) use MapReduce as a tool to let you introspect your data and build persistent ‘views’ (indices) for fast query responses. And, oh yeah, it does it incrementally. Let’s examine the pieces in detail:</p>
 <ul>
@@ -133,13 +137,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><strong>View queries</strong>. How you get the isnformation out of your indices</li>
 <li><strong>Incremental.</strong> When new documents are added or existing documents are modified/removed, you don’t need to rescan your entire dataset. Instead the view engine only rescans the new/modified documents, and deletes the contributions from the deleted/modified documents. It’s a complex implementation, but one that really separates the Couch MapReduce model from, e.g., Hadoop’s or Riak’s implementations.</li>
 </ul>
-<p>For full details on Cloudant’s implementation of MapReduce, take a look at <a href="http://blog.cloudant.com/dynamo-and-couchdb-clusters">Dynamo and CouchDB Clusters</a> and <a href="http://oreillynet.com/pub/e/1760">Adam’s O’Reilly Webcast</a>. So what do you actually have to do? Well, you simply need to write one or two functions. The ‘map’ function is required, and the ‘reduce’ is optional. For simple sorting problems (e.g. building a SEO reverse index) map alone suffices. For data aggregation, reduce comes into the picture. CouchDB allows you to write these functions in any language you choose, although JavaScript is the most common. Let’s put some meat on the bones with examples. Below I’m going to show you how to do three of the most common things people do with CouchDB’s MapReduce:</p>
+<p>For full details on Cloudant’s implementation of MapReduce, take a look at <a href="http://oreillynet.com/pub/e/1760">Adam’s O’Reilly Webcast</a>. So what do you actually have to do? Well, you simply need to write one or two functions. The ‘map’ function is required, and the ‘reduce’ is optional. For simple sorting problems (e.g. building a SEO reverse index) map alone suffices. For data aggregation, reduce comes into the picture. CouchDB allows you to write these functions in any language you choose, although JavaScript is the most common. Let’s put some meat on the bones with examples. Below I’m going to show you how to do three of the most common things people do with CouchDB’s MapReduce:</p>
 <ol>
 <li>sort documents based on arbitrary information</li>
 <li>calculate aggregate statistics</li>
 <li>perform a time-series analysis</li>
 </ol>
-<h3 id="our-example-problem"><a href="#our-example-problem">Our Example Problem</a></h3>
+<h3 id="our-example-problem"style="display:inline">Our Example Problem</h3><a class="stealth" href="#our-example-problem">🔗</a><br>
 <p>We are going to load and analyze FAA plane crash data from <a href="http://data.gov/">data.gov</a> using Cloudant. If you want to follow along at home, you have two choices.</p>
 <ol>
 <li>Use CouchDB replication to copy my db into yours via: {% highlight tcsh %}$ curl &lsquo;http://<usr>:<pwd>@<usr>.cloudant.com/_replicate&rsquo; -Hcontent-type:application/json -d &lsquo;{&ldquo;source&rdquo;:&ldquo;<a href="http://mlmiller.cloudant.com/planes%22,%22target%22:%22http://">http://mlmiller.cloudant.com/planes&quot;,&quot;target&quot;:&quot;http://</a><usr>:<pwd>@<usr>.cloudant.com/planes&rdquo;,&ldquo;create_target&rdquo;:true}&rsquo;{% endhighlight %}</li>
@@ -148,7 +152,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>(1) is simpler and <em>doesn’t require any special software installed on your machine</em>. All you need is to have a free account on <a href="http://cloudant.com">Cloudant</a>. (2) is a bit more effort but should work with any CouchDB server. If you go with (1), the best way to check the progress is to <a href="http://cloudant.com">login to your account</a>, click on your user dashboard (top right) and then click on the newly created ‘planes’ database. If you examine the Stats tab and refresh periodically, you will see the db size increasing, as well as some MapReduce ‘views’ running as the data imports:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/planes-indexing.png" alt=""></p>
 <p>That bar that registers 31.7% is telling you that MapReduce is being used to index your documents in real time without you having to write any code at all. The ‘2839 of 8952’ on the right represents the fraction of freshly added/updated documents that is processed in this current pass, and if you click on ‘show details’ you can see the results of the MapReduce processes on each of the cluster nodes that contain any chunk of your data. That&rsquo;s just how easy it is to get your code running, in parallel, in realtime!</p>
-<h3 id="data-import"><a href="#data-import">Data Import</a></h3>
+<h3 id="data-import"style="display:inline">Data Import</h3><a class="stealth" href="#data-import">🔗</a><br>
 <p>I’ve chosen to import the FAA crash data using my favorite tools: Python and Benoit’s wonderful <a href="http://couchdbkit.org/">Couchdbkit</a> library. If you use the Python <a href="https://code.google.com/p/boto/">Boto</a> module for AWS, you will feel right at home. In <a href="https://github.com/mlmiller/examples/blob/master/aviation/upload.py">upload.py</a>, I use the very handy <code>DictReader</code> class from Python’s <code>csv</code> module to parse the <code>AviationData.txt.gz</code>. <code>DictReader</code> slurps a line of a CSV (or similarly structured text file) with column headings and gives you back a dictionary. It’s a one-liner to serialize that Python dictionary and push it into Cloudant. If you want to try this yourself the <code>README</code> file has instructions on installing the Couchdbkit module and executing the <code>upload.py</code> script, but it just boils down to:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>python upload.py AviationData.txt.gz <span style="color:#e6db74">&#39;http://&lt;username&gt;:&lt;password&gt;@&lt;username&gt;.cloudant.com&#39;</span> planes
 </span></span></code></pre></div><p>My inported data lives at <a href="http://mlmiller.cloudant.com/planes">http://mlmiller.cloudant.com/planes</a>. One thing to note: you can see that I don’t take any steps to discover the type of the data on import. Instead, we just throw it all into Cloudant and we can sort it out later using MapReduce (<em>flexible</em>). Once the data is fully imported, I can login into <a href="https://cloudant.com/">cloudant.com</a> and view the ‘planes’ database in the dashboard:</p>
@@ -212,7 +216,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
     ],
     &#34;total_rows&#34;: 68388
 }
-</code></pre><h3 id="example-1-sort"><a href="#example-1-sort">Example 1: Sort</a></h3>
+</code></pre><h3 id="example-1-sort"style="display:inline">Example 1: Sort</h3><a class="stealth" href="#example-1-sort">🔗</a><br>
 <p>Now that we have the data, let’s get down to business. Key/Value is great, but I want to be able get find all the documents for a given brand of plane, say Cessna. This is really an inverted index, and is in the absolute sweet spot for MapReduce. We can accomplish this with a ‘map-only’ view that looks like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">Make</span>, <span style="color:#66d9ef">null</span>);
@@ -247,7 +251,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?reduce=false&amp;key=&#34;Airbus&#34;&#39;</span> | wc -l <span style="color:#ae81ff">15</span>
 </span></span><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?reduce=false&amp;key=&#34;Boeing&#34;&#39;</span> | wc -l <span style="color:#ae81ff">773</span>
 </span></span></code></pre></div><p>Well that’s interesting! But wait, isn’t there a more efficient way to calculate statistics than slurping the entire set of Boeing lines to the client and doing a client-side count? You bet, and that’s where reduce comes in.</p>
-<h3 id="example-2-data-aggregation"><a href="#example-2-data-aggregation">Example 2: Data Aggregation</a></h3>
+<h3 id="example-2-data-aggregation"style="display:inline">Example 2: Data Aggregation</h3><a class="stealth" href="#example-2-data-aggregation">🔗</a><br>
 <p>Now we want to go beyond simple sorts and aggregate to find the total number of crashes for different types of planes. Reduce is perfect for this, and that’s why we did <code>emit(doc.Make,1)</code> in <code>map.js</code>. If you look at the corresponding <a href="https://github.com/mlmiller/examples/blob/master/aviation/_design/example/views/make/reduce.js"><code>reduce.js</code></a> file for that view you’ll see nothing more than: <code>_sum</code>.</p>
 <p>What the heck is that? Well there are certain aggregation tasks that are simply so common (count, sum, average, min, max, etc.) that we have coded them up in erlang and pushed them into the database. Cloudant has an ever growing number of built-in reduces (<em>builtins</em>), and using a builtin is always faster and less error prone than writing it yourself. As an avid user, I can admit that I haven’t used a non-builtin reduce in at least 9 months. So the <code>_sum</code> that we use here is simply going to add up the numbers that we emitted as the 2nd argument to <code>emit()</code> in the <code>map.js</code> function. Now we can answer the Boeing vs. Airbus question without any client side work via:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -X GET <span style="color:#e6db74">&#39;http://mlmiller.cloudant.com/planes/_design/example/_view/make?key=&#34;Boeing&#34;&#39;</span>
@@ -283,7 +287,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>…
 </span></span></code></pre></div><p>(truncated because it’s a looong list!)</p>
 <p>Ok, so aggregation seems pretty straightforward. Now let’s go the last step to time-series.</p>
-<h3 id="example-3-time-series-analysis"><a href="#example-3-time-series-analysis">Example 3: Time Series Analysis</a></h3>
+<h3 id="example-3-time-series-analysis"style="display:inline">Example 3: Time Series Analysis</h3><a class="stealth" href="#example-3-time-series-analysis">🔗</a><br>
 <p>Let’s get a bit more numerical and ask, what’s the distribution of crashes and fatalities vs time. That’s what the <code>date</code> view is for. If you inspect any of our crash documents you will see that they have a two other important fields: <code>Event Date</code> and <code>Total Fatal Injuries</code>. Let’s create an index that allows us to answer time-based queries about both the number of accidents and the number of fatalities. While a bit morbid, it’s good to know what the odds are! This example is a bit more complex because we are going to use an array for both arguments of <code>emit()</code>. Take a look at the code in the <a href="https://github.com/mlmiller/examples/blob/master/aviation/_design/example/views/date/map.js"><code>map.js</code></a>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">then</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(Date.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">doc</span>[<span style="color:#e6db74">&#39;Event Date&#39;</span>]));
@@ -356,7 +360,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;88601d815897032516f87f0c510ca925&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span>:<span style="color:#f92672">[</span>1994,4<span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;value&#34;</span>:<span style="color:#f92672">[</span>1,0<span style="color:#f92672">]}</span>,
 </span></span><span style="display:flex;"><span>…
 </span></span></code></pre></div><p>Wow, handy! And if you want to really blow your mind, add the query-string parameter <code>?include_docs=true</code> to get the full documents themselves.</p>
-<h3 id="summary"><a href="#summary">Summary</a></h3>
+<h3 id="summary"style="display:inline">Summary</h3><a class="stealth" href="#summary">🔗</a><br>
 <p>There’s a lot of power in MapReduce, and I hope I’ve given you enough to get your hands dirty running it an an extremely simple way using a hosted service. If you have more questions, there are lots of examples on the <a href="http://wiki.apache.org/couchdb/">CouchDB wiki</a> or on the (<a href="https://cloudant.tenderapp.com">Cloudant support center</a>). But the rule of thumb is:</p>
 <ul>
 <li><strong>sort:</strong> map only</li>

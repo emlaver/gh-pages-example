@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Moving data from DynamoDB</a></h1>
+  <h1 class="p-name">Moving data from DynamoDB</h1>
   
   <div class="postmeta">Mar 24, 2017 | Glynn Bird | 
 
-<bx-tag>DynamoDB</bx-tag>
+  
+  <bx-tag>DynamoDB</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>If you have data in an Amazon DynamoDB service and want to move it to IBM Cloudant or Apache CouchDB, how would you go about it? First of all, DynamoDB has a peculiar form of JSON. A single temperature measurement would be expressed like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
@@ -140,7 +144,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1489023491&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Cloudant and CouchDB can store any JSON documents with nested objects of arbitrary complexity, whereas DynamoDB stores a series of key values at the top of the JSON tree.</p>
-<h2 id="getting-the-data-out"><a href="#getting-the-data-out">Getting the data out</a></h2>
+<h2 id="getting-the-data-out"style="display:inline">Getting the data out</h2><a class="stealth" href="#getting-the-data-out">🔗</a><br>
 <p>The <a href="https://www.npmjs.com/package/aws-sdk">AWS SDK</a> provides a comprehensive toolkit for interacting with AWS services. You need to to &ldquo;scan&rdquo; a whole table, performing a chain of API calls to pull back records in batches until you&rsquo;ve consumed them all. I&rsquo;ve written a script to do this for you: <a href="https://www.npmjs.com/package/dynamodbexport">dynamodbexport</a>.</p>
 <p>First, install the tool:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ npm install -g dynamodbexport
@@ -154,7 +158,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;temperature&#34;</span>:18177,<span style="color:#e6db74">&#34;time&#34;</span>:<span style="color:#e6db74">&#34;2017-03-08T21:27:23+0000&#34;</span>,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;1489008443&#34;</span><span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>Export complete <span style="color:#f92672">{</span> iterations: 1, records: 3, time: 0.145 <span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>The tool makes as many API calls as it needs to extract the data, converting the JSON to a more compact form as it goes.</p>
-<h2 id="importing-into-couchdbcloudant"><a href="#importing-into-couchdbcloudant">Importing into CouchDB/Cloudant</a></h2>
+<h2 id="importing-into-couchdbcloudant"style="display:inline">Importing into CouchDB/Cloudant</h2><a class="stealth" href="#importing-into-couchdbcloudant">🔗</a><br>
 <p>I already have a tool to import data into CouchDB: <a href="https://www.npmjs.com/package/couchdbimport">couchdbimport</a>, which you can install in a similar way:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ npm install -g couchimport
 </span></span></code></pre></div><p>Set an environment variable with your target Cloudant/CouchDB service&rsquo;s URL:</p>
@@ -163,7 +167,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ dynamodbexport --table iot --region us-east-1 | couchimport --db iot --type jsonl
 </span></span></code></pre></div><p>The <code>--type jsonl</code> parameter tells couchimport that it is to expect one JSON document per line and <code>--db iot</code> defines the name of the target database. (Make sure your target database already exists, since couchimport will not create new databases.)</p>
 <p>It&rsquo;s that simple! You can now use Cloudant&rsquo;s awesome <a href="https://console.ng.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce</a> tools to aggregate the data or <a href="https://console.ng.bluemix.net/docs/services/Cloudant/api/replication.html#replication">replicate</a> it to other devices.</p>
-<h2 id="it-works-for-local-databases-too"><a href="#it-works-for-local-databases-too">It works for local databases too</a></h2>
+<h2 id="it-works-for-local-databases-too"style="display:inline">It works for local databases too</h2><a class="stealth" href="#it-works-for-local-databases-too">🔗</a><br>
 <p>The <em>dynamodbexport</em> tool also works for <a href="http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html">local DynamoDB</a> databases. Just leave out the <code>AWS_ACCESS_KEY_ID</code> and <code>AWS_SECRET_ACCESS_KEY</code> environment variables, and it will assume a local database.</p>
 <p>Moving data from local DynamoDB to local CouchDB is as simple as:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ dynamodbexport --table iot | couchimport --db iot

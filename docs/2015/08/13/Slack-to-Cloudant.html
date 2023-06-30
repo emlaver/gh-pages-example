@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Slack to Cloudant</a></h1>
+  <h1 class="p-name">Slack to Cloudant</h1>
   
   <div class="postmeta">Aug 13, 2015 | Glynn Bird | 
 
-<bx-tag>Slack</bx-tag>
+  
+  <bx-tag>Slack</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>Slack’s Integration API and Cloudant’s HTTP API make it simple to store data directly into a Cloudant database without breaking a sweat. This tutorial shows how to create a custom slash command in Slack and how to post it directly to Cloudant.</p>
 <p>Slack is a messaging and team-working application that is used widely to allow disparate teams of people to chat, share files, and interact on desktop, tablet, and mobile platforms. We use Slack in IBM Cloud Data Services to coordinate our activities, to work in an open collaborative environment, and to cut down on email and meetings.</p>
@@ -156,7 +160,7 @@ Tip: You can also get here via this URL: <a href="https://YOURACCOUNTNAME.slack.
 <p>Slack sets up this service, and shows you the token that will be transmitted in every post originating from this Slack command. Make a note of this token, as we’ll need it later when we set up Cloudant.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/sl_4.png" alt=""></p>
 <p>We will come back to this page shortly, after we’ve set up Cloudant.</p>
-<h2 id="set-up-cloudant"><a href="#set-up-cloudant">Set up Cloudant</a></h2>
+<h2 id="set-up-cloudant"style="display:inline">Set up Cloudant</h2><a class="stealth" href="#set-up-cloudant">🔗</a><br>
 <p>Sign up for a Cloudant account and log into your Cloudant Dashboard. In the Dashboard, create a new database called &lsquo;slack&rsquo;:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/sl_5.png" alt=""></p>
 <p>As Slack doesn’t integrate directly with the CouchDB/Cloudant API, we need to direct the posted data to an Update Handler Function. This is a mechanism in CouchDB/Cloudant that allows custom HTTP requests to be handled by a JavaScript before being written to the database. In our case we want to only accept requests that contain the correct Slack security token, so our code looks like this:</p>
@@ -195,17 +199,17 @@ Tip: You can also get here via this URL: <a href="https://YOURACCOUNTNAME.slack.
 </span></span></code></pre></div><p><img src="https://emlaver.github.io/gh-pages-example/img/sl_6.png" alt=""></p>
 <p>The last thing to do on the Cloudant side is create a Cloudant API key that has write access to the slack database. In your Cloudant Slash database, click Permissions, then click Generate API Key. Turn on the Writer checkbox for the newly generated key. Make a note of the API Key and password for the final step.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/sl_7.png" alt=""></p>
-<h2 id="finish-off-the-slack-integration"><a href="#finish-off-the-slack-integration">Finish off the Slack integration</a></h2>
+<h2 id="finish-off-the-slack-integration"style="display:inline">Finish off the Slack integration</h2><a class="stealth" href="#finish-off-the-slack-integration">🔗</a><br>
 <p>Back in the Slack Integration Settings page, enter the URL of the Cloudant update handler, substituting the placeholder text in capitals with the details from Cloudant:</p>
 <pre tabindex="0"><code>https://APIKEY:PASSWORD@SUBDOMAIN.cloudant.com/slack/_design/slack/_update/slashcommand
 </code></pre><p><img src="https://emlaver.github.io/gh-pages-example/img/sl_8.png" alt=""></p>
 <p>Then click Save Integration.</p>
-<h2 id="test"><a href="#test">Test!</a></h2>
+<h2 id="test"style="display:inline">Test!</h2><a class="stealth" href="#test">🔗</a><br>
 <p>Now in any Slack channel, you should be able to issue a /lunch command:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/sl_9.png" alt=""></p>
 <p>And see the reply that was returned by the Cloudant Update Handler function:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/sl_91.png" alt=""></p>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>With a simple Update Handler function, you can configure slack to store data in Cloudant whenever a user issues a custom slash command. What will you do with the data? Create a lunch-ordering system, time-keeper, bug-tracker, or anything else you can dream up. It’s up to you!</p>
 
 </div>

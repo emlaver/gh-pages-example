@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,18 +114,21 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Partitioned Databases - Data Migration</a></h1>
+  <h1 class="p-name">Partitioned Databases - Data Migration</h1>
   
   <div class="postmeta">Mar 5, 2019 | Glynn Bird | 
 
-<bx-tag>Partitioned Databases</bx-tag>
+  
+  <bx-tag>Partitioned</bx-tag>
+  
+  <bx-tag>Migration</bx-tag>
+  
 
-<bx-tag>Migration</bx-tag>
 
-</div>
+  </div>
   
   <blockquote>
-<p>This is the third part of a series of posts on Partitioned Databases in Cloudant. <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Part One</a>, <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Part Two</a> and <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html">Part Four</a> may also be of interest.</p>
+<p>This is the third part of a series of posts on Partitioned Databases in Cloudant. <a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Part One</a>, <a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Data-Design.html">Part Two</a> and [Part Four][4] may also be of interest.</p>
 </blockquote>
 <p>Cloudant&rsquo;s new <em>Partitioned Databases</em> feature allows a Cloudant database to be organised into partitions (blocks of data guaranteed to reside on the same database shard) by specifying a two part <code>_id</code> field consisting of the parition and document id e.g.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
@@ -144,7 +148,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/Jw4rKiZFiSM">Timothy Muza on Unsplash</a></p>
 </blockquote>
-<h2 id="migrating-to-a-partitioned-database"><a href="#migrating-to-a-partitioned-database">Migrating to a partitioned database</a></h2>
+<h2 id="migrating-to-a-partitioned-database"style="display:inline">Migrating to a partitioned database</h2><a class="stealth" href="#migrating-to-a-partitioned-database">🔗</a><br>
 <p>Migrating existing data over to a partitioned database will require creating a new database with the <code>partitioned=true</code> flag:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X PUT <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/cities2?partitioned=true&#34;</span>
 </span></span></code></pre></div><p>The new database will need to be populated with a copy of the original data, but with the new <code>partitionid:documentid</code> format.</p>
@@ -182,22 +186,25 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <pre tabindex="0"><code>[{&#34;_id&#34;:&#34;US:52412&#34;,&#34;country&#34;:&#34;US&#34;,name:&#34;Boston&#34;},{&#34;_id&#34;:&#34;UK:781&#34;,&#34;country&#34;:&#34;UK&#34;,name:&#34;Oxford&#34;}]
 [{&#34;_id&#34;:&#34;IN:152&#34;,&#34;country&#34;:&#34;IN&#34;,name:&#34;Malaut&#34;},{&#34;_id&#34;:&#34;PK:782&#34;,&#34;country&#34;:&#34;PK&#34;,name:&#34;Nārang&#34;}]
 </code></pre><p>Piping this data to <code>couchrestore</code> populates the new database.</p>
-<h2 id="other-considerations"><a href="#other-considerations">Other considerations</a></h2>
+<h2 id="other-considerations"style="display:inline">Other considerations</h2><a class="stealth" href="#other-considerations">🔗</a><br>
 <ul>
 <li>the choice of a partition key is very important. Consult <a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#what-makes-a-good-partition-key-">the documentation</a> to pick a partition key that has many values, no hot spots and repeats throughout the data set.</li>
 <li>Design documents that contain index definitions will need careful thought through. An index definition in a partitioned database is itself partitioned by default. Audit your indexes and try to make your most common access patterns are serviced by partitioned queries with an index, as these are the cheapest and most performant.</li>
 <li>Global queries can still be used on a partitioned database but ensure they are backed by a matching <code>partitioned: false</code> index.</li>
 </ul>
-<h2 id="further-information"><a href="#further-information">Further information</a></h2>
+<h2 id="further-information"style="display:inline">Further information</h2><a class="stealth" href="#further-information">🔗</a><br>
 <ul>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">Partitioned databases - Data Migration</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html">Partitioned databases - Partition sizing</a></li>
-<li><a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#partitioned-databases">Partitioned databases - Cloudant Documentation</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
+<li>[Partitioned databases - Data Migration][3]</li>
+<li>[Partitioned databases - Partition sizing][4]</li>
+<li>[Partitioned databases - Cloudant Documentation][5]</li>
 <li><a href="https://stedolan.github.io/jq/manual/">jq documentation</a></li>
 <li><a href="https://www.npmjs.com/package/@cloudant/couchbackup">couchbackup</a></li>
 </ul>
+<p>[3]: {{ ref &ldquo;2019-03-05-Partition-Databases-Data-Migration.md&rdquo; &gt;}}
+[4]: {{ ref &ldquo;2019-03-05-Partition-Databases-Sizing.md&rdquo; &gt;}}
+[5]: <a href="https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases">https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases</a></p>
 
 </div>
 </div>

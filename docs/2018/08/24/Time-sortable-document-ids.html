@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Time-sortable _ids</a></h1>
+  <h1 class="p-name">Time-sortable _ids</h1>
   
   <div class="postmeta">Aug 24, 2018 | Glynn Bird | 
 
-<bx-tag>Time</bx-tag>
+  
+  <bx-tag>Time</bx-tag>
+  
+  <bx-tag>Indexing</bx-tag>
+  
 
-<bx-tag>Indexing</bx-tag>
 
-</div>
+  </div>
   
   <p>A Cloudant database document&rsquo;s <code>_id</code> field has to be unique. When you create a document and leave the <code>_id</code> field blank, the database will create one for you:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X POST <span style="color:#ae81ff">\ </span>
@@ -137,7 +141,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     <span style="color:#e6db74">&#34;https://USERNAME:PASSWORD@HOST.cloudant.com/mydb&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;ok&#34;</span>:true,<span style="color:#e6db74">&#34;id&#34;</span>:<span style="color:#e6db74">&#34;user:glynn&#34;</span>,<span style="color:#e6db74">&#34;rev&#34;</span>:<span style="color:#e6db74">&#34;1-0785e9eb543380151003dc452c3a001a&#34;</span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>In this case I&rsquo;m using the <code>_id</code> to store both the <em>type</em> of the document (&ldquo;user&rdquo;) and something unique about each user I&rsquo;m storing (&ldquo;glynn&rdquo;) in the same portmanteau <code>_id</code>.</p>
-<h2 id="making-a-sortable-_id-field"><a href="#making-a-sortable-_id-field">Making a sortable _id field</a></h2>
+<h2 id="making-a-sortable-_id-field"style="display:inline">Making a sortable _id field</h2><a class="stealth" href="#making-a-sortable-_id-field">🔗</a><br>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/jeff-frenette-635397-unsplash.jpg" alt="sortable"></p>
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/Y_AWfh0kGT4">Jeff Frenette on Unsplash</a></p>
@@ -166,7 +170,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;UK&#39;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">verified</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> 
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="how-do-sortable-ids-work"><a href="#how-do-sortable-ids-work">How do sortable ids work?</a></h2>
+</span></span></code></pre></div><h2 id="how-do-sortable-ids-work"style="display:inline">How do sortable ids work?</h2><a class="stealth" href="#how-do-sortable-ids-work">🔗</a><br>
 <p>A <code>kuuid</code>-generated id consists of 32 characters made up of numbers and upper case &amp; lower case letters. It is split into two sections:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/kuuid.png" alt="kuuid"></p>
 <ol>
@@ -190,7 +194,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">k3</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">kuuid</span>.<span style="color:#a6e22e">prefix</span>(<span style="color:#a6e22e">date</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">list</span>({ <span style="color:#a6e22e">endkey</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">k3</span>, <span style="color:#a6e22e">descending</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span> }).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>)
 </span></span></code></pre></div><p>This form of querying is a little convoluted, but if your ids are going to be 32-character random strings, it seems useful to make them loosely time-ordered just to be able to quickly establish the documents that were added recently, if nothing else.</p>
-<h2 id="combining-a-kuuid-and-a-document-type"><a href="#combining-a-kuuid-and-a-document-type">Combining a kuuid and a document type</a></h2>
+<h2 id="combining-a-kuuid-and-a-document-type"style="display:inline">Combining a kuuid and a document type</h2><a class="stealth" href="#combining-a-kuuid-and-a-document-type">🔗</a><br>
 <p>Optionally, we could still keep the convention of storing the document <em>type</em> in the <code>_id</code> field too:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">doc</span> <span style="color:#f92672">=</span> {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;user:&#39;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">kuuid</span>.<span style="color:#a6e22e">id</span>(),

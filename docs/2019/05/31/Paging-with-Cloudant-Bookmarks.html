@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Paging with Bookmarks</a></h1>
+  <h1 class="p-name">Paging with Bookmarks</h1>
   
   <div class="postmeta">May 31, 2019 | Glynn Bird | 
 
-<bx-tag>Search</bx-tag>
+  
+  <bx-tag>Search</bx-tag>
+  
+  <bx-tag>Query</bx-tag>
+  
 
-<bx-tag>Query</bx-tag>
 
-</div>
+  </div>
   
   <p>Imagine you are creating a web application showing a set of search results, whether they be books, actors or products in your store. As the user scrolls to the bottom of the search results, another page of matches is appended to the bottom. This is known as an &ldquo;infinite scroll&rdquo; design pattern and allows the user to endlessly scroll through a large data set with ease, while only fetching a smaller batches of data from the database each time.</p>
 <p>It is this sort of access pattern that Cloudant <em>bookmarks</em> are built for. Here&rsquo;s how it works:</p>
@@ -134,7 +138,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/erol-ahmed-1450791-unsplash.jpg" alt="pic"></p>
 <p>Let&rsquo;s see how we would do that with code.</p>
-<h2 id="cloudant-query"><a href="#cloudant-query">Cloudant Query</a></h2>
+<h2 id="cloudant-query"style="display:inline">Cloudant Query</h2><a class="stealth" href="#cloudant-query">🔗</a><br>
 <p>First let&rsquo;s perform a search for all the cities in the USA. We&rsquo;re using <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query">Cloudant Query</a> so the operation is specified as a block of JSON:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;selector&#34;</span><span style="color:#f92672">:</span> {
@@ -192,17 +196,17 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">data</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">find</span>(<span style="color:#a6e22e">q</span>)
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e">// { docs: [ ... ], bookmark: &#39;...&#39; }
-</span></span></span></code></pre></div><h2 id="what-about-cloudant-search"><a href="#what-about-cloudant-search">What about Cloudant Search?</a></h2>
+</span></span></span></code></pre></div><h2 id="what-about-cloudant-search"style="display:inline">What about Cloudant Search?</h2><a class="stealth" href="#what-about-cloudant-search">🔗</a><br>
 <p>Pagination works in the same way for <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search">Cloudant Search</a> queries. Pass the <code>bookmark</code> parameter in the URL for GET requests or in the JSON body for POSTed requests. e.g.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/cities/_search/search/_search/freetext?q=country:US&amp;bookmark=g1AAAAA-eJzLYW&#34;</span>
 </span></span></code></pre></div><p>See <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-search#query-parameters-search">the documentation</a> for further details.</p>
-<h2 id="what-about-mapreduce-views"><a href="#what-about-mapreduce-views">What about MapReduce views?</a></h2>
+<h2 id="what-about-mapreduce-views"style="display:inline">What about MapReduce views?</h2><a class="stealth" href="#what-about-mapreduce-views">🔗</a><br>
 <p>MapReduce views do not accept a <code>bookmark</code>. Use the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-using-views">skip and limit</a> to page through results.</p>
-<h2 id="can-i-jump-straight-to-page-x-of-the-results"><a href="#can-i-jump-straight-to-page-x-of-the-results">Can I jump straight to page X of the results?</a></h2>
+<h2 id="can-i-jump-straight-to-page-x-of-the-results"style="display:inline">Can I jump straight to page X of the results?</h2><a class="stealth" href="#can-i-jump-straight-to-page-x-of-the-results">🔗</a><br>
 <p>No. Bookmarks only make sense to Cloudant if they came from the previous page of results. If you need page 3 of the results, you need to fetch pages 1 &amp; 2 first.</p>
-<h2 id="what-happens-if-i-supply-an-incorrect-bookmark"><a href="#what-happens-if-i-supply-an-incorrect-bookmark">What happens if I supply an incorrect bookmark?</a></h2>
+<h2 id="what-happens-if-i-supply-an-incorrect-bookmark"style="display:inline">What happens if I supply an incorrect bookmark?</h2><a class="stealth" href="#what-happens-if-i-supply-an-incorrect-bookmark">🔗</a><br>
 <p>Cloudant will respond with an <code>HTTP 400 Bad Request { error: 'invalid_bookmark'}</code> response if you supply an invalid bookmark. Remember you don&rsquo;t need a bookmark for the first search in a sequence.</p>
-<h2 id="what-happens-if-i-change-the-query"><a href="#what-happens-if-i-change-the-query">What happens if I change the query?</a></h2>
+<h2 id="what-happens-if-i-change-the-query"style="display:inline">What happens if I change the query?</h2><a class="stealth" href="#what-happens-if-i-change-the-query">🔗</a><br>
 <p>You must keep the same query (the same selector in Cloudant Query or the same &ldquo;q&rdquo; in Cloudant Search) to get the next page of results. If you change the query, you may get an empty result set in reply.</p>
 
 </div>

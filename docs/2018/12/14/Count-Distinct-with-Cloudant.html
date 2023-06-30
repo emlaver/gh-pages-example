@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Count Distinct</a></h1>
+  <h1 class="p-name">Count Distinct</h1>
   
   <div class="postmeta">Dec 14, 2018 | Glynn Bird | 
 
-<bx-tag>MapReduce</bx-tag>
+  
+  <bx-tag>MapReduce</bx-tag>
+  
+  <bx-tag>Count</bx-tag>
+  
 
-<bx-tag>Count</bx-tag>
 
-</div>
+  </div>
   
   <p>In 2017 I blogged about creating <a href="https://medium.com/ibm-watson-data-lab/custom-indexers-for-cloudant-6b7e65186db1">custom indexes outside of Cloudant</a> for problems that didn&rsquo;t fit Cloudant&rsquo;s indexing engine. One of those was the <em>count distinct problem</em>.</p>
 <p>Imagine you are recording web events as people (and bots) interact with your website - events that look like this in JSON documents in a Cloudant database:</p>
@@ -141,7 +145,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Photo by <a href="https://unsplash.com/photos/XVYz_QeiEBw">Sylvanus Urban on Unsplash</a></p>
 </blockquote>
 <p>As of CouchDB 2.2, a HyperLogLog-based <em>reducer</em> is available to allow approximate count distinct operations to be performed in MapReduce indexes. Here&rsquo;s how it&rsquo;s done.</p>
-<h2 id="the-map-function"><a href="#the-map-function">The Map function</a></h2>
+<h2 id="the-map-function"style="display:inline">The Map function</h2><a class="stealth" href="#the-map-function">🔗</a><br>
 <p>We are going to create a MapReduce index whose <em>key</em> is the thing we want to count (the ip address). A JavaScript function is defined as the &ldquo;map&rdquo; part of the MapReduce to emit the required key:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">ip</span>)
@@ -150,7 +154,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <pre tabindex="0"><code>1.142.99.0
 77.152.2.245
 85.25.222.52
-</code></pre><h2 id="the-reducer"><a href="#the-reducer">The reducer</a></h2>
+</code></pre><h2 id="the-reducer"style="display:inline">The reducer</h2><a class="stealth" href="#the-reducer">🔗</a><br>
 <p>The new <code>_approx_count_distinct</code> reducer will reduce this index to approximate count of the distinct keys in the index:</p>
 <pre tabindex="0"><code>{&#34;rows&#34;:[
 {&#34;key&#34;:null,&#34;value&#34;:50133}
@@ -161,11 +165,11 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 {&#34;rows&#34;:[
 {&#34;key&#34;:null,&#34;value&#34;:99}
 ]}
-</code></pre><h2 id="using-the-_approx_count_distinct-in-the-dashboard"><a href="#using-the-_approx_count_distinct-in-the-dashboard">Using the _approx_count_distinct in the dashboard</a></h2>
+</code></pre><h2 id="using-the-_approx_count_distinct-in-the-dashboard"style="display:inline">Using the _approx_count_distinct in the dashboard</h2><a class="stealth" href="#using-the-_approx_count_distinct-in-the-dashboard">🔗</a><br>
 <p>The MapReduce definition can be created in the Cloudant dashboard:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/count-distinct.png" alt="screenshot"></p>
 <p>Add your map function and choose the <code>_approx_count_distinct</code> reducer or enter <code>_approx_count_distinct</code> in the CUSTOM text box.</p>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>The <code>_approx_count_distinct</code> reducer has one job: to provide an estimate of distinct counts (with an accuracy of 2%) much more efficiently than getting a precise answer. It is used in the same way as the other built-in reducers <code>_sum</code>, <code>_count</code> and <code>_stats</code> but remember that it acts on the index&rsquo;s <em>key</em>, not the <em>value</em>.</p>
 <hr>
 <ul>

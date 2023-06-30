@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Design Docs For Life</a></h1>
+  <h1 class="p-name">Design Docs For Life</h1>
   
   <div class="postmeta">Aug 16, 2019 | Glynn Bird | 
 
-<bx-tag>Design Docs</bx-tag>
+  
+  <bx-tag>Design Docs</bx-tag>
+  
+  <bx-tag>Query</bx-tag>
+  
 
-<bx-tag>Query</bx-tag>
 
-</div>
+  </div>
   
   <p>A Design Document is a special Cloudant document whose <code>_id</code> field begins with <code>_design/</code> e.g. <code>_design/search</code>. It stores meta data about a secondary index or indexes: the name of the index, which fields are to be indexed etc. Design documents are created in one of two ways:</p>
 <ol>
@@ -133,15 +137,15 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/o2TRWThve_I">Kelly Sikkema on Unsplash</a></p>
 </blockquote>
-<h2 id="view-building"><a href="#view-building">View building</a></h2>
+<h2 id="view-building"style="display:inline">View building</h2><a class="stealth" href="#view-building">🔗</a><br>
 <p>When a Design Document is created, whether by hand or via Cloudant Query, Cloudant asynchronously begins to build the index. Indexing requires Cloudant to trawl through each document in the database in turn to build the index - in fact, as a Cloudant database is split into many (sixteen by default) pieces called <em>shards</em> the index builds independently on each shard copy. If the database document count is significant, it may take some time to finish the indexing process.</p>
 <p>You can query a view before the index has finished building, but you will not get a response until indexing is complete. You can check on the progress of an indexing job by querying the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-active-tasks">_active_tasks</a> endpoint.</p>
-<h2 id="design-document-tips"><a href="#design-document-tips">Design Document Tips</a></h2>
-<h3 id="cloudant-query-indexes-can-be-more-efficient-than-mapreduce"><a href="#cloudant-query-indexes-can-be-more-efficient-than-mapreduce">Cloudant Query indexes can be more efficient than MapReduce</a></h3>
+<h2 id="design-document-tips"style="display:inline">Design Document Tips</h2><a class="stealth" href="#design-document-tips">🔗</a><br>
+<h3 id="cloudant-query-indexes-can-be-more-efficient-than-mapreduce"style="display:inline">Cloudant Query indexes can be more efficient than MapReduce</h3><a class="stealth" href="#cloudant-query-indexes-can-be-more-efficient-than-mapreduce">🔗</a><br>
 <p>The MapReduce engine requires Cloudant to execute your JavaScript map function using a JavaScript engine where as Cloudant Query work stays within the Erlang space of Cloudant&rsquo;s core. As a result, Cloudant Queries are more efficient to build than their MapReduce equivalents.</p>
-<h3 id="store-data-in-a-index-friendly-way"><a href="#store-data-in-a-index-friendly-way">Store data in a index-friendly way</a></h3>
-<p>Cloudant Query doesn&rsquo;t give you the opportunity to modify the data prior to indexing (as can be achieved in a JavaScript map function) so it is important to store data in the form that is suitable for querying. With only a handful of indexed fields, many of your application access patterns can be <a href="https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html">queried optimally</a>.</p>
-<h3 id="partial-indexes-are-smaller"><a href="#partial-indexes-are-smaller">Partial Indexes are smaller</a></h3>
+<h3 id="store-data-in-a-index-friendly-way"style="display:inline">Store data in a index-friendly way</h3><a class="stealth" href="#store-data-in-a-index-friendly-way">🔗</a><br>
+<p>Cloudant Query doesn&rsquo;t give you the opportunity to modify the data prior to indexing (as can be achieved in a JavaScript map function) so it is important to store data in the form that is suitable for querying. With only a handful of indexed fields, many of your application access patterns can be <a href="https://emlaver.github.io/gh-pages-example/2019/05/10/Optimal-Cloudant-Indexing.html">queried optimally</a>.</p>
+<h3 id="partial-indexes-are-smaller"style="display:inline">Partial Indexes are smaller</h3><a class="stealth" href="#partial-indexes-are-smaller">🔗</a><br>
 <p>If you only need to index a sub-set of a database with Cloudant Query then a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#creating-a-partial-index">partial index</a> can make the index smaller and more efficient by applying a filter <em>selector</em> at indexing time. A similar effect is achieved with an <code>if</code> statement in a MapReduce or Search index:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e">// we only want totals of paid orders
@@ -152,7 +156,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>A small index requires fewer computing resources to manage so should be faster to query.</p>
-<h3 id="use-meaningful-names"><a href="#use-meaningful-names">Use meaningful names</a></h3>
+<h3 id="use-meaningful-names"style="display:inline">Use meaningful names</h3><a class="stealth" href="#use-meaningful-names">🔗</a><br>
 <p>After using Cloudant for a while, you might find yourself staring at an index definition and wondering what it is for, who created it and whether it is still needed. Having a good naming convention is important in most software projects, and this applies to design document management too. Here are some ideas:</p>
 <ul>
 <li>Keep global indexes and partitioned indexes separate e.g. <code>global/orderValueByDate</code>, <code>partitioned/userOrdersByTime</code>.</li>
@@ -160,13 +164,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Add comments into JavaScript view and search index definitions to explain non-obvious code and which part of your application uses the index.</li>
 <li>You may wish to <em>version</em> your view names to allow a smooth migration from one version of your code to another <code>e.g. salesReport/productCountByDatev5</code>.</li>
 </ul>
-<h3 id="partitioned-indexes-are-faster"><a href="#partitioned-indexes-are-faster">Partitioned indexes are faster</a></h3>
-<p>If your data can be moulded into a <a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned Database</a> model, then queries that are directed to a single partition will execute faster and be charged less per query than their global equivalents.</p>
-<h3 id="specify-use_index"><a href="#specify-use_index">Specify use_index</a></h3>
+<h3 id="partitioned-indexes-are-faster"style="display:inline">Partitioned indexes are faster</h3><a class="stealth" href="#partitioned-indexes-are-faster">🔗</a><br>
+<p>If your data can be moulded into a <a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partitioned Database</a> model, then queries that are directed to a single partition will execute faster and be charged less per query than their global equivalents.</p>
+<h3 id="specify-use_index"style="display:inline">Specify use_index</h3><a class="stealth" href="#specify-use_index">🔗</a><br>
 <p>When querying using Cloudant Query, supply <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#finding-documents-by-using-an-index">use_index</a> when you know which index you intend Cloudant to use to answer your query.</p>
-<h3 id="use-the-explain-api"><a href="#use-the-explain-api">Use the &ldquo;explain&rdquo; API</a></h3>
+<h3 id="use-the-explain-api"style="display:inline">Use the &ldquo;explain&rdquo; API</h3><a class="stealth" href="#use-the-explain-api">🔗</a><br>
 <p>Learn how to use the <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-query#explain-plans">explain API</a> which describes which index would be used to answer an individual query.</p>
-<h2 id="automated-testing-for-javascript"><a href="#automated-testing-for-javascript">Automated testing for JavaScript</a></h2>
+<h2 id="automated-testing-for-javascript"style="display:inline">Automated testing for JavaScript</h2><a class="stealth" href="#automated-testing-for-javascript">🔗</a><br>
 <p>JavaScript map functions are <em>just code</em> and are as susceptible to bugs and typos as any other source code. It&rsquo;s worth running your map functions through an automated test suite, to ensure that your code is emitting the correct keys and values in all circumstances. Here&rsquo;s an example test suite for a map function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">map</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;./designdocs/global.js&#39;</span>).<span style="color:#a6e22e">views</span>.<span style="color:#a6e22e">byDeviceId</span>
 </span></span><span style="display:flex;"><span>
@@ -211,7 +215,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The above code uses the <a href="https://jestjs.io/">Jest</a> testing framework and exercises our map function to ensure that it behaves correctly with the right stimulus. Dummy &ldquo;emit&rdquo;/&ldquo;index&rdquo; functions collect the emitted keys and values where they can be checked by your test code.</p>
 <p>Note: Automated testing can help catch syntax errors and logical edge cases, but exactly reproduce how Cloudant&rsquo;s JavaScript engine will execute your map functions, your test suite would have to use the same version of SpiderMonkey JavaScript engine.</p>
-<h2 id="lifecycle-management-for-design-documents"><a href="#lifecycle-management-for-design-documents">Lifecycle management for Design Documents</a></h2>
+<h2 id="lifecycle-management-for-design-documents"style="display:inline">Lifecycle management for Design Documents</h2><a class="stealth" href="#lifecycle-management-for-design-documents">🔗</a><br>
 <p>Understanding the lifecycle of indexes is important when it comes to your application&rsquo;s configuration management.</p>
 <ol>
 <li>CREATE - When a Design Document that contains index definitions is first saved, the process of building the index begins. Each copy of each shard of the database builds the index independently and in parallel. The index is not usable until all the processes are complete.</li>
@@ -227,7 +231,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>When replicating databases to another Cloudant cluster, the design documents will be replicated too and will begin building on the target side. If design documents are not required at the target side, they can be filtered out with a <a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-design-documents#the-_selector-filter">Cloudant Query selector</a>.</li>
 </ul>
 <p>The above semantics can used to ensure an orderly transition from one version of an index to another.</p>
-<h2 id="design-document-change-control"><a href="#design-document-change-control">Design Document change control</a></h2>
+<h2 id="design-document-change-control"style="display:inline">Design Document change control</h2><a class="stealth" href="#design-document-change-control">🔗</a><br>
 <p>With a large data set and significant index build times, care must be taken when deploying new versions of design documents if the the views are to be available at all times. Taking advantage of the subtle behaviour of design documents and their indexes, the following algorithm can be implemented to avoid downtime for the indexes defined by design document &ldquo;ddoc&rdquo;:</p>
 <ol>
 <li>Copy old design document to <code>ddoc_OLD</code>.</li>

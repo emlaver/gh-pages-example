@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,17 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Scheduled Cloudant Backups</a></h1>
+  <h1 class="p-name">Scheduled Cloudant Backups</h1>
   
   <div class="postmeta">May 15, 2019 | Glynn Bird | 
 
-<bx-tag>Backup</bx-tag>
+  
+  <bx-tag>Backup</bx-tag>
+  
+  <bx-tag>COS</bx-tag>
+  
 
-<bx-tag>COS</bx-tag>
 
-<bx-tag>Kubernetes</bx-tag>
-
-</div>
+  </div>
   
   <p>The <a href="https://www.npmjs.com/package/@cloudant/couchbackup">Couchbackup</a> project provides a simple command-line tool to backup a Cloudant database to a file. From there it can uploaded to <a href="https://www.ibm.com/cloud/object-storage">IBM Cloud Object Storage</a> for archival.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># backup a single database to a file</span>
@@ -138,14 +140,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/FtRkRespN24">Boba Jovanovic on Unsplash</a></p>
 </blockquote>
-<h2 id="pre-requisites"><a href="#pre-requisites">Pre-requisites</a></h2>
+<h2 id="pre-requisites"style="display:inline">Pre-requisites</h2><a class="stealth" href="#pre-requisites">🔗</a><br>
 <ol>
 <li>An <a href="https://www.ibm.com/cloud">IBM Cloud</a> account.</li>
 <li>An <a href="https://www.ibm.com/uk-en/cloud/cloudant">IBM Cloudant</a> service with a database containing documents you wish to backup.</li>
 <li>An <a href="https://www.ibm.com/cloud/object-storage">IBM Cloud Object Storage</a> service with set of <a href="https://cloud.ibm.com/docs/services/cloud-object-storage/hmac?topic=cloud-object-storage-service-credentials">HMAC credentials</a>.</li>
 <li>An <a href="https://www.ibm.com/uk-en/cloud/container-service">IBM Kubernetes Service</a>.</li>
 </ol>
-<h2 id="running-the-backup-script-on-your-machine"><a href="#running-the-backup-script-on-your-machine">Running the backup script on your machine</a></h2>
+<h2 id="running-the-backup-script-on-your-machine"style="display:inline">Running the backup script on your machine</h2><a class="stealth" href="#running-the-backup-script-on-your-machine">🔗</a><br>
 <p>Using the <a href="https://github.com/cloudant/couchbackup/blob/master/examples/s3-backup-stream.js">s3-backup-stream.js</a> as a basis for our script, we want our code to:</p>
 <ul>
 <li>Backup a single database to object storage without storing local disk first.</li>
@@ -170,7 +172,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># Run the backup.</span>
 </span></span><span style="display:flex;"><span>npm run start
-</span></span></code></pre></div><h2 id="running-as-a-docker-container"><a href="#running-as-a-docker-container">Running as a Docker container</a></h2>
+</span></span></code></pre></div><h2 id="running-as-a-docker-container"style="display:inline">Running as a Docker container</h2><a class="stealth" href="#running-as-a-docker-container">🔗</a><br>
 <p>This script can also be run as a Docker container. If you have <a href="https://www.docker.com/">Docker</a> installed on your machine, run the following commands:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># Build the image.</span>
 </span></span><span style="display:flex;"><span>docker build -t scheduledcloudantbackup .
@@ -185,7 +187,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --env AWS_SECRET_ACCESS_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$AWS_SECRET_ACCESS_KEY<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  scheduledcloudantbackup
 </span></span></code></pre></div><p>The values beginning with <code>$</code> are replaced with the environment variables we created in the previous step.</p>
-<h2 id="running-automatically-in-kubernetes"><a href="#running-automatically-in-kubernetes">Running automatically in Kubernetes</a></h2>
+<h2 id="running-automatically-in-kubernetes"style="display:inline">Running automatically in Kubernetes</h2><a class="stealth" href="#running-automatically-in-kubernetes">🔗</a><br>
 <p>To run the backup unattended every hour, we need to schedule this process to run periodically. IBM&rsquo;s Kubernetes service has a &ldquo;cron job&rdquo; function that is designed for just this purpose. First we need to register our Docker image with the IBM Kubernetes service:</p>
 <ol>
 <li>Sign up for a <a href="https://www.ibm.com/uk-en/cloud/container-service">IBM Kubernetes</a> service.</li>
@@ -202,7 +204,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Our cron job definition resides in a &ldquo;cronjob.yml&rdquo; file which tells the Kubernetes cluster which image to spin up, at what interval and the environment variables it runs with. <strong>Edit the <code>cronjob.yml</code> to configure your Cloudant service and Object Storage environment variables before running</strong>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>kubectl create -f cronjob.yml
 </span></span></code></pre></div><p>Now wait until the top of the hour for the backup process to begin. When it&rsquo;s complete, you should see time-stamped backup in your Object Storage bucket!</p>
-<h2 id="links"><a href="#links">Links</a></h2>
+<h2 id="links"style="display:inline">Links</h2><a class="stealth" href="#links">🔗</a><br>
 <ul>
 <li><a href="https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/">Kubernetes CronJobs</a></li>
 <li><a href="https://github.com/glynnbird/scheduledcloudantbackup">Source code of this utility</a></li>

@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Timing HTTP Requests</a></h1>
+  <h1 class="p-name">Timing HTTP Requests</h1>
   
   <div class="postmeta">Dec 6, 2019 | Glynn Bird | 
 
-<bx-tag>HTTP</bx-tag>
+  
+  <bx-tag>HTTP</bx-tag>
+  
+  <bx-tag>Performance</bx-tag>
+  
 
-<bx-tag>Performance</bx-tag>
 
-</div>
+  </div>
   
   <p>Building a Cloudant-based application with Node.js means that your app will making many HTTP requests to your Cloudant service. It&rsquo;s important to understand how such HTTP traffic is coordinated in Node and to be able to measure the anatomy of each request so that you can measure latencies and eliminate unwanted delays.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/john-barkiple-l090uFWoPaI-unsplash.jpg" alt="connections"></p>
@@ -129,7 +133,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Photo by <a href="https://unsplash.com/photos/l090uFWoPaI">John Barkiple on Unsplash</a></p>
 </blockquote>
 <p>In this post we&rsquo;ll be using the <a href="https://www.npmjs.com/package/@cloudant/cloudant">Official Node.js Cloudant library</a>, exploring HTTP connection pooling and finding out how to instrument your Node.js app.</p>
-<h2 id="the-anatomy-of-an-http-request"><a href="#the-anatomy-of-an-http-request">The anatomy of an HTTP request</a></h2>
+<h2 id="the-anatomy-of-an-http-request"style="display:inline">The anatomy of an HTTP request</h2><a class="stealth" href="#the-anatomy-of-an-http-request">🔗</a><br>
 <p>When your app decides to make an HTTP request, a number of tasks are performed in sequence:</p>
 <ul>
 <li>DNS lookup - your Cloudant domain name is resolved to an IP address using a DNS resolver.</li>
@@ -139,12 +143,12 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>Client response - the server&rsquo;s response is sent back to the client.</li>
 </ul>
 <p>When your app decides to make a second request, it can <em>reuse</em> the existing socket and avoid the DNS lookup, socket connection and TLS handshake steps.</p>
-<h2 id="http-connection-pooling"><a href="#http-connection-pooling">HTTP Connection Pooling</a></h2>
+<h2 id="http-connection-pooling"style="display:inline">HTTP Connection Pooling</h2><a class="stealth" href="#http-connection-pooling">🔗</a><br>
 <p>An HTTP socket can only host one HTTP request at anyone one time, but a Node.js app can utilise several sockets at once - known as a connection pool. By default, the Cloudant Node.js library is configured to use a pool of six sockets - this means that six HTTP connections can be in flight at any one time.</p>
 <p>When you issue a Cloudant API call in your Node,js app, it queues inside the app until a socket becomes free in the pool.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/httprequest1.png" alt="http request 1"></p>
 <p>If you have more requests in flight than you have sockets in the pool, then some requests will be delayed in your app waiting for a socket to become available. The key to discovering if you are adding latency to your requests by not having enough free sockets is to record detailed metrics.</p>
-<h2 id="recording-http-metrics"><a href="#recording-http-metrics">Recording HTTP metrics</a></h2>
+<h2 id="recording-http-metrics"style="display:inline">Recording HTTP metrics</h2><a class="stealth" href="#recording-http-metrics">🔗</a><br>
 <p>When we instantiate the <code>@cloudant/cloudant</code> Node.js library we can switch on detailed timings by supplying <code>{time: true}</code> to the <code>requestDefaults</code> object:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloudantOpts</span> <span style="color:#f92672">=</span> {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">url</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">process</span>.<span style="color:#a6e22e">env</span>.<span style="color:#a6e22e">COUCH_URL</span>,
@@ -218,29 +222,29 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Note: In my example code I am simply outputting timings to the console, but in your case you would want to store the details of the request and the timing data in your chosen monitoring package.</p>
 </blockquote>
-<h2 id="analyzing-the-timings"><a href="#analyzing-the-timings">Analyzing the timings</a></h2>
+<h2 id="analyzing-the-timings"style="display:inline">Analyzing the timings</h2><a class="stealth" href="#analyzing-the-timings">🔗</a><br>
 <p>To minimise latencies, your application needs to be as geographically close to its Cloudant service, preferably in the same data centre.</p>
 <p>It&rsquo;s also important to note that some Cloudant HTTP requests are intentionally long e.g. long-polling the Cloudant changes feed. Be careful not to include such requests in your average calculations!</p>
-<h3 id="wait"><a href="#wait">wait</a></h3>
+<h3 id="wait"style="display:inline">wait</h3><a class="stealth" href="#wait">🔗</a><br>
 <p>If you are seeing values of <code>wait</code> greater than a millisecond for anything but the app&rsquo;s first request (per socket) then you may have more HTTP requests in flight than you have available sockets. See the next section on <em>increasing maxSockets</em> to remedy this.</p>
 <p>You may also see longer values of <code>wait</code> if you are <a href="https://nodejs.org/ru/docs/guides/dont-block-the-event-loop/">Blocking the Event Loop</a> by executing long-running synchronous code which doesn&rsquo;t allow Node.js enough processor cycles to service network IO.</p>
-<h3 id="dns"><a href="#dns">dns</a></h3>
+<h3 id="dns"style="display:inline">dns</h3><a class="stealth" href="#dns">🔗</a><br>
 <p>The DNS lookup is a one-time operation per socket and should only take a few tens of milliseconds.</p>
-<h3 id="tcp"><a href="#tcp">tcp</a></h3>
+<h3 id="tcp"style="display:inline">tcp</h3><a class="stealth" href="#tcp">🔗</a><br>
 <p>This is another one-off cost per socket whose speed will depend on the proximity of your Cloudant service. A transatlantic TLS negotiation may take 150ms.</p>
-<h3 id="firstbyte"><a href="#firstbyte">firstByte</a></h3>
+<h3 id="firstbyte"style="display:inline">firstByte</h3><a class="stealth" href="#firstbyte">🔗</a><br>
 <p>This is a measure of how long it took to get your app&rsquo;s request to Cloudant plus how long it took for Cloudant to begin to respond. Note that it includes network latency between you and Cloudant, so a close proximity to Cloudant will help to minimise this number. A large value here may indicate an inefficient query that takes Cloudant a while to answer or a large request size (e.g. uploading a binary attachment).</p>
-<h3 id="download"><a href="#download">download</a></h3>
+<h3 id="download"style="display:inline">download</h3><a class="stealth" href="#download">🔗</a><br>
 <p>This is a measure of the time taken to spool Cloudant&rsquo;s response to you. It depends on the network latency and the volume of data being requested from Cloudant. The Node.js Cloudant library asks Cloudant to <em>zip</em> JSON responses, which helps to minimise this measurement.</p>
-<h3 id="total"><a href="#total">total</a></h3>
+<h3 id="total"style="display:inline">total</h3><a class="stealth" href="#total">🔗</a><br>
 <p>The entire HTTP timing from start to finish.</p>
-<h2 id="this-works-for-any-http-request"><a href="#this-works-for-any-http-request">This works for any HTTP request</a></h2>
+<h2 id="this-works-for-any-http-request"style="display:inline">This works for any HTTP request</h2><a class="stealth" href="#this-works-for-any-http-request">🔗</a><br>
 <p>This timing trick isn&rsquo;t exclusive to the Node.js Cloudant library - it&rsquo;s actually baked into the Node.js <code>request</code> library, so any HTTP request you do can be timed in this way:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">request</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;request&#39;</span>).<span style="color:#a6e22e">defaults</span>({<span style="color:#a6e22e">time</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>})
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">request</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;https://google.com&#39;</span>, <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">err</span>, <span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">body</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">timingPhases</span>)
 </span></span><span style="display:flex;"><span>})
-</span></span></code></pre></div><h2 id="increasing-maxsockets"><a href="#increasing-maxsockets">Increasing maxSockets</a></h2>
+</span></span></code></pre></div><h2 id="increasing-maxsockets"style="display:inline">Increasing maxSockets</h2><a class="stealth" href="#increasing-maxsockets">🔗</a><br>
 <p>If you anticipate having more than six HTTP requests in flight in your Node.js app, or you are seeing significant values of <code>wait</code> from your HTTP latency monitoring, then you may need to increase the size of <code>maxSockets</code> - the maximum number of sockets used in the HTTP connection pool.</p>
 <p>It is easily configured within the Node.js Cloudant library:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">timerPlugin</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;./timerplugin.js&#39;</span>)

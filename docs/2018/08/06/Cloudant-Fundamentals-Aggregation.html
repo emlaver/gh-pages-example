@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Cloudant Fundamentals 10/10</a></h1>
+  <h1 class="p-name">Cloudant Fundamentals 10/10</h1>
   
   <div class="postmeta">Aug 6, 2018 | Glynn Bird | 
 
-<bx-tag>Fundamentals</bx-tag>
+  
+  <bx-tag>Fundamentals</bx-tag>
+  
+  <bx-tag>Aggregation</bx-tag>
+  
 
-<bx-tag>Aggregation</bx-tag>
 
-</div>
+  </div>
   
   <p>It&rsquo;s been an emotional journey through Cloudant&rsquo;s fundamentals but we&rsquo;re nearly at the end. In this final post, we&rsquo;ll discuss data aggregation: counting, summing and statistics.</p>
 <p><a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#query">Cloudant Query</a> which we used for <a href="">part 8</a> and <a href="">part 9</a> of this series does not have the ability to perform aggregations, only selection. i.e. you can do <code>SELECT * FROM mydb WHERE actor='Al Pacino'</code> but not <code>SELECT COUNT(*) FROM mydb WHERE actor='Al Pacino'</code>.</p>
@@ -129,7 +133,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/jnU5EivNygE">Sven Scheuermeier on Unsplash</a></p>
 </blockquote>
-<h2 id="mapreduce"><a href="#mapreduce">MapReduce</a></h2>
+<h2 id="mapreduce"style="display:inline">MapReduce</h2><a class="stealth" href="#mapreduce">🔗</a><br>
 <p>One option is to write your own <a href="https://console.bluemix.net/docs/services/Cloudant/api/creating_views.html#views-mapreduce-">MapReduce</a> view. A view is defined as a JavaScript function. Cloudant takes each document in the database, passing it to this function in turn and then storing the emitted  key/value pairs in an index on disk.</p>
 <p>To calculate counts of documents by actor we would create a map function like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
@@ -140,7 +144,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>([<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">year</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">month</span>], <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">orderValue</span>)
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The above example allows a hierarchical key of <code>year</code> and <code>month</code> to be used to group the aggregation of the <code>orderValue</code> field - ideal for reports and dashboards.</p>
-<h2 id="facet-counts"><a href="#facet-counts">Facet counts</a></h2>
+<h2 id="facet-counts"style="display:inline">Facet counts</h2><a class="stealth" href="#facet-counts">🔗</a><br>
 <p>Another way of calculating simple count aggregations is using the <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#faceting">faceting feature</a> of Cloudant Search. Like MapReduce, Cloudant Search indexes are configured in JavaScript, this time with an <code>index</code> function instead of <code>emit</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">doc</span>) {
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">index</span>(<span style="color:#e6db74">&#34;category&#34;</span>, <span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">category</span>, {<span style="color:#e6db74">&#34;facet&#34;</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>});
@@ -161,7 +165,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
     }
 }
 </code></pre><p>See the <a href="https://console.bluemix.net/docs/services/Cloudant/api/search.html#faceting">documentation</a> for further examples of facet counts and range faceting.</p>
-<h2 id="aggregation-with-cloudant-quickstart"><a href="#aggregation-with-cloudant-quickstart">Aggregation with cloudant-quickstart</a></h2>
+<h2 id="aggregation-with-cloudant-quickstart"style="display:inline">Aggregation with cloudant-quickstart</h2><a class="stealth" href="#aggregation-with-cloudant-quickstart">🔗</a><br>
 <p>The simplest way to do aggregation is using the <a href="https://www.npmjs.com/package/cloudant-quickstart">cloudant-quickstart</a> library.</p>
 <p>Counts are performed without defining the index yourself:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span> <span style="color:#75715e">// count documents by year and month
@@ -173,7 +177,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// get stats on weather by state/city
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">stats</span>([<span style="color:#e6db74">&#39;temperature&#39;</span>, <span style="color:#e6db74">&#39;airPressure&#39;</span>, <span style="color:#e6db74">&#39;windSpeed&#39;</span>], <span style="color:#e6db74">&#39;state&#39;</span>)
-</span></span></code></pre></div><h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+</span></span></code></pre></div><h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>In this Cloudant Fundamentals series we&rsquo;ve touched on schema design, unique ids, revision tokens, CRUD operations, querying and aggregation. But there&rsquo;s a lot more.</p>
 <p>There’s a project called <a href="https://pouchdb.com/">PouchDB</a> that might strike your fancy. You also can <a href="https://medium.com/ibm-watson-data-lab/search?q=cloudant">search our Medium publication</a> for more articles on Cloudant and CouchDB. And of course, you can reach the wider open source community on the <a href="http://couchdb.apache.org/#chat">Apache CouchDB chat channels</a> or get involved via the <a href="http://couchdb.apache.org/#mailing-lists">CouchDB mailing lists</a>. I’ll see you on there!</p>
 

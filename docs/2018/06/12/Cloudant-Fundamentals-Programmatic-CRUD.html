@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Cloudant Fundamentals 6/10</a></h1>
+  <h1 class="p-name">Cloudant Fundamentals 6/10</h1>
   
   <div class="postmeta">Jun 12, 2018 | Glynn Bird | 
 
-<bx-tag>Fundamentals</bx-tag>
+  
+  <bx-tag>Fundamentals</bx-tag>
+  
+  <bx-tag>Node.js</bx-tag>
+  
 
-<bx-tag>Node.js</bx-tag>
 
-</div>
+  </div>
   
   <p>In the previous two posts we saw how how the command-line tool <code>curl</code> is all that is required to do basic read and write operations with Cloudant, and how two API calls can be used for bulk commands.</p>
 <p>In this post we&rsquo;ll look at equivalent tasks using programmatic means.</p>
@@ -133,7 +137,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><a href="https://github.com/IBM/cloudant-go-sdk">Go</a></li>
 </ul>
 <p>For these examples I&rsquo;m going to use the <a href="https://github.com/IBM/cloudant-node-sdk">Node.js</a> library.</p>
-<h2 id="connect-to-the-database"><a href="#connect-to-the-database">Connect to the database</a></h2>
+<h2 id="connect-to-the-database"style="display:inline">Connect to the database</h2><a class="stealth" href="#connect-to-the-database">🔗</a><br>
 <p>Let&rsquo;s set up our Cloudant credentials in environment variables:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># the URL of the Cloudant service</span>
 </span></span><span style="display:flex;"><span>export CLOUDANT_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;https://mycloudantservice.cloudant.com&#39;</span>
@@ -142,14 +146,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></code></pre></div><p>Then we can include the library and get it set up:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">CloudantV1</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;@ibm-cloud/cloudant&#39;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">client</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">CloudantV1</span>.<span style="color:#a6e22e">newInstance</span>()
-</span></span></code></pre></div><h2 id="create-a-the-database"><a href="#create-a-the-database">Create a the database</a></h2>
+</span></span></code></pre></div><h2 id="create-a-the-database"style="display:inline">Create a the database</h2><a class="stealth" href="#create-a-the-database">🔗</a><br>
 <p>Creating a database is as simple as calling the <code>putDatabase</code> function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">putDatabase</span>({
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mydatabasename&#39;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">partitioned</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { ok: true }
-</span></span></span></code></pre></div><h2 id="creating-documents"><a href="#creating-documents">Creating documents</a></h2>
+</span></span></span></code></pre></div><h2 id="creating-documents"style="display:inline">Creating documents</h2><a class="stealth" href="#creating-documents">🔗</a><br>
 <p>Let&rsquo;s say we want to add an array of documents to our database:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">docs</span> <span style="color:#f92672">=</span> [
 </span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;name&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Ferris Bueller&#34;</span>, <span style="color:#e6db74">&#34;actor&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Matthew Broderick&#34;</span>, <span style="color:#e6db74">&#34;dob&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;1962-03-21&#34;</span>},
@@ -169,7 +173,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  document<span style="color:#f92672">:</span> <span style="color:#a6e22e">newdoc</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { ok: true, id: &#39;95b51f94118ae&#39;, rev: &#39;1-678&#39; }
-</span></span></span></code></pre></div><h2 id="reading-documents"><a href="#reading-documents">Reading documents</a></h2>
+</span></span></span></code></pre></div><h2 id="reading-documents"style="display:inline">Reading documents</h2><a class="stealth" href="#reading-documents">🔗</a><br>
 <p>Documents can be read back singly by specifying the id of the document you want:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">getDocument</span>({
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mydatabasename&#39;</span>,
@@ -192,7 +196,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mydatabasename&#39;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">includeDocs</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>
 </span></span><span style="display:flex;"><span>})
-</span></span></code></pre></div><h2 id="updating-documents"><a href="#updating-documents">Updating documents</a></h2>
+</span></span></code></pre></div><h2 id="updating-documents"style="display:inline">Updating documents</h2><a class="stealth" href="#updating-documents">🔗</a><br>
 <p>The Node.js library allows documents to be updated by passing a document with its last revision (<code>_rev</code>) in place:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">modifiedDoc</span> <span style="color:#f92672">=</span> { 
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;95b51f94118ae2d852393c63edacf462&#34;</span>,
@@ -207,7 +211,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  document<span style="color:#f92672">:</span> <span style="color:#a6e22e">modifiedDoc</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { ok: true, rev: &#39;2-456&#39; }
-</span></span></span></code></pre></div><h2 id="deleting-a-document"><a href="#deleting-a-document">Deleting a document</a></h2>
+</span></span></span></code></pre></div><h2 id="deleting-a-document"style="display:inline">Deleting a document</h2><a class="stealth" href="#deleting-a-document">🔗</a><br>
 <p>A documents can be removed from the database by passing an id <code>delete</code> function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">deleteDocument</span>({
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;mydatabasename&#39;</span>,
@@ -215,7 +219,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">rev</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2-456&#39;</span>
 </span></span><span style="display:flex;"><span>})
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// { ok: true, rev: &#39;3-789&#39; }
-</span></span></span></code></pre></div><h2 id="next-time"><a href="#next-time">Next time</a></h2>
+</span></span></span></code></pre></div><h2 id="next-time"style="display:inline">Next time</h2><a class="stealth" href="#next-time">🔗</a><br>
 <p>In the next post we&rsquo;ll look at querying data.</p>
 
 </div>

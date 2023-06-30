@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Migrating a Cloudant Account</a></h1>
+  <h1 class="p-name">Migrating a Cloudant Account</h1>
   
   <div class="postmeta">Nov 25, 2020 | Glynn Bird | 
 
-<bx-tag>Replication</bx-tag>
+  
+  <bx-tag>Replication</bx-tag>
+  
+  <bx-tag>Migration</bx-tag>
+  
 
-<bx-tag>Migration</bx-tag>
 
-</div>
+  </div>
   
   <p>There are several reasons why you&rsquo;d want to copy data from one Cloudant account to another:</p>
 <ol>
@@ -135,26 +139,26 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/kPvFE0ZOTz8">Lesly Derksen on Unsplash</a></p>
 </blockquote>
-<h2 id="replication-primer"><a href="#replication-primer">Replication primer</a></h2>
-<h3 id="what-is-replication"><a href="#what-is-replication">What is replication?</a></h3>
+<h2 id="replication-primer"style="display:inline">Replication primer</h2><a class="stealth" href="#replication-primer">🔗</a><br>
+<h3 id="what-is-replication"style="display:inline">What is replication?</h3><a class="stealth" href="#what-is-replication">🔗</a><br>
 <p>Cloudant replication is a one-way data copy from a <em>source</em> database to a <em>target</em> database.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/migration1.png" alt="mig1"></p>
 <p>The source and target can be on different Cloudant accounts which can exist in different regions across the world. The <em>mediator</em> of the replication job can be the source account, the target account or even a third Cloudant account. Best practice is to have the quietest Cloudant account be the mediator of the replication job - in this case the <em>target</em> account, as it is a new empty service should be configured to &ldquo;pull&rdquo; the data from the source database.</p>
-<h3 id="one-off-vs-continuous"><a href="#one-off-vs-continuous">One off vs continuous</a></h3>
+<h3 id="one-off-vs-continuous"style="display:inline">One off vs continuous</h3><a class="stealth" href="#one-off-vs-continuous">🔗</a><br>
 <p>Replication jobs can be a one-off operation (the default) or run <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api#continuous-replication">continuously</a>, spooling each change from source to target until the job is cancelled.</p>
-<h3 id="replication-speed"><a href="#replication-speed">Replication speed</a></h3>
+<h3 id="replication-speed"style="display:inline">Replication speed</h3><a class="stealth" href="#replication-speed">🔗</a><br>
 <p>Replication jobs can run at different speeds depending on the values <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-advanced-replication#performance-related-options">performance-related options</a> supplied during replication setup. You may wish to throttle the speed at which replication proceeds so as not to put too much load on a production service - it&rsquo;s important that your source account isn&rsquo;t swamped by reads leaving no capacity for other workloads or similarly, that the target account isn&rsquo;t swamped by writes. <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-ibm-cloud-public#consumption-of-read-and-write-operations-by-replication">This document</a> provides approximate documents/sec rates for different combinations of the performance parameters in practice.</p>
-<h3 id="many-databases"><a href="#many-databases">Many databases</a></h3>
+<h3 id="many-databases"style="display:inline">Many databases</h3><a class="stealth" href="#many-databases">🔗</a><br>
 <p>A replication job only copies one database&rsquo;s data from source to target. If you need to migrate multiple databases, you&rsquo;ll need a replication job per database. For many databases, it&rsquo;s usually not advisable to have lots of replications running at once. The <a href="https://www.npmjs.com/package/couchreplicate">couchreplicate</a> tool allows many databases to be copied, with a configurable maximum number of replications running at any one time.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/migration4.png" alt="mig1"></p>
-<h3 id="indexing"><a href="#indexing">Indexing</a></h3>
+<h3 id="indexing"style="display:inline">Indexing</h3><a class="stealth" href="#indexing">🔗</a><br>
 <p>Replication only copies documents, not secondary index data. As index definitions arrive at the target (in <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-design-documents">Design Documents</a>), the process of indexing will begin and the indexes will build asynchronously. Make sure indexes have finished building before directing production traffic to the target service.</p>
 <p>Further reading:</p>
 <ul>
 <li><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-guide#what-is-replication">Replication Guide</a></li>
 <li><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-advanced-replication">Advanced Replication</a></li>
 </ul>
-<h2 id="filtering-documents"><a href="#filtering-documents">Filtering documents</a></h2>
+<h2 id="filtering-documents"style="display:inline">Filtering documents</h2><a class="stealth" href="#filtering-documents">🔗</a><br>
 <p>Replicating to a new Cloudant service is a good opportunity to remove unwanted documents at the same time. Filtered replication involves supplying a Cloudant Query selector when creating a replication job - documents that meet the criteria of the selector will be replicated, everything else will be left behind.</p>
 <blockquote>
 <p>Note that unlike Cloudant Query, a replication filter selector does not require a matching secondary index. Each changed document is passed through the selector to see if it qualifies to be replicated.</p>
@@ -167,9 +171,9 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Further reading:</p>
 <ul>
 <li><a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api&amp;origin_team=T4NN71GAU#the-selector-field">Replication with a selector</a></li>
-<li><a href="https://blog.cloudant.com/2019/12/13/Filtered-Replication.html">Filtered Replication</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/12/13/Filtered-Replication.html">Filtered Replication</a></li>
 </ul>
-<h2 id="database-sharding"><a href="#database-sharding">Database sharding</a></h2>
+<h2 id="database-sharding"style="display:inline">Database sharding</h2><a class="stealth" href="#database-sharding">🔗</a><br>
 <p>A Cloudant Standard database is broken into <code>q</code> shards, with three copies of each shard being stored around the cluster. Usually the default value of <code>q</code> is fine, but if you have a very large database or many very small databases, then a custom value is justified. In these circumstances creating the target database with the correct value of <code>q</code> is important before replicating data across.</p>
 <ul>
 <li>For most users, the default value of <code>q</code> is fine.</li>
@@ -179,22 +183,22 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Note Cloudant on Transaction Engine automatically handles database sharding, so there&rsquo;s no need to worry about <code>q</code>.</p>
 </blockquote>
-<h2 id="live-switchover"><a href="#live-switchover">Live switchover</a></h2>
+<h2 id="live-switchover"style="display:inline">Live switchover</h2><a class="stealth" href="#live-switchover">🔗</a><br>
 <p>Careful use of replication can allow an application to move from one geography to another without downtime. <a href="https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api&amp;origin_team=T4NN71GAU#continuous-replication">Continuous replication</a> is set up to copy data from the source to the target forever.</p>
 <p>This allows application traffic to be directed to the source, the target or to both. When you&rsquo;re happy that the target is performing correctly, the replication can be deleted and the source service deleted.</p>
 <p>If you want to hedge your bets and allow for the possibility of switching back to the source then two replications can be setup to transfer data from source&ndash;&gt;target and target&ndash;&gt;source. If the switchover to the new target service doesn&rsquo;t work out, the source database will still be there and also be updated with any changes that were written to the target side.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/migration2.png" alt="mig1"></p>
-<h2 id="advanced-filtering"><a href="#advanced-filtering">Advanced filtering</a></h2>
+<h2 id="advanced-filtering"style="display:inline">Advanced filtering</h2><a class="stealth" href="#advanced-filtering">🔗</a><br>
 <p>If your application relies on Cloudant deletions, and you also want to purge unwanted historical deletions during replication, how do you purge only the historical replications and keep any deletions that occur during the migration process as your application continues to delete documents? In short, this is the procedure to follow:</p>
 <ol>
 <li>Hit the source database&rsquo;s top-level endpoint e.g. <code>GET /&lt;dbname&gt;</code> and make a note of the <code>update_seq</code> field.</li>
-<li>Setup a one-off <a href="https://blog.cloudant.com/2019/12/13/Filtered-Replication.html">filtered replication</a> that omits all deleted documents. Wait until replication completes.</li>
+<li>Setup a one-off <a href="https://emlaver.github.io/gh-pages-example/2019/12/13/Filtered-Replication.html">filtered replication</a> that omits all deleted documents. Wait until replication completes.</li>
 <li>Setup a continuous replication (without a filter) but with a value of <code>since_seq</code> equal to the sequence token fetched in Step 1. This will perform a top-up replication, taking any changes since we began the first replication including any deletions that occurred.</li>
 <li>When you&rsquo;re ready to move traffic to the new service, delete the replication from Step 3. The target database will only contain only non-deleted documents and any documents deleted since the migration process began.</li>
 </ol>
 <hr>
 <p>Let&rsquo;s take a worked example of migrating a database from <code>https://a.cloudant.com/source</code> to <code>https://b.cloudant.com/target</code>.</p>
-<h3 id="1-collect-a-sequence-token"><a href="#1-collect-a-sequence-token">1. Collect a sequence token</a></h3>
+<h3 id="1-collect-a-sequence-token"style="display:inline">1. Collect a sequence token</h3><a class="stealth" href="#1-collect-a-sequence-token">🔗</a><br>
 <p>Hit the source database&rsquo;s top-level endpoint and make a note of the <code>update_seq</code> field:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl https://a.cloudant.com/source
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
@@ -220,8 +224,8 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;instance_start_time&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>Make a note of the <code>update_seq</code> value e.g. <code>23579-g1AAA....</code></p>
-<h3 id="2-set-up-a-one-off-replication"><a href="#2-set-up-a-one-off-replication">2. Set up a one-off replication</a></h3>
-<p>Setup a one-off <a href="https://blog.cloudant.com/2019/12/13/Filtered-Replication.html">filtered replication</a> that omits all deleted documents. Wait until replication completes.</p>
+<h3 id="2-set-up-a-one-off-replication"style="display:inline">2. Set up a one-off replication</h3><a class="stealth" href="#2-set-up-a-one-off-replication">🔗</a><br>
+<p>Setup a one-off <a href="https://emlaver.github.io/gh-pages-example/2019/12/13/Filtered-Replication.html">filtered replication</a> that omits all deleted documents. Wait until replication completes.</p>
 <p>In a file, we have our replication definition:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;atob_oneoff_filtered&#34;</span>,
@@ -305,7 +309,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;start_time&#34;</span>: <span style="color:#e6db74">&#34;2020-11-25T11:22:36Z&#34;</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span></code></pre></div><h3 id="3-perform-a-catchup-replication"><a href="#3-perform-a-catchup-replication">3. Perform a catchup replication</a></h3>
+</span></span></code></pre></div><h3 id="3-perform-a-catchup-replication"style="display:inline">3. Perform a catchup replication</h3><a class="stealth" href="#3-perform-a-catchup-replication">🔗</a><br>
 <p>Next we want a set off a <em>continuous</em> replication to catch up changes since the sequence token we collected in step 1. Our new replication document looks like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;atob_continuous_catchup&#34;</span>,
@@ -320,7 +324,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>We post this document to the <code>_replicator</code> database:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X POST -H<span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> -d@replication.json https://b.cloudant.com/_replicator
 </span></span></code></pre></div><p>This replication will run forever, or at least until we delete the replicator document.</p>
-<h3 id="4-switchover"><a href="#4-switchover">4. Switchover</a></h3>
+<h3 id="4-switchover"style="display:inline">4. Switchover</h3><a class="stealth" href="#4-switchover">🔗</a><br>
 <p>When the catchup replication is up-to-date, we can direct traffic to our target service and when we&rsquo;re happy, we can delete the continuous replication we set up in step 3.</p>
 
 </div>

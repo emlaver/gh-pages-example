@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">HAProxy as a reverse proxy</a></h1>
+  <h1 class="p-name">HAProxy as a reverse proxy</h1>
   
   <div class="postmeta">Oct 27, 2020 | Debatosh Tripathy | 
 
-<bx-tag>Proxy</bx-tag>
+  
+  <bx-tag>Proxy</bx-tag>
+  
+  <bx-tag>HA</bx-tag>
+  
 
-<bx-tag>HA</bx-tag>
 
-</div>
+  </div>
   
   <p>The IBM Cloudant helps you build a flexible disaster recovery capability into your applications through a cross-region disaster recovery setup using either active-passive or active-active configuration. For either configuration, IBM Cloudant doesn&rsquo;t provide a facility to manage explicitly any failover or reroute requests between Cloudant regions and has to be implemented within the application logic itself, or by using a load balancer/proxy. To enable auto-failover, we can put an HTTP proxy server in front of IBM Cloudant and then configure our application to talk to the proxy server rather than the IBM Cloudant instance directly. This would be easy, efficient, and save time compared to doing it through application logic.</p>
 <blockquote>
@@ -132,17 +136,17 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Photo by <a href="https://unsplash.com/photos/sMFWkx07fXI">Ira Huz on Unsplash</a></p>
 </blockquote>
 <p>In this article, we will use HAProxy or High Availability Proxy to direct traffic to one of two Cloudant instances(active-passive configuration) with auto failover to the backup Cloudant instance.</p>
-<h3 id="target-architecture-with-haproxy-as-a-reverse-proxy"><a href="#target-architecture-with-haproxy-as-a-reverse-proxy">Target architecture with HAProxy as a reverse proxy</a></h3>
+<h3 id="target-architecture-with-haproxy-as-a-reverse-proxy"style="display:inline">Target architecture with HAProxy as a reverse proxy</h3><a class="stealth" href="#target-architecture-with-haproxy-as-a-reverse-proxy">🔗</a><br>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/haproxy1.png" alt="image"></p>
-<h3 id="key-considerations-for-the-setup"><a href="#key-considerations-for-the-setup">Key Considerations for the setup</a></h3>
+<h3 id="key-considerations-for-the-setup"style="display:inline">Key Considerations for the setup</h3><a class="stealth" href="#key-considerations-for-the-setup">🔗</a><br>
 <ol>
 <li>HA Proxy should route traffic to the primary Cloudant instance as long as it is up.</li>
 <li>HA Proxy should automatically route traffic to secondary Cloudant instance if the primary instance goes down.</li>
 <li>HA Proxy should automatically route traffic back to the primary Cloudant instance as soon as it is up again.</li>
 </ol>
-<h3 id="how-to-check-if-the-cloudant-instance-is-up"><a href="#how-to-check-if-the-cloudant-instance-is-up">How to check if the Cloudant instance is up?</a></h3>
+<h3 id="how-to-check-if-the-cloudant-instance-is-up"style="display:inline">How to check if the Cloudant instance is up?</h3><a class="stealth" href="#how-to-check-if-the-cloudant-instance-is-up">🔗</a><br>
 <p>Cloudant offers a simple way to know if it is available or not through the <code>_up</code> endpoint. So all we have to do is ping this endpoint as a &lsquo;heartbeat at a regular interval of time. For example, a simple GET request(let&rsquo;s say in every 5 seconds) sent to this endpoint to see if the &ldquo;200&rdquo; response code is returned. As long 200 response code is received, traffic is routed to the primary Cloudant instance. If HAProxy receives a status code other than 200, then it would automatically route traffic to the secondary Cloudant instance.</p>
-<h3 id="lets-get-started-with-the-configuring-ha-proxy"><a href="#lets-get-started-with-the-configuring-ha-proxy">Let&rsquo;s get started with the configuring HA Proxy</a></h3>
+<h3 id="lets-get-started-with-the-configuring-ha-proxy"style="display:inline">Let&rsquo;s get started with the configuring HA Proxy</h3><a class="stealth" href="#lets-get-started-with-the-configuring-ha-proxy">🔗</a><br>
 <p><strong>Step - 1)</strong> Install HA Proxy</p>
 <p>It is really easy to install HA Proxy and for this article, we will be using Ubuntu OS. Commands to install a specific version of HA proxy are as follows.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>add-apt-repository ppa:vbernat/haproxy-2.2
@@ -186,7 +190,7 @@ backend db_cluster
 </code></pre><p>Make relevant changes to the haproxy.cfg file and save it. Now let&rsquo;s verify and reload the HAProxy configuration by using the below commands.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span>haproxy -c -f /etc/haproxy/haproxy.cfg
 </span></span><span style="display:flex;"><span>service haproxy reload
-</span></span></code></pre></div><h3 id="lets-understand-the-haproxy-configuration"><a href="#lets-understand-the-haproxy-configuration">Let&rsquo;s understand the HAProxy configuration</a></h3>
+</span></span></code></pre></div><h3 id="lets-understand-the-haproxy-configuration"style="display:inline">Let&rsquo;s understand the HAProxy configuration</h3><a class="stealth" href="#lets-understand-the-haproxy-configuration">🔗</a><br>
 <pre tabindex="0"><code class="language-file" data-lang="file">listen stats
 	bind *:9090
   	stats enable
@@ -205,7 +209,7 @@ backend db_cluster
 	bind *:80
 	mode http
     	use_backend db_cluster
-</code></pre><h3 id="haproxy-dashboard"><a href="#haproxy-dashboard">HAProxy dashboard</a></h3>
+</code></pre><h3 id="haproxy-dashboard"style="display:inline">HAProxy dashboard</h3><a class="stealth" href="#haproxy-dashboard">🔗</a><br>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/haproxy2.png" alt="image"></p>
 <blockquote>
 <p><strong>Note:</strong> Here the server with green color is the primary server and the server with blue color is the backup server. All the requests are served by the primary server unless it is down.</p>

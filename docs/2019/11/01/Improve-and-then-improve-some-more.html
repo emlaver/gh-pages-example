@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Improve and then improve some more</a></h1>
+  <h1 class="p-name">Improve and then improve some more</h1>
   
   <div class="postmeta">Nov 1, 2019 | Sheraz Rashid | 
 
-<bx-tag>Continuous Delivery</bx-tag>
+  
+  <bx-tag>CI</bx-tag>
+  
+  <bx-tag>CD</bx-tag>
+  
 
-<bx-tag>Continuous Integration</bx-tag>
 
-</div>
+  </div>
   
   <p>Modern software development requires a constant feedback loop in which software component correctness and whole-stack integration success can be efficiently validated. This feedback loop is realized through automation and continuous integration (CI). Well-implemented CI is imperative &ndash; it increases transparency amongst developers for all aspects of the software development lifecycle (SLDC) by yielding the ability to rapidly build, test, and iterate on issues that might arise. Rapid iteration is the keystone of an agile workflow and is critical to business success, especially when you&rsquo;re a startup that gets acquired by a company like IBM. </p>
 <p>As a newcomer to IBM Cloudant&rsquo;s release engineering team the challenges of maintaining and extending our CI were apparent from the get-go. Cloudant&rsquo;s approach towards CI centered on the popular Jenkins CI platform which was configured by Chef. This had long been sufficient but our old workflow began to present some serious headaches. To keep configuration management tight we tracked Jenkins &ldquo;freestyle&rdquo; job definitions as XML ERB (Embedded RuBy) templates in our Chef assets repository. We found this aged rather poorly as XML templates began to bloat &ndash; tracking numerous build steps often with e.g. Bash scripts embedded in the XML. An example of this is shown below. Please note some sections of the template have been ommitted from this example for clarity.</p>
@@ -226,7 +230,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/publishers&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/matrix-project&gt;</span>
 </span></span></code></pre></div><p>Pretty isn&rsquo;t it? As development demands increased post-acquisition it was a real challenge to both maintain these mission-critical CI systems and extend them with new service verification needs. Our product was scaling up as we integrated with the IBM Cloud ecosystem and starting in 2017 the IBM Cloudant team set out to make major improvements to our integration approach.</p>
-<h2 id="enter-jenkins-pipeline"><a href="#enter-jenkins-pipeline">Enter Jenkins Pipeline</a></h2>
+<h2 id="enter-jenkins-pipeline"style="display:inline">Enter Jenkins Pipeline</h2><a class="stealth" href="#enter-jenkins-pipeline">🔗</a><br>
 <p>Our approach of tracking Jenkins job business logic in the Chef-rendered XML templates was cumbersome for new developers to learn and difficult to extend. Important components embedded in the XML files were not accessible for individual execution, testing, or static analysis. However, a new approach to Jenkins CI implementation had emerged in recent years, known as <a href="https://jenkins.io/doc/book/pipeline/">Jenkins Pipeline</a>.</p>
 <p>A different model had gained popularity in the past couple of years which expresses a project&rsquo;s build/test/deploy stages with assets tracked in the project&rsquo;s repo, using a Jenkins Pipeline. The cost to benefit ratio was paying itself back from the day it was introduced. Pipeline expresses the CI stages in a Domain Specific Language or DSL, which, being tracked in the repo, is much more natural for developers to maintain. Scripts can be included alongside the CI definition which will allow us to execute them individually, test them, etc. The same XML template, shown above, could be rendered using DSL (Groovy) like so. Please note the mapping between this example and that of the XML template is approximate as we have been since extending and updating our pipeline.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-groovy" data-lang="groovy"><span style="display:flex;"><span> stage<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Build - ${name} ${variant}&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -303,7 +307,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>It&rsquo;s immediately clear that the Pipeline scripted language approach is natural for developers to use. Engineers don&rsquo;t have to maintain complex or error-prone XML templates. One of the greatest benefits of adopting the Pipeline DSL has been the buy-in our team received from the wider developer community in our organization. From the beginning our team members have been able to skill up on the Pipeline DSL and become immediately productive.</p>
 <p>Automation achieved with our new pipeline helped us to alleviate previously laborious manual testing. One example of this is shown by what we call the &ldquo;poker&rdquo; test. During this test our team would manually run a script that was developed to open and close databases as quickly as possible. While that script would run we would open a new shell and attempt to upgrade our database to a new release candidate version for testing. We would manually inspect all the results as this was all running in the background. </p>
-<h2 id="manual-steps"><a href="#manual-steps">Manual Steps</a></h2>
+<h2 id="manual-steps"style="display:inline">Manual Steps</h2><a class="stealth" href="#manual-steps">🔗</a><br>
 <p>Run Poker Script &ndash;&gt; Upgrade Cluster &ndash;&gt; Verify Test Success</p>
 <p>With our pipeline we were able to encapsulate all of this testing logic into a Docker container and execute the testing steps via a Jenkins Groovy File as shown below. By encapsulating the test and upgrade tooling in Docker containers we were firstly able to simplify build system dependency management. Secondly we were able to easily use these resources from a Jenkins Groovy/Pipeline workflow as shown below.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-groovy" data-lang="groovy"><span style="display:flex;"><span><span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>

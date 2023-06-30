@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Building a CRM System</a></h1>
+  <h1 class="p-name">Building a CRM System</h1>
   
   <div class="postmeta">Mar 29, 2019 | Glynn Bird | 
 
-<bx-tag>Partitioned Databases</bx-tag>
+  
+  <bx-tag>Partitioned</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
 
-<bx-tag>Serverless</bx-tag>
 
-</div>
+  </div>
   
   <p>A Customer Relationship Management (CRM) system is simply a means of recording your business&rsquo;s relations with your customers. It may consist of:</p>
 <ul>
@@ -145,7 +149,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Assuming we&rsquo;ve set up an <a href="https://www.ibm.com/cloud/">IBM Cloud</a> account and provisioned a <a href="https://www.ibm.com/cloud/cloudant">Cloudant service</a> within it, the next thing we need to do is to create a Cloudant database with the <code>partitioned=true</code> flag (our Cloudant service&rsquo;s URL, containing the service credentials, is hidden in an environment variable <code>COUCH_URL</code>) using the command-line tool <code>curl</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -X PUT <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/crm?partitioned=true&#34;</span>
 </span></span></code></pre></div><p>The database is called <code>crm</code> and is created with a simple <code>PUT</code> HTTP call.</p>
-<h2 id="data-design"><a href="#data-design">Data Design</a></h2>
+<h2 id="data-design"style="display:inline">Data Design</h2><a class="stealth" href="#data-design">🔗</a><br>
 <p>Before we starting writing code, it&rsquo;s worth thinking about how our data will look in the database, how data will be retrieved and to consider how the application will scale if and when the database grows to millions of documents.</p>
 <p>To get the best out of Cloudant we&rsquo;re going to:</p>
 <ul>
@@ -159,7 +163,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>customer links.</li>
 </ul>
 <p>Each document type is distinguished by the <code>type</code> field in the document and additional types can be added at a later date as our product is developed.</p>
-<h3 id="one-document-per-customer"><a href="#one-document-per-customer">One document per customer</a></h3>
+<h3 id="one-document-per-customer"style="display:inline">One document per customer</h3><a class="stealth" href="#one-document-per-customer">🔗</a><br>
 <p>There will be a one document per company we are dealing with that stores the main company meta data (name, address, description etc). Its <code>_id</code> will be <code>&lt;partition key&gt;:0</code> so that when when querying a partition and sorting by <code>_id</code>, it appears first:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3z86qZ0S:0&#34;</span>,
@@ -175,7 +179,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ts&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-03-14T13:17:48.690Z&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>In this case the partition key (<code>3z86qZ0S</code>) is randomly generated although it could be any string that uniquely identifies a business e.g. an incrementing number (<code>42</code>), a telephone number (<code>01483456777</code>), a domain name (<code>andertons.co.uk</code>) or something else (<code>andertonsgu14rf</code>).</p>
-<h3 id="one-document-per-customer-note"><a href="#one-document-per-customer-note">One document per customer note</a></h3>
+<h3 id="one-document-per-customer-note"style="display:inline">One document per customer note</h3><a class="stealth" href="#one-document-per-customer-note">🔗</a><br>
 <p>An additional document will be added for each note we store against the customer:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3z86qZ0S:zzyIvXhl2oWGGH37lp1V3riq2q3k7LkU&#34;</span>,
@@ -185,7 +189,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ts&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-03-14T15:29:14.438Z&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Each note document shares a partition key with company it relates to (<code>3z86qZ0S</code>) and adds its own document key (<code>zzyIvX....</code>) to keep the <code>_id</code> unique. The <code>type</code> field identifies which object type is being stored. The <code>description</code> field is in <a href="https://daringfireball.net/projects/markdown/">Markdown</a> format so that it can contain structure (bullet points, sections, hyperlinks etc) which can be rendered correctly on the HTML front end.</p>
-<h3 id="one-document-per-contact-person"><a href="#one-document-per-contact-person">One document per contact person</a></h3>
+<h3 id="one-document-per-contact-person"style="display:inline">One document per contact person</h3><a class="stealth" href="#one-document-per-contact-person">🔗</a><br>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3z86qZ0S:zzyIvXop2eYZeD1B1Sl13tBZfD2nC3qN&#34;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;contact&#34;</span>,
@@ -194,7 +198,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ts&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-03-14T15:21:56.599Z&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Each contact document shares a partition key with company it relates to (<code>3z86qZ0S</code>) and adds its own document key (<code>zzyIvX....</code>) to keep the <code>_id</code> unique. The <code>type</code> field identifies which object type is being stored.</p>
-<h3 id="one-document-per-customer-link"><a href="#one-document-per-customer-link">One document per customer link</a></h3>
+<h3 id="one-document-per-customer-link"style="display:inline">One document per customer link</h3><a class="stealth" href="#one-document-per-customer-link">🔗</a><br>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;3z86qZ0S:zzyIvXpa15FhND3IJwL61gD5l40vK7Yn&#34;</span>,
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;type&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;link&#34;</span>,
@@ -203,18 +207,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;ts&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;2019-03-14T15:21:09.312Z&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Each link document shares a partition key with company it relates to (<code>3z86qZ0S</code>) and adds its own document key (<code>zzyIvX....</code>) to keep the <code>_id</code> unique. The <code>type</code> field identifies which object type is being stored.</p>
-<h2 id="thinking-about-sort-order"><a href="#thinking-about-sort-order">Thinking about sort order</a></h2>
+<h2 id="thinking-about-sort-order"style="display:inline">Thinking about sort order</h2><a class="stealth" href="#thinking-about-sort-order">🔗</a><br>
 <p>When looking at a customer in our CRM system we want a chronological list of events - we&rsquo;d like all documents from the partition in &ldquo;newest first order&rdquo;. Although we can sort data at query time, it&rsquo;s sometimes helpful to make the <code>_id</code> field sort in the order you need in most cases. I use the <a href="https://www.npmjs.com/package/kuuid">kuuid</a> module to generate 32-character document keys that are unique and sort by time. The <code>kuuid.idr()</code> function makes ids that sort in <em>reverse</em> or &ldquo;newest first&rdquo; order.</p>
 <p>We can see from the Cloudant dashboard the sort order in action. The documents sort into &ldquo;newest first&rdquo; order without any effort, with the exception of the core <code>type:company</code> document which is fixed to the top of the sorted list by virtue of its <code>&lt;partition key&gt;:0</code> _id.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/crm2.png" alt="sort order"></p>
 <p>When a new note/contact/link object is added it will slip into <em>second place</em> in this list, behind the <code>type: company</code> document. This is exactly what we want to be able to render a company page in our CRM system - we can get the company meta data from the <code>&lt;partition key&gt;:0</code> document and the next most recent objects, all in one API call.</p>
-<h2 id="indexing"><a href="#indexing">Indexing</a></h2>
+<h2 id="indexing"style="display:inline">Indexing</h2><a class="stealth" href="#indexing">🔗</a><br>
 <p>As well as fetching data from a partition in newest first order, this application needs two indexes to service other access patterns:</p>
 <ol>
 <li>A global index that allows the user to search for companies by company name.</li>
 <li>A partitioned index that allows a single partition&rsquo;s documents to be fetched by &ldquo;type&rdquo;.</li>
 </ol>
-<h3 id="index---for-searching-by-company-name"><a href="#index---for-searching-by-company-name">Index - for searching by company name</a></h3>
+<h3 id="index---for-searching-by-company-name"style="display:inline">Index - for searching by company name</h3><a class="stealth" href="#index---for-searching-by-company-name">🔗</a><br>
 <p>To search across the the entire database, we need a <em>global index</em> - we need to supply <code>partitioned:false</code> in the index definition. We can also keep the index small with a <code>partial_filter_selector</code>, an index-time filter that decides which documents make it into the index - we only want <code>type: company</code> documents.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a global index on &#34;name&#34; (for docs of type==compamy)</span>
 </span></span><span style="display:flex;"><span>
@@ -232,7 +236,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># send index definition to Cloudant</span>
 </span></span><span style="display:flex;"><span>curl -X POST -H <span style="color:#e6db74">&#34;</span>$CT<span style="color:#e6db74">&#34;</span> -d<span style="color:#e6db74">&#34;</span>$I<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/crm/_index&#34;</span>
-</span></span></code></pre></div><h3 id="index---for-searching-for-document-types-within-a-partition"><a href="#index---for-searching-for-document-types-within-a-partition">Index - for searching for document types within a partition</a></h3>
+</span></span></code></pre></div><h3 id="index---for-searching-for-document-types-within-a-partition"style="display:inline">Index - for searching for document types within a partition</h3><a class="stealth" href="#index---for-searching-for-document-types-within-a-partition">🔗</a><br>
 <p>When fetching documents of a single type relating to a single company, we can use a <em>partitioned</em> index (<code>partitioned:true</code> is supplied here for clarity, but it is the default for a partitioned database). Directing a query to a single partition uses far fewer database resources making the query faster and cheaper to execute than a global query.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create a partitioned index on &#34;type&#34;</span>
 </span></span><span style="display:flex;"><span>
@@ -246,7 +250,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># send index definition to Cloudant</span>
 </span></span><span style="display:flex;"><span>curl -X POST -H <span style="color:#e6db74">&#34;</span>$CT<span style="color:#e6db74">&#34;</span> -d<span style="color:#e6db74">&#34;</span>$I<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$COUCH_URL<span style="color:#e6db74">/crm/_index&#34;</span>
-</span></span></code></pre></div><h2 id="building-an-api"><a href="#building-an-api">Building an API</a></h2>
+</span></span></code></pre></div><h2 id="building-an-api"style="display:inline">Building an API</h2><a class="stealth" href="#building-an-api">🔗</a><br>
 <p>I like to create a separate IBM Cloud Function for each API method. My core API calls are:</p>
 <ul>
 <li><code>POST /crm/addcompany</code> - add a new company (in a new partition).</li>
@@ -260,7 +264,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>Each of these API calls has <a href="https://github.com/glynnbird/crm/tree/master/api">its own directory</a> in the source code, as each API call may have its own dependencies. Each API call has its own <code>./deploy.sh</code> script which uploads the Cloud Function and creates the API Gateway configuration around it. An overall <a href="https://github.com/glynnbird/crm/blob/master/api/deploy.sh">deploy.sh</a> script sets up the Cloud Functions package and deploys all of the code in sequence.</p>
 <p>Once deployed, the API can be secured to require an API key or an OAuth login from Google/Facebook/GitHub.</p>
 <p>Let&rsquo;s look at one API call in detail: <code>GET /crm/fetch</code></p>
-<h3 id="get-crmfetch"><a href="#get-crmfetch">GET /crm/fetch</a></h3>
+<h3 id="get-crmfetch"style="display:inline">GET /crm/fetch</h3><a class="stealth" href="#get-crmfetch">🔗</a><br>
 <p>This API call fetches a single business&rsquo;s core meta data document and that company&rsquo;s recent history in one API call. It&rsquo;s able to do so because:</p>
 <ul>
 <li>each business&rsquo;s data is in a separate partition, so if you know the partition key, a query can be directed to <em>that partition</em> making for a faster and cheaper database operation.</li>
@@ -297,7 +301,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">exports</span>.<span style="color:#a6e22e">main</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">main</span>
-</span></span></code></pre></div><h2 id="accessing-the-api-from-a-web-app"><a href="#accessing-the-api-from-a-web-app">Accessing the API from a web app</a></h2>
+</span></span></code></pre></div><h2 id="accessing-the-api-from-a-web-app"style="display:inline">Accessing the API from a web app</h2><a class="stealth" href="#accessing-the-api-from-a-web-app">🔗</a><br>
 <p>The API Gateway supplied with IBM Cloud Function is CORS-enabled, so that any web app can make HTTP calls directly to the API Gateway URLs to access the API methods. I chose the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">Fetch API</a> which makes client-side HTTP requests a breeze:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">CRMAPIsearch</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> (<span style="color:#a6e22e">term</span>) =&gt; {
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">data</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#a6e22e">APIURL</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/search?query=&#39;</span> <span style="color:#f92672">+</span> encodeURIComponent(<span style="color:#a6e22e">term</span>))
@@ -315,16 +319,19 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>provide a local, partitioned search facility to allow a single company&rsquo;s notes, contacts, links etc to be searched.</li>
 <li>add authentication so that the API is only accessible to authorised users.</li>
 </ul>
-<h2 id="try-it-yourself"><a href="#try-it-yourself">Try it yourself</a></h2>
+<h2 id="try-it-yourself"style="display:inline">Try it yourself</h2><a class="stealth" href="#try-it-yourself">🔗</a><br>
 <p>You can try this yourself by <a href="https://github.com/glynnbird/crm/">following the instructions in the project&rsquo;s README</a>.</p>
-<h2 id="further-information"><a href="#further-information">Further information</a></h2>
+<h2 id="further-information"style="display:inline">Further information</h2><a class="stealth" href="#further-information">🔗</a><br>
 <ul>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html">Partitioned databases - Data Migration</a></li>
-<li><a href="https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html">Partitioned databases - Partition sizing</a></li>
-<li><a href="https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#partitioned-databases">Partitioned databases - Cloudant Documentation</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Introduction.html">Partitioned databases - Introduction</a></li>
+<li><a href="https://emlaver.github.io/gh-pages-example/2019/03/05/Partition-Databases-Data-Design.html">Partitioned databases - Data Design</a></li>
+<li>[Partitioned databases - Data Migration][3]</li>
+<li>[Partitioned databases - Partition sizing][4]</li>
+<li>[Partitioned databases - Cloudant Documentation][5]</li>
 </ul>
+<p>[3]: {{ ref &ldquo;2019-03-05-Partition-Databases-Data-Migration.md&rdquo; &gt;}}
+[4]: {{ ref &ldquo;2019-03-05-Partition-Databases-Sizing.md&rdquo; &gt;}}
+[5]: <a href="https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases">https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases</a></p>
 
 </div>
 </div>

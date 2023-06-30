@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Natural Language Classification</a></h1>
+  <h1 class="p-name">Natural Language Classification</h1>
   
   <div class="postmeta">Jan 18, 2019 | Glynn Bird | 
 
-<bx-tag>CSV</bx-tag>
+  
+  <bx-tag>CSV</bx-tag>
+  
+  <bx-tag>Watson</bx-tag>
+  
 
-<bx-tag>Watson</bx-tag>
 
-</div>
+  </div>
   
   <p>In this post we&rsquo;ll combine the Cloudant database with <a href="https://www.ibm.com/watson/services/natural-language-classifier/">IBM&rsquo;s Watson Natural Language Classifier (NLC) service</a> to automatically determine whether reviews left on a website are positive or negative.</p>
 <p>Imagine we are capturing product reviews on an e-commerce website and storing them as JSON in a Cloudant database:</p>
@@ -149,14 +153,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Image by <a href="https://unsplash.com/photos/Oaqk7qqNh_c">Patrick Tomasso on Unsplash</a></p>
 </blockquote>
-<h2 id="sign-up"><a href="#sign-up">Sign up</a></h2>
+<h2 id="sign-up"style="display:inline">Sign up</h2><a class="stealth" href="#sign-up">🔗</a><br>
 <p>Simply add a new NLC service in your <a href="https://www.ibm.com/cloud/">IBM Cloud</a> dashboard by searching for &ldquo;natural language&rdquo;:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/nlc1.png" alt="signup"></p>
 <p>Choose a service name and pick the geography in which the service will run:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/nlc2.png" alt="signup"></p>
 <p>Make a note of the <code>URL</code> and the <code>API Key</code> that is delivered with your provisioned service - we&rsquo;ll need them later.</p>
 <p>Next up, we need to train our model.</p>
-<h2 id="training-data"><a href="#training-data">Training data</a></h2>
+<h2 id="training-data"style="display:inline">Training data</h2><a class="stealth" href="#training-data">🔗</a><br>
 <p>To train the service we need to feed it a CSV file containing examples of what a positive and negative review looks like. The CSV file contains two columns: the first with the review text and the second with the classification (positive/negative:</p>
 <pre tabindex="0"><code class="language-csv" data-lang="csv">terrible product. Rubbish,negative
 The best thing I&#39;ve ever bought! Recommended!, positive
@@ -168,7 +172,7 @@ Total waste of time. Returned for a refund,negative
 <p><img src="https://emlaver.github.io/gh-pages-example/img/nlc3.png" alt="signup"></p>
 <p>The NLC best-practice is to have fewer than sixty words of text in your training data - it would be good to remove lenghty expositions on product features from the review and leave in the parts where the user expresses an opinion on the product or service.</p>
 <p>Then comes the laborious process of populating the second column. This is a one-off process to build the data set that will train Watson to be able to classify future reviews automatically. Once complete, export the two column spreadsheet as a CSV file and we&rsquo;re ready to do the training. The NLC documentation recommends having 5-10 records of each classification in the training set.</p>
-<h2 id="training"><a href="#training">Training</a></h2>
+<h2 id="training"style="display:inline">Training</h2><a class="stealth" href="#training">🔗</a><br>
 <p>The Watson NLC service is all powered by an HTTP API, so we can do all the work from the command-line using <em>curl</em>. To save some typing, let&rsquo;s put our NLC service URL and API Key in environment variables:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://gateway.watsonplatform.net/natural-language-classifier/api&#34;</span>
 </span></span><span style="display:flex;"><span>export APIKEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;9955882a8785grneYRRXpg5M3wBq1XwY7798gstcUm
@@ -194,7 +198,7 @@ Total waste of time. Returned for a refund,negative
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl --user <span style="color:#e6db74">&#34;apikey:</span>$APIKEY<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  <span style="color:#e6db74">&#34;</span>$URL<span style="color:#e6db74">/v1/classifiers/</span>$CLASSIFIERID<span style="color:#e6db74">&#34;</span>
 </span></span></code></pre></div><p>After a few minutes, the response to this API call will indicate that training is complete and we&rsquo;re ready to proceed to the next step.</p>
-<h2 id="classifying-new-data"><a href="#classifying-new-data">Classifying new data</a></h2>
+<h2 id="classifying-new-data"style="display:inline">Classifying new data</h2><a class="stealth" href="#classifying-new-data">🔗</a><br>
 <p>Now the model is trained, we can pass it new data that it has never seen before and it will determine whether it is &ldquo;positive&rdquo; or &ldquo;negative&rdquo;:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -G --user <span style="color:#e6db74">&#34;apikey:</span>$APIKEY<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">&#34;</span>$API<span style="color:#e6db74">/v1/classifiers/</span>$CLASSIFIERID<span style="color:#e6db74">/classify&#34;</span> <span style="color:#ae81ff">\
@@ -218,7 +222,7 @@ Total waste of time. Returned for a refund,negative
 <li><code>classes</code> - a break down of the confidences that the model attributed to each class.</li>
 </ul>
 <p>For our use-case we can simply take the <code>top_class</code> value and add it to our review JSON.</p>
-<h2 id="plumbing-it-in"><a href="#plumbing-it-in">Plumbing it in</a></h2>
+<h2 id="plumbing-it-in"style="display:inline">Plumbing it in</h2><a class="stealth" href="#plumbing-it-in">🔗</a><br>
 <p>All that&rsquo;s left to do is to call the &ldquo;classify&rdquo; API endpoint upon the submission of a new product preview from the web front end and surface the &ldquo;top_class&rdquo; value in our stored JSON. The call can be made from anywhere, but you&rsquo;ll get the smallest latencies if you provision your Watson model as geographically close as possible to your app servers.</p>
 <p>The HTTP is pretty easy to access from any programming language. Here&rsquo;s a Node.js function that classifies the passed-in string:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">request</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;request&#39;</span>)
@@ -248,7 +252,7 @@ Total waste of time. Returned for a refund,negative
 </span></span></code></pre></div><p>which can be called as follows to extract the &ldquo;top_class&rdquo; value:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">c</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">classify</span>(<span style="color:#e6db74">&#39;this product is terrible&#39;</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">top_class</span>)
-</span></span></code></pre></div><h2 id="useful-links"><a href="#useful-links">Useful Links</a></h2>
+</span></span></code></pre></div><h2 id="useful-links"style="display:inline">Useful Links</h2><a class="stealth" href="#useful-links">🔗</a><br>
 <ul>
 <li><a href="https://medium.com/ibm-watson/get-started-with-ai-in-15-minutes-28039853e6f3">Get Started with AI in 15 minutes</a></li>
 <li><a href="https://www.ibm.com/watson/services/natural-language-classifier/">IBM&rsquo;s Watson Natural Language Classifier (NLC) service</a></li>

@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,27 +114,30 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Using your own domain</a></h1>
+  <h1 class="p-name">Using your own domain</h1>
   
   <div class="postmeta">Dec 7, 2017 | Glynn Bird | 
 
-<bx-tag>Domain</bx-tag>
+  
+  <bx-tag>Domain</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
 
-<bx-tag>Serverless</bx-tag>
 
-</div>
+  </div>
   
   <p>Until recently, Cloudant allowed you to bring your own domain name through its &ldquo;virtual hosts&rdquo; functionality. This feature is now being removed for security reasons.</p>
 <p>If you still want to be able to access the Cloudant API through your own domain name, you can do it by creating a <em>serverless proxy</em> that is hosted on <a href="https://www.ibm.com/cloud/functions">IBM Cloud Functions</a>, IBM&rsquo;s serverless platform.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/serverless-proxy1.png" alt="schematic"></p>
 <p>A number of serverless &ldquo;actions&rdquo; are deployed—one per API call you need to proxy. They are served out by the IBM Cloud Functions API Gateway, which provides authentication and rate-limiting of your service. Finally, you can configure the API gateway to use <em>your</em> domain name and to perform the SSL termination so that your API is served out securely.</p>
-<h2 id="prequisites"><a href="#prequisites">Prequisites</a></h2>
+<h2 id="prequisites"style="display:inline">Prequisites</h2><a class="stealth" href="#prequisites">🔗</a><br>
 <p>First we need the source code. You&rsquo;ll need the <code>git</code> tool and to be familiar with command-line tools:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone https://github.com/ibm-watson-data-lab/serverless-proxy.git
 </span></span><span style="display:flex;"><span>cd serverless-proxy
 </span></span></code></pre></div><p>If you haven&rsquo;t done so already, <a href="https://bluemix.net">sign up for an IBM Cloud account</a> (formerly branded as &ldquo;Bluemix&rdquo;). Follow the <a href="https://console.ng.bluemix.net/openwhisk/getting-started">Getting Started with IBM Cloud Functions guide</a> to download the <code>bx wsk</code> tool and configure it for your account.</p>
 <p>If you don&rsquo;t already have a Cloudant account, in your IBM Cloud dashboard create a Cloudant service and make a note of its URL. In the Cloudant dashboard, create a new empty database (say, &lsquo;mydb&rsquo;). This is the database we will be using in our proxy deployment.</p>
-<h2 id="installation"><a href="#installation">Installation</a></h2>
+<h2 id="installation"style="display:inline">Installation</h2><a class="stealth" href="#installation">🔗</a><br>
 <p>Before we deploy our code, we need to define the following:</p>
 <ul>
 <li>the URL of the Cloudant service we are using</li>
@@ -152,7 +156,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>rate-limit requests per user</li>
 </ul>
 <p>By default, however, the API is open, meaning that anyone who has access to this API can read, write, update, or delete Cloudant data.</p>
-<h2 id="secure-your-traffic"><a href="#secure-your-traffic">Secure your traffic</a></h2>
+<h2 id="secure-your-traffic"style="display:inline">Secure your traffic</h2><a class="stealth" href="#secure-your-traffic">🔗</a><br>
 <p>To use a custom domain, first you need a domain name. I created a subdomain: <code>mycloudant.glynnbird.com</code>. You need to configure the DNS for that domain name using the <a href="https://console.bluemix.net/docs/apis/management/manage_apis.html#custom_domains">instructions here</a>.</p>
 <p>Then we need a secure certificate for that domain name. Fortunately, thanks to the folks at <a href="https://letsencrypt.org/">Let&rsquo;s Encrypt</a>, secure certificates are now free. I found the simplest way to get one was to use the <a href="https://www.sslforfree.com">https://www.sslforfree.com</a> website and download the certifcate to a <code>mycert.crt</code> and the private key to <code>mykey.key</code> file.</p>
 <p>Configure your IBM Cloud account to accept your domain name and upload your certificate and private key using the <a href="https://console.bluemix.net/docs/apis/management/manage_apis.html#custom_domains">instructions here</a>.</p>

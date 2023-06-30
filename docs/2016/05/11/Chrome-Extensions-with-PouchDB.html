@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Chrome Extensions</a></h1>
+  <h1 class="p-name">Chrome Extensions</h1>
   
   <div class="postmeta">May 11, 2016 | Glynn Bird | 
 
-<bx-tag>PouchDB</bx-tag>
+  
+  <bx-tag>PouchDB</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>Google Chrome extensions are small web applications that are downloaded and installed in the user&rsquo;s Chrome browser. They have a minimal user interface, usually a small icon to the right of the URL bar and a pop-down panel, but have additional rights over and above normal websites:</p>
 <ul>
@@ -135,7 +139,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p><strong>volt - a password database</strong></p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/chrome2.png" alt="volt screenshot"></p>
 <p>Both apps store their data <em>locally first</em> using PouchDB and allow the user to optionally sync the data with a remote server.</p>
-<h2 id="installing"><a href="#installing">Installing</a></h2>
+<h2 id="installing"style="display:inline">Installing</h2><a class="stealth" href="#installing">🔗</a><br>
 <p>The samples presented here have not been submitted to the Chrome Web Store, but you can install them from source as long as you enable developer mode. If you subsequently modify the source code on your machine, the changes will be reflected in Chrome the next time you open the extension.</p>
 <p>On the command-line, clone the <em>linkshare</em> repository:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; git clone https://github.com/glynnbird/linkshare.git
@@ -154,7 +158,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><a href="https://github.com/glynnbird/volt">https://github.com/glynnbird/volt</a></li>
 </ul>
 <p><a href="https://developer.chrome.com/extensions/getstarted">Full installation instructions for non-packaged extensions here</a>.</p>
-<h2 id="creating-an-chrome-extension-from-scratch"><a href="#creating-an-chrome-extension-from-scratch">Creating an Chrome extension from scratch</a></h2>
+<h2 id="creating-an-chrome-extension-from-scratch"style="display:inline">Creating an Chrome extension from scratch</h2><a class="stealth" href="#creating-an-chrome-extension-from-scratch">🔗</a><br>
 <p>The life of a Chrome extension begins with a manifest file called &ldquo;manifest.json&rdquo;:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;manifest_version&#34;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span>,
@@ -179,7 +183,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>a JavaScript file (for Chrome extensions, your JavaScript must reside in a separate file, not in the HTML page)</li>
 </ul>
 <p>Once installed, you can modify your local files and your installed extension will reflect the changes you make.</p>
-<h2 id="storing-data-in-a-chrome-extension"><a href="#storing-data-in-a-chrome-extension">Storing data in a Chrome extension</a></h2>
+<h2 id="storing-data-in-a-chrome-extension"style="display:inline">Storing data in a Chrome extension</h2><a class="stealth" href="#storing-data-in-a-chrome-extension">🔗</a><br>
 <p>Using PouchDB couldn&rsquo;t be easier. First of all it needs to be downloaded and referenced in our single-page web app:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;js/pouchdb-5.3.2.min.js&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
 </span></span></code></pre></div><p>Our page can then create a database and start saving data:</p>
@@ -188,7 +192,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#34;done&#34;</span>);
 </span></span><span style="display:flex;"><span>});
 </span></span></code></pre></div><p>For debugging, the JavaScript console can be accessed by right-clicking the extension icon and choosing &ldquo;Inspect popup&rdquo;.</p>
-<h2 id="a-simple-bookmarking-app"><a href="#a-simple-bookmarking-app">A simple bookmarking app</a></h2>
+<h2 id="a-simple-bookmarking-app"style="display:inline">A simple bookmarking app</h2><a class="stealth" href="#a-simple-bookmarking-app">🔗</a><br>
 <p>Chrome extensions have access to the current tab that is being viewed, so it&rsquo;s simple to create a bookmarking tool that keeps a list of URLs that you want to save permanently, read later or share. By storing such data in PouchDB, we can then optionally sync the data with an Apache CouchDB or IBM Cloudant databases to ensure that there is more than one copy of the data. Furthermore, other users sharing that database can also access the data, allowing the sharing of links with your partner, work colleagues or other ad-hoc groups of people who also have the extension installed.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/chrome.png" alt="schematic"></p>
 <p>The JSON schema we will be using is this:</p>
@@ -200,7 +204,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;title&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;My favourite website&#34;</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>When a user presses the &ldquo;Save&rdquo; button in our extension window, we fetch the page URL and title from the Google Chrome API, add a timestamp and turn the data into a JSON object before storing it in the PouchDB database. PouchDB automatically generates the <code>_id</code> and <code>_rev</code> fields. These fields are reserved by the database to enforce uniqueness of document IDs and to keep track of any document revisions.</p>
-<h2 id="loading-data-on-startup"><a href="#loading-data-on-startup">Loading data on startup</a></h2>
+<h2 id="loading-data-on-startup"style="display:inline">Loading data on startup</h2><a class="stealth" href="#loading-data-on-startup">🔗</a><br>
 <p>When our Chrome extension is activated, our code fetches a list of documents from the PouchDB database in reverse date order (newest first). We implement this behaviour using the <code>query</code> function in <em>linkshare.js</em>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">query</span>(<span style="color:#a6e22e">map</span>, {<span style="color:#a6e22e">include_docs</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">descending</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>}).<span style="color:#a6e22e">then</span>(<span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">result</span>) {
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// render the result
@@ -210,7 +214,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">emit</span>(<span style="color:#a6e22e">doc</span>.<span style="color:#a6e22e">date</span>, <span style="color:#66d9ef">null</span>);
 </span></span><span style="display:flex;"><span>};
 </span></span></code></pre></div><p>The map function is called with every document in the collection, and the key/value pairs it emits form the basis of an index we can subsequently interrogate (query). In this case we simply want the data in reverse order (<code>descending:true</code>), and we want the whole document bodies back (<code>include_docs:true</code>). There&rsquo;s no reduce function in our code because we don&rsquo;t need one. If we needed to aggregate query results, we could use one of PouchDB&rsquo;s built-in reduce functions. See the <a href="https://pouchdb.com/guides/queries.html">PouchDB guide on queries</a> for more on the built-in reduces for <code>_count</code>, <code>_sum</code> and <code>_stats</code>.</p>
-<h2 id="syncing-with-an-apache-couchdb-or-cloudant-server"><a href="#syncing-with-an-apache-couchdb-or-cloudant-server">Syncing with an Apache CouchDB or Cloudant server</a></h2>
+<h2 id="syncing-with-an-apache-couchdb-or-cloudant-server"style="display:inline">Syncing with an Apache CouchDB or Cloudant server</h2><a class="stealth" href="#syncing-with-an-apache-couchdb-or-cloudant-server">🔗</a><br>
 <p>PouchDB makes it very simple to sync with a remote server that speaks the CouchDB replication protocol:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>  <span style="color:#a6e22e">db</span>.<span style="color:#a6e22e">sync</span>(<span style="color:#a6e22e">url</span>, { <span style="color:#a6e22e">live</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span>, <span style="color:#a6e22e">retry</span><span style="color:#f92672">:</span><span style="color:#66d9ef">true</span> });
 </span></span></code></pre></div><p>This single line of code:</p>
@@ -223,7 +227,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>The URL that our app syncs with is provided by the user in the settings panel of our Chrome extension. e.g</p>
 <pre tabindex="0"><code>   https://myusername:mypassword@myhost.cloudant.com/mydatabase
 </code></pre><p>The URL itself is also stored in PouchDB, so it is remembered for the next session. But this value is stored in a <a href="https://pouchdb.com/guides/local-documents.html">_local document</a>, which is a special class of document that resides in the same database as the other bookmark documents, but only in the local copy of the database. &ldquo;Local&rdquo; documents are not replicated or indexed.</p>
-<h2 id="offline-first-means-always-on"><a href="#offline-first-means-always-on">Offline-first means always on</a></h2>
+<h2 id="offline-first-means-always-on"style="display:inline">Offline-first means always on</h2><a class="stealth" href="#offline-first-means-always-on">🔗</a><br>
 <p>Writing data to an in-browser database means that your web application will always work, whether you have a network connection or not. The data is synced to a cloud service too, but the primary mechanism for reading and writing data is the local PouchDB database. So even if remote syncing is impossible, the Chrome extension is always available to store and retrieve data from its local store.</p>
 <p>Syncing data also makes sharing it easy. Syncing to a remote copy allows a collection of data to be shared with other users who have access to the same database. All subscribed users will see all the changes when they sync. Coordinating the transfer of data between PouchDB and a cloud-based copy and vice versa is a complex programming task if you were building it yourself, but thanks to PouchDB it&rsquo;s a one-liner!</p>
 

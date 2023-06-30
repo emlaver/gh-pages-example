@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">The Data Warehouse</a></h1>
+  <h1 class="p-name">The Data Warehouse</h1>
   
   <div class="postmeta">Nov 16, 2018 | Glynn Bird | 
 
-<bx-tag>SQL</bx-tag>
+  
+  <bx-tag>SQL</bx-tag>
+  
+  <bx-tag>Warehouse</bx-tag>
+  
 
-<bx-tag>Warehouse</bx-tag>
 
-</div>
+  </div>
   
   <blockquote>
 <p>Addendum: Since publication of this blog, couchwarehouse has added support for MySQL and PostgreSQL as well as SQLite. This post is still valid, but bear in mind you now have a choice of target database types.</p>
@@ -144,7 +148,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p><a href="https://unsplash.com/photos/JuFcQxgCXwA">Photo by Samuel Zeller on Unsplash</a></p>
 </blockquote>
 <p>The most common scenario is you need <em>both</em>, with Cloudant data being fed to a data warehouse periodically. In this post we&rsquo;ll look at how we would write some code to copy and transform Cloudant data before writing it to relational database, allowing us to query using Structured Query Language (SQL).</p>
-<h2 id="what-do-the-cloudant-documents-look-like"><a href="#what-do-the-cloudant-documents-look-like">What do the Cloudant documents look like?</a></h2>
+<h2 id="what-do-the-cloudant-documents-look-like"style="display:inline">What do the Cloudant documents look like?</h2><a class="stealth" href="#what-do-the-cloudant-documents-look-like">🔗</a><br>
 <p>In our example, we are storing <em>one document per completed sale</em>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;001fgS954GN35e4NJPyK1W9aiE44m2xD&#34;</span>,
@@ -183,7 +187,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>The document maybe updated later to indicate that the order has been dispatched and to back-fill the <code>dispatchCourierRef</code>.</li>
 <li>The document contains an array of products in the <code>basket</code> field which store one or more line items purchased.</li>
 </ul>
-<h2 id="how-can-i-generate-some-sample-data"><a href="#how-can-i-generate-some-sample-data">How can I generate some sample data?</a></h2>
+<h2 id="how-can-i-generate-some-sample-data"style="display:inline">How can I generate some sample data?</h2><a class="stealth" href="#how-can-i-generate-some-sample-data">🔗</a><br>
 <p>Create a <code>template.json</code> file containing the outline of the document to create with placeholder tags where the data will be placed:</p>
 <pre tabindex="0"><code>{% raw %}
 {
@@ -220,7 +224,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </code></pre><p>Then using the <a href="https://www.npmjs.com/package/datamaker">datamaker</a> command-line tool, create thousands of sample documents and pipe them into the <a href="https://www.npmjs.com/package/couchimport">couchimport</a> tool to write the documents to Cloudant:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ datamaker -t ./template.json -f json -i <span style="color:#ae81ff">10000</span> | couchimport --db mydatabase --type jsonl
 </span></span></code></pre></div><p>We can use a command of the above form to generate thousands, or millions of documents. Simply change the <code>-i</code> parameter to the number of documents you need.</p>
-<h2 id="how-can-i-get-cloudant-data-into-a-data-warehouse"><a href="#how-can-i-get-cloudant-data-into-a-data-warehouse">How can I get Cloudant data into a Data Warehouse?</a></h2>
+<h2 id="how-can-i-get-cloudant-data-into-a-data-warehouse"style="display:inline">How can I get Cloudant data into a Data Warehouse?</h2><a class="stealth" href="#how-can-i-get-cloudant-data-into-a-data-warehouse">🔗</a><br>
 <p>A quick way of getting a queryable view of a Cloudant or CouchDB database is to use the <a href="https://www.npmjs.com/package/couchwarehouse">couchwarehouse</a> command-line tool. Once installed, creating a warehouse is simple from the command-line:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ couchwarehouse --url https://U:P@host.cloudant.com --db mystore
 </span></span></code></pre></div><p>The utility will attempt to discover the schema of your data, create a local <a href="https://www.sqlite.org/index.html">SQLite</a> database with a database table that matches your documents&rsquo; schema and begin populating the table from the Cloudant/CouchDB changes feed.</p>
@@ -268,7 +272,7 @@ Beaminster  21202.51
 Audenshaw   20864.46
 </code></pre><p>As long as the <code>couchwarehouse</code> utility is running, new and modified data will continue to spool into your local copy of the database. If you restart <code>couchwarehouse</code> again later, it will continue from where it left off and soon have your data warehouse up-to-date.</p>
 <p>The <code>couchwarehouse</code> tool has a few other tricks up its sleeve</p>
-<h3 id="transforming-data-before-writing-to-the-data-warehouse"><a href="#transforming-data-before-writing-to-the-data-warehouse">Transforming data before writing to the data warehouse</a></h3>
+<h3 id="transforming-data-before-writing-to-the-data-warehouse"style="display:inline">Transforming data before writing to the data warehouse</h3><a class="stealth" href="#transforming-data-before-writing-to-the-data-warehouse">🔗</a><br>
 <p>You can optionally supply a JavaScript function using the <code>--transform</code> parameter which is used to transform each JSON document as it is consumed from the Cloudant changes feed. This is useful for type coercion, patching missing fields or enforcing default values.</p>
 <p>Let&rsquo;s say we want to simplify the <code>basket</code> array and turn it into a single string containing the product names. We would write a transformation function and write it to a file <code>transform.js</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>
@@ -294,7 +298,7 @@ Audenshaw   20864.46
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">f</span>
 </span></span></code></pre></div><p>Running <code>couchwarehouse</code> with a transform function is simple:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ couchwarehouse --db mystore --transform ./transform.js
-</span></span></code></pre></div><h3 id="splitting-multiple-document-types-into-their-own-databases"><a href="#splitting-multiple-document-types-into-their-own-databases">Splitting multiple document types into their own databases</a></h3>
+</span></span></code></pre></div><h3 id="splitting-multiple-document-types-into-their-own-databases"style="display:inline">Splitting multiple document types into their own databases</h3><a class="stealth" href="#splitting-multiple-document-types-into-their-own-databases">🔗</a><br>
 <p>Some Cloudant users store different document types in the same database e.g. customers, orders and products all together. Usually such documents have a &ldquo;type&rdquo; field which distinguishes each document&rsquo;s type.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;123&#34;</span>,
@@ -340,7 +344,7 @@ Audenshaw   20864.46
 <li><code>mystore_order</code></li>
 </ul>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/couchwarehouse_split.png" alt="split"></p>
-<h2 id="whats-the-catch"><a href="#whats-the-catch">What&rsquo;s the catch?</a></h2>
+<h2 id="whats-the-catch"style="display:inline">What&rsquo;s the catch?</h2><a class="stealth" href="#whats-the-catch">🔗</a><br>
 <ol>
 <li>This tool is only suitable if all of the documents in a database are uniform. Cloudant allows you to vary the schema over time, so you can have some documents with fields that others don&rsquo;t. The <em>couchwarehouse</em> tool assumes the first document it sees is representative of the rest.</li>
 <li>Cloudant databases can get &ldquo;big&rdquo;. You need enough space on your local machine to store all of your data.</li>
@@ -348,7 +352,7 @@ Audenshaw   20864.46
 <li>The bodies of conflicted documents are ignored. Only &ldquo;winning&rdquo; revisions make it to the warehouse.</li>
 </ol>
 <p>The <em>couchwarehouse</em> makes a fair guess at moving Cloudant data to a SQL database without any custom work. For anything more complicated, or to store data in a different database, you&rsquo;re going to need some custom code.</p>
-<h2 id="how-could-i-write-my-own-data-warehouse"><a href="#how-could-i-write-my-own-data-warehouse">How could I write my own data warehouse?</a></h2>
+<h2 id="how-could-i-write-my-own-data-warehouse"style="display:inline">How could I write my own data warehouse?</h2><a class="stealth" href="#how-could-i-write-my-own-data-warehouse">🔗</a><br>
 <p>Data Warehouses, such as <a href="https://www.ibm.com/cloud/db2-warehouse-on-cloud">IBM Db2 Warehouse on Cloud</a> are based on traditional, table-based database engines. The data is arranged in tables with a fixed schema. To transfer data from Cloudant to a Data Warehouse we&rsquo;re going to need to:</p>
 <ul>
 <li>normalise the data - store data in different tables with references to data in other tables via keys.</li>

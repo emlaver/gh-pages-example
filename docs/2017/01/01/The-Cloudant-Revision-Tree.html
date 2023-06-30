@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,20 +114,23 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">The Revision Tree</a></h1>
+  <h1 class="p-name">The Revision Tree</h1>
   
   <div class="postmeta">Jan 1, 2017 | Mike Rhodes | 
 
-<bx-tag>Revisions</bx-tag>
+  
+  <bx-tag>Revisions</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>On the surface, Cloudant&rsquo;s document API appears to be a reasonably simple way to upload JSON data to a key value store and update the JSON data for a particular key. However, the reality is more complicated &ndash; isn&rsquo;t it always? &ndash; and understanding what&rsquo;s happening is important in using Cloudant effectively and becoming an advanced user of the database.</p>
 <p>The takeaway point is this: <strong>a document in Cloudant is a tree and Cloudant&rsquo;s document HTTP API is essentially a tree manipulation API</strong>.</p>
 <p>Below, we&rsquo;ll create and manipulate these trees to get a feel for what this means. The default behaviours of many calls allow you to ignore the tree in order that Cloudant appears more like a database, and we&rsquo;ll explore why and how this works as we go.</p>
 <p>Aside: why a tree? A document&rsquo;s tree representation is key to Cloudant&rsquo;s replication, which is essentially transferring tree nodes from one location to another in order to synchronise data robustly.</p>
 <p>All this information is valid for CouchDB, but I&rsquo;ve chosen to refer to Cloudant throughout for simplicity. This mini-tutorial assumes a basic knowledge of the Cloudant document API. Let&rsquo;s get started.</p>
-<h2 id="building-a-simple-document-tree"><a href="#building-a-simple-document-tree">Building a simple document tree</a></h2>
+<h2 id="building-a-simple-document-tree"style="display:inline">Building a simple document tree</h2><a class="stealth" href="#building-a-simple-document-tree">🔗</a><br>
 <p>Uploading a new document to Cloudant gives you something like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XPUT <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc&#39;</span> <span style="color:#ae81ff">\
@@ -163,7 +167,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>The final call uses the revs=true parameter to return the history of the 2- node along with its content.</li>
 </ol>
 <p>One other thing is worth mentioning at this point: a rev ID can be used to retrieve any node of the tree at any time. This is done by using the rev querystring parameter when making a GET request for the document. While that node will be returned, the JSON content of the document at that point may not: Cloudant cleans up the content of old tree nodes to conserve space.</p>
-<h2 id="the-winner-node"><a href="#the-winner-node">The winner node</a></h2>
+<h2 id="the-winner-node"style="display:inline">The winner node</h2><a class="stealth" href="#the-winner-node">🔗</a><br>
 <p>The winner abstraction is key to Cloudant&rsquo;s database semantics. It&rsquo;s used to give the appearance of a single value for a document rather than a tree. It does this by freeing us from having to specify the rev ID of the node we want with every call &ndash; though some calls, like updates, always need one. Let&rsquo;s look at how this works.</p>
 <p>Cloudant applies the winner label to the node at the tip of the tree as shown in the diagram above. This node is the one that Cloudant will refer to when responding to document retrieval requests that do not have any particular rev ID specified. The rev ID for this node is included in the response.</p>
 <p>While the node that Cloudant chooses to label the winner for any given document is an implementation detail, it&rsquo;s essentially decided by choosing the longest path in the document tree that&rsquo;s not terminated by a deletion node. This will be more obvious later when we introduce a branch to the tree.</p>
@@ -172,7 +176,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XGET <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">&#39;http://localhost:5984/tree-demo/mydoc?revs=true&#39;</span>
 </span></span></code></pre></div><p>By not specifying a rev ID to return, we&rsquo;re instructing Cloudant to return information about the tree node pointed to by the winner label.</p>
-<h2 id="updates-are-tree-manipulation"><a href="#updates-are-tree-manipulation">Updates are tree manipulation</a></h2>
+<h2 id="updates-are-tree-manipulation"style="display:inline">Updates are tree manipulation</h2><a class="stealth" href="#updates-are-tree-manipulation">🔗</a><br>
 <p>We&rsquo;ve now seen that an update to a document can be viewed as adding a new node to the document&rsquo;s tree. And we have seen that the update request&rsquo;s rev parameter is specifying which existing node in the document tree should be used as the parent for this new node.</p>
 <p>If we update twice more, we can see the tree grow. In the background, Cloudant will be updating the winner pointer to a new rev ID each time. It sends that back in the rev field of the response:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; curl -XPUT <span style="color:#ae81ff">\
@@ -202,7 +206,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>The tree now has four nodes, as shown by the _revisions array. As we didn&rsquo;t specify a rev in the request, Cloudant has again returned the node content and history for the winner node, as we&rsquo;d expect. As with any direct request to retrieve a document, we could have supplied a rev parameter to receive information about a different node.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/tree2.png" alt="tree 2"></p>
-<h2 id="branching-in-the-document-tree"><a href="#branching-in-the-document-tree">Branching in the document tree</a></h2>
+<h2 id="branching-in-the-document-tree"style="display:inline">Branching in the document tree</h2><a class="stealth" href="#branching-in-the-document-tree">🔗</a><br>
 <p>To show how the tree can branch, we need to make this document a conflicted document. A conflicted document is a document where there are two or more active branches. An active branch is one that ends in a node that is not deleted. This often happens during replication, where a document with a common history may have been updated in different ways in the databases being replicated.</p>
 <p>If you&rsquo;ve been using Cloudant for a while, you&rsquo;ll be familiar with Cloudant&rsquo;s behaviour when you send the &ldquo;wrong&rdquo; rev ID with an update: the 409 Conflict response. With our new tree knowledge, we can see that what Cloudant is doing is either (a) rejecting a request that tries to add a node to a parent which already has a child, or (b) trying to use a parent node that doesn&rsquo;t exist. It does this so the tree remains a single stem, which makes sense for a database. This can be seen if we try to add a second child to our 1- revision:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ curl -XPUT <span style="color:#ae81ff">\
@@ -282,7 +286,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
 </span></span></code></pre></div><p>Which represents the following tree:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/tree3.png" alt="tree 3"></p>
-<h2 id="resolving-the-conflicted-state"><a href="#resolving-the-conflicted-state">Resolving the conflicted state</a></h2>
+<h2 id="resolving-the-conflicted-state"style="display:inline">Resolving the conflicted state</h2><a class="stealth" href="#resolving-the-conflicted-state">🔗</a><br>
 <p>A document is conflicted so long as it has two or more branches which don&rsquo;t end in a deletion node. A conflicted document is clearly in a bad state for a database: some data is effectively hidden. So before we finish, let&rsquo;s <em>resolve</em> the conflict. In tree terms, resolving means updating the document&rsquo;s tree so that there is only one active branch.</p>
 <p>As we have two active branches, we need to update one branch with a deletion node, called a tombstone, to make that branch inactive. We do this by making a <code>DELETE</code> request to the document&rsquo;s resource. This request specifies the parent rev ID (<code>rev</code>) as the node at the tip of the branch we wish to mark as a dead end.</p>
 <p>Before this, we need to choose which branch to keep. To do this, we need to retrieve both. Instead of using <code>open_revs=all</code>, we can retrieve each individually.</p>
@@ -357,7 +361,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
 </span></span></code></pre></div><p>The response still shows both branches. This is expected, as the branches still exist! However, we can see that the branch ending in <code>5-</code> is deleted and so the <code>3-</code> branch is the only active branch. Which therefore gives us this final tree:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/tree4.png" alt="tree 4"></p>
-<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h2 id="conclusion"style="display:inline">Conclusion</h2><a class="stealth" href="#conclusion">🔗</a><br>
 <p>Hopefully, this has shown how the Cloudant API for documents is really a tree manipulation API. There convenience wrappers and behaviours for common operations which make the API more database-like, most of which make use of the tree node labelled winner.</p>
 <p>It&rsquo;s useful to think this way, as it explains what effect requests are having on stored data which helps with understanding how to make Cloudant work effectively. It also helps to understand replication as the replication process is just using calls like the ones above to retrieve and duplicate document tree nodes from one database to another.</p>
 <p>Before finishing, it&rsquo;s worth repeating that the content of tree nodes that are not at the tip of a branch is discarded periodically by Cloudant &ndash; so don&rsquo;t rely on it sticking around!</p>

@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">cloudant-quickstart</a></h1>
+  <h1 class="p-name">cloudant-quickstart</h1>
   
   <div class="postmeta">Jan 20, 2017 | Glynn Bird | 
 
-<bx-tag>Node.js</bx-tag>
+  
+  <bx-tag>Node.js</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>I frequently talk with developers who are using Cloudant or Apache CouchDB for the first time and I&rsquo;ve found that things they find most difficult to come to terms with are:</p>
 <ul>
@@ -128,7 +132,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p>In a lot of use-cases, the developer doesn&rsquo;t want to have to learn about Design Documents to query or aggregate data nor do they want MVCC getting in the way of storing and updating their data. What would Cloudant or CouchDB look like without these concepts? Or without show &amp; list functions, update handlers, attachments and replication?</p>
 <p>To find out, I wrote the <em>cloudant-quickstart</em> library that hides away this powerful but esoteric functionality and concentrates on making data manipulation simple and intuitive.</p>
-<h2 id="introducing-cloudant-quickstart"><a href="#introducing-cloudant-quickstart">Introducing cloudant-quickstart</a></h2>
+<h2 id="introducing-cloudant-quickstart"style="display:inline">Introducing cloudant-quickstart</h2><a class="stealth" href="#introducing-cloudant-quickstart">🔗</a><br>
 <p>The <em>cloudant-quickstart</em> library is a Node.js module that can be used with Cloudant and allows:</p>
 <ul>
 <li>database creation</li>
@@ -138,19 +142,19 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>aggregation for counting, totalising and statistics</li>
 </ul>
 <p>All of this is achieved without you dealing with any of Cloudant&rsquo;s inner complexities.</p>
-<h2 id="installing"><a href="#installing">Installing</a></h2>
+<h2 id="installing"style="display:inline">Installing</h2><a class="stealth" href="#installing">🔗</a><br>
 <p>The library can used within your own project like so:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>&gt; npm install --save cloudant-quickstart
 </span></span></code></pre></div><p>and then used within your code by adding the URL of your Cloudant instance and defining which Cloudant database you want to work with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">url</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://myusername:mypassword@host.cloudant.com&#39;</span>;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">cities</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;cloudant-quickstart&#39;</span>)(<span style="color:#a6e22e">url</span>, <span style="color:#e6db74">&#39;cities&#39;</span>);
-</span></span></code></pre></div><h2 id="creating-a-database"><a href="#creating-a-database">Creating a database</a></h2>
+</span></span></code></pre></div><h2 id="creating-a-database"style="display:inline">Creating a database</h2><a class="stealth" href="#creating-a-database">🔗</a><br>
 <p>A new Cloudant database can be created on first-use with the <code>create</code> function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">create</span>();
 </span></span></code></pre></div><p>All the function calls we make are going to be asynchronous: they return a <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> which you handle with &rsquo;then&rsquo; and &lsquo;catch&rsquo; functions, but for brevity, I&rsquo;ve omitted much of the scaffolding from the code samples. e.g. to log the output of the <code>info</code> function you could do</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">info</span>().<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>)
 </span></span></code></pre></div><p>We are going to import some data from <a href="http://www.geonames.org/">geonames.org</a> which stores the location and population of cities of the world.</p>
-<h2 id="inserting-data"><a href="#inserting-data">Inserting data</a></h2>
+<h2 id="inserting-data"style="display:inline">Inserting data</h2><a class="stealth" href="#inserting-data">🔗</a><br>
 <p>Single documents can be added to a database with the <code>insert</code> function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">city</span> <span style="color:#f92672">=</span> { 
 </span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;3041563&#39;</span>, 
@@ -199,7 +203,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></code></pre></div><p>and a document can be deleted with the <code>del</code> function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">del</span>(<span style="color:#e6db74">&#39;1000501&#39;</span>);
 </span></span></code></pre></div><p>Assuming we have managed to create a suitable data set, then we next need to query it.</p>
-<h2 id="querying-data"><a href="#querying-data">Querying data</a></h2>
+<h2 id="querying-data"style="display:inline">Querying data</h2><a class="stealth" href="#querying-data">🔗</a><br>
 <p>The database can by queried by any field by using the <code>query</code> function, passing in a query object:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">query</span>({ <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;York&#39;</span> }).<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>);
 </span></span><span style="display:flex;"><span>[ { <span style="color:#a6e22e">_id</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;2633352&#39;</span>,
@@ -222,7 +226,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// cities with population &gt; 5m in Brazil or USA
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">query</span>({ <span style="color:#a6e22e">population</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#39;$gt&#39;</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5000000</span>}, <span style="color:#a6e22e">country</span><span style="color:#f92672">:</span> { <span style="color:#e6db74">&#39;$in&#39;</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;BR&#39;</span>,<span style="color:#e6db74">&#39;US&#39;</span>]} })
-</span></span></code></pre></div><h2 id="aggregation"><a href="#aggregation">Aggregation</a></h2>
+</span></span></code></pre></div><h2 id="aggregation"style="display:inline">Aggregation</h2><a class="stealth" href="#aggregation">🔗</a><br>
 <p>Create aggregated views of your data with the <code>count</code>, <code>sum</code> and <code>stats</code> functions.</p>
 <p>The <code>count</code> function simply counts things:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#a6e22e">cities</span>.<span style="color:#a6e22e">count</span>().<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>)
@@ -265,7 +269,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">mean</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">121799.89655172414</span>,
 </span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">variance</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">96426027195.8169</span>,
 </span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">stddev</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">310525.4050731065</span> },...
-</span></span></code></pre></div><h2 id="how-does-this-work"><a href="#how-does-this-work">How does this work?</a></h2>
+</span></span></code></pre></div><h2 id="how-does-this-work"style="display:inline">How does this work?</h2><a class="stealth" href="#how-does-this-work">🔗</a><br>
 <p>It&rsquo;s still Cloudant under-the-hood but this library is taking care of a few details on your behalf:</p>
 <ul>
 <li>when you create a database, a <a href="https://docs.cloudant.com/cloudant_query.html">Cloudant Query</a> index is created that indexes all fields. This index then powers the <code>query</code> operator.</li>
@@ -274,7 +278,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </ul>
 <p>In production systems, it&rsquo;s important to understand Design Documents, MVCC and the other features of Cloudant, but when you&rsquo;re getting started
 it&rsquo;s helpful to be able to write data quickly and create queries without any fuss.</p>
-<h2 id="is-this-free"><a href="#is-this-free">Is this free?</a></h2>
+<h2 id="is-this-free"style="display:inline">Is this free?</h2><a class="stealth" href="#is-this-free">🔗</a><br>
 <p>Yes! This is a free, open-source library that can work with any Cloudant account.</p>
 <ul>
 <li>Code - <a href="https://github.com/glynnbird/cloudant-quickstart">https://github.com/glynnbird/cloudant-quickstart</a></li>

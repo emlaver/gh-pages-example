@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Logging with LogDNA</a></h1>
+  <h1 class="p-name">Logging with LogDNA</h1>
   
   <div class="postmeta">Sep 16, 2019 | Glynn Bird | 
 
-<bx-tag>Logging</bx-tag>
+  
+  <bx-tag>Logging</bx-tag>
+  
+  <bx-tag>Analysis</bx-tag>
+  
 
-<bx-tag>Analysis</bx-tag>
 
-</div>
+  </div>
   
   <p>Cloudant is now rolling out customer-facing logging for its Cloudant services. In this post we&rsquo;ll explore how to set it up and how it can help you keep tabs on your Cloudant service.</p>
 <blockquote>
@@ -131,7 +135,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <blockquote>
 <p>Photo by <a href="https://unsplash.com/photos/yuMpfx-C0A8">Pär Pärsson on Unsplash</a></p>
 </blockquote>
-<h2 id="setting-up-logging"><a href="#setting-up-logging">Setting up logging</a></h2>
+<h2 id="setting-up-logging"style="display:inline">Setting up logging</h2><a class="stealth" href="#setting-up-logging">🔗</a><br>
 <p>Firstly we need to setup an <em>IBM Log Analysis with LogDNA</em> service in the IBM Cloud - choose the service from the Developer Tools section of the catalog:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/logdna1.png" alt="logdna1"></p>
 <p>Configure the service in the same <em>region</em> as your Cloudant service (e.g. Dallas) and choose and appropriate resource group:</p>
@@ -141,7 +145,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>That&rsquo;s it! Click the View LogDNA button to see a live stream of your logs:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/logdna4.png" alt="logdna3"></p>
 <p>You should see all of your API calls listed in the live stream, with a short delay as the data makes its way to LogDNA,</p>
-<h2 id="logging-data-structure"><a href="#logging-data-structure">Logging data structure</a></h2>
+<h2 id="logging-data-structure"style="display:inline">Logging data structure</h2><a class="stealth" href="#logging-data-structure">🔗</a><br>
 <p>The data is logged as a JSON object containing everything you need to know about the request and how it was handled:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;accountName&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;mycloudantaccount&#34;</span>,
@@ -182,7 +186,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li>values of <code>bytesRead</code> that are very high. Do some of your requests return lots of data?</li>
 </ul>
 <p>The <a href="https://docs.logdna.com/docs">LogDNA documentation</a> shows how you can explore the incoming stream of data, creating named views which can be retrieved later. Saved views can be combined to create visual dashboards to give you an at-a-glance view of your Cloudant traffic.</p>
-<h2 id="example-graphs"><a href="#example-graphs">Example graphs</a></h2>
+<h2 id="example-graphs"style="display:inline">Example graphs</h2><a class="stealth" href="#example-graphs">🔗</a><br>
 <p>Request counts by HTTP request code, grouped into successes (statusCode &lt; 300) and failures (statusCode &gt;= 400):</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/logdna5.png" alt="logdna5"></p>
 <p>Request counts by request &ldquo;class&rdquo; i.e. whether IBM considers the request a read, write or query for billing purposes:</p>
@@ -191,7 +195,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p><img src="https://emlaver.github.io/gh-pages-example/img/logdna7.png" alt="logdna7"></p>
 <p>95th percentile response times broken out by each of the timing metrics:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/logdna8.png" alt="logdna8"></p>
-<h2 id="creating-a-graph---step-by-step"><a href="#creating-a-graph---step-by-step">Creating a graph - step by step</a></h2>
+<h2 id="creating-a-graph---step-by-step"style="display:inline">Creating a graph - step by step</h2><a class="stealth" href="#creating-a-graph---step-by-step">🔗</a><br>
 <p>Log into your Log Analysis with LogDNA service, choose &ldquo;Boards&rdquo; from the left-hand menu and click &ldquo;New Board&rdquo;:</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/logdnasbs1.png" alt="logdnasbs1"></p>
 <p>Then click &ldquo;Add Graph&rdquo;:</p>
@@ -207,7 +211,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>The graph will change to add a second plot showing the error counts alongside the success counts.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/logdnasbs7.png" alt="logdnasbs5"></p>
 <p>Repeat this process to add further graphs on metrics that interest you.</p>
-<h2 id="timing-metrics"><a href="#timing-metrics">Timing metrics</a></h2>
+<h2 id="timing-metrics"style="display:inline">Timing metrics</h2><a class="stealth" href="#timing-metrics">🔗</a><br>
 <p>The logged JSON contains an object with the timings of each part of the request:</p>
 <pre tabindex="0"><code>&#34;timings&#34;: {
   &#34;connect&#34;: 142,
@@ -221,7 +225,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <li><code>response</code> - the time taken for the database to do its work.</li>
 <li><code>transfer</code> - the time taken for the response to be transferred to the client.</li>
 </ul>
-<h2 id="further-information"><a href="#further-information">Further information</a></h2>
+<h2 id="further-information"style="display:inline">Further information</h2><a class="stealth" href="#further-information">🔗</a><br>
 <ul>
 <li><a href="https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-audit-logging">Cloudant Log Analysis Documentation</a></li>
 <li><a href="https://docs.logdna.com/docs">LogDNA Documentation</a></li>

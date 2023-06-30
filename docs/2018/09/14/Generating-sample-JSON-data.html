@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,15 +114,18 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Generating sample data</a></h1>
+  <h1 class="p-name">Generating sample data</h1>
   
   <div class="postmeta">Sep 14, 2018 | Glynn Bird | 
 
-<bx-tag>Data</bx-tag>
+  
+  <bx-tag>Data</bx-tag>
+  
+  <bx-tag>JSON</bx-tag>
+  
 
-<bx-tag>JSON</bx-tag>
 
-</div>
+  </div>
   
   <p>Application development using Cloudant as the database, for me, starts with data design. Having carefully considered how your application&rsquo;s data should be modelled in JSON we may turn to the querying and indexing required:</p>
 <ul>
@@ -133,7 +137,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>To do this we need a source of data. As our application isn&rsquo;t live yet, we don&rsquo;t have any real data.</p>
 <p>This is where the <a href="https://www.npmjs.com/package/datamaker">datamaker</a> tool comes in.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/kristian-strand-791607-unsplash.jpg" alt="pic"></p>
-<h2 id="what-is-datamaker"><a href="#what-is-datamaker">What is datamaker?</a></h2>
+<h2 id="what-is-datamaker"style="display:inline">What is datamaker?</h2><a class="stealth" href="#what-is-datamaker">🔗</a><br>
 <p><em>datamaker</em> is a command-line tool that can generate random data. Not just random numbers, but company names, addresses, emails, dates etc.</p>
 <p>It&rsquo;s a free, open-source tool published on npm (Node.js &amp; npm are required). To install it, simply run :</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$ npm install -g datamaker
@@ -191,11 +195,11 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;_id&#34;</span>:<span style="color:#e6db74">&#34;RJA2DPS954J22AQ9&#34;</span>,<span style="color:#e6db74">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;Lovella Richmond&#34;</span>,<span style="color:#e6db74">&#34;dob&#34;</span>:<span style="color:#e6db74">&#34;2018-01-12&#34;</span>,<span style="color:#e6db74">&#34;address&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;street&#34;</span>:<span style="color:#e6db74">&#34;6173 Byrth&#34;</span>,<span style="color:#e6db74">&#34;town&#34;</span>:<span style="color:#e6db74">&#34;Skipton&#34;</span>,<span style="color:#e6db74">&#34;postode&#34;</span>:<span style="color:#e6db74">&#34;WA5 7FR&#34;</span><span style="color:#f92672">}</span>,<span style="color:#e6db74">&#34;telephone&#34;</span>:<span style="color:#e6db74">&#34;+33-7083-380-202&#34;</span>,<span style="color:#e6db74">&#34;pets&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;Daisy&#34;</span>,<span style="color:#e6db74">&#34;Gus&#34;</span><span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;score&#34;</span>:5.5,<span style="color:#e6db74">&#34;email&#34;</span>:<span style="color:#e6db74">&#34;jayne.roche@wet.com&#34;</span>,<span style="color:#e6db74">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;http://www.source.com&#34;</span>,<span style="color:#e6db74">&#34;description&#34;</span>:<span style="color:#e6db74">&#34;livestock geography italy commitment reseller strengthen gp meals announces href wage supervision guarantees problems lip tuner did site site then&#34;</span>,<span style="color:#e6db74">&#34;verified&#34;</span>:true,<span style="color:#e6db74">&#34;salary&#34;</span>:69739<span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;_id&#34;</span>:<span style="color:#e6db74">&#34;HNI4ISQDR17SEBD2&#34;</span>,<span style="color:#e6db74">&#34;name&#34;</span>:<span style="color:#e6db74">&#34;Keesha Tong&#34;</span>,<span style="color:#e6db74">&#34;dob&#34;</span>:<span style="color:#e6db74">&#34;2014-06-16&#34;</span>,<span style="color:#e6db74">&#34;address&#34;</span>:<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;street&#34;</span>:<span style="color:#e6db74">&#34;0567 Penny Road&#34;</span>,<span style="color:#e6db74">&#34;town&#34;</span>:<span style="color:#e6db74">&#34;North Berwick&#34;</span>,<span style="color:#e6db74">&#34;postode&#34;</span>:<span style="color:#e6db74">&#34;LA63 0MM&#34;</span><span style="color:#f92672">}</span>,<span style="color:#e6db74">&#34;telephone&#34;</span>:<span style="color:#e6db74">&#34;+675-7584-818-118&#34;</span>,<span style="color:#e6db74">&#34;pets&#34;</span>:<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;Muffin&#34;</span>,<span style="color:#e6db74">&#34;Cody&#34;</span><span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;score&#34;</span>:4.4,<span style="color:#e6db74">&#34;email&#34;</span>:<span style="color:#e6db74">&#34;isobel_fowler@gmail.com&#34;</span>,<span style="color:#e6db74">&#34;url&#34;</span>:<span style="color:#e6db74">&#34;https://www.retro.lib.ct.us&#34;</span>,<span style="color:#e6db74">&#34;description&#34;</span>:<span style="color:#e6db74">&#34;nuclear pennsylvania cooperation builder penny identical palestine detected le frequently collect customer providers string ticket col receivers spring suited chip&#34;</span>,<span style="color:#e6db74">&#34;verified&#34;</span>:false,<span style="color:#e6db74">&#34;salary&#34;</span>:44255<span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>The <em>datamaker</em> project has tens of supported tags - see the <a href="https://github.com/glynnbird/datamaker#tag-reference">project&rsquo;s documentation</a> for details. Airport codes, URLs, email addresses, prices, currencies etc.</p>
-<h2 id="importing-data-into-a-cloudant-database"><a href="#importing-data-into-a-cloudant-database">Importing data into a Cloudant database</a></h2>
+<h2 id="importing-data-into-a-cloudant-database"style="display:inline">Importing data into a Cloudant database</h2><a class="stealth" href="#importing-data-into-a-cloudant-database">🔗</a><br>
 <p>The tool to import JSON data into Cloudant already exists: it&rsquo;s <a href="https://www.npmjs.com/package/couchimport">couchimport</a> which supports the <code>jsonl</code> format (one JSON document per line) out of the box. Simply pipe the output of <em>datamaker</em> into <em>couchimport</em>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>$  datamaker -t ./template.json -f json -i <span style="color:#ae81ff">10000</span> | couchimport --db mydatabase --type jsonl
 </span></span></code></pre></div><p>The output of the <em>datamaker</em> is written to Cloudant in a series of bulk HTTP API calls. Simple as that!</p>
-<h2 id="references"><a href="#references">References</a></h2>
+<h2 id="references"style="display:inline">References</h2><a class="stealth" href="#references">🔗</a><br>
 <ul>
 <li><a href="https://www.npmjs.com/package/datamaker">datamaker on npm</a></li>
 <li><a href="https://github.com/glynnbird/datamaker">source code</a></li>

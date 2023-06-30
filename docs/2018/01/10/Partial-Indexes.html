@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,20 +114,23 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Partial Indexes</a></h1>
+  <h1 class="p-name">Partial Indexes</h1>
   
   <div class="postmeta">Jan 10, 2018 | Glynn Bird | 
 
-<bx-tag>Indexing</bx-tag>
+  
+  <bx-tag>Indexing</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p>Indexing is what makes database queries fast and scalable. Without and index, a database is forced to trawl through <em>every record</em> to calculate the answer to a query. A carefully designed index allows a query to be answered with a fraction of a work by jumping to the pertinent portion.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/shelves-jay-wennington.jpg" alt="Organise your data."></p>
 <blockquote>
 <p>Image by <a href="https://unsplash.com/photos/OLIcAFggdZE">Jay Wennington</a></p>
 </blockquote>
-<h2 id="indexing-basics"><a href="#indexing-basics">Indexing basics</a></h2>
+<h2 id="indexing-basics"style="display:inline">Indexing basics</h2><a class="stealth" href="#indexing-basics">🔗</a><br>
 <p>Let&rsquo;s dive in with the example of <a href="https://data.gov.uk/dataset/road-accidents-safety-data">road safety data</a> from the UK government&rsquo;s open data portal. There is a record for each traffic accident that looks like this once de-normalised and imported into a Cloudant database:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;_id&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;200901BS70015&#34;</span>,
@@ -181,7 +185,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -d<span style="color:#e6db74">&#39;{&#34;selector&#34;:{&#34;Date&#34;:{ &#34;$gte&#34;:&#34;2015-01-01&#34;, &#34;$lt&#34;:&#34;2016-01-01&#34;}}}&#39;</span> <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     -H <span style="color:#e6db74">&#39;Content-type: application/json&#39;</span> <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>     https://U:P@host.cloudant.com/accidents/_find
-</span></span></code></pre></div><h2 id="building-an-index-with-a-partial-filter"><a href="#building-an-index-with-a-partial-filter">Building an index with a partial filter</a></h2>
+</span></span></code></pre></div><h2 id="building-an-index-with-a-partial-filter"style="display:inline">Building an index with a partial filter</h2><a class="stealth" href="#building-an-index-with-a-partial-filter">🔗</a><br>
 <p>The first index we created stored an entry for each of the 1m+ records. This may be exactly what we intended, but in some cases we may only ever be interested in a subset of the data.</p>
 <p>Let&rsquo;s say we are only interested querying accidents that occur during a weekend—there is little point indexing those that occur during the week. This is where Cloudant&rsquo;s index definitions with a <code>partial_filter_selector</code> are useful.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># create index with partial filter</span>
@@ -211,7 +215,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Cloudant will only use a partial index to answer a query if you specify either the <code>ddoc</code> or <code>use_index</code> fields at query time. See <a href="https://console.bluemix.net/docs/services/Cloudant/api/cloudant_query.html#creating-an-index-with-a-selector">the documentation for full details</a>.</p>
-<h2 id="why-partial-indexes"><a href="#why-partial-indexes">Why partial indexes?</a></h2>
+<h2 id="why-partial-indexes"style="display:inline">Why partial indexes?</h2><a class="stealth" href="#why-partial-indexes">🔗</a><br>
 <p>Partial indexes pre-filter the data before it is written to the index. This can make your indicies smaller, leaner and quicker for Cloudant to work with. Also, as Cloudant pay-as-you-go services charge per GB of data (which includes the data used to store your core JSON and index data), smaller indexes can help keep your costs down too!</p>
 
 </div>

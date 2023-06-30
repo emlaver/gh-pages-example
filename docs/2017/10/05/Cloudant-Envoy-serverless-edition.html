@@ -7,6 +7,7 @@
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/ui-shell.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/button.min.js"></script>
   <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/tag.min.js"></script>
+  <script type="module" src="https://1.www.s81c.com/common/carbon/web-components/tag/latest/notification.min.js"></script>
   
 
   <link rel="icon" href="https://emlaver.github.io/gh-pages-example/favicon.png">
@@ -46,7 +47,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
- <meta name="generator" content="Hugo 0.114.1">
+ <meta name="generator" content="Hugo 0.115.0">
 
   
     
@@ -74,13 +75,13 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 
-   
+  
   <style>
 @media (min-width: 66rem) {
 .container .bx--grid {
   padding-left: calc(25% + 1.5rem);
   padding-right: 2rem;
-}    
+}
 }
     h3 {
       margin-bottom: 1rem;
@@ -89,7 +90,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
   </head>
 <body class="">
      
-<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>    
+<bx-skip-to-content href="#main-content" role="navigation" aria-label="Skip to main content"></bx-skip-to-content>
 <bx-header aria-label=" My New Hugo Site" role="banner">
   <bx-header-name href="https://emlaver.github.io/gh-pages-example/" prefix=""> My New Hugo Site</bx-header-name>
   <bx-header-nav menu-bar-label=" My New Hugo Site" role="navigation">
@@ -113,13 +114,16 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 
 
 <div class="bx--col-sm-12 bx--col-md-12 bx--col-lg-12  bx--col-xlg-12 bx--col-max-12">
-  <h1 class="p-name"><a href="" class="u-url">Cloudant Envoy</a></h1>
+  <h1 class="p-name">Cloudant Envoy</h1>
   
   <div class="postmeta">Oct 5, 2017 | Glynn Bird | 
 
-<bx-tag>Serverless</bx-tag>
+  
+  <bx-tag>Serverless</bx-tag>
+  
 
-</div>
+
+  </div>
   
   <p><a href="https://www.npmjs.com/package/cloudant-envoy">Cloudant Envoy</a> is software that sits between mobile users and a Cloudant database. It allows the apps to follow the CouchDB &ldquo;one-database-per-user&rdquo; model on mobile devices, while storing the data in a single server-side database. Without Envoy, each mobile user would have their own server-side database, which makes querying data across users very tricky.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/envoy-serverless1.png" alt="envoy2"></p>
@@ -128,14 +132,14 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 <p>By handling the subset of the Cloudant API that is required for replication, Envoy becomes indistinguishable from the Cloudant database it is paired with. It invisibly adds data to documents as they are saved and strips it out when data is retrieved. This hidden metadata marks up the ownership of each document so that each mobile user only has access to their own data.</p>
 <p>Envoy can be baked into your own app to allow your web application to sync from an in-browser data store, or it can be run as a stand-alone proxy. In either flavour, it can also handle user authentication as described in <a href="https://medium.com/ibm-watson-data-lab/authentication-for-cloudant-envoy-apps-part-one-e6dba285b0d1">this tutorial which shows how to install Facebook authentication</a>.</p>
 <p>Running Envoy all the time is fine, but it means you need to pay for a virtual machine (or two, or three) to be running 24x7 whether users are syncing their data or not. It would be ideal if we could run Envoy in a &ldquo;serverless&rdquo; configuration, i.e., to only consume computing resources if there were traffic. It turns out that you can!</p>
-<h2 id="introducing-envoy-serverless"><a href="#introducing-envoy-serverless">Introducing Envoy serverless</a></h2>
+<h2 id="introducing-envoy-serverless"style="display:inline">Introducing Envoy serverless</h2><a class="stealth" href="#introducing-envoy-serverless">🔗</a><br>
 <p>Envoy Serverless is a new way of deploying Cloudant Envoy. Instead of standing up fixed, 24/7 machines, the code is deployed to <a href="https://developer.ibm.com/openwhisk/">Apache OpenWhisk™</a>, which is branded as <a href="https://console.bluemix.net/openwhisk/">Cloud Functions on IBM&rsquo;s Bluemix platform</a>. Incoming API calls are handled by OpenWhisk as they arrive, scaling up to meet with the demand and costing nothing when the traffic falls off to zero. For low-traffic applications, the hosting costs could be zero because of IBM Cloud Function&rsquo;s generous <a href="https://console.ng.bluemix.net/openwhisk/learn/pricing">free tier</a>.</p>
 <p>OpenWhisk is an example of a &ldquo;serverless&rdquo; platform. Instead of worrying about servers, operating systems, queues, containers, networking, and infrastructure uptime, you simply deploy the <em>functions</em> you wish to run. By pairing these functions as HTTP API calls, you can stand up a RESTful API service without managing any infrastructure yourself.</p>
 <p><img src="https://emlaver.github.io/gh-pages-example/img/envoy-serverless-schematic.png" alt="schematic"></p>
 <p>Each API call is a separate OpenWhisk <em>action</em>, in its own JavaScript file, and is usually tasked with handling a single API call. Sometimes the same action handles variants of the same API call, such as the GET and POST versions of the same call, or handles a range of paths (e.g., GET <code>/db/*</code>).</p>
 <p>Each action is independent of the others, is stateless (apart from the data that is stored in the Cloudant database), and can be deployed and updated separately.</p>
 <p>The API Gateway handles authentication and routes the HTTP calls through to the corresponding action.</p>
-<h2 id="deploying-envoy-serverless"><a href="#deploying-envoy-serverless">Deploying Envoy Serverless</a></h2>
+<h2 id="deploying-envoy-serverless"style="display:inline">Deploying Envoy Serverless</h2><a class="stealth" href="#deploying-envoy-serverless">🔗</a><br>
 <p>You&rsquo;ll need a <a href="https://bluemix.net">Bluemix</a> account, and then follow the <a href="https://console.ng.bluemix.net/docs/openwhisk/index.html#getting-started-with-openwhisk">Getting started with Cloud Functions</a> instructions to download and install the <code>wsk</code> tool.</p>
 <p>Create a Cloudant instance in Bluemix, and make note of its URL. In your Cloudant dashboard, create a new database called &ldquo;envoydb&rdquo;.</p>
 <p>Clone the <code>envoy-serverless</code> project:</p>
@@ -162,7 +166,7 @@ bx-header {display:flex; background: #000;color:#fff;height: 3rem;width:100%}
 </span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;rows&#34;</span>: <span style="color:#f92672">[]</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>See the <a href="https://github.com/glynnbird/envoy-serverless">source code</a> for further examples.</p>
-<h2 id="pros-and-cons-of-serverless-deployment"><a href="#pros-and-cons-of-serverless-deployment">Pros and cons of serverless deployment</a></h2>
+<h2 id="pros-and-cons-of-serverless-deployment"style="display:inline">Pros and cons of serverless deployment</h2><a class="stealth" href="#pros-and-cons-of-serverless-deployment">🔗</a><br>
 <p>Is an OpenWhisk deployment <em>better</em> than a virtual machine for an Envoy deployment? The answer is nuanced.</p>
 <p>A 24x7 virtual machine may have slightly better performance because it can re-use HTTP connections, saving the effort of performing DNS lookups and establishing a new socket. It can also use streaming to provide an efficient flow of moving data through the proxy, whereas OpenWhisk cannot.</p>
 <p>The OpenWhisk version has fewer lines of code because it delegates authentication and the HTTP server infrastructure to the OpenWhisk stack. It is also easier to scale as OpenWhisk handles the deployment of computing power needed to meet the demand of the incoming API calls.</p>
