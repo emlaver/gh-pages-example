@@ -7,14 +7,14 @@ image: /img/amelie-ohlrogge-1503757-unsplash.jpg
 relcanonical: null
 tags:
   - Node.js
-  - Partitioned Databases
+  - Partitioned
 title: Partitioned Databases and Node.js
 type: blog
 url: /2019/05/24/Partitioned-Databases-with-Cloudant-Libraries.html
 ---
 
 
-The Cloudant database has four supported client libraries: [Node.js](https://github.com/IBM/cloudant-node-sdk), [Java](https://github.com/IBM/cloudant-java-sdk), [Go](https://github.com/IBM/cloudant-go-sdk)and  [Python](https://github.com/IBM/cloudant-python-sdk). In this post, we'll see examples on how the Node.js library can be used with the new [Partition Databases](https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html) feature.
+The Cloudant database has four supported client libraries: [Node.js](https://github.com/IBM/cloudant-node-sdk), [Java](https://github.com/IBM/cloudant-java-sdk), [Go](https://github.com/IBM/cloudant-go-sdk)and  [Python](https://github.com/IBM/cloudant-python-sdk). In this post, we'll see examples on how the Node.js library can be used with the new [Partition Databases]({{< ref "/2019-03-05-Partition-Databases-Introduction.md" >}}) feature.
 
 
 Here's a table of all the functions we'll be using:

@@ -6,7 +6,7 @@ description: Copying data from a standard database to a partitioned database.
 image: /img/timothy-muza-66846-unsplash.jpg
 relcanonical: null
 tags:
-  - Partitioned Databases
+  - Partitioned
   - Migration
 title: Partitioned Databases - Data Migration
 type: blog
@@ -121,8 +121,8 @@ Piping this data to `couchrestore` populates the new database.
 - [jq documentation](https://stedolan.github.io/jq/manual/)
 - [couchbackup](https://www.npmjs.com/package/@cloudant/couchbackup)
 
-[1]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html
-[2]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html
-[3]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html
-[4]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html
-[5]: https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#partitioned-databases
+[1]: {{< ref "2019-03-05-Partition-Databases-Introduction.md" >}}
+[2]: {{< ref "2019-03-05-Partition-Databases-Data-Design.md" >}}
+[3]: {{ ref "2019-03-05-Partition-Databases-Data-Migration.md" >}}
+[4]: {{ ref "2019-03-05-Partition-Databases-Sizing.md" >}}
+[5]: https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases

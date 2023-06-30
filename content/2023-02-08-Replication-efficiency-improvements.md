@@ -13,7 +13,7 @@ url: /2023/02/08/Replication-efficiency-improvements.html
 
 
 
-Cloudant's replication is a rock-solid protocol that allows a database's changes to be easily synced to a different database. This feature is used widely to create multi-region Cloudant [topologies](https://blog.cloudant.com/2017/11/07/Cloudant-replication-topologies.html), allowing dependent applications to survive a regional Cloud outage.
+Cloudant's replication is a rock-solid protocol that allows a database's changes to be easily synced to a different database. This feature is used widely to create multi-region Cloudant [topologies]({{< ref "/2017-11-07-Cloudant-replication-topologies.md" >}}), allowing dependent applications to survive a regional Cloud outage.
 
 Cloudant has recently published a number of improvements that make replication even better than before - in our internal benchmarks we have seen replications speeds of 3x the previous version. Some of these features have been switched _off_ by default, but may become the default behaviour in future releases.
 
@@ -113,7 +113,7 @@ This is achieved with the `"winning_revs_only": true` flag:
 }
 ```
 
-See https://blog.cloudant.com/2020/11/26/Repairing-a-Database-With-Conflicts.html#repairing-via-replication---winning_revs_only
+See [Repairing A Database With Conflicts]({{< ref "/2020-11-26-Repairing-a-Database-With-Conflicts.md" >}})
 
 > Note the `winning_revs_only` flag should only be used for one-off replications for the purposes of conflict repair. It is not suitable for general-purpose replication tasks.
 

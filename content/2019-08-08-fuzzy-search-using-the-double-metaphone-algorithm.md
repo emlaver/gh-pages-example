@@ -17,7 +17,7 @@ url: /2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html
 
 ## Introduction
 
-In an earlier [article](https://blog.cloudant.com/2018/12/12/soundex-view.html) I explained how to do a fuzzy search for documents that contain words that sound like some other given word. 
+In an earlier [article]({{< ref "/2018-12-12-soundex-view.md" >}}) I explained how to do a fuzzy search for documents that contain words that sound like some other given word. 
 The technique I described there uses a view that implements the Soundex algorithm. The aim of the Soundex algorithm is to encode words alike that sound alike so that they can be matched despite minor differences in spelling.
 Soundex was invented before the invention of the electronic computer and is fairly simple. 
 

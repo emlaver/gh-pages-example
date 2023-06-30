@@ -24,6 +24,9 @@ e.g. MapReduce or title:HTTP
 <!-- Load the content to index -->
 <script src="/js/searchcontent.js"></script>
 <script>
+
+  // put in placeholder searchContent if it's not there
+  searchContent = searchContent || []
   
   // remove anything but alphanumeric characters
   const sanitise = function(str) {

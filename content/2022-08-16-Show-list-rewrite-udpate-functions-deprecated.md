@@ -31,7 +31,7 @@ Although these features are deprecated, they will not be removed from the servic
 
 Show and List function simply transform single documents and view rows, respectively, within Cloudant before returning data to the client. This functionality can be easily reproduced by transforming Cloudant's usual JSON reponses on the client side.
 
-Rewrite functions are used in CouchApps, where a web application is hosted by Cloudant - CouchApps [were deprecated in October 2021](https://blog.cloudant.com/2021/10/20/CouchApps-no-longer-work.html) so application hosting must be undertaken by a separate web server or hosting provider which can perform the routing logic.
+Rewrite functions are used in CouchApps, where a web application is hosted by Cloudant - CouchApps [were deprecated in October 2021]({{< ref "/2021-10-20-CouchApps-no-longer-work.md" >}}) so application hosting must be undertaken by a separate web server or hosting provider which can perform the routing logic.
 
 Update functions have two main use-cases:
 

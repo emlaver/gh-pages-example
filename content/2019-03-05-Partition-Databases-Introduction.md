@@ -6,7 +6,7 @@ description: Organise data into partitions for a speed boost and cost savings.
 image: /img/toa-heftiba-82432-unsplash.jpg
 relcanonical: https://medium.com/@glynn_bird/couchdb-partitioned-databases-introduction-4a880e276773
 tags:
-  - Partitioned Databases
+  - Partitioned
 title: Partitioned Databases - Introduction
 type: blog
 url: /2019/03/05/Partition-Databases-Introduction.html
@@ -159,8 +159,8 @@ To see how you could design your application's data model to take advantage of C
 - [Partitioned databases - Partition sizing][4]
 - [Partitioned databases - Cloudant Documentation][5]
 
-[1]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html
-[2]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html
-[3]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html
-[4]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html
-[5]: https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#partitioned-databases
+[1]: {{< ref "2019-03-05-Partition-Databases-Introduction.md" >}}
+[2]: {{< ref "2019-03-05-Partition-Databases-Data-Design.md" >}}
+[3]: {{ ref "2019-03-05-Partition-Databases-Data-Migration.md" >}}
+[4]: {{ ref "2019-03-05-Partition-Databases-Sizing.md" >}}
+[5]: https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases

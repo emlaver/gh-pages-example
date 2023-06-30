@@ -25,7 +25,7 @@ The `_changes` API endpoint can be used in several ways and can output data in a
 
 Given a single database `orders`, I can ask the database for a list of changes, in this case limiting the result set to five changes with `?limit=5`:
 
-```
+```js
 GET /orders/_changes?limit=5
 {
   "results": [
@@ -52,7 +52,7 @@ The API call returns:
 
 Fetching the next batch:
 
-```
+```js
 GET /orders/_changes?limit=5&since=5-g1AAAAB5eJzLYWBg
 {
   "results": [ ...],
@@ -95,7 +95,7 @@ Filtering the changes feed, and by extension, performing filtered replication ha
 - Copying data from source to target but ignoring deleted documents.
 - Copying data but without index definitions (design documents).
 
-This [blog post](https://blog.cloudant.com/2019/12/13/Filtered-Replication.html) describes how supplying a `selector` during replication makes easy work of these use cases.
+This [blog post]({{< ref "/2019-12-13-Filtered-Replication.md" >}}) describes how supplying a `selector` during replication makes easy work of these use cases.
 
 The changes feed with an accompanying `selector` parameter is _not_ the way to extract slices of data from the database on a routine basis. It should not be used as a means of performing operational queries against a database. Filtered changes are slow (the filter is applied to every changed document in turn, without the help of an index), much slower than creating a secondary index (such as a MapReduce view) and querying that view. 
 
@@ -109,7 +109,7 @@ then this cannot be achieved with the Cloudant changes feed. The Cloudant databa
 
 This use case can, however, be acheived by storing the date in the document body:
 
-```
+```js
 {
   "_id": "2657",
   "type": "order",
@@ -122,7 +122,7 @@ This use case can, however, be acheived by storing the date in the document body
 
 and creating a MapReduce view with `last_edit_date` as the key:
 
-```
+```js
 function(doc) {
   emit(doc.last_edit_date, null)
 }

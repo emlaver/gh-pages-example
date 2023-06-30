@@ -46,7 +46,7 @@ client library, you should aim to at least know how to find out which HTTP reque
 
 - Cloudant API [docs](https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-api-reference-overview).
 - Logging [integration](https://cloud.ibm.com/docs/Cloudant?topic=cloudant-log-analysis-integration).
-- Blog post on [logging](https://blog.cloudant.com/2019/09/16/Cloudant-Logging-with-LogDNA.html).
+- Blog post on [logging]({{< ref "/2019-09-13-Cloudant-Logging-with-LogDNA.md" >}}).
 
 ## Rule 1: Documents should group data that mostly change together
 
@@ -370,7 +370,7 @@ These _partitioned queries_ exercie only one shard of the database making them f
 Not all data designs lend themselves to a partitioned design, but if your data can be molded into a `<partition key>:<document key>` pattern, then your application can benefit in terms of performance and cost.
 
 - [Partitioned Databases documentation](https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-database-partitioning)
-- [Partitioned Databases - Introduction blog](https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html)
+- [Partitioned Databases - Introduction blog]({{< ref "/2019-03-05-Partition-Databases-Introduction.md" >}})
 
 ## Rule 20: Use timeboxed databases for ever-growing data sets
 
@@ -384,7 +384,7 @@ One way of mitigating this problem is to have several smaller databases instead,
 
 New data is written to _this month's database_ and queries for historical data can be directed to previous months' databases. When a month's data is no longer of interest, it can be archived to Object Storage, the monthly Cloudant database deleted and the disk space recovered.
 
-- [Time-series Data Storage blog](https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html)
+- [Time-series Data Storage blog]({{< ref "/2019-04-08-Time-series-data-storage.md" >}})
 
 ## Rule 21: Logging helps you see what's going on
 
@@ -392,7 +392,7 @@ Cloudant's logs indicating each API call made, what was requestede and how long 
 
 The logging service is easy to setup and free to get started. Paid-for plans allow data to be parsed, retained and archived to Object Storage. Slices and aggregations of your data can be built up into visual dashboards to give you an at-a-glance view of your Cloudant traffic.
 
-- [Cloudant Logging with LogDNA blog](https://blog.cloudant.com/2019/09/16/Cloudant-Logging-with-LogDNA.html)
+- [Cloudant Logging with LogDNA blog]({{< ref "/2019-09-13-Cloudant-Logging-with-LogDNA.md" >}})
 
 ## Rule 22: Compress your HTTP traffic
 
@@ -423,7 +423,7 @@ random data. The `_id` attribute is used to construct the database's _primary in
 
 Here are some examples:
 
-- Use time-sortable document ids so that your documents are sorted into rough date/time order. This makes it easy to retrieve recent additions to the database. See [https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html](https://blog.cloudant.com/2018/08/24/Time-sortable-document-ids.html).
+- Use time-sortable document ids so that your documents are sorted into rough date/time order. This makes it easy to retrieve recent additions to the database. See [Time Sortable Document Ids]({{< ref "/2018-08-24-Time-sortable-document-ids.md" >}}).
 - Pack searchable data into your `_id` field e.g. `<customerid>~<date>~<orderid>` can be used to retrieve data by customer, customer/date or customer/date/orderid.
 - In a partitioned database, the judicious choice of _partition key_ allows an entire database to be winnowed down to a handful of documents for a known partition key. Make sure your partitioning schema solves your most common use-case.
 - In a partitioned database, the two parts of the key have to contain your own user-supplied data (there's no auto-generated \_ids) so it's best to use it optimally e.g. in an IoT application `<sensorid>:<time-sortable-id>` allows data to be sorted by sensor and time without a secondary index. Implement this schema with _time-boxed databases_ for best results.

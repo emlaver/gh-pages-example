@@ -24,7 +24,7 @@ If the number of deletions becomes onerous, it is best practice to periodically 
 
 ## Filtered replication to delete tombstones
 
-As [this blog post](https://blog.cloudant.com/2019/12/13/Filtered-Replication.html#ignoring-deletions) explains, we can create a new empty database and set up a replication from the old database to the new but with a filter that leaves the tombstones behind.
+As [this blog post]({{< ref "/2019-12-13-Filtered-Replication.md" >}}) explains, we can create a new empty database and set up a replication from the old database to the new but with a filter that leaves the tombstones behind.
 
 Replications are started by creating a document in the `_replicator` database like so:
 

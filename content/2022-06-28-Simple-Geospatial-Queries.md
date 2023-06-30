@@ -63,7 +63,7 @@ Note:
 
 - An index definition resides in a _Design Document_, in this case `_design/find`.
 - Each index has a name e.g `geospatial`
-- Cloudant Search has a nominated "Analyzer" which pre-processes string fields. See [this blog post](https://blog.cloudant.com/2018/10/19/Search-Analyzers.html) for more details.
+- Cloudant Search has a nominated "Analyzer" which pre-processes string fields. See [this blog post]({{< ref "/2018-10-19-Search-Analyzers.md" >}}) for more details.
 
 ## Find documents within a rectangle
 

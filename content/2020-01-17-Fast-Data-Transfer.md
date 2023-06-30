@@ -23,7 +23,7 @@ Cloudant replication is the database's method of of choice for transferring data
 
 Replication is easy to set up, can be run as a one-off or continuous operation and can be resumed from its last position. For all of its good points, replication does have some drawbacks:
 
-- Conflict removal - any [conflicted documents](https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html) on the source are carefully retained on the target side.
+- Conflict removal - any [conflicted documents]({{< ref "/2018-07-25-Removing-Conflicts.md" >}}) on the source are carefully retained on the target side.
 - Document alteration - the documents can not be changed in flight. If, for example, you wish to replicate data from a non-partitioned database to a partitioned database, altering the `_id` field on the way, this cannot be achieved with replication.
 - Speed - replication's focus on transferring everything from the source to the target (winning revisions, conflicts, deletions and attachments) makes it precise but not as fast as simple data transfer could be.
 

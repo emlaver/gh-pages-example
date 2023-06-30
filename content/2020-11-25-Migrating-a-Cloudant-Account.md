@@ -73,7 +73,7 @@ Filtered replication is useful for:
 Further reading:
 
 - [Replication with a selector](https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-api&origin_team=T4NN71GAU#the-selector-field)
-- [Filtered Replication](https://blog.cloudant.com/2019/12/13/Filtered-Replication.html)
+- [Filtered Replication]({{< ref "/2019-12-13-Filtered-Replication.md" >}})
 
 ## Database sharding
 
@@ -100,7 +100,7 @@ If you want to hedge your bets and allow for the possibility of switching back t
 If your application relies on Cloudant deletions, and you also want to purge unwanted historical deletions during replication, how do you purge only the historical replications and keep any deletions that occur during the migration process as your application continues to delete documents? In short, this is the procedure to follow:
 
 1. Hit the source database's top-level endpoint e.g. `GET /<dbname>` and make a note of the `update_seq` field.
-2. Setup a one-off [filtered replication](https://blog.cloudant.com/2019/12/13/Filtered-Replication.html) that omits all deleted documents. Wait until replication completes.
+2. Setup a one-off [filtered replication]({{< ref "/2019-12-13-Filtered-Replication.md" >}}) that omits all deleted documents. Wait until replication completes.
 3. Setup a continuous replication (without a filter) but with a value of `since_seq` equal to the sequence token fetched in Step 1. This will perform a top-up replication, taking any changes since we began the first replication including any deletions that occurred.
 4. When you're ready to move traffic to the new service, delete the replication from Step 3. The target database will only contain only non-deleted documents and any documents deleted since the migration process began.
 
@@ -142,7 +142,7 @@ Make a note of the `update_seq` value e.g. `23579-g1AAA....`
 
 ### 2. Set up a one-off replication
 
-Setup a one-off [filtered replication](https://blog.cloudant.com/2019/12/13/Filtered-Replication.html) that omits all deleted documents. Wait until replication completes.
+Setup a one-off [filtered replication]({{< ref "/2019-12-13-Filtered-Replication.md" >}}) that omits all deleted documents. Wait until replication completes.
 
 In a file, we have our replication definition:
 

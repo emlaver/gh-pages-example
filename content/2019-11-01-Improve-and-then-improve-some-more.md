@@ -4,8 +4,8 @@ date: 2019-11-01T06:00:00.000Z
 description: The journey our team took to move a modern CI using Jenkins Pipeline.
 image: /img/abhishek-gaurav-JOfghGQXHnM-unsplash.jpg
 tags:
-  - Continuous Delivery
-  - Continuous Integration
+  - CI
+  - CD
 title: Improve and then improve some more
 type: blog
 url: /2019/11/01/Improve-and-then-improve-some-more.html

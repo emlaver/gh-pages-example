@@ -38,7 +38,7 @@ The MapReduce engine requires Cloudant to execute your JavaScript map function u
 
 ### Store data in a index-friendly way
 
-Cloudant Query doesn't give you the opportunity to modify the data prior to indexing (as can be achieved in a JavaScript map function) so it is important to store data in the form that is suitable for querying. With only a handful of indexed fields, many of your application access patterns can be [queried optimally](https://blog.cloudant.com/2019/05/10/Optimal-Cloudant-Indexing.html).
+Cloudant Query doesn't give you the opportunity to modify the data prior to indexing (as can be achieved in a JavaScript map function) so it is important to store data in the form that is suitable for querying. With only a handful of indexed fields, many of your application access patterns can be [queried optimally]({{< ref "/2019-05-10-Optimal-Cloudant-Indexing.md" >}}).
 
 ### Partial Indexes are smaller
 
@@ -68,7 +68,7 @@ After using Cloudant for a while, you might find yourself staring at an index de
 
 ### Partitioned indexes are faster
 
-If your data can be moulded into a [Partitioned Database](https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html) model, then queries that are directed to a single partition will execute faster and be charged less per query than their global equivalents. 
+If your data can be moulded into a [Partitioned Database]({{< ref "/2019-03-05-Partition-Databases-Introduction.md" >}}) model, then queries that are directed to a single partition will execute faster and be charged less per query than their global equivalents. 
 
 ### Specify use_index
 

@@ -135,4 +135,4 @@ function (doc) {
 } 
 ```
 ---
-For how to use a different algorithm for fuzzy search with Cloudant, see [Fuzzy search using Double Metaphone](https://blog.cloudant.com/2019/08/08/fuzzy-search-using-the-double-metaphone-algorithm.html)
+For how to use a different algorithm for fuzzy search with Cloudant, see [Fuzzy search using Double Metaphone]({{< ref "/2019-08-08-fuzzy-search-using-the-double-metaphone-algorithm.md" >}})

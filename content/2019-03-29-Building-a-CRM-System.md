@@ -6,7 +6,7 @@ description: Creating a customer relations system with a partitioned Cloudant da
 image: /img/crm0.jpg
 relcanonical: null
 tags:
-  - Partitioned Databases
+  - Partitioned
   - Serverless
 title: Building a CRM System
 type: blog
@@ -284,8 +284,8 @@ You can try this yourself by [following the instructions in the project's README
 - [Partitioned databases - Partition sizing][4]
 - [Partitioned databases - Cloudant Documentation][5]
 
-[1]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Introduction.html
-[2]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Design.html
-[3]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Data-Migration.html
-[4]: https://blog.cloudant.com/2019/03/05/Partition-Databases-Sizing.html
-[5]: https://console.bluemix.net/docs/services/Cloudant/guides/database_partitioning.html#partitioned-databases
+[1]: {{< ref "2019-03-05-Partition-Databases-Introduction.md" >}}
+[2]: {{< ref "2019-03-05-Partition-Databases-Data-Design.md" >}}
+[3]: {{ ref "2019-03-05-Partition-Databases-Data-Migration.md" >}}
+[4]: {{ ref "2019-03-05-Partition-Databases-Sizing.md" >}}
+[5]: https://cloud.ibm.com/docs/Cloudant/guides/database_partitioning.html#partitioned-databases

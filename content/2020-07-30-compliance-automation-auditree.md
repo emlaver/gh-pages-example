@@ -64,7 +64,7 @@ Auditree is a set of building blocks to help engineers address compliance issues
 [auditree]: https://auditree.github.io/
 [nist]: https://nvd.nist.gov/800-53/Rev4
 [framework]: https://github.com/ComplianceAsCode/auditree-framework
-[chef]: https://blog.cloudant.com/2019/11/01/Improve-and-then-improve-some-more.html
+[chef]: {{< ref "/2019-11-01-Improve-and-then-improve-some-more.md" >}}
 [cloudant-compliance]: https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-compliance
 [fetchers]: https://github.com/ComplianceAsCode/auditree-framework/blob/main/compliance/fetch.py
 [checks]: https://github.com/ComplianceAsCode/auditree-framework/blob/main/compliance/check.py

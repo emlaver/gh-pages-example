@@ -98,7 +98,7 @@ If we repeat our query, it will be faster and will remain quick even as the data
 
 Further reading: 
 
-- [Optimising Cloudant Queries](https://blog.cloudant.com/2020/04/24/Optimising-Cloudant-Queries.html)
+- [Optimising Cloudant Queries]({{< ref "/2020-05-20-Optimising-Cloudant-Queries.md" >}})
 - [Cloudant Query documentation](https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-query)
 
 This index is useful for queries involving both the `publisher` and the `year` but if we introduce another field or make the query more complex (e.g. using the `$or` operator) then the index won't get used and we'll be back to a full database scan. 
@@ -141,7 +141,7 @@ You may then build complex queries involving one, some or all of the indexed fie
 
 Further Reading:
 
-- Cloudant Search uses "analyzers" to pre-process text prior to indexing. Learn about [Search Analyzers](https://blog.cloudant.com/2018/10/19/Search-Analyzers.html) to ensure you get the results you expect.
+- Cloudant Search uses "analyzers" to pre-process text prior to indexing. Learn about [Search Analyzers]({{< ref "/2018-10-19-Search-Analyzers.md" >}}) to ensure you get the results you expect.
 - [Cloudant Search documentation](https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-cloudant-search)
 
 ## Aggregating data - MapReduce
@@ -175,5 +175,5 @@ The subsequent MapReduce view will allow documents to be found by year (as that 
 
 Further reading:
 
-- [MapReduce blog](https://blog.cloudant.com/2011/01/13/mapreduce-from-the-basics-to-the-actually-useful.html)
+- [MapReduce blog]({{< ref "/2011-01-13-mapreduce-from-the-basics-to-the-actually-useful.md" >}})
 - [MapReduce documentation](https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-creating-views-mapreduce)

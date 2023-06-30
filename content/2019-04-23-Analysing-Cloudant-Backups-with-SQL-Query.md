@@ -14,7 +14,7 @@ url: /2019/04/23/Analysing-Cloudant-Backups-with-SQL-Query.html
 ---
 
 
-In [this post](https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html) we discussed storing time-series data in time-boxed Cloudant databases to allow recent data to be stored in Cloudant and older data to be archived and deleted from Cloudant. In this post we'll examine how to query data that has been archived and backed up to Object Storage using the IBM SQL Query service.
+In [this post]({{< ref "/2019-04-08-Time-series-data-storage.md" >}}) we discussed storing time-series data in time-boxed Cloudant databases to allow recent data to be stored in Cloudant and older data to be archived and deleted from Cloudant. In this post we'll examine how to query data that has been archived and backed up to Object Storage using the IBM SQL Query service.
 
 Object storage is much cheaper per gigabyte than a database, is endlessly extensible and makes a great choice for storing backups and archived data. 
 

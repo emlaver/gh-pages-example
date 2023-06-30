@@ -326,4 +326,4 @@ document.getElementById('content').innerHTML = html
 
 ## Example
 
-The [Cloudant blog](https://blog.cloudant.com/) is an example of this technology in action. It is a Jekyll-powered static website whose Atom feed is being polled by an IBM Cloud Functions action and whose search facility is powered by a Cloudant database containing the post's meta data.
+The Cloudant blog is an example of this technology in action. It is a Jekyll-powered static website whose Atom feed is being polled by an IBM Cloud Functions action and whose search facility is powered by a Cloudant database containing the post's meta data.

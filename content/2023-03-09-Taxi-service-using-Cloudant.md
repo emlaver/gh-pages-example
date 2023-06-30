@@ -50,9 +50,9 @@ As for the journey data, it's tempting to go for a "one document per journey" sc
 
 There are some drawbacks to consider with this approach:
 
-- If we put all of our journeys into one Cloudant database, then the database will keep growing forever. This isn't good practice with Cloudant and it's better to store ever-growing data sets in groups of "time boxed" databases. See [this blog post](https://blog.cloudant.com/2019/04/08/Time-series-data-storage.html) for more details.
+- If we put all of our journeys into one Cloudant database, then the database will keep growing forever. This isn't good practice with Cloudant and it's better to store ever-growing data sets in groups of "time boxed" databases. See [this blog post]({{< ref "/2019-04-08-Time-series-data-storage.md" >}}) for more details.
 - If all of our journeys are in one database, or a collection of time-boxed databases (i.e.a month's journeys per database), then how can we sync/replicate a single journey's data to the driver and customer without transferring _everyone else's journey data_ at the same time? Cloudant can do [filtered replication](https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-replication-guide#filtered-replications-repl-guide) to copy a subset of data, but this wouldn't scale for thousands of drivers/customers.
-- If more than one actor modifies the document at the same time, then Cloudant and PouchDB will store the clashing revisions as one or more [document conflicts](https://blog.cloudant.com/2018/07/25/Removing-Conflicts.html). Although Cloudant will retain both conflicting revisions, the application will have to add considerable extra complexity when deciding how to resolve the conflict.
+- If more than one actor modifies the document at the same time, then Cloudant and PouchDB will store the clashing revisions as one or more [document conflicts]({{< ref "/2018-07-25-Removing-Conflicts.md" >}}). Although Cloudant will retain both conflicting revisions, the application will have to add considerable extra complexity when deciding how to resolve the conflict.
 
 Perhaps there's a data design other than "one document per journey" that overcomes these pitfalls?
 

@@ -99,5 +99,5 @@ Cloudant TXE allows newer (ES6) JavaScript syntax than Cloudant Standard, so it'
 - The two products have different [pricing models](https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-feature-comparison#pricing-feature-compare) so the billing for the same apps running on each would likely be different.
 - There are [service limit](https://cloud.ibm.com/docs/Cloudant?topic=Cloudant-feature-comparison) differences between the two products. Cloudant Standard is more permissive, so this is unlikely to cause problems.
 - Cloudant TXE's changes feed is linearized where as Cloudant Standard's guarantees to give you each change at least once - so duplicates are possible.
-- Cloudant TXE does not create in-region conflicts, but they are possible with Cloudant Standard, especially if a document is modified over and over in short time window. See [Best & Worst Practice](https://blog.cloudant.com/2019/11/21/Best-and-Worst-Practices.html) for Cloudant Standard.
+- Cloudant TXE does not create in-region conflicts, but they are possible with Cloudant Standard, especially if a document is modified over and over in short time window. See [Best & Worst Practice]({{< ref "/2019-11-21-Best-and-Worst-Practices.md" >}}) for Cloudant Standard.
 
